@@ -1,0 +1,98 @@
+[
+    {
+        "series_id": "WTREGEN",
+        "date": "2025-06-11",
+        "value": 332.907,
+        "description": "WTREGEN latest data"
+    },
+    {
+        "series_id": "WRESBAL",
+        "date": "2025-06-11",
+        "value": 3407.108,
+        "description": "WRESBAL latest data"
+    },
+    {
+        "series_id": "M2SL",
+        "date": "2025-04-01",
+        "value": 21862.5,
+        "description": "M2SL latest data"
+    },
+    {
+        "series_id": "M1SL",
+        "date": "2025-04-01",
+        "value": 18668.0,
+        "description": "M1SL latest data"
+    },
+    {
+        "series_id": "SOFR",
+        "date": "2025-06-12",
+        "value": 4.28,
+        "description": "SOFR latest data"
+    },
+    {
+        "series_id": "FEDFUNDS",
+        "date": "2025-05-01",
+        "value": 4.33,
+        "description": "FEDFUNDS latest data"
+    },
+    {
+        "series_id": "TB3MS",
+        "date": "2025-05-01",
+        "value": 4.25,
+        "description": "TB3MS latest data"
+    },
+    {
+        "series_id": "TB1YR",
+        "date": "2025-05-01",
+        "value": 3.92,
+        "description": "TB1YR latest data"
+    },
+    {
+        "series_id": "RRPONTSYD",
+        "date": "2025-06-13",
+        "value": 168.645,
+        "description": "RRPONTSYD latest data"
+    },
+    {
+        "series_id": "MMMFFAQ027S",
+        "date": "2025-01-01",
+        "value": 7397905.0,
+        "description": "MMMFFAQ027S latest data"
+    },
+    {
+        "series_id": "SP500",
+        "date": "2025-06-13",
+        "value": 5976.97,
+        "description": "SP500 latest data"
+    },
+    {
+        "series_id": "DRBLACBS",
+        "date": "2025-01-01",
+        "value": 1.3,
+        "description": "DRBLACBS latest data"
+    },
+    {
+        "series_id": "NASDAQ100",
+        "date": "2025-06-12",
+        "value": 21913.32,
+        "description": "NASDAQ100 latest data"
+    },
+    {
+        "series_id": "WALCL",
+        "date": "2025-06-11",
+        "value": 6677155.0,
+        "description": "WALCL latest data"
+    },
+    {
+        "series_id": "SP500_RSI",
+        "date": "2025-06-13",
+        "value": 57.80462391934893,
+        "description": "SP500 14-day RSI"
+    },
+    {
+        "series_id": "NASDAQ100_RSI",
+        "date": "2025-06-12",
+        "value": 69.947402550616,
+        "description": "NASDAQ100 14-day RSI"
+    }
+]
