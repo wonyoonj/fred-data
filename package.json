@@ -1,0 +1,13 @@
+{
+  "name": "your-project-name",
+  "version": "1.0.0",
+  "description": "A simple HTML project deployed on Netlify",
+  "main": "index.html",
+  "scripts": {
+    "build": "sed -i 's|__VITE_GITHUB_CSV_BASE_URL__|'\"$VITE_GITHUB_CSV_BASE_URL\"'|g' index.html",
+    "dev": "echo 'Run your local development server if any, or just open index.html'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
