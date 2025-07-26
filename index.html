@@ -282,7 +282,7 @@
         const DOLLAR_SPAWN_INTERVAL = DOLLAR_ANIMATION_DURATION / 3;
         const NUM_DOLLAR_ANIMATIONS = 3;
 
-        const GITHUB_CSV_BASE_URL = '__VITE_GITHUB_CSV_BASE_URL__';
+        const FUNCTION_BASE_URL = '/.netlify/functions/get-csv-data';
 
         const indicatorTitles = {
             'WTREGEN': '미 정부 TGA 잔고',
@@ -362,14 +362,14 @@
             showPage('graphPage');
             document.getElementById('graphTitle').textContent = indicatorTitles[indicator] || indicator;
 
-            const csvFileName = `${indicator}.csv`;
-            const csvUrl = GITHUB_CSV_BASE_URL + csvFileName;
+            const functionUrl = `${FUNCTION_BASE_URL}?indicator=${indicator}`;
 
             try {
                 renderErrorMessage("데이터를 불러오는 중...");
-                const response = await fetch(csvUrl);
+                const response = await fetch(functionUrl);
                 if (!response.ok) {
-                    throw new Error(`'${indicatorTitles[indicator]}' 데이터를 찾을 수 없거나 불러오지 못했어요! (${response.status})`);
+                    const errorBody = await response.json();
+                    throw new Error(`'${indicatorTitles[indicator]}' 데이터를 찾을 수 없거나 불러오지 못했어요! (${response.status}: ${errorBody.error || response.statusText})`);
                 }
                 const text = await response.text();
                 const data = await parseCSV(text);
@@ -558,9 +558,12 @@
             const tgaSlopeDisplay = document.getElementById('tgaSlopeDisplay');
 
             try {
-                const wtregenUrl = GITHUB_CSV_BASE_URL + 'WTREGEN.csv';
-                const response = await fetch(wtregenUrl);
-                if (!response.ok) throw new Error(`WTREGEN CSV 파일을 불러오지 못했습니다! 상태: ${response.status}`);
+                const functionUrl = `${FUNCTION_BASE_URL}?indicator=WTREGEN`;
+                const response = await fetch(functionUrl);
+                if (!response.ok) {
+                    const errorBody = await response.json();
+                    throw new Error(`WTREGEN 데이터를 불러오지 못했습니다! 상태: ${response.status}: ${errorBody.error || response.statusText}`);
+                }
                 const text = await response.text();
                 const wtregenData = await parseCSV(text);
 

@@ -4,10 +4,13 @@
   "description": "A simple HTML project deployed on Netlify",
   "main": "index.html",
   "scripts": {
-    "build": "sed -i \"s|__VITE_GITHUB_CSV_BASE_URL__|$VITE_GITHUB_CSV_BASE_URL|g\" index.html && touch index.html",
+    "build": "echo 'No sed needed for proxy, handled by Netlify Function'",
     "dev": "echo 'Run your local development server if any, or just open index.html'"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "^2.6.1"
+  }
 }
