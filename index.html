@@ -460,11 +460,13 @@
                 canvas.removeEventListener('mousemove', drag);
                 canvas.removeEventListener('mouseup', stopDragging);
                 canvas.removeEventListener('mouseleave', stopDragging);
+                canvas.removeEventListener('wheel', zoomChart);
 
                 canvas.addEventListener('mousedown', startDragging);
                 canvas.addEventListener('mousemove', drag);
                 canvas.addEventListener('mouseup', stopDragging);
                 canvas.addEventListener('mouseleave', stopDragging);
+                canvas.addEventListener('wheel', zoomChart);
             } catch (error) {
                 console.error('Chart 렌더링 오류:', error);
                 renderErrorMessage('그래프를 그릴 수 없어요! 오류: ' + error.message);
@@ -504,6 +506,8 @@
                     if (range === '1M' || range === '6M') unit = 'day';
                     else if (range === '1Y') unit = 'month';
                     myChart.options.scales.x.time.unit = unit;
+                    myChart.options.scales.x.min = null;
+                    myChart.options.scales.x.max = null;
                 }
                 renderChart(indicatorKey, labels, values);
             } else {
@@ -725,6 +729,66 @@
             if (!isDragging) return;
             isDragging = false;
             event.target.style.cursor = 'grab';
+        }
+
+        function zoomChart(event) {
+            if (!myChart) return;
+            event.preventDefault();
+
+            const chartArea = myChart.chartArea;
+            const x_scale = myChart.scales.x;
+
+            if (!x_scale || typeof x_scale.max === 'undefined' || typeof x_scale.min === 'undefined') {
+                console.warn("X 스케일 정보가 불완전합니다. 줌 기능이 제한될 수 있습니다.");
+                return;
+            }
+
+            const mouseX = event.offsetX;
+            const dataX = x_scale.getValueForPixel(mouseX);
+            
+            const zoomFactor = 1.1;
+            let newMin, newMax;
+
+            if (event.deltaY < 0) {
+                newMin = dataX - (dataX - x_scale.min) / zoomFactor;
+                newMax = dataX + (x_scale.max - dataX) / zoomFactor;
+            } else {
+                newMin = dataX - (dataX - x_scale.min) * zoomFactor;
+                newMax = dataX + (x_scale.max - dataX) * zoomFactor;
+            }
+
+            const allDates = currentGraphData.map(d => new Date(d.date).getTime());
+            const minAllowedDate = Math.min(...allDates);
+            const maxAllowedDate = Math.max(...allDates);
+
+            if (newMin < minAllowedDate) {
+                newMin = minAllowedDate;
+                newMax = minAllowedDate + (x_scale.max - x_scale.min);
+                if (newMax > maxAllowedDate) newMax = maxAllowedDate;
+            }
+            if (newMax > maxAllowedDate) {
+                newMax = maxAllowedDate;
+                newMin = maxAllowedDate - (x_scale.max - x_scale.min);
+                if (newMin < minAllowedDate) newMin = minAllowedDate;
+            }
+            
+            if (newMin >= newMax) {
+                const totalRange = maxAllowedDate - minAllowedDate;
+                newMin = dataX - (totalRange * 0.01);
+                newMax = dataX + (totalRange * 0.01);
+
+                if (newMin < minAllowedDate) newMin = minAllowedDate;
+                if (newMax > maxAllowedDate) newMax = maxAllowedDate;
+                if (newMin >= newMax) {
+                    newMin = minAllowedDate;
+                    newMax = maxAllowedDate;
+                }
+            }
+
+
+            myChart.options.scales.x.min = newMin;
+            myChart.options.scales.x.max = newMax;
+            myChart.update();
         }
 
         function goBackToGraph() {
