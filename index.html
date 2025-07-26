@@ -688,7 +688,7 @@
             event.preventDefault();
 
             const currentX = event.pageX - event.target.getBoundingClientRect().left;
-            const diffX = currentX - startX;
+            const diffX = (currentX - startX) * 0.6;
 
             const chartArea = myChart.chartArea;
             const x_scale = myChart.scales.x;
@@ -703,8 +703,8 @@
 
             const dataOffset = (diffX / pixelRange) * dataRange;
 
-            let newMin = x_scale.min - dataOffset;
-            let newMax = x_scale.max - dataOffset;
+            let newMin = startScrollX - dataOffset;
+            let newMax = startScrollX + dataRange - dataOffset;
 
             const allDates = currentGraphData.map(d => new Date(d.date).getTime());
             const minAllowedDate = Math.min(...allDates);
@@ -721,7 +721,6 @@
 
             myChart.options.scales.x.min = newMin;
             myChart.options.scales.x.max = newMax;
-
             myChart.update('none');
         }
 
@@ -784,7 +783,6 @@
                     newMax = maxAllowedDate;
                 }
             }
-
 
             myChart.options.scales.x.min = newMin;
             myChart.options.scales.x.max = newMax;
