@@ -442,26 +442,36 @@
             if (lines.length <= 1) return [];
 
             const headers = lines[0].split(',').map(h => h.trim());
-            const dateColIndex = headers.indexOf('Date');
-            const valueColIndex = headers.find(h => h !== 'Date');
-            const valueColIdx = headers.indexOf(valueColIndex);
+            const dateColIndex = headers.indexOf('DATE'); // "DATE" 컬럼을 명시적으로 찾습니다.
+            let valueColIndex = headers.indexOf('VALUE'); // "VALUE" 컬럼을 명시적으로 찾습니다.
 
-            if (dateColIndex === -1 || valueColIdx === -1) {
-                console.error("CSV 헤더에서 'Date' 컬럼 또는 값 컬럼을 찾을 수 없습니다.");
+            if (dateColIndex === -1) {
+                console.error("CSV 헤더에서 'DATE' 컬럼을 찾을 수 없습니다.");
                 return [];
+            }
+
+            if (valueColIndex === -1) {
+                // "VALUE" 컬럼이 없으면, "DATE" 컬럼 다음의 첫 번째 컬럼을 값으로 가정합니다.
+                // 이 로직은 "DATE,VALUE" 또는 "DATE,OtherHeader" 형태를 가정합니다.
+                if (dateColIndex === 0 && headers.length > 1) {
+                    valueColIndex = 1;
+                } else {
+                    console.error("CSV 헤더에서 'VALUE' 컬럼을 찾을 수 없으며, 값 컬럼을 자동으로 감지할 수 없습니다.");
+                    return [];
+                }
             }
 
             const parsedData = [];
             for (let i = 1; i < lines.length; i++) {
                 const columns = lines[i].split(',');
-                if (columns.length > Math.max(dateColIndex, valueColIdx)) {
+                if (columns.length > Math.max(dateColIndex, valueColIndex)) {
                     const dateStr = columns[dateColIndex].trim();
-                    const valueStr = columns[valueColIdx].trim();
+                    const valueStr = columns[valueColIndex].trim();
 
                     const dateObj = new Date(dateStr);
                     const valueNum = parseFloat(valueStr);
 
-                    if (!isNaN(dateObj.getTime()) && !isNaN(valueNum) && valueStr !== '.') {
+                    if (!isNaN(dateObj.getTime()) && !isNaN(valueNum) && valueStr !== '.' && valueStr !== '') {
                         parsedData.push({
                             date: dateStr,
                             value: valueNum
@@ -708,6 +718,7 @@
                 let mmf2marketData = [];
 
                 const indicators = ['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL', 'MMF2RRP', 'MMF2MARKET'];
+                const fetchedData = {};
 
                 for (const indicator of indicators) {
                     const functionUrl = `${FUNCTION_BASE_URL}?indicator=${indicator}`;
@@ -719,64 +730,58 @@
                     const text = await response.text();
                     const data = await parseCSV(text);
                     data.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-                    if (indicator === 'WTREGEN') wtregenData = data;
-                    else if (indicator === 'WALCL') walclData = data;
-                    else if (indicator === 'RRPONTSYD') rrpontsydData = data;
-                    else if (indicator === 'WRESBAL') wresbalData = data;
-                    else if (indicator === 'MMF2RRP') mmf2rrpData = data;
-                    else if (indicator === 'MMF2MARKET') mmf2marketData = data;
+                    fetchedData[indicator] = data;
                 }
 
-                // Find common latest date
-                const allDates = [
-                    wtregenData.map(d => new Date(d.date).getTime()),
-                    walclData.map(d => new Date(d.date).getTime()),
-                    rrpontsydData.map(d => new Date(d.date).getTime()),
-                    wresbalData.map(d => new Date(d.date).getTime()),
-                    mmf2rrpData.map(d => new Date(d.date).getTime()),
-                    mmf2marketData.map(d => new Date(d.date).getTime())
-                ];
-                const commonDates = allDates.reduce((a, b) => a.filter(x => b.includes(x)));
-                if (commonDates.length === 0) {
+                wtregenData = fetchedData['WTREGEN'];
+                walclData = fetchedData['WALCL'];
+                rrpontsydData = fetchedData['RRPONTSYD'];
+                wresbalData = fetchedData['WRESBAL'];
+                mmf2rrpData = fetchedData['MMF2RRP'];
+                mmf2marketData = fetchedData['MMF2MARKET'];
+
+                // Find common latest date: Get the latest date for each dataset and pick the earliest among them.
+                let latestCommonDate = null;
+                for (const indicator of indicators) {
+                    const data = fetchedData[indicator];
+                    if (data.length > 0) {
+                        const latestDateForIndicator = new Date(data[data.length - 1].date).getTime();
+                        if (latestCommonDate === null || latestDateForIndicator < latestCommonDate) {
+                            latestCommonDate = latestDateForIndicator;
+                        }
+                    } else {
+                        throw new Error(`${indicator} 데이터가 비어있습니다. 공통된 날짜를 찾을 수 없습니다.`);
+                    }
+                }
+
+                if (!latestCommonDate) {
                     fedLiquidityDisplay.textContent = "연준 유동성: 공통 데이터 없음";
                     fedLiquidityDisplay.style.color = "black";
                     mmfToFedDisplay.textContent = "MMF 현금 조달: 데이터 없음";
                     mmfToFedDisplay.style.color = "black";
                     mmfToMarketDisplay.textContent = "MMF 현금 조달: 데이터 없음";
                     mmfToMarketDisplay.style.color = "black";
-                    throw new Error("공통된 날짜 데이터가 없습니다.");
+                    throw new Error("모든 지표에 대한 공통된 최신 날짜를 찾을 수 없습니다.");
                 }
-                const latestCommonDate = Math.max(...commonDates);
+
                 const oneMonthAgo = new Date(latestCommonDate);
                 oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+                // Adjust for month-end issues, ensuring oneMonthAgo is not ahead of latestCommonDate
+                if (oneMonthAgo.getTime() > latestCommonDate) {
+                    oneMonthAgo.setDate(oneMonthAgo.getDate() - 7); // Go back a week if month calculation jumped ahead
+                }
+
 
                 // Get latest and one-month-ago values
                 const getDataForDate = (data, date) => {
-                    const targetDate = new Date(date);
-                    targetDate.setHours(0, 0, 0, 0);
+                    const targetTime = new Date(date).getTime();
+                    // Find the latest data point on or before the target date
                     for (let i = data.length - 1; i >= 0; i--) {
-                        const dataDate = new Date(data[i].date);
-                        dataDate.setHours(0, 0, 0, 0);
-                        if (dataDate.getTime() <= targetDate.getTime()) {
+                        if (new Date(data[i].date).getTime() <= targetTime) {
                             return data[i].value;
                         }
                     }
                     return null;
-                };
-
-                const getClosestPastData = (data, targetDate) => {
-                    const targetTime = targetDate.getTime();
-                    let closestData = null;
-                    let minDiff = Infinity;
-                    for (const item of data) {
-                        const itemDate = new Date(item.date).getTime();
-                        const diff = Math.abs(itemDate - targetTime);
-                        if (diff < minDiff && itemDate <= targetTime) {
-                            minDiff = diff;
-                            closestData = item;
-                        }
-                    }
-                    return closestData ? closestData.value : null;
                 };
 
                 const latestValues = {
@@ -789,12 +794,12 @@
                 };
 
                 const pastValues = {
-                    WALCL: getClosestPastData(walclData, oneMonthAgo),
-                    WTREGEN: getClosestPastData(wtregenData, oneMonthAgo),
-                    RRPONTSYD: getClosestPastData(rrpontsydData, oneMonthAgo),
-                    WRESBAL: getClosestPastData(wresbalData, oneMonthAgo),
-                    MMF2RRP: getClosestPastData(mmf2rrpData, oneMonthAgo),
-                    MMF2MARKET: getClosestPastData(mmf2marketData, oneMonthAgo)
+                    WALCL: getDataForDate(walclData, oneMonthAgo),
+                    WTREGEN: getDataForDate(wtregenData, oneMonthAgo),
+                    RRPONTSYD: getDataForDate(rrpontsydData, oneMonthAgo),
+                    WRESBAL: getDataForDate(wresbalData, oneMonthAgo),
+                    MMF2RRP: getDataForDate(mmf2rrpData, oneMonthAgo),
+                    MMF2MARKET: getDataForDate(mmf2marketData, oneMonthAgo)
                 };
 
                 if (Object.values(latestValues).some(v => v === null) || Object.values(pastValues).some(v => v === null)) {
@@ -804,7 +809,7 @@
                     mmfToFedDisplay.style.color = "black";
                     mmfToMarketDisplay.textContent = "MMF 현금 조달 (Market): 데이터 부족";
                     mmfToMarketDisplay.style.color = "black";
-                    throw new Error("최신 또는 과거 데이터가 부족합니다.");
+                    throw new Error("최신 또는 한 달 전 데이터가 부족합니다.");
                 }
 
                 // Calculate differences for FED liquidity
@@ -830,20 +835,20 @@
                 tgaSlopeDisplay.className = diffValueTGA < 0 ? 'slope-negative' : 'slope-positive';
                 const isTgaNegative = diffValueTGA < 0;
 
-                // MMF to FED (RRP) animation
+                // MMF to FED (RRP) animation - calculated as 'a'
                 const latestMMF2RRP = latestValues.MMF2RRP;
                 const pastMMF2RRP = pastValues.MMF2RRP;
-                const diffMMF2RRP = latestMMF2RRP - pastMMF2RRP;
+                const diffMMF2RRP = latestMMF2RRP - pastMMF2RRP; // This is 'a'
                 const diffMMF2RRPInBillion = (diffMMF2RRP / 1000000000).toFixed(2);
 
                 mmfToFedDisplay.innerHTML = `MMF 현금 조달 (RRP):<br>${diffMMF2RRPInBillion} Billion $/Month`;
                 mmfToFedDisplay.className = diffMMF2RRP >= 0 ? 'slope-positive' : 'slope-negative';
                 const isMMF2RRPPositive = diffMMF2RRP >= 0;
 
-                // MMF to Market animation
+                // MMF to Market animation - calculated as 'b'
                 const latestMMF2MARKET = latestValues.MMF2MARKET;
                 const pastMMF2MARKET = pastValues.MMF2MARKET;
-                const diffMMF2MARKET = latestMMF2MARKET - pastMMF2MARKET;
+                const diffMMF2MARKET = latestMMF2MARKET - pastMMF2MARKET; // This is 'b'
                 const diffMMF2MARKETInBillion = (diffMMF2MARKET / 1000000000).toFixed(2);
 
                 mmfToMarketDisplay.innerHTML = `MMF 현금 조달 (Market):<br>${diffMMF2MARKETInBillion} Billion $/Month`;
@@ -851,7 +856,7 @@
                 const isMMF2MARKETPositive = diffMMF2MARKET >= 0;
 
                 // Start animations for all flows
-                const isFedNegative = t_fed < 0;
+                const isFedNegative = t_fed < 0; // This is actually FED to Market if positive, Market to FED if negative.
 
                 for (let i = 0; i < NUM_DOLLAR_ANIMATIONS; i++) {
                     const delay = i * DOLLAR_SPAWN_INTERVAL;
@@ -895,6 +900,9 @@
             dollarFed.alt = "Dollar";
             dollarFed.classList.add('dollar-animated-object');
             document.getElementById('liquidityFlow').appendChild(dollarFed);
+            // This animation is for FED liquidity's effect on Market
+            // If t_fed is negative, it means liquidity flows from Market to FED, so animated-dollar-to-fed
+            // If t_fed is positive, it means liquidity flows from FED to Market, so animated-dollar-to-market
             dollarFed.classList.add(isFedNegative ? 'animated-dollar-to-fed' : 'animated-dollar-to-market');
             dollarFed.style.setProperty('--animation-duration', `${DOLLAR_ANIMATION_DURATION / 1000}s`);
             dollarFed.addEventListener('animationend', () => {
@@ -907,6 +915,8 @@
             dollarTga.alt = "Dollar";
             dollarTga.classList.add('dollar-animated-object');
             document.getElementById('liquidityFlow').appendChild(dollarTga);
+            // If TGA is negative (decreasing), money flows from Government to Market (animated-dollar-from-government)
+            // If TGA is positive (increasing), money flows from Market to Government (animated-dollar-to-government)
             dollarTga.classList.add(isTgaNegative ? 'animated-dollar-from-government' : 'animated-dollar-to-government');
             dollarTga.style.setProperty('--animation-duration', `${DOLLAR_ANIMATION_DURATION / 1000}s`);
             dollarTga.addEventListener('animationend', () => {
@@ -919,6 +929,8 @@
             dollarMmfFed.alt = "Dollar";
             dollarMmfFed.classList.add('dollar-animated-object');
             document.getElementById('liquidityFlow').appendChild(dollarMmfFed);
+            // If diffMMF2RRP is positive, MMF -> FED (animated-dollar-mmf-to-fed)
+            // If diffMMF2RRP is negative, FED -> MMF (animated-dollar-fed-to-mmf)
             dollarMmfFed.classList.add(isMMF2RRPPositive ? 'animated-dollar-mmf-to-fed' : 'animated-dollar-fed-to-mmf');
             dollarMmfFed.style.setProperty('--animation-duration', `${DOLLAR_ANIMATION_DURATION / 1000}s`);
             dollarMmfFed.addEventListener('animationend', () => {
@@ -931,6 +943,8 @@
             dollarMmfMarket.alt = "Dollar";
             dollarMmfMarket.classList.add('dollar-animated-object');
             document.getElementById('liquidityFlow').appendChild(dollarMmfMarket);
+            // If diffMMF2MARKET is positive, MMF -> Market (animated-dollar-mmf-to-market)
+            // If diffMMF2MARKET is negative, Market -> MMF (animated-dollar-market-to-mmf)
             dollarMmfMarket.classList.add(isMMF2MARKETPositive ? 'animated-dollar-mmf-to-market' : 'animated-dollar-market-to-mmf');
             dollarMmfMarket.style.setProperty('--animation-duration', `${DOLLAR_ANIMATION_DURATION / 1000}s`);
             dollarMmfMarket.addEventListener('animationend', () => {
