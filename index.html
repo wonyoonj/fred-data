@@ -108,11 +108,31 @@
             100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 20%; }
         }
 
+        @keyframes dollarFlowToGovernment {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 20%; top: 50%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 20%; top: 50%; }
+        }
+
+        @keyframes dollarFlowFromGovernment {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 20%; top: 50%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 20%; top: 50%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
+        }
+
         .animated-dollar-to-market {
             animation: dollarFlowToMarket var(--animation-duration) linear forwards;
         }
         .animated-dollar-to-fed {
             animation: dollarFlowToFED var(--animation-duration) linear forwards;
+        }
+        .animated-dollar-to-government {
+            animation: dollarFlowToGovernment var(--animation-duration) linear forwards;
+        }
+        .animated-dollar-from-government {
+            animation: dollarFlowFromGovernment var(--animation-duration) linear forwards;
         }
 
         #graphIndicators { padding: 20px; text-align: center; }
@@ -532,7 +552,7 @@
                 }
                 renderChart(indicatorKey, labels, values);
             } else {
-                    renderErrorMessage('해당 기간의 데이터가 없어요!');
+                renderErrorMessage('해당 기간의 데이터가 없어요!');
             }
         }
 
@@ -564,7 +584,7 @@
                 'DPCREDIT': {'title': '연준 할인율', 'content': {'경제적 의미': '연준이 상업 은행에 대출할 때 적용하는 이자율로, 금융기관의 자금 조달 비용을 결정합니다. 할인율이 낮게 되면, 연준이 시중 은행에 돈을 풀고 싶다는 의미가 될 수 있습니다.', '왜 필요한 지표인가': '은행의 유동성 지원과 신용 경색 방지에 사용되며, 연준의 긴급 통화 정책을 평가하는 데 중요합니다.'}},
                 'DRBLACBS': {'title': '미 은행 연체율(전체)', 'content': {'경제적 의미': '은행 대출 중 연체된 비율로, 대출자의 상환 능력과 신용 위험을 나타냅니다.', '왜 필요한 지표인가': '경제 침체 신호나 금융 시스템의 건전성을 평가하며, 대출 정책과 규제 강화의 기초 자료로 사용됩니다.'}},
                 'NASDAQ100': {'title': '나스닥100 지수', 'content': {'경제적 의미': '기술주 중심의 100개 기업 주가를 반영한 지수로, 기술 섹터의 성과를 보여줍니다.', '왜 필요한 지표인가': '기술 산업의 성장과 혁신을 반영하며, 글로벌 경제에서 기술 의존도가 높아짐에 따라 중요한 기준이 됩니다.'}},
-                'WALCL': {'title': '연준 전체 자산 + 부채', 'content': {'경제적 의미': '연준의 총 자산(예: 채권 보유량)와 부채(예: 준비금)를 합친 금액으로, 연준의 재무 상태를 나타냅니다.', '왜 필요한 지표인가': '양적 완화나 긴축 정책의 규모를 보여주며, 연준의 통화 정책과 시장 유동성에 미치는 영향을 분석하는 데 필수적입니다.'}},
+                'WALCL': {'title': '연준 전체 자산 + 부채', 'content': {'경제적 의미': '연준의 총 자산(예: 채권 보유량)과 부채(예: 준비금)를 합친 금액으로, 연준의 재무 상태를 나타냅니다.', '왜 필요한 지표인가': '양적 완화나 긴축 정책의 규모를 보여주며, 연준의 통화 정책과 시장 유동성에 미치는 영향을 분석하는 데 필수적입니다.'}},
                 'SP500_MCAP': {'title': 'S&P500 시가총액', 'content': {'경제적 의미': 'S&P500 지수에 포함된 기업들의 총 시가총액입니다. 이는 미국 주식 시장의 전반적인 규모와 가치를 나타내며, 경제의 전반적인 건전성과 투자 심리를 반영합니다.', '왜 필요한 지표인가': '주식 시장의 과열 또는 침체 여부를 판단하는 데 중요한 지표입니다. 시가총액의 증가는 경제 성장과 기업 수익성 개선을, 감소는 경기 둔화나 불확실성 증대를 시사할 수 있습니다.'}}
             }[indicator] || { title: indicator, content: { '경제적 의미': '정보 없음' } };
 
@@ -584,7 +604,7 @@
             const fedLiquidityDisplay = document.getElementById('fedLiquidityDisplay');
 
             try {
-                // Fetch WTREGEN for TGA animation
+                // Fetch data for WTREGEN, WALCL, RRPONTSYD, WRESBAL
                 let wtregenData = [];
                 let walclData = [];
                 let rrpontsydData = [];
@@ -697,7 +717,7 @@
                 tgaSlopeDisplay.className = diffValue < 0 ? 'slope-negative' : 'slope-positive';
                 const isTgaNegative = diffValue < 0;
 
-                // Start animations
+                // Start animations for both FED and TGA
                 const isTNegative = t < 0;
                 for (let i = 0; i < NUM_DOLLAR_ANIMATIONS; i++) {
                     const delay = i * DOLLAR_SPAWN_INTERVAL;
@@ -731,23 +751,28 @@
         }
 
         function createDollarAnimation(isTgaNegative, isTNegative) {
-            const dollar = document.createElement('img');
-            dollar.src = "./icon/dollar.jpg";
-            dollar.alt = "Dollar";
-            dollar.classList.add('dollar-animated-object');
-            document.getElementById('liquidityFlow').appendChild(dollar);
+            // Create dollar animation for FED liquidity (t-based)
+            const dollarFed = document.createElement('img');
+            dollarFed.src = "./icon/dollar.jpg";
+            dollarFed.alt = "Dollar";
+            dollarFed.classList.add('dollar-animated-object');
+            document.getElementById('liquidityFlow').appendChild(dollarFed);
+            dollarFed.classList.add(isTNegative ? 'animated-dollar-to-fed' : 'animated-dollar-to-market');
+            dollarFed.style.setProperty('--animation-duration', `${DOLLAR_ANIMATION_DURATION / 1000}s`);
+            dollarFed.addEventListener('animationend', () => {
+                dollarFed.remove();
+            });
 
-            // Prioritize t-based animation if available
-            if (typeof isTNegative !== 'undefined') {
-                dollar.classList.add(isTNegative ? 'animated-dollar-to-fed' : 'animated-dollar-to-market');
-            } else {
-                // Fallback to TGA animation
-                dollar.classList.add(isTgaNegative ? 'animated-dollar-in' : 'animated-dollar-out');
-            }
-            dollar.style.setProperty('--animation-duration', `${DOLLAR_ANIMATION_DURATION / 1000}s`);
-
-            dollar.addEventListener('animationend', () => {
-                dollar.remove();
+            // Create dollar animation for TGA (WTREGEN-based)
+            const dollarTga = document.createElement('img');
+            dollarTga.src = "./icon/dollar.jpg";
+            dollarTga.alt = "Dollar";
+            dollarTga.classList.add('dollar-animated-object');
+            document.getElementById('liquidityFlow').appendChild(dollarTga);
+            dollarTga.classList.add(isTgaNegative ? 'animated-dollar-from-government' : 'animated-dollar-to-government');
+            dollarTga.style.setProperty('--animation-duration', `${DOLLAR_ANIMATION_DURATION / 1000}s`);
+            dollarTga.addEventListener('animationend', () => {
+                dollarTga.remove();
             });
         }
 
