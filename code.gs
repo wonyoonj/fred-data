@@ -39,3 +39,56 @@ function getIndicatorInfo(indicator) {
   };
   return infoMap[indicator] || {};
 }
+
+function getLiquidityMetrics() {
+  var spreadsheet = SpreadsheetApp.openById('1IiQBUS5sZsyC4CTQrGctk8yBmtrXvyr60Ucs7t-_558');
+  var sheet = spreadsheet.getSheetByName('fred_data_historical_with_mcap');
+  var headers = sheet.getRange('1:1').getValues()[0];
+  
+  var indicators = ['WALCL', 'WTREGEN', 'RRPONTSYD', 'WRESBAL'];
+  var result = {};
+
+  for (var i = 0; i < indicators.length; i++) {
+    var indicator = indicators[i];
+    var col = headers.indexOf(indicator) + 1;
+    var datesCol = headers.indexOf(indicator + '_date') + 1;
+    var data = sheet.getRange(2, datesCol, sheet.getLastRow() - 1, 2).getValues();
+    data = data.filter(row => row[0] && row[1]).reverse(); // Filter out empty rows and reverse for chronological order
+    
+    // Get latest value
+    var latest = data[0];
+    var latestDate = new Date(latest[0]);
+    var latestValue = latest[1];
+    
+    // Get value approximately one month ago (within 35 days)
+    var oneMonthAgo = new Date(latestDate);
+    oneMonthAgo.setDate(latestDate.getDate() - 30);
+    var closestPastValue = null;
+    var minDateDiff = Infinity;
+    
+    for (var j = 0; j < data.length; j++) {
+      var rowDate = new Date(data[j][0]);
+      var dateDiff = Math.abs(rowDate - oneMonthAgo);
+      if (dateDiff < minDateDiff && dateDiff < 35 * 24 * 60 * 60 * 1000) { // Within 35 days
+        minDateDiff = dateDiff;
+        closestPastValue = data[j][1];
+      }
+    }
+    
+    result[indicator] = {
+      latestValue: latestValue,
+      pastValue: closestPastValue || latestValue, // Fallback to latest if no past value
+      difference: latestValue - (closestPastValue || latestValue)
+    };
+  }
+  
+  // Calculate t = a - 2*(b + c + d)
+  var a = result['WALCL'].difference;
+  var b = result['WTREGEN'].difference;
+  var c = result['RRPONTSYD'].difference;
+  var d = result['WRESBAL'].difference;
+  var t = a - 2 * (b + c + d);
+  
+  result.t = t;
+  return result;
+}
