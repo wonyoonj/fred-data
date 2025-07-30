@@ -71,8 +71,23 @@
         }
         #fedLiquidityDisplay {
             position: absolute;
-            top: calc(50% + 80px + 14px + 30px);
-            left: 20%;
+            top: 20%; /* Adjusted top position for FED icon */
+            left: calc(50% + 40px + 10px); /* Adjusted left position to be right of FED icon */
+            transform: translateX(0%); /* No X translation needed if left is adjusted */
+            font-size: 0.8em;
+            font-weight: bold;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 3px 6px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            text-align: left; /* Align text to left */
+        }
+
+        #mmfToFedDisplay {
+            position: absolute;
+            top: calc(50% - 80px - 14px - 10px); /* Above MMF icon */
+            left: 80%;
             transform: translateX(-50%);
             font-size: 0.8em;
             font-weight: bold;
@@ -82,6 +97,22 @@
             border-radius: 5px;
             border: 1px solid #ccc;
         }
+
+        #mmfToMarketDisplay {
+            position: absolute;
+            top: calc(50% + 80px + 14px + 10px); /* Below MMF icon */
+            left: 80%;
+            transform: translateX(-50%);
+            font-size: 0.8em;
+            font-weight: bold;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 3px 6px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+
         .slope-positive { color: blue; }
         .slope-negative { color: red; }
 
@@ -122,6 +153,34 @@
             100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
         }
 
+        @keyframes dollarFlowMmfToFed {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 50%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 50%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 20%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 20%; }
+        }
+
+        @keyframes dollarFlowFedToMmf {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 20%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 20%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 50%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 50%; }
+        }
+
+        @keyframes dollarFlowMmfToMarket {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 50%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 50%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
+        }
+
+        @keyframes dollarFlowMarketToMmf {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 50%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 50%; }
+        }
+
         .animated-dollar-to-market {
             animation: dollarFlowToMarket var(--animation-duration) linear forwards;
         }
@@ -133,6 +192,18 @@
         }
         .animated-dollar-from-government {
             animation: dollarFlowFromGovernment var(--animation-duration) linear forwards;
+        }
+        .animated-dollar-mmf-to-fed {
+            animation: dollarFlowMmfToFed var(--animation-duration) linear forwards;
+        }
+        .animated-dollar-fed-to-mmf {
+            animation: dollarFlowFedToMmf var(--animation-duration) linear forwards;
+        }
+        .animated-dollar-mmf-to-market {
+            animation: dollarFlowMmfToMarket var(--animation-duration) linear forwards;
+        }
+        .animated-dollar-market-to-mmf {
+            animation: dollarFlowMarketToMmf var(--animation-duration) linear forwards;
         }
 
         #graphIndicators { padding: 20px; text-align: center; }
@@ -189,8 +260,25 @@
                 white-space: normal;
             }
             #fedLiquidityDisplay {
-                top: calc(40% + 60px + 12px + 35px);
-                left: 15%;
+                top: calc(15% + 60px + 12px + 5px); /* Adjusted for mobile view */
+                left: 50%;
+                transform: translateX(0%); /* Adjusted for mobile view */
+                font-size: 0.7em;
+                padding: 2px 4px;
+                white-space: normal;
+                text-align: center; /* Center text for mobile */
+            }
+
+            #mmfToFedDisplay {
+                top: calc(40% - 60px - 12px - 5px); /* Adjusted for mobile view */
+                left: 85%;
+                font-size: 0.7em;
+                padding: 2px 4px;
+                white-space: normal;
+            }
+            #mmfToMarketDisplay {
+                top: calc(40% + 60px + 12px + 5px); /* Adjusted for mobile view */
+                left: 85%;
                 font-size: 0.7em;
                 padding: 2px 4px;
                 white-space: normal;
@@ -226,6 +314,8 @@
         <div id="liquidityFlow" class="page">
             <div id="tgaSlopeDisplay"></div>
             <div id="fedLiquidityDisplay"></div>
+            <div id="mmfToFedDisplay"></div>
+            <div id="mmfToMarketDisplay"></div>
 
             <div class="icon-container FED-container">
                 <span class="icon-label">중앙은행 FED</span>
@@ -341,7 +431,10 @@
             'M1SL': 'M1',
             'NASDAQ100': '나스닥100 지수',
             'SP500': 'S&P500 지수',
-            'SP500_MCAP': 'S&P500 시가총액'
+            'SP500_MCAP': 'S&P500 시가총액',
+            'MMF2GOVERNMENT': 'MMF to Government',
+            'MMF2MARKET': 'MMF to Market',
+            'MMF2RRP': 'MMF to RRP'
         };
 
         async function parseCSV(text) {
@@ -597,20 +690,24 @@
         }
 
         async function updateLiquidityFlowAnimation() {
-            // Ensure all previous animations are stopped
-            await stopLiquidityFlowAnimation();
+            stopLiquidityFlowAnimation();
 
             const liquidityFlowDiv = document.getElementById('liquidityFlow');
             const tgaSlopeDisplay = document.getElementById('tgaSlopeDisplay');
             const fedLiquidityDisplay = document.getElementById('fedLiquidityDisplay');
+            const mmfToFedDisplay = document.getElementById('mmfToFedDisplay');
+            const mmfToMarketDisplay = document.getElementById('mmfToMarketDisplay');
 
             try {
-                // Fetch data for WTREGEN, WALCL, RRPONTSYD, WRESBAL
+                // Fetch data for WTREGEN, WALCL, RRPONTSYD, WRESBAL, MMF2RRP, MMF2MARKET
                 let wtregenData = [];
                 let walclData = [];
                 let rrpontsydData = [];
                 let wresbalData = [];
-                const indicators = ['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL'];
+                let mmf2rrpData = [];
+                let mmf2marketData = [];
+
+                const indicators = ['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL', 'MMF2RRP', 'MMF2MARKET'];
 
                 for (const indicator of indicators) {
                     const functionUrl = `${FUNCTION_BASE_URL}?indicator=${indicator}`;
@@ -626,6 +723,8 @@
                     else if (indicator === 'WALCL') walclData = data;
                     else if (indicator === 'RRPONTSYD') rrpontsydData = data;
                     else if (indicator === 'WRESBAL') wresbalData = data;
+                    else if (indicator === 'MMF2RRP') mmf2rrpData = data;
+                    else if (indicator === 'MMF2MARKET') mmf2marketData = data;
                 }
 
                 // Find common latest date
@@ -633,12 +732,18 @@
                     wtregenData.map(d => new Date(d.date).getTime()),
                     walclData.map(d => new Date(d.date).getTime()),
                     rrpontsydData.map(d => new Date(d.date).getTime()),
-                    wresbalData.map(d => new Date(d.date).getTime())
+                    wresbalData.map(d => new Date(d.date).getTime()),
+                    mmf2rrpData.map(d => new Date(d.date).getTime()),
+                    mmf2marketData.map(d => new Date(d.date).getTime())
                 ];
                 const commonDates = allDates.reduce((a, b) => a.filter(x => b.includes(x)));
                 if (commonDates.length === 0) {
                     fedLiquidityDisplay.textContent = "연준 유동성: 공통 데이터 없음";
                     fedLiquidityDisplay.style.color = "black";
+                    mmfToFedDisplay.textContent = "MMF 현금 조달: 데이터 없음";
+                    mmfToFedDisplay.style.color = "black";
+                    mmfToMarketDisplay.textContent = "MMF 현금 조달: 데이터 없음";
+                    mmfToMarketDisplay.style.color = "black";
                     throw new Error("공통된 날짜 데이터가 없습니다.");
                 }
                 const latestCommonDate = Math.max(...commonDates);
@@ -678,67 +783,95 @@
                     WALCL: getDataForDate(walclData, latestCommonDate),
                     WTREGEN: getDataForDate(wtregenData, latestCommonDate),
                     RRPONTSYD: getDataForDate(rrpontsydData, latestCommonDate),
-                    WRESBAL: getDataForDate(wresbalData, latestCommonDate)
+                    WRESBAL: getDataForDate(wresbalData, latestCommonDate),
+                    MMF2RRP: getDataForDate(mmf2rrpData, latestCommonDate),
+                    MMF2MARKET: getDataForDate(mmf2marketData, latestCommonDate)
                 };
 
                 const pastValues = {
                     WALCL: getClosestPastData(walclData, oneMonthAgo),
                     WTREGEN: getClosestPastData(wtregenData, oneMonthAgo),
                     RRPONTSYD: getClosestPastData(rrpontsydData, oneMonthAgo),
-                    WRESBAL: getClosestPastData(wresbalData, oneMonthAgo)
+                    WRESBAL: getClosestPastData(wresbalData, oneMonthAgo),
+                    MMF2RRP: getClosestPastData(mmf2rrpData, oneMonthAgo),
+                    MMF2MARKET: getClosestPastData(mmf2marketData, oneMonthAgo)
                 };
 
                 if (Object.values(latestValues).some(v => v === null) || Object.values(pastValues).some(v => v === null)) {
                     fedLiquidityDisplay.textContent = "연준 유동성: 데이터 부족";
                     fedLiquidityDisplay.style.color = "black";
+                    mmfToFedDisplay.textContent = "MMF 현금 조달 (RRP): 데이터 부족";
+                    mmfToFedDisplay.style.color = "black";
+                    mmfToMarketDisplay.textContent = "MMF 현금 조달 (Market): 데이터 부족";
+                    mmfToMarketDisplay.style.color = "black";
                     throw new Error("최신 또는 과거 데이터가 부족합니다.");
                 }
 
-                // Calculate differences
-                const a = latestValues.WALCL - pastValues.WALCL;
-                const b = latestValues.WTREGEN - pastValues.WTREGEN;
-                const c = latestValues.RRPONTSYD - pastValues.RRPONTSYD;
-                const d = latestValues.WRESBAL - pastValues.WRESBAL;
+                // Calculate differences for FED liquidity
+                const a_fed = latestValues.WALCL - pastValues.WALCL;
+                const b_fed = latestValues.WTREGEN - pastValues.WTREGEN;
+                const c_fed = latestValues.RRPONTSYD - pastValues.RRPONTSYD;
+                const d_fed = latestValues.WRESBAL - pastValues.WRESBAL;
 
-                // Calculate t
-                const t = a - 2 * (b + c + d);
-                const tInBillion = (t / 1000000000).toFixed(2);
+                const t_fed = a_fed - 2 * (b_fed + c_fed + d_fed);
+                const t_fedInBillion = (t_fed / 1000000000).toFixed(2);
 
                 // Update FED liquidity display
-                fedLiquidityDisplay.innerHTML = `연준 유동성:<br>${tInBillion} Billion $/Month`;
-                fedLiquidityDisplay.className = t >= 0 ? 'slope-positive' : 'slope-negative';
+                fedLiquidityDisplay.innerHTML = `연준 유동성:<br>${t_fedInBillion} Billion $/Month`;
+                fedLiquidityDisplay.className = t_fed >= 0 ? 'slope-positive' : 'slope-negative';
 
                 // TGA animation
                 const latestTGA = latestValues.WTREGEN;
                 const pastTGA = pastValues.WTREGEN;
-                const diffValue = latestTGA - pastTGA;
-                const diffValueInBillion = (diffValue / 1000000000).toFixed(2);
+                const diffValueTGA = latestTGA - pastTGA;
+                const diffValueTGABillion = (diffValueTGA / 1000000000).toFixed(2);
 
-                tgaSlopeDisplay.innerHTML = `TGA 잔고:<br>${diffValueInBillion} Billion $/Month`;
-                tgaSlopeDisplay.className = diffValue < 0 ? 'slope-negative' : 'slope-positive';
-                const isTgaNegative = diffValue < 0;
+                tgaSlopeDisplay.innerHTML = `TGA 잔고:<br>${diffValueTGABillion} Billion $/Month`;
+                tgaSlopeDisplay.className = diffValueTGA < 0 ? 'slope-negative' : 'slope-positive';
+                const isTgaNegative = diffValueTGA < 0;
 
-                // Start animations for both FED and TGA
-                const isTNegative = t < 0;
-                const createAnimations = () => {
+                // MMF to FED (RRP) animation
+                const latestMMF2RRP = latestValues.MMF2RRP;
+                const pastMMF2RRP = pastValues.MMF2RRP;
+                const diffMMF2RRP = latestMMF2RRP - pastMMF2RRP;
+                const diffMMF2RRPInBillion = (diffMMF2RRP / 1000000000).toFixed(2);
+
+                mmfToFedDisplay.innerHTML = `MMF 현금 조달 (RRP):<br>${diffMMF2RRPInBillion} Billion $/Month`;
+                mmfToFedDisplay.className = diffMMF2RRP >= 0 ? 'slope-positive' : 'slope-negative';
+                const isMMF2RRPPositive = diffMMF2RRP >= 0;
+
+                // MMF to Market animation
+                const latestMMF2MARKET = latestValues.MMF2MARKET;
+                const pastMMF2MARKET = pastValues.MMF2MARKET;
+                const diffMMF2MARKET = latestMMF2MARKET - pastMMF2MARKET;
+                const diffMMF2MARKETInBillion = (diffMMF2MARKET / 1000000000).toFixed(2);
+
+                mmfToMarketDisplay.innerHTML = `MMF 현금 조달 (Market):<br>${diffMMF2MARKETInBillion} Billion $/Month`;
+                mmfToMarketDisplay.className = diffMMF2MARKET >= 0 ? 'slope-positive' : 'slope-negative';
+                const isMMF2MARKETPositive = diffMMF2MARKET >= 0;
+
+                // Start animations for all flows
+                const isFedNegative = t_fed < 0;
+
+                for (let i = 0; i < NUM_DOLLAR_ANIMATIONS; i++) {
+                    const delay = i * DOLLAR_SPAWN_INTERVAL;
+                    const timeoutId = setTimeout(() => {
+                        createDollarAnimation(isTgaNegative, isFedNegative, isMMF2RRPPositive, isMMF2MARKETPositive);
+                    }, delay);
+                    dollarAnimationIntervals.push(timeoutId);
+                }
+
+                const resetIntervalId = setInterval(() => {
+                    const existingDollars = document.querySelectorAll('.dollar-animated-object');
+                    existingDollars.forEach(dollar => dollar.remove());
+
                     for (let i = 0; i < NUM_DOLLAR_ANIMATIONS; i++) {
                         const delay = i * DOLLAR_SPAWN_INTERVAL;
                         const timeoutId = setTimeout(() => {
-                            createDollarAnimation(isTgaNegative, isTNegative);
+                            createDollarAnimation(isTgaNegative, isFedNegative, isMMF2RRPPositive, isMMF2MARKETPositive);
                         }, delay);
                         dollarAnimationIntervals.push(timeoutId);
                     }
-                };
-
-                // Initial animations
-                createAnimations();
-
-                // Periodic reset to ensure continuous animation
-                const resetIntervalId = setInterval(() => {
-                    // Clear existing animations
-                    stopLiquidityFlowAnimation();
-                    // Restart animations
-                    createAnimations();
                 }, DOLLAR_ANIMATION_DURATION);
                 dollarAnimationIntervals.push(resetIntervalId);
 
@@ -748,17 +881,21 @@
                 tgaSlopeDisplay.style.color = "black";
                 fedLiquidityDisplay.textContent = "연준 유동성: 데이터 로드 오류";
                 fedLiquidityDisplay.style.color = "black";
+                mmfToFedDisplay.textContent = "MMF 현금 조달 (RRP): 데이터 로드 오류";
+                mmfToFedDisplay.style.color = "black";
+                mmfToMarketDisplay.textContent = "MMF 현금 조달 (Market): 데이터 로드 오류";
+                mmfToMarketDisplay.style.color = "black";
             }
         }
 
-        function createDollarAnimation(isTgaNegative, isTNegative) {
+        function createDollarAnimation(isTgaNegative, isFedNegative, isMMF2RRPPositive, isMMF2MARKETPositive) {
             // Create dollar animation for FED liquidity (t-based)
             const dollarFed = document.createElement('img');
             dollarFed.src = "./icon/dollar.jpg";
             dollarFed.alt = "Dollar";
             dollarFed.classList.add('dollar-animated-object');
             document.getElementById('liquidityFlow').appendChild(dollarFed);
-            dollarFed.classList.add(isTNegative ? 'animated-dollar-to-fed' : 'animated-dollar-to-market');
+            dollarFed.classList.add(isFedNegative ? 'animated-dollar-to-fed' : 'animated-dollar-to-market');
             dollarFed.style.setProperty('--animation-duration', `${DOLLAR_ANIMATION_DURATION / 1000}s`);
             dollarFed.addEventListener('animationend', () => {
                 dollarFed.remove();
@@ -775,24 +912,38 @@
             dollarTga.addEventListener('animationend', () => {
                 dollarTga.remove();
             });
+
+            // Create dollar animation for MMF to FED (RRP)
+            const dollarMmfFed = document.createElement('img');
+            dollarMmfFed.src = "./icon/dollar.jpg";
+            dollarMmfFed.alt = "Dollar";
+            dollarMmfFed.classList.add('dollar-animated-object');
+            document.getElementById('liquidityFlow').appendChild(dollarMmfFed);
+            dollarMmfFed.classList.add(isMMF2RRPPositive ? 'animated-dollar-mmf-to-fed' : 'animated-dollar-fed-to-mmf');
+            dollarMmfFed.style.setProperty('--animation-duration', `${DOLLAR_ANIMATION_DURATION / 1000}s`);
+            dollarMmfFed.addEventListener('animationend', () => {
+                dollarMmfFed.remove();
+            });
+
+            // Create dollar animation for MMF to Market
+            const dollarMmfMarket = document.createElement('img');
+            dollarMmfMarket.src = "./icon/dollar.jpg";
+            dollarMmfMarket.alt = "Dollar";
+            dollarMmfMarket.classList.add('dollar-animated-object');
+            document.getElementById('liquidityFlow').appendChild(dollarMmfMarket);
+            dollarMmfMarket.classList.add(isMMF2MARKETPositive ? 'animated-dollar-mmf-to-market' : 'animated-dollar-market-to-mmf');
+            dollarMmfMarket.style.setProperty('--animation-duration', `${DOLLAR_ANIMATION_DURATION / 1000}s`);
+            dollarMmfMarket.addEventListener('animationend', () => {
+                dollarMmfMarket.remove();
+            });
         }
 
         function stopLiquidityFlowAnimation() {
-            return new Promise((resolve) => {
-                // Clear all timeouts and intervals
-                dollarAnimationIntervals.forEach(id => {
-                    clearTimeout(id);
-                    clearInterval(id);
-                });
-                dollarAnimationIntervals = [];
+            dollarAnimationIntervals.forEach(id => clearTimeout(id));
+            dollarAnimationIntervals = [];
 
-                // Remove all existing dollar animations
-                const existingDollars = document.querySelectorAll('.dollar-animated-object');
-                existingDollars.forEach(dollar => dollar.remove());
-
-                // Ensure cleanup is complete before resolving
-                setTimeout(resolve, 0);
-            });
+            const existingDollars = document.querySelectorAll('.dollar-animated-object');
+            existingDollars.forEach(dollar => dollar.remove());
         }
 
         function startDragging(event) {
