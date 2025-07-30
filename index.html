@@ -597,7 +597,8 @@
         }
 
         async function updateLiquidityFlowAnimation() {
-            stopLiquidityFlowAnimation();
+            // Ensure all previous animations are stopped
+            await stopLiquidityFlowAnimation();
 
             const liquidityFlowDiv = document.getElementById('liquidityFlow');
             const tgaSlopeDisplay = document.getElementById('tgaSlopeDisplay');
@@ -719,18 +720,7 @@
 
                 // Start animations for both FED and TGA
                 const isTNegative = t < 0;
-                for (let i = 0; i < NUM_DOLLAR_ANIMATIONS; i++) {
-                    const delay = i * DOLLAR_SPAWN_INTERVAL;
-                    const timeoutId = setTimeout(() => {
-                        createDollarAnimation(isTgaNegative, isTNegative);
-                    }, delay);
-                    dollarAnimationIntervals.push(timeoutId);
-                }
-
-                const resetIntervalId = setInterval(() => {
-                    const existingDollars = document.querySelectorAll('.dollar-animated-object');
-                    existingDollars.forEach(dollar => dollar.remove());
-
+                const createAnimations = () => {
                     for (let i = 0; i < NUM_DOLLAR_ANIMATIONS; i++) {
                         const delay = i * DOLLAR_SPAWN_INTERVAL;
                         const timeoutId = setTimeout(() => {
@@ -738,6 +728,17 @@
                         }, delay);
                         dollarAnimationIntervals.push(timeoutId);
                     }
+                };
+
+                // Initial animations
+                createAnimations();
+
+                // Periodic reset to ensure continuous animation
+                const resetIntervalId = setInterval(() => {
+                    // Clear existing animations
+                    stopLiquidityFlowAnimation();
+                    // Restart animations
+                    createAnimations();
                 }, DOLLAR_ANIMATION_DURATION);
                 dollarAnimationIntervals.push(resetIntervalId);
 
@@ -777,11 +778,21 @@
         }
 
         function stopLiquidityFlowAnimation() {
-            dollarAnimationIntervals.forEach(id => clearTimeout(id));
-            dollarAnimationIntervals = [];
+            return new Promise((resolve) => {
+                // Clear all timeouts and intervals
+                dollarAnimationIntervals.forEach(id => {
+                    clearTimeout(id);
+                    clearInterval(id);
+                });
+                dollarAnimationIntervals = [];
 
-            const existingDollars = document.querySelectorAll('.dollar-animated-object');
-            existingDollars.forEach(dollar => dollar.remove());
+                // Remove all existing dollar animations
+                const existingDollars = document.querySelectorAll('.dollar-animated-object');
+                existingDollars.forEach(dollar => dollar.remove());
+
+                // Ensure cleanup is complete before resolving
+                setTimeout(resolve, 0);
+            });
         }
 
         function startDragging(event) {
