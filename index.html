@@ -1,170 +1,883 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html>
 <head>
-    <meta charset="UTF-8">
+    <base target="_top">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FRED Data Viewer</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://www.google.com/jsapi"></script>
-    <script src="https://apis.google.com/js/api.js"></script>
-    <script>
-        google.load('visualization', '1', { packages: ['corechart'] });
-        google.setOnLoadCallback(initApp);
-
-        function initApp() {
-            gapi.client.load('sheets', 'v4', function() {
-                gapi.client.setApiKey('YOUR_API_KEY'); // Replace with your API key
-                loadLiquidityMetrics();
-                // Other initialization code...
-            });
-        }
-
-        let liquidityMetrics = null;
-
-        async function loadLiquidityMetrics() {
-            try {
-                const response = await google.script.run.withSuccessHandler(result => {
-                    liquidityMetrics = result;
-                    updateLiquidityDisplay();
-                    updateDollarMotion();
-                }).getLiquidityMetrics();
-            } catch (error) {
-                console.error('Error loading liquidity metrics:', error);
-            }
-        }
-
-        function updateLiquidityDisplay() {
-            if (!liquidityMetrics) return;
-            const tValue = liquidityMetrics.t;
-            const liquidityText = document.getElementById('liquidity-text');
-            liquidityText.textContent = `연준 유동성: ${tValue.toFixed(2)} $/Month`;
-            liquidityText.className = tValue >= 0 ? 'text-blue-500' : 'text-red-500';
-        }
-
-        function updateDollarMotion() {
-            if (!liquidityMetrics) return;
-            const tValue = liquidityMetrics.t;
-            const dollarIcon = document.getElementById('dollar-icon');
-            const fedIcon = document.getElementById('fed-icon');
-            const marketIcon = document.getElementById('market-icon');
-
-            // Get positions
-            const fedRect = fedIcon.getBoundingClientRect();
-            const marketRect = marketIcon.getBoundingClientRect();
-
-            // Define animation keyframes
-            const keyframes = tValue >= 0 ? [
-                { transform: `translate(${fedRect.left}px, ${fedRect.top}px)` },
-                { transform: `translate(${marketRect.left}px, ${marketRect.top}px)` }
-            ] : [
-                { transform: `translate(${marketRect.left}px, ${marketRect.top}px)` },
-                { transform: `translate(${fedRect.left}px, ${fedRect.top}px)` }
-            ];
-
-            // Animate dollar icon (same style as TGA animation)
-            dollarIcon.animate(keyframes, {
-                duration: 2000, // 2 seconds, matching assumed TGA animation
-                easing: 'ease-in-out',
-                iterations: Infinity,
-                direction: tValue >= 0 ? 'normal' : 'reverse'
-            });
-        }
-    </script>
     <style>
-        #dollar-icon {
+        body { font-family: 'Arial', sans-serif; margin: 0; padding: 0; background: #f4f4f4; color: #333; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; min-height: 100vh; }
+        .header { text-align: center; padding: 10px; background: #007bff; color: white; }
+        .back-btn { position: absolute; top: 10px; left: 10px; background: none; border: none; cursor: pointer; font-size: 24px; font-weight: bold; color: black; width: 30px; text-align: center; }
+        .back-btn::before { content: "◄"; font-size: 36px; }
+        .info-btn { position: absolute; top: 10px; right: 10px; background: none; border: none; cursor: pointer; font-size: 20px; }
+        .button { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; }
+        .button:hover { background: #0056b3; }
+
+        #liquidityFlow {
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        #liquidityFlow .icon-container {
             position: absolute;
-            font-size: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transform: translate(-50%, -50%);
+        }
+        #liquidityFlow .icon {
+            width: 80px;
+            height: 80px;
+            display: block;
+            object-fit: contain;
+        }
+        #liquidityFlow .icon-label {
+            font-weight: bold;
+            color: black;
+            font-size: 14px;
+            white-space: nowrap;
+            margin-top: 5px;
+        }
+
+        .FED-container .icon-label {
+            order: -1;
+            margin-bottom: 5px;
+            margin-top: 0;
+        }
+
+        .FED-container { top: 20%; left: 50%; }
+        .Government-container { top: 50%; left: 20%; }
+        .Market-container { top: 80%; left: 50%; }
+        .MMF-container { top: 50%; left: 80%; }
+
+        #tgaSlopeDisplay {
+            position: absolute;
+            top: calc(50% + 80px + 14px + 10px);
+            left: 20%;
+            transform: translateX(-50%);
+            font-size: 0.8em;
+            font-weight: bold;
             z-index: 10;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 3px 6px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        #fedLiquidityDisplay {
+            position: absolute;
+            top: calc(50% + 80px + 14px + 30px);
+            left: 20%;
+            transform: translateX(-50%);
+            font-size: 0.8em;
+            font-weight: bold;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 3px 6px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .slope-positive { color: blue; }
+        .slope-negative { color: red; }
+
+        .dollar-animated-object {
+            position: absolute;
+            width: 37.5px;
+            height: 37.5px;
+            object-fit: contain;
+            opacity: 0;
+            z-index: 5;
+        }
+
+        @keyframes dollarFlowToMarket {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 20%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 20%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
+        }
+
+        @keyframes dollarFlowToFED {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 20%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 20%; }
+        }
+
+        .animated-dollar-to-market {
+            animation: dollarFlowToMarket var(--animation-duration) linear forwards;
+        }
+        .animated-dollar-to-fed {
+            animation: dollarFlowToFED var(--animation-duration) linear forwards;
+        }
+
+        #graphIndicators { padding: 20px; text-align: center; }
+        .indicator-section { margin-bottom: 20px; }
+        .indicator-section h3 { font-size: 18px; margin-bottom: 10px; color: #007bff; }
+        .indicator-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        #graphPage {
+            text-align: center;
+            padding: 20px;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        #graphPage canvas {
+            max-width: 100%;
+            width: 100%;
+            height: 400px;
+            cursor: grab;
+            flex-grow: 1;
+        }
+
+        #infoPage { padding: 20px; text-align: center; }
+        .time-buttons { margin: 10px 0; display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; }
+        .time-btn { padding: 5px 10px; background: #e9ecef; border: 1px solid #ced4da; border-radius: 5px; cursor: pointer; font-size: 0.9em; transition: background-color 0.2s; }
+        .time-btn:hover { background-color: #dee2e6; }
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #007bff; padding: 10px; display: flex; justify-content: space-around; }
+
+        @media (max-width: 600px) {
+            .container { padding: 10px; }
+            .back-btn { top: 5px; left: 5px; }
+            .info-btn { top: 5px; right: 5px; }
+
+            #liquidityFlow .icon { width: 60px; height: 60px; }
+            #liquidityFlow .icon-label { font-size: 12px; }
+
+            .FED-container { top: 15%; left: 50%; }
+            .Government-container { top: 40%; left: 15%; }
+            .Market-container { top: 85%; left: 50%; }
+            .MMF-container { top: 40%; left: 85%; }
+
+            #tgaSlopeDisplay {
+                top: calc(40% + 60px + 12px + 15px);
+                left: 15%;
+                font-size: 0.7em;
+                padding: 2px 4px;
+                white-space: normal;
+            }
+            #fedLiquidityDisplay {
+                top: calc(40% + 60px + 12px + 35px);
+                left: 15%;
+                font-size: 0.7em;
+                padding: 2px 4px;
+                white-space: normal;
+            }
+
+            .dollar-animated-object {
+                width: 22.5px;
+                height: 22.5px;
+            }
+
+            .indicator-buttons { grid-template-columns: 1fr; max-width: 100%; }
+            .button { margin: 5px 0; }
+            .time-buttons { justify-content: space-around; }
+            .time-btn {
+                padding: 5px 8px;
+                font-size: 0.85em;
+                margin: 2px;
+                flex-basis: auto;
+                width: auto;
+            }
+            #graphPage canvas {
+                width: 100%;
+                height: 300px;
+            }
+            .nav-bar { padding: 5px; }
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 </head>
-<body class="bg-gray-100 font-sans">
-    <div class="container mx-auto p-4">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-            <div class="bg-white p-4 rounded shadow">
-                <h2 id="fed-icon" class="text-lg font-bold">중앙은행 FED</h2>
+<body>
+    <div class="container">
+        <div id="liquidityFlow" class="page">
+            <div id="tgaSlopeDisplay"></div>
+            <div id="fedLiquidityDisplay"></div>
+
+            <div class="icon-container FED-container">
+                <span class="icon-label">중앙은행 FED</span>
+                <img src="./icon/fed.jpg" alt="FED" class="icon">
             </div>
-            <div class="bg-white p-4 rounded shadow">
-                <h2 class="text-lg font-bold">미국 정부</h2>
+            <div class="icon-container Government-container">
+                <img src="./icon/government.JPG" alt="Government TGA" class="icon">
+                <span class="icon-label">미국 정부</span>
             </div>
-            <div class="bg-white p-4 rounded shadow">
-                <h2 id="market-icon" class="text-lg font-bold">미국 시장(Market)</h2>
+            <div class="icon-container Market-container">
+                <img src="./icon/Market.jpg" alt="Market" class="icon">
+                <span class="icon-label">미국 시장(Market)</span>
             </div>
-            <div class="bg-white p-4 rounded shadow">
-                <h2 class="text-lg font-bold">MMF(Money Market Fund)</h2>
-            </div>
-        </div>
-
-        <div class="bg-white p-4 rounded shadow mb-4 relative">
-            <span id="dollar-icon">💵</span>
-            <h1 class="text-2xl font-bold">미국 자금 현황</h1>
-            <ul class="list-disc ml-6">
-                <li><a href="#" onclick="loadIndicator('WTREGEN')">미 정부 TGA 잔고</a></li>
-                <li><a href="#" onclick="loadIndicator('WRESBAL')">미 은행 지급준비금</a></li>
-                <li><a href="#" onclick="loadIndicator('RRPONTSYD')">연준 역레포 자금</a></li>
-                <li><a href="#" onclick="loadIndicator('MMMFFAQ027S')">MMF 잔고</a></li>
-                <li><a href="#" onclick="loadIndicator('WALCL')">연준 전체 자산 + 부채</a></li>
-            </ul>
-        </div>
-
-        <div class="bg-white p-4 rounded shadow mb-4">
-            <h1 class="text-2xl font-bold">금리</h1>
-            <ul class="list-disc ml-6">
-                <li><a href="#" onclick="loadIndicator('SOFR')">SOFR 금리</a></li>
-                <li><a href="#" onclick="loadIndicator('FEDFUNDS')">EFFR 금리</a></li>
-                <li><a href="#" onclick="loadIndicator('TB3MS')">3개월 미 국채금리</a></li>
-                <li><a href="#" onclick="loadIndicator('TB1YR')">1년물 미 국채금리</a></li>
-                <li><a href="#" onclick="loadIndicator('DPCREDIT')">연준 할인율</a></li>
-                <li><a href="#" onclick="loadIndicator('DRBLACBS')">미 은행 연체율(전체)</a></li>
-            </ul>
-        </div>
-
-        <div class="bg-white p-4 rounded shadow mb-4">
-            <h1 class="text-2xl font-bold">유동성</h1>
-            <ul class="list-disc ml-6">
-                <li><a href="#" onclick="loadIndicator('M2SL')">M2</a></li>
-                <li><a href="#" onclick="loadIndicator('M1SL')">M1</a></li>
-            </ul>
-        </div>
-
-        <div class="bg-white p-4 rounded shadow mb-4">
-            <h1 class="text-2xl font-bold">자산 가격</h1>
-            <ul class="list-disc ml-6">
-                <li><a href="#" onclick="loadIndicator('NASDAQ100')">나스닥100 지수</a></li>
-                <li><a href="#" onclick="loadIndicator('SP500')">S&P500 지수</a></li>
-                <li><a href="#" onclick="loadIndicator('SP500')">S&P500 시가총액</a></li>
-            </ul>
-        </div>
-
-        <div class="bg-white p-4 rounded shadow flex justify-between items-center">
-            <button class="bg-blue-500 text-white px-4 py-2 rounded">◄</button>
-            <span>Info</span>
-            <div>
-                <button class="bg-gray-200 px-4 py-2 rounded" onclick="setTimeRange('1M')">1M</button>
-                <button class="bg-gray-200 px-4 py-2 rounded" onclick="setTimeRange('6M')">6M</button>
-                <button class="bg-gray-200 px-4 py-2 rounded" onclick="setTimeRange('1Y')">1Y</button>
-                <button class="bg-gray-200 px-4 py-2 rounded" onclick="setTimeRange('5Y')">5Y</button>
-                <button class="bg-gray-200 px-4 py-2 rounded" onclick="setTimeRange('10Y')">10Y</button>
-                <button class="bg-gray-200 px-4 py-2 rounded" onclick="setTimeRange('All')">All</button>
+            <div class="icon-container MMF-container">
+                <img src="./icon/MMF.jpg" alt="MMF" class="icon">
+                <span class="icon-label">MMF(Money Market Fund)</span>
             </div>
         </div>
 
-        <div class="bg-white p-4 rounded shadow flex justify-between items-center">
-            <button class="bg-blue-500 text-white px-4 py-2 rounded">◄</button>
-            <div id="liquidity-text" class="text-lg font-bold"></div>
-            <span>그래프 지표</span>
+        <div id="graphIndicators" class="page" style="display:none;">
+            <div class="indicator-section">
+                <h3>미국 자금 현황</h3>
+                <div class="indicator-buttons">
+                    <button class="button" onclick="showGraph('WTREGEN')">미 정부 TGA 잔고</button>
+                    <button class="button" onclick="showGraph('WRESBAL')">미 은행 지급준비금</button>
+                    <button class="button" onclick="showGraph('RRPONTSYD')">연준 역레포 자금</button>
+                    <button class="button" onclick="showGraph('MMMFFAQ027S')">MMF 잔고</button>
+                    <button class="button" onclick="showGraph('WALCL')">연준 전체 자산 + 부채</button>
+                </div>
+            </div>
+            <div class="indicator-section">
+                <h3>금리</h3>
+                <div class="indicator-buttons">
+                    <button class="button" onclick="showGraph('SOFR')">SOFR 금리</button>
+                    <button class="button" onclick="showGraph('FEDFUNDS')">EFFR 금리</button>
+                    <button class="button" onclick="showGraph('TB3MS')">3개월 미 국채금리</button>
+                    <button class="button" onclick="showGraph('TB1YR')">1년물 미 국채금리</button>
+                    <button class="button" onclick="showGraph('DPCREDIT')">연준 할인율</button>
+                    <button class="button" onclick="showGraph('DRBLACBS')">미 은행 연체율(전체)</button>
+                </div>
+            </div>
+            <div class="indicator-section">
+                <h3>유동성</h3>
+                <div class="indicator-buttons">
+                    <button class="button" onclick="showGraph('M2SL')">M2</button>
+                    <button class="button" onclick="showGraph('M1SL')">M1</button>
+                </div>
+            </div>
+            <div class="indicator-section">
+                <h3>자산 가격</h3>
+                <div class="indicator-buttons">
+                    <button class="button" onclick="showGraph('NASDAQ100')">나스닥100 지수</button>
+                    <button class="button" onclick="showGraph('SP500')">S&P500 지수</button>
+                    <button class="button" onclick="showGraph('SP500_MCAP')">S&P500 시가총액</button>
+                </div>
+            </div>
         </div>
 
-        <div id="chart_div" class="w-full h-96"></div>
+        <div id="graphPage" class="page" style="display:none;">
+            <button class="back-btn" onclick="showGraphIndicators()">◄</button>
+            <button class="info-btn" onclick="showInfo()">Info</button>
+            <h2 id="graphTitle"></h2>
+            <canvas id="myChart"></canvas>
+            <div class="time-buttons">
+                <button class="time-btn" onclick="updateChart('1M')">1M</button>
+                <button class="time-btn" onclick="updateChart('6M')">6M</button>
+                <button class="time-btn" onclick="updateChart('1Y')">1Y</button>
+                <button class="time-btn" onclick="updateChart('5Y')">5Y</button>
+                <button class="time-btn" onclick="updateChart('10Y')">10Y</button>
+                <button class="time-btn" onclick="updateChart('All')">All</button>
+            </div>
+        </div>
+
+        <div id="infoPage" class="page" style="display:none;">
+            <button class="back-btn" onclick="goBackToGraph()">◄</button>
+            <h2 id="infoTitle"></h2>
+            <div id="infoContent"></div>
+        </div>
+
+        <div class="nav-bar">
+            <button class="button" onclick="showLiquidityFlow()">유동성 현황</button>
+            <button class="button" onclick="showGraphIndicators()">그래프 지표</button>
+        </div>
     </div>
 
     <script>
-        async function loadIndicator(indicator) {
-            // Existing indicator loading logic...
+        let myChart = null;
+        let isDragging = false;
+        let startX;
+        let startScrollX;
+        let currentIndicator = null;
+        let currentGraphData = [];
+        let dollarAnimationIntervals = [];
+        const DOLLAR_ANIMATION_DURATION = 3000;
+        const DOLLAR_SPAWN_INTERVAL = DOLLAR_ANIMATION_DURATION / 3;
+        const NUM_DOLLAR_ANIMATIONS = 3;
+
+        const FUNCTION_BASE_URL = '/.netlify/functions/get-csv-data';
+
+        const indicatorTitles = {
+            'WTREGEN': '미 정부 TGA 잔고',
+            'WRESBAL': '미 은행 지급준비금',
+            'RRPONTSYD': '연준 역레포 자금',
+            'MMMFFAQ027S': 'MMF 잔고',
+            'WALCL': '연준 전체 자산 + 부채',
+            'SOFR': 'SOFR 금리',
+            'FEDFUNDS': 'EFFR 금리',
+            'TB3MS': '3개월 미 국채금리',
+            'TB1YR': '1년물 미 국채금리',
+            'DPCREDIT': '연준 할인율',
+            'DRBLACBS': '미 은행 연체율(전체)',
+            'M2SL': 'M2',
+            'M1SL': 'M1',
+            'NASDAQ100': '나스닥100 지수',
+            'SP500': 'S&P500 지수',
+            'SP500_MCAP': 'S&P500 시가총액'
+        };
+
+        async function parseCSV(text) {
+            const lines = text.trim().split('\n');
+            if (lines.length <= 1) return [];
+
+            const headers = lines[0].split(',').map(h => h.trim());
+            const dateColIndex = headers.indexOf('Date');
+            const valueColIndex = headers.find(h => h !== 'Date');
+            const valueColIdx = headers.indexOf(valueColIndex);
+
+            if (dateColIndex === -1 || valueColIdx === -1) {
+                console.error("CSV 헤더에서 'Date' 컬럼 또는 값 컬럼을 찾을 수 없습니다.");
+                return [];
+            }
+
+            const parsedData = [];
+            for (let i = 1; i < lines.length; i++) {
+                const columns = lines[i].split(',');
+                if (columns.length > Math.max(dateColIndex, valueColIdx)) {
+                    const dateStr = columns[dateColIndex].trim();
+                    const valueStr = columns[valueColIdx].trim();
+
+                    const dateObj = new Date(dateStr);
+                    const valueNum = parseFloat(valueStr);
+
+                    if (!isNaN(dateObj.getTime()) && !isNaN(valueNum) && valueStr !== '.') {
+                        parsedData.push({
+                            date: dateStr,
+                            value: valueNum
+                        });
+                    }
+                }
+            }
+            return parsedData;
         }
 
-        function setTimeRange(range) {
-            // Existing time range logic...
+        window.addEventListener('load', async function() {
+            showPage('liquidityFlow');
+            await updateLiquidityFlowAnimation();
+        });
+
+        const pages = ['liquidityFlow', 'graphIndicators', 'graphPage', 'infoPage'];
+
+        function showPage(pageId) {
+            pages.forEach(id => document.getElementById(id).style.display = id === pageId ? 'block' : 'none');
+            if (pageId === 'liquidityFlow') {
+                updateLiquidityFlowAnimation();
+            } else {
+                stopLiquidityFlowAnimation();
+            }
+        }
+
+        function showLiquidityFlow() { showPage('liquidityFlow'); }
+        function showGraphIndicators() { showPage('graphIndicators'); }
+
+        async function showGraph(indicator) {
+            currentIndicator = indicator;
+            showPage('graphPage');
+            document.getElementById('graphTitle').textContent = indicatorTitles[indicator] || indicator;
+
+            const functionUrl = `${FUNCTION_BASE_URL}?indicator=${indicator}`;
+
+            try {
+                renderErrorMessage("데이터를 불러오는 중...");
+                const response = await fetch(functionUrl);
+                if (!response.ok) {
+                    const errorBody = await response.json();
+                    throw new Error(`'${indicatorTitles[indicator]}' 데이터를 찾을 수 없거나 불러오지 못했어요! (${response.status}: ${errorBody.error || response.statusText})`);
+                }
+                const text = await response.text();
+                const data = await parseCSV(text);
+
+                data.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+                currentGraphData = data;
+
+                if (currentGraphData.length > 0) {
+                    renderChart(indicator, currentGraphData.map(item => item.date), currentGraphData.map(item => item.value));
+                    updateChart('All');
+                } else {
+                    renderErrorMessage(`'${indicatorTitles[indicator]}' 지표의 유효한 데이터가 없어요.`);
+                }
+
+            } catch (error) {
+                console.error(`CSV 로드 오류 for ${indicator}:`, error);
+                renderErrorMessage(`'${indicatorTitles[indicator]}' 그래프를 그릴 수 없어요! 오류: ${error.message}`);
+            }
+        }
+
+        function renderChart(indicator, labels, values) {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            if (myChart) {
+                myChart.destroy();
+                myChart = null;
+            }
+
+            try {
+                myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: indicatorTitles[indicator] || indicator,
+                            data: values,
+                            borderColor: '#007bff',
+                            backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                            fill: false,
+                            tension: 0.1,
+                            pointRadius: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: {
+                                    unit: 'month',
+                                    tooltipFormat: 'yyyy-MM-dd',
+                                    displayFormats: {
+                                        day: 'yyyy-MM-dd',
+                                        month: 'yyyy-MM',
+                                        quarter: 'yyyy [Q]Q',
+                                        year: 'yyyy'
+                                    }
+                                },
+                                title: { display: true, text: 'Date' },
+                                grid: { display: true },
+                                reverse: false
+                            },
+                            y: {
+                                title: { display: true, text: 'Value' },
+                                grid: { display: true },
+                                beginAtZero: false,
+                                ticks: {
+                                    callback: function(value, index, values) {
+                                        if (Math.abs(value) >= 1000000000000) return (value / 1000000000000) + 'T';
+                                        if (Math.abs(value) >= 1000000000) return (value / 1000000000) + 'B';
+                                        if (Math.abs(value) >= 1000000) return (value / 1000000) + 'M';
+                                        if (Math.abs(value) >= 1000) return (value / 1000) + 'K';
+                                        return value;
+                                    }
+                                }
+                            }
+                        },
+                        plugins: { legend: { display: true }, tooltip: { mode: 'index', intersect: false } },
+                        onHover: (event, chartElement) => {
+                            event.native.target.style.cursor = chartElement.length ? 'grab' : 'default';
+                        }
+                    }
+                });
+
+                const canvas = document.getElementById('myChart');
+                canvas.removeEventListener('mousedown', startDragging);
+                canvas.removeEventListener('mousemove', drag);
+                canvas.removeEventListener('mouseup', stopDragging);
+                canvas.removeEventListener('mouseleave', stopDragging);
+                canvas.removeEventListener('wheel', zoomChart);
+
+                canvas.addEventListener('mousedown', startDragging);
+                canvas.addEventListener('mousemove', drag);
+                canvas.addEventListener('mouseup', stopDragging);
+                canvas.addEventListener('mouseleave', stopDragging);
+                canvas.addEventListener('wheel', zoomChart);
+            } catch (error) {
+                console.error('Chart 렌더링 오류:', error);
+                renderErrorMessage('그래프를 그릴 수 없어요! 오류: ' + error.message);
+            }
+        }
+
+        function updateChart(range) {
+            const indicatorKey = currentIndicator;
+
+            if (!currentGraphData || currentGraphData.length === 0) {
+                renderErrorMessage('기간별 데이터를 업데이트할 수 없습니다. 다시 지표를 선택해주세요.');
+                return;
+            }
+
+            let filteredByRangeData = [...currentGraphData];
+
+            const lastDate = new Date(filteredByRangeData[filteredByRangeData.length - 1].date);
+
+            if (range !== 'All') {
+                const cutoff = new Date(lastDate);
+                switch(range) {
+                    case '1M': cutoff.setMonth(lastDate.getMonth() - 1); break;
+                    case '6M': cutoff.setMonth(lastDate.getMonth() - 6); break;
+                    case '1Y': cutoff.setFullYear(lastDate.getFullYear() - 1); break;
+                    case '5Y': cutoff.setFullYear(lastDate.getFullYear() - 5); break;
+                    case '10Y': cutoff.setFullYear(lastDate.getFullYear() - 10); break;
+                }
+
+                filteredByRangeData = filteredByRangeData.filter(item => new Date(item.date).getTime() >= cutoff.getTime());
+            }
+
+            if (filteredByRangeData.length > 0) {
+                const labels = filteredByRangeData.map(item => item.date);
+                const values = filteredByRangeData.map(item => item.value);
+                if(myChart) {
+                    let unit = 'year';
+                    if (range === '1M' || range === '6M') unit = 'day';
+                    else if (range === '1Y') unit = 'month';
+                    myChart.options.scales.x.time.unit = unit;
+                    myChart.options.scales.x.min = null;
+                    myChart.options.scales.x.max = null;
+                }
+                renderChart(indicatorKey, labels, values);
+            } else {
+                    renderErrorMessage('해당 기간의 데이터가 없어요!');
+            }
+        }
+
+        function renderErrorMessage(message) {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            if (myChart) myChart.destroy();
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            ctx.fillStyle = '#666';
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(message, ctx.canvas.width/2, ctx.canvas.height/2);
+        }
+
+        function showInfo() {
+            showPage('infoPage');
+            const indicator = currentIndicator;
+            const info = {
+                'WTREGEN': {'title': '미 정부 TGA 잔고', 'content': {'경제적 의미': 'Treasury General Account (TGA)는 미국 정부의 현금 잔고 입니다. 이 잔고의 증가는 정부가 지출을 줄이거나 차입을 늘렸음을, 감소는 지출 증가나 상환을 의미할 수 있습니다.', '왜 필요한 지표인가': 'TGA 잔고는 유동성(시장에 순환하는 돈의 양)에 직접적인 영향을 미치며, 특히 연준의 통화 정책과 상호작용합니다. 잔고가 급격히 변동하면 단기 금리나 금융 시장 안정성에 영향을 줄 수 있어 모니터링이 필요합니다.'}},
+                'WRESBAL': {'title': '미 은행 지급준비금', 'content': {'경제적 의미': '은행이 연방준비제도(FRB)에 예치한 의무적 예금으로, 은행 시스템의 유동성을 조절하는 데 사용됩니다. 이 수치가 높으면 은행이 대출을 줄일 가능성이 있고, 낮으면 대출이 증가할 수 있습니다.', '왜 필요한 지표인가': '지급준비금은 통화 공급량과 신용 창출에 영향을 미치며, 연준의 통화 정책(예: 양적 완화 또는 긴축)의 효과를 평가하는 데 핵심 지표입니다. 경제 과열이나 침체를 방지하기 위해 모니터링됩니다.'}},
+                'M2SL': {'title': 'M2', 'content': {'경제적 의미': 'M2는 전통적인 은행 활동에 의한 화폐 공급량을 의미합니다. 예를 들면 은행에서의 현금, 수시입출금 예금, 저축 예금, 그리고 소액의 정기 예금을 포함합니다. 하지만 최근들어 MMF(Money Market Fund)의 자금 조달로 인한 M2에 간접적인 영향을 줄 수는 있겠으나, MMF 자금 유동성이 급격히 변동하더라도, M2 수치에 즉각적으로 반영되진 않을 수 있습니다. Stable Coin에 의한 자금 유동성 또한 M2에 직접 포함되지는 않습니다.', '왜 필요한 지표인가': 'M2는 전통적인 인플레이션, 경제 성장, 소비 동향을 예측하는 데 사용됩니다. 급격한 증가나 감소는 통화 정책 조정(예: 금리 인상/인하)의 신호로 해석될 수 있어 중요합니다.'}},
+                'M1SL': {'title': 'M1', 'content': {'경제적 의미': 'M1은 화폐 공급량의 좁은 정의로, 현금과 수시입출금 예금을 포함합니다. 이는 가장 유동성이 높은 자산을 나타냅니다. M2와 마찬가지로 MMF와 Stable Coin에 의한 영향성은 제한적입니다.', '왜 필요한 지표인가': 'M1은 단기적인 지출 능력과 유동성 수준을 반영하며, 경제 활동의 초기 신호를 제공합니다. 특히 통화 정책의 실시간 영향을 분석하는 데 유용합니다.'}},
+                'SOFR': {'title': 'SOFR 금리', 'content': {'경제적 의미': 'SOFR은 Secured Overnight Financing Rate의 약자로, 미국에서 한밤사이(overnight) 동안 담보(예: 미국 재무부 증권)를 기반으로 한 대출 거래의 이자율을 평균한 기준 금리입니다. 즉, SOFR은 은행이 다른 금융기관(예: 증권사, 헤지펀드 등)으로부터 담보를 제공하고 자금을 빌리는 비용을 나타냅니다.', '왜 필요한 지표인가': 'SOFR은 단기 자금 시장의 유동성과 수요-공급 상황을 반영합니다. 예를 들어, 시장에 자금이 부족하면 SOFR이 상승하고, 자금이 풍부하면 하락합니다. 이는 금융기관이 하루 동안 자금을 조달하거나 투자할 때 참고하는 중요한 기준 금리입니다. 시중에 자금이 넘치는지, 안넘치는지의 지표가 될 수 있습니다.'}},
+                'FEDFUNDS': {'title': 'EFFR 금리', 'content': {'경제적 의미': 'Effective Federal Funds Rate는 은행들이 연준에 예치된 자금을 상호 대출할 때 적용되는 실제 금리를 의미합니다. 연준 기준 금리와 밀접하게 연관됩니다.', '왜 필요한 지표인가': 'EFFR은 연준의 통화 정책 방향을 보여주며, 경제 성장, 인플레이션, 고용에 영향을 미칩니다. 예를 들면, EFFR 금리가 높다는건, 은행간의 대출 부담을 높여서 시중에 빌리는 돈의 규모를 축소한다는 의미가 될 수 있습니다. 결과적으로 긴축 효과를 냅니다.'}},
+                'TB3MS': {'title': '3개월 미 국채금리', 'content': {'경제적 의미': '3개월 만기 미국 재무부 증권의 수익률로, 단기 시장 금리와 인플레이션 기대치를 반영합니다.', '왜 필요한 지표인가': '단기 금리 동향을 파악하고, 경제 회복 또는 침체 신호를 분석하는 데 유용합니다. 금리가 상승한다는 의미는, 미국 정부가 국채 발행을 많이해서 원하는 곳에 돈을 많이 풀고 싶다는 간접적인 의미가 될 수 있고, 반대로 미국채 수요가 적어서 금리가 상승할 수 있습니다.'}},
+                'TB1YR': {'title': '1년물 미 국채금리', 'content': {'경제적 의미': '1년 만기 미국 재무부 증권의 수익률로, 중단기 금리와 경제 전망을 반영합니다.', '왜 필요한 지표인가': '단기와 장기 금리 간 관계를 통해 경제 성장 기대치나 인플레이션 우려를 파악할 수 있어, 투자자와 정책 입안자에게 중요합니다. 또한 금리가 상승한다는 의미는, 미국 정부가 국채 발행을 많이해서 원하는 곳에 돈을 많이 풀고 싶다는 간접적인 의미가 될 수 있고, 반대로 미국채 수요가 적어서 금리가 상승할 수 있습니다.'}},
+                'RRPONTSYD': {'title': '연준 역레포 자금', 'content': {'경제적 의미': 'Reverse Repurchase Agreement는 연준이 금융기관으로부터 자산을 매입하고 나중에 되팔며 유동성을 흡수하는 도구입니다. 이 금액은 시장의 잉여 자금을 보여줍니다.', '왜 필요한 지표인가': '연준이 금리를 통제하거나 유동성을 조절할 때 사용되며, 시장의 과도한 유동성(예: 인플레이션 위험)을 관리하는 데 필요합니다. 즉, 연레포 자금이 증가한다는 것은, 시중에 풀린 돈을 중앙은행에 묶어둔다는 뜻 입니다. 이렇게 되면 유동성이 긴축되어 시장의 주가가 감소할 수 있습니다.'}},
+                'MMMFFAQ027S': {'title': 'MMF 잔고', 'content': {'경제적 의미': 'Money Market Fund의 총 자산 잔고로, 투자자들이 안전 자산에 얼마나 많은 자금을 넣는지 보여줍니다. 주로 기준금리가 높은 시기에 수익율이 높아서 몰리거나, 시장(주식) 가격이 불안정할 수 있다고 예상되면 MMF로 자금이 몰리게 됩니다.', '왜 필요한 지표인가': 'MMF 잔고는 투자 심리와 위험 회피 성향을 반영하며, 금융 시장 불확실성이 높을 때 증가하는 경향이 있어 경제 안정성 평가에 유용합니다.'}},
+                'SP500': {'title': 'S&P500 지수', 'content': {'경제적 의미': '미국 500대 기업의 주식 성과를 종합한 지수로, 주식 시장의 전반적인 건강 상태를 나타냅니다.', '왜 필요한 지표인가': '경제 성장, 기업 수익, 투자자 신뢰를 반영하며, 소비자 지출과 연결되므로 거시경제 분석에 필수적입니다.'}},
+                'DPCREDIT': {'title': '연준 할인율', 'content': {'경제적 의미': '연준이 상업 은행에 대출할 때 적용하는 이자율로, 금융기관의 자금 조달 비용을 결정합니다. 할인율이 낮게 되면, 연준이 시중 은행에 돈을 풀고 싶다는 의미가 될 수 있습니다.', '왜 필요한 지표인가': '은행의 유동성 지원과 신용 경색 방지에 사용되며, 연준의 긴급 통화 정책을 평가하는 데 중요합니다.'}},
+                'DRBLACBS': {'title': '미 은행 연체율(전체)', 'content': {'경제적 의미': '은행 대출 중 연체된 비율로, 대출자의 상환 능력과 신용 위험을 나타냅니다.', '왜 필요한 지표인가': '경제 침체 신호나 금융 시스템의 건전성을 평가하며, 대출 정책과 규제 강화의 기초 자료로 사용됩니다.'}},
+                'NASDAQ100': {'title': '나스닥100 지수', 'content': {'경제적 의미': '기술주 중심의 100개 기업 주가를 반영한 지수로, 기술 섹터의 성과를 보여줍니다.', '왜 필요한 지표인가': '기술 산업의 성장과 혁신을 반영하며, 글로벌 경제에서 기술 의존도가 높아짐에 따라 중요한 기준이 됩니다.'}},
+                'WALCL': {'title': '연준 전체 자산 + 부채', 'content': {'경제적 의미': '연준의 총 자산(예: 채권 보유량)와 부채(예: 준비금)를 합친 금액으로, 연준의 재무 상태를 나타냅니다.', '왜 필요한 지표인가': '양적 완화나 긴축 정책의 규모를 보여주며, 연준의 통화 정책과 시장 유동성에 미치는 영향을 분석하는 데 필수적입니다.'}},
+                'SP500_MCAP': {'title': 'S&P500 시가총액', 'content': {'경제적 의미': 'S&P500 지수에 포함된 기업들의 총 시가총액입니다. 이는 미국 주식 시장의 전반적인 규모와 가치를 나타내며, 경제의 전반적인 건전성과 투자 심리를 반영합니다.', '왜 필요한 지표인가': '주식 시장의 과열 또는 침체 여부를 판단하는 데 중요한 지표입니다. 시가총액의 증가는 경제 성장과 기업 수익성 개선을, 감소는 경기 둔화나 불확실성 증대를 시사할 수 있습니다.'}}
+            }[indicator] || { title: indicator, content: { '경제적 의미': '정보 없음' } };
+
+            const infoContentDiv = document.getElementById('infoContent');
+            document.getElementById('infoTitle').textContent = info.title || 'Unknown Indicator';
+            infoContentDiv.innerHTML = '';
+            for(const key in info.content) {
+                infoContentDiv.innerHTML += `<p><strong>${key}:</strong> ${info.content[key]}</p>`;
+            }
+        }
+
+        async function updateLiquidityFlowAnimation() {
+            stopLiquidityFlowAnimation();
+
+            const liquidityFlowDiv = document.getElementById('liquidityFlow');
+            const tgaSlopeDisplay = document.getElementById('tgaSlopeDisplay');
+            const fedLiquidityDisplay = document.getElementById('fedLiquidityDisplay');
+
+            try {
+                // Fetch WTREGEN for TGA animation
+                let wtregenData = [];
+                let walclData = [];
+                let rrpontsydData = [];
+                let wresbalData = [];
+                const indicators = ['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL'];
+
+                for (const indicator of indicators) {
+                    const functionUrl = `${FUNCTION_BASE_URL}?indicator=${indicator}`;
+                    const response = await fetch(functionUrl);
+                    if (!response.ok) {
+                        const errorBody = await response.json();
+                        throw new Error(`${indicator} 데이터를 불러오지 못했습니다! 상태: ${response.status}: ${errorBody.error || response.statusText}`);
+                    }
+                    const text = await response.text();
+                    const data = await parseCSV(text);
+                    data.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+                    if (indicator === 'WTREGEN') wtregenData = data;
+                    else if (indicator === 'WALCL') walclData = data;
+                    else if (indicator === 'RRPONTSYD') rrpontsydData = data;
+                    else if (indicator === 'WRESBAL') wresbalData = data;
+                }
+
+                // Find common latest date
+                const allDates = [
+                    wtregenData.map(d => new Date(d.date).getTime()),
+                    walclData.map(d => new Date(d.date).getTime()),
+                    rrpontsydData.map(d => new Date(d.date).getTime()),
+                    wresbalData.map(d => new Date(d.date).getTime())
+                ];
+                const commonDates = allDates.reduce((a, b) => a.filter(x => b.includes(x)));
+                if (commonDates.length === 0) {
+                    fedLiquidityDisplay.textContent = "연준 유동성: 공통 데이터 없음";
+                    fedLiquidityDisplay.style.color = "black";
+                    throw new Error("공통된 날짜 데이터가 없습니다.");
+                }
+                const latestCommonDate = Math.max(...commonDates);
+                const oneMonthAgo = new Date(latestCommonDate);
+                oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+                // Get latest and one-month-ago values
+                const getDataForDate = (data, date) => {
+                    const targetDate = new Date(date);
+                    targetDate.setHours(0, 0, 0, 0);
+                    for (let i = data.length - 1; i >= 0; i--) {
+                        const dataDate = new Date(data[i].date);
+                        dataDate.setHours(0, 0, 0, 0);
+                        if (dataDate.getTime() <= targetDate.getTime()) {
+                            return data[i].value;
+                        }
+                    }
+                    return null;
+                };
+
+                const getClosestPastData = (data, targetDate) => {
+                    const targetTime = targetDate.getTime();
+                    let closestData = null;
+                    let minDiff = Infinity;
+                    for (const item of data) {
+                        const itemDate = new Date(item.date).getTime();
+                        const diff = Math.abs(itemDate - targetTime);
+                        if (diff < minDiff && itemDate <= targetTime) {
+                            minDiff = diff;
+                            closestData = item;
+                        }
+                    }
+                    return closestData ? closestData.value : null;
+                };
+
+                const latestValues = {
+                    WALCL: getDataForDate(walclData, latestCommonDate),
+                    WTREGEN: getDataForDate(wtregenData, latestCommonDate),
+                    RRPONTSYD: getDataForDate(rrpontsydData, latestCommonDate),
+                    WRESBAL: getDataForDate(wresbalData, latestCommonDate)
+                };
+
+                const pastValues = {
+                    WALCL: getClosestPastData(walclData, oneMonthAgo),
+                    WTREGEN: getClosestPastData(wtregenData, oneMonthAgo),
+                    RRPONTSYD: getClosestPastData(rrpontsydData, oneMonthAgo),
+                    WRESBAL: getClosestPastData(wresbalData, oneMonthAgo)
+                };
+
+                if (Object.values(latestValues).some(v => v === null) || Object.values(pastValues).some(v => v === null)) {
+                    fedLiquidityDisplay.textContent = "연준 유동성: 데이터 부족";
+                    fedLiquidityDisplay.style.color = "black";
+                    throw new Error("최신 또는 과거 데이터가 부족합니다.");
+                }
+
+                // Calculate differences
+                const a = latestValues.WALCL - pastValues.WALCL;
+                const b = latestValues.WTREGEN - pastValues.WTREGEN;
+                const c = latestValues.RRPONTSYD - pastValues.RRPONTSYD;
+                const d = latestValues.WRESBAL - pastValues.WRESBAL;
+
+                // Calculate t
+                const t = a - 2 * (b + c + d);
+                const tInBillion = (t / 1000000000).toFixed(2);
+
+                // Update FED liquidity display
+                fedLiquidityDisplay.innerHTML = `연준 유동성:<br>${tInBillion} Billion $/Month`;
+                fedLiquidityDisplay.className = t >= 0 ? 'slope-positive' : 'slope-negative';
+
+                // TGA animation
+                const latestTGA = latestValues.WTREGEN;
+                const pastTGA = pastValues.WTREGEN;
+                const diffValue = latestTGA - pastTGA;
+                const diffValueInBillion = (diffValue / 1000000000).toFixed(2);
+
+                tgaSlopeDisplay.innerHTML = `TGA 잔고:<br>${diffValueInBillion} Billion $/Month`;
+                tgaSlopeDisplay.className = diffValue < 0 ? 'slope-negative' : 'slope-positive';
+                const isTgaNegative = diffValue < 0;
+
+                // Start animations
+                const isTNegative = t < 0;
+                for (let i = 0; i < NUM_DOLLAR_ANIMATIONS; i++) {
+                    const delay = i * DOLLAR_SPAWN_INTERVAL;
+                    const timeoutId = setTimeout(() => {
+                        createDollarAnimation(isTgaNegative, isTNegative);
+                    }, delay);
+                    dollarAnimationIntervals.push(timeoutId);
+                }
+
+                const resetIntervalId = setInterval(() => {
+                    const existingDollars = document.querySelectorAll('.dollar-animated-object');
+                    existingDollars.forEach(dollar => dollar.remove());
+
+                    for (let i = 0; i < NUM_DOLLAR_ANIMATIONS; i++) {
+                        const delay = i * DOLLAR_SPAWN_INTERVAL;
+                        const timeoutId = setTimeout(() => {
+                            createDollarAnimation(isTgaNegative, isTNegative);
+                        }, delay);
+                        dollarAnimationIntervals.push(timeoutId);
+                    }
+                }, DOLLAR_ANIMATION_DURATION);
+                dollarAnimationIntervals.push(resetIntervalId);
+
+            } catch (error) {
+                console.error('유동성 현황 업데이트 오류:', error);
+                tgaSlopeDisplay.textContent = "TGA 잔고: 데이터 로드 오류";
+                tgaSlopeDisplay.style.color = "black";
+                fedLiquidityDisplay.textContent = "연준 유동성: 데이터 로드 오류";
+                fedLiquidityDisplay.style.color = "black";
+            }
+        }
+
+        function createDollarAnimation(isTgaNegative, isTNegative) {
+            const dollar = document.createElement('img');
+            dollar.src = "./icon/dollar.jpg";
+            dollar.alt = "Dollar";
+            dollar.classList.add('dollar-animated-object');
+            document.getElementById('liquidityFlow').appendChild(dollar);
+
+            // Prioritize t-based animation if available
+            if (typeof isTNegative !== 'undefined') {
+                dollar.classList.add(isTNegative ? 'animated-dollar-to-fed' : 'animated-dollar-to-market');
+            } else {
+                // Fallback to TGA animation
+                dollar.classList.add(isTgaNegative ? 'animated-dollar-in' : 'animated-dollar-out');
+            }
+            dollar.style.setProperty('--animation-duration', `${DOLLAR_ANIMATION_DURATION / 1000}s`);
+
+            dollar.addEventListener('animationend', () => {
+                dollar.remove();
+            });
+        }
+
+        function stopLiquidityFlowAnimation() {
+            dollarAnimationIntervals.forEach(id => clearTimeout(id));
+            dollarAnimationIntervals = [];
+
+            const existingDollars = document.querySelectorAll('.dollar-animated-object');
+            existingDollars.forEach(dollar => dollar.remove());
+        }
+
+        function startDragging(event) {
+            if (!myChart) return;
+            isDragging = true;
+            startX = event.pageX - event.target.getBoundingClientRect().left;
+            startScrollX = myChart.options.scales.x.min;
+            event.target.style.cursor = 'grabbing';
+        }
+
+        function drag(event) {
+            if (!isDragging || !myChart) return;
+            event.preventDefault();
+
+            const currentX = event.pageX - event.target.getBoundingClientRect().left;
+            const diffX = (currentX - startX) * 0.6;
+
+            const chartArea = myChart.chartArea;
+            const x_scale = myChart.scales.x;
+
+            if (!x_scale || typeof x_scale.max === 'undefined' || typeof x_scale.min === 'undefined') {
+                console.warn("X 스케일 정보가 불완전합니다. 드래그 기능이 제한될 수 있습니다.");
+                return;
+            }
+
+            const dataRange = x_scale.max - x_scale.min;
+            const pixelRange = chartArea.right - chartArea.left;
+
+            const dataOffset = (diffX / pixelRange) * dataRange;
+
+            let newMin = startScrollX - dataOffset;
+            let newMax = startScrollX + dataRange - dataOffset;
+
+            const allDates = currentGraphData.map(d => new Date(d.date).getTime());
+            const minAllowedDate = Math.min(...allDates);
+            const maxAllowedDate = Math.max(...allDates);
+
+            if (newMin < minAllowedDate) {
+                newMin = minAllowedDate;
+                newMax = minAllowedDate + dataRange;
+            }
+            if (newMax > maxAllowedDate) {
+                newMax = maxAllowedDate;
+                newMin = maxAllowedDate - dataRange;
+            }
+
+            myChart.options.scales.x.min = newMin;
+            myChart.options.scales.x.max = newMax;
+            myChart.update('none');
+        }
+
+        function stopDragging(event) {
+            if (!isDragging) return;
+            isDragging = false;
+            event.target.style.cursor = 'grab';
+        }
+
+        function zoomChart(event) {
+            if (!myChart) return;
+            event.preventDefault();
+
+            const chartArea = myChart.chartArea;
+            const x_scale = myChart.scales.x;
+
+            if (!x_scale || typeof x_scale.max === 'undefined' || typeof x_scale.min === 'undefined') {
+                console.warn("X 스케일 정보가 불완전합니다. 줌 기능이 제한될 수 있습니다.");
+                return;
+            }
+
+            const mouseX = event.offsetX;
+            const dataX = x_scale.getValueForPixel(mouseX);
+            
+            const zoomFactor = 1.1;
+            let newMin, newMax;
+
+            if (event.deltaY < 0) {
+                newMin = dataX - (dataX - x_scale.min) / zoomFactor;
+                newMax = dataX + (x_scale.max - dataX) / zoomFactor;
+            } else {
+                newMin = dataX - (dataX - x_scale.min) * zoomFactor;
+                newMax = dataX + (x_scale.max - dataX) * zoomFactor;
+            }
+
+            const allDates = currentGraphData.map(d => new Date(d.date).getTime());
+            const minAllowedDate = Math.min(...allDates);
+            const maxAllowedDate = Math.max(...allDates);
+
+            if (newMin < minAllowedDate) {
+                newMin = minAllowedDate;
+                newMax = minAllowedDate + (x_scale.max - x_scale.min);
+                if (newMax > maxAllowedDate) newMax = maxAllowedDate;
+            }
+            if (newMax > maxAllowedDate) {
+                newMax = maxAllowedDate;
+                newMin = maxAllowedDate - (x_scale.max - x_scale.min);
+                if (newMin < minAllowedDate) newMin = minAllowedDate;
+            }
+            
+            if (newMin >= newMax) {
+                const totalRange = maxAllowedDate - minAllowedDate;
+                newMin = dataX - (totalRange * 0.01);
+                newMax = dataX + (totalRange * 0.01);
+
+                if (newMin < minAllowedDate) newMin = minAllowedDate;
+                if (newMax > maxAllowedDate) newMax = maxAllowedDate;
+                if (newMin >= newMax) {
+                    newMin = minAllowedDate;
+                    newMax = maxAllowedDate;
+                }
+            }
+
+            myChart.options.scales.x.min = newMin;
+            myChart.options.scales.x.max = newMax;
+            myChart.update();
+        }
+
+        function goBackToGraph() {
+            showPage('graphPage');
+            if (currentIndicator && myChart) {
+                updateChart('All');
+            }
         }
     </script>
 </body>
