@@ -137,8 +137,8 @@
         }
 
         #fedLiquidityDisplay {
-            top: calc(50% + 80px + 14px + 30px);
-            left: 20%;
+            top: calc(20% + 80px + 14px + 30px);
+            left: 50%;
         }
         
         #mmfToRrpDisplay {
@@ -312,9 +312,9 @@
             }
 
             #fedLiquidityDisplay { top: calc(40% + 60px + 12px + 35px); left: 15%; }
-            #mmfToRrpDisplay { top: calc(40% - 60px - 10px); left: 85%; }
-            #mmfToMarketDisplay { top: calc(40% + 60px + 12px + 15px); left: 85%; }
-            #mmfToGovernmentDisplay { top: 30%; left: 50%; }
+            #mmfToRrpDisplay { top: calc(40% - 60px - 10px); left: 75%; }
+            #mmfToMarketDisplay { top: calc(35% + 60px + 12px + 15px); left: 75%; }
+            #mmfToGovernmentDisplay { top: 40%; left: 70%; }
 
 
             .dollar-animated-object {
@@ -837,7 +837,7 @@
                 if (latestVal !== null && pastVal !== null) {
                     const diff = latestVal - pastVal;
                     const diffInBillion = (diff / 1000000000).toFixed(2);
-                    mmfToRrpDisplay.innerHTML = `MMF 현금 조달:<br>${diffInBillion} B $/Month`;
+                    mmfToRrpDisplay.innerHTML = `MMF -> FED:<br>${diffInBillion} B $/Month`;
                     mmfToRrpDisplay.className = diff >= 0 ? 'slope-positive' : 'slope-negative';
                     animationTasks.push(diff >= 0 ? 'animated-dollar-from-mmf-to-fed' : 'animated-dollar-from-fed-to-mmf');
                 } else {
@@ -859,7 +859,7 @@
                 if (latestVal !== null && pastVal !== null) {
                     const diff = latestVal - pastVal;
                     const diffInBillion = (diff / 1000000000).toFixed(2);
-                    mmfToMarketDisplay.innerHTML = `MMF 현금 조달:<br>${diffInBillion} B $/Month`;
+                    mmfToMarketDisplay.innerHTML = `MMF ->시장:<br>${diffInBillion} B $/Month`;
                     mmfToMarketDisplay.className = diff >= 0 ? 'slope-positive' : 'slope-negative';
                     animationTasks.push(diff >= 0 ? 'animated-dollar-from-mmf-to-market' : 'animated-dollar-from-market-to-mmf');
                 } else {
@@ -881,7 +881,7 @@
                 if (latestVal !== null && pastVal !== null) {
                     const diff = latestVal - pastVal;
                     const diffInBillion = (diff / 1000000000).toFixed(2);
-                    mmfToGovernmentDisplay.innerHTML = `MMF 현금 조달:<br>${diffInBillion} B $/Month`;
+                    mmfToGovernmentDisplay.innerHTML = `MMF ->정부:<br>${diffInBillion} B $/Month`;
                     mmfToGovernmentDisplay.className = diff >= 0 ? 'slope-positive' : 'slope-negative';
                     animationTasks.push(diff >= 0 ? 'animated-dollar-from-mmf-to-government' : 'animated-dollar-from-government-to-mmf');
                 } else {
