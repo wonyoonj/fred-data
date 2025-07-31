@@ -79,18 +79,18 @@
         }
         
         #mmfToRrpDisplay {
-            top: calc(50% - 80px - 10px); /* MMF 아이콘 위에 위치 */
+            top: calc(50% - 80px - 10px);
             left: 80%;
         }
 
         #mmfToMarketDisplay {
-            top: calc(50% + 80px + 14px + 10px); /* MMF 아이콘과 라벨 아래에 위치 */
+            top: calc(50% + 80px + 14px + 10px);
             left: 80%;
         }
 
         #mmfToGovernmentDisplay {
-            top: calc(50% - 80px - 30px); /* MMF 아이콘 위에 위치 (RRP 위에) */
-            left: 80%;
+            top: calc(50% - 80px - 10px);
+            left: 50%;
         }
 
         .slope-positive { color: blue; }
@@ -134,7 +134,7 @@
             100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
         }
 
-        /* 기존 MMF 애니메이션 */
+        /* 신규 MMF 애니메이션 */
         @keyframes dollarFlowFromMmfToFed {
             0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 50%; }
             20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 50%; }
@@ -159,8 +159,7 @@
             80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 50%; }
             100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 50%; }
         }
-
-        /* 새 MMF to Government 애니메이션 */
+        /* MMF to Government 애니메이션 */
         @keyframes dollarFlowFromMmfToGovernment {
             0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 50%; }
             20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 50%; }
@@ -218,340 +217,438 @@
         .time-btn { padding: 5px 10px; background: #e9ecef; border: 1px solid #ced4da; border-radius: 5px; cursor: pointer; font-size: 0.9em; transition: background-color 0.2s; }
         .time-btn:hover { background-color: #dee2e6; }
         .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #007bff; padding: 10px; display: flex; justify-content: space-around; }
-
         @media (max-width: 600px) {
             .container { padding: 10px; }
             .back-btn { top: 5px; left: 5px; }
             .info-btn { top: 5px; right: 5px; }
-
             #liquidityFlow .icon { width: 60px; height: 60px; }
             #liquidityFlow .icon-label { font-size: 12px; }
-
             .FED-container { top: 15%; left: 50%; }
             .Government-container { top: 40%; left: 15%; }
             .Market-container { top: 85%; left: 50%; }
             .MMF-container { top: 40%; left: 85%; }
-
-            #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay, #mmfToGovernmentDisplay {
-                font-size: 0.7em;
-                padding: 2px 4px;
-                white-space: normal;
-            }
-
+            #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay, #mmfToGovernmentDisplay { font-size: 0.7em; padding: 2px 4px; white-space: normal; }
             #tgaSlopeDisplay { top: calc(40% + 60px + 12px + 15px); left: 15%; }
             #fedLiquidityDisplay { top: calc(40% + 60px + 12px + 35px); left: 15%; }
             #mmfToRrpDisplay { top: calc(40% - 60px - 10px); left: 85%; }
             #mmfToMarketDisplay { top: calc(40% + 60px + 12px + 15px); left: 85%; }
-            #mmfToGovernmentDisplay { top: calc(40% - 60px - 30px); left: 85%; }
-
-            .dollar-animated-object {
-                width: 22.5px;
-                height: 22.5px;
-            }
-
-            .indicator-buttons { grid-template-columns: 1fr; max-width: 100%; }
-            .button { margin: 5px 0; }
-            .time-buttons { justify-content: space-around; }
-            .time-btn {
-                padding: 5px 8px;
-                font-size: 0.85em;
-                margin: 2px;
-                flex-basis: auto;
-                width: auto;
-            }
-            #graphPage canvas {
-                width: 100%;
-                height: 300px;
-            }
-            .nav-bar { padding: 5px; }
+            #mmfToGovernmentDisplay { top: calc(40% - 60px - 10px); left: 50%; }
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 </head>
 <body>
+
     <div class="container">
-        <div id="liquidityFlow" class="page">
-            <div id="tgaSlopeDisplay"></div>
-            <div id="fedLiquidityDisplay"></div>
-            <div id="mmfToRrpDisplay"></div>
-            <div id="mmfToMarketDisplay"></div>
-            <div id="mmfToGovernmentDisplay"></div>
+        <div id="mainPage">
+            <header class="header">
+                <h1>미국 금융시장 유동성 현황</h1>
+            </header>
+            <div id="liquidityFlow">
+                <div class="icon-container FED-container">
+                    <img src="https://raw.githubusercontent.com/yoon-seok/images/main/fed.png" class="icon" alt="FED">
+                    <span class="icon-label">FED</span>
+                </div>
+                <div class="icon-container Government-container">
+                    <img src="https://raw.githubusercontent.com/yoon-seok/images/main/government.png" class="icon" alt="Government">
+                    <span class="icon-label">Government</span>
+                </div>
+                <div class="icon-container Market-container">
+                    <img src="https://raw.githubusercontent.com/yoon-seok/images/main/market.png" class="icon" alt="Market">
+                    <span class="icon-label">Market</span>
+                </div>
+                <div class="icon-container MMF-container">
+                    <img src="https://raw.githubusercontent.com/yoon-seok/images/main/mmf.png" class="icon" alt="MMF">
+                    <span class="icon-label">MMF</span>
+                </div>
+                
+                <div id="tgaSlopeDisplay" class="slope-positive"></div>
+                <div id="fedLiquidityDisplay" class="slope-positive"></div>
+                <div id="mmfToRrpDisplay" class="slope-positive"></div>
+                <div id="mmfToMarketDisplay" class="slope-positive"></div>
+                <div id="mmfToGovernmentDisplay" class="slope-positive"></div>
+            </div>
 
-            <div class="icon-container FED-container">
-                <span class="icon-label">중앙은행 FED</span>
-                <img src="./icon/fed.jpg" alt="FED" class="icon">
-            </div>
-            <div class="icon-container Government-container">
-                <img src="./icon/government.JPG" alt="Government TGA" class="icon">
-                <span class="icon-label">미국 정부</span>
-            </div>
-            <div class="icon-container Market-container">
-                <img src="./icon/Market.jpg" alt="Market" class="icon">
-                <span class="icon-label">미국 시장(Market)</span>
-            </div>
-            <div class="icon-container MMF-container">
-                <img src="./icon/MMF.jpg" alt="MMF" class="icon">
-                <span class="icon-label">MMF(Money Market Fund)</span>
-            </div>
-        </div>
-
-        <div id="graphIndicators" class="page" style="display:none;">
-            <div class="indicator-section">
-                <h3>미국 자금 현황</h3>
-                <div class="indicator-buttons">
-                    <button class="button" onclick="showGraph('WTREGEN')">미 정부 TGA 잔고</button>
-                    <button class="button" onclick="showGraph('WRESBAL')">미 은행 지급준비금</button>
-                    <button class="button" onclick="showGraph('RRPONTSYD')">연준 역레포 자금</button>
-                    <button class="button" onclick="showGraph('MMMFFAQ027S')">MMF 잔고</button>
-                    <button class="button" onclick="showGraph('WALCL')">연준 전체 자산 + 부채</button>
+            <div id="graphIndicators">
+                <div class="indicator-section">
+                    <h3>미국 재무부 계정 잔고(TGA)</h3>
+                    <div class="indicator-buttons">
+                        <button class="button" onclick="showGraph('TGA.csv', 'TGA', 'TGA 잔고(B$)', 'rgb(255, 99, 132)')">TGA 잔고</button>
+                    </div>
                 </div>
-            </div>
-            <div class="indicator-section">
-                <h3>금리</h3>
-                <div class="indicator-buttons">
-                    <button class="button" onclick="showGraph('SOFR')">SOFR 금리</button>
-                    <button class="button" onclick="showGraph('FEDFUNDS')">EFFR 금리</button>
-                    <button class="button" onclick="showGraph('TB3MS')">3개월 미 국채금리</button>
-                    <button class="button" onclick="showGraph('TB1YR')">1년물 미 국채금리</button>
-                    <button class="button" onclick="showGraph('DPCREDIT')">연준 할인율</button>
-                    <button class="button" onclick="showGraph('DRBLACBS')">미 은행 연체율(전체)</button>
+                <div class="indicator-section">
+                    <h3>연준 유동성</h3>
+                    <div class="indicator-buttons">
+                        <button class="button" onclick="showGraph('BALANCE_SHEET_ASSETS.csv', 'Fed', '자산(B$)', 'rgb(54, 162, 235)')">대차대조표</button>
+                        <button class="button" onclick="showGraph('RRP_OPERATIONS.csv', 'RRP', 'RRP 규모(B$)', 'rgb(255, 206, 86)')">RRP 규모</button>
+                        <button class="button" onclick="showGraph('BTFP_FACILITY.csv', 'BTFP', 'BTFP 규모(B$)', 'rgb(75, 192, 192)')">BTFP 규모</button>
+                    </div>
                 </div>
-            </div>
-            <div class="indicator-section">
-                <h3>유동성</h3>
-                <div class="indicator-buttons">
-                    <button class="button" onclick="showGraph('M2SL')">M2</button>
-                    <button class="button" onclick="showGraph('M1SL')">M1</button>
-                </div>
-            </div>
-            <div class="indicator-section">
-                <h3>자산 가격</h3>
-                <div class="indicator-buttons">
-                    <button class="button" onclick="showGraph('NASDAQ100')">나스닥100 지수</button>
-                    <button class="button" onclick="showGraph('SP500')">S&P500 지수</button>
-                    <button class="button" onclick="showGraph('SP500_MCAP')">S&P500 시가총액</button>
+                <div class="indicator-section">
+                    <h3>MMF 자금 조달</h3>
+                    <div class="indicator-buttons">
+                        <button class="button" onclick="showGraph('MMF2GOVERNMENT.csv', 'MMF to Gov', '자금조달 규모(B$)', 'rgb(153, 102, 255)')">MMF to Gov</button>
+                        <button class="button" onclick="showGraph('MMF2RRP.csv', 'MMF to RRP', '자금조달 규모(B$)', 'rgb(255, 159, 64)')">MMF to RRP</button>
+                        <button class="button" onclick="showGraph('MMF2MARKET.csv', 'MMF to Market', '자금조달 규모(B$)', 'rgb(255, 99, 255)')">MMF to Market</button>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div id="graphPage" class="page" style="display:none;">
-            <button class="back-btn" onclick="showGraphIndicators()">◄</button>
-            <button class="info-btn" onclick="showInfo()">Info</button>
+        
+        <div id="graphPage" style="display:none;">
+            <button class="back-btn" onclick="showMainPage()"></button>
             <h2 id="graphTitle"></h2>
-            <canvas id="myChart"></canvas>
             <div class="time-buttons">
-                <button class="time-btn" onclick="updateChart('1M')">1M</button>
-                <button class="time-btn" onclick="updateChart('6M')">6M</button>
-                <button class="time-btn" onclick="updateChart('1Y')">1Y</button>
-                <button class="time-btn" onclick="updateChart('5Y')">5Y</button>
-                <button class="time-btn" onclick="updateChart('10Y')">10Y</button>
-                <button class="time-btn" onclick="updateChart('All')">All</button>
+                <button class="time-btn" onclick="setGraphTimeframe('1y')">1년</button>
+                <button class="time-btn" onclick="setGraphTimeframe('3y')">3년</button>
+                <button class="time-btn" onclick="setGraphTimeframe('5y')">5년</button>
+                <button class="time-btn" onclick="setGraphTimeframe('all')">전체</button>
             </div>
+            <canvas id="myChart"></canvas>
         </div>
-
-        <div id="infoPage" class="page" style="display:none;">
-            <button class="back-btn" onclick="goBackToGraph()">◄</button>
-            <h2 id="infoTitle"></h2>
-            <div id="infoContent"></div>
+        
+        <div id="infoPage" style="display:none;">
+            <button class="back-btn" onclick="showMainPage()"></button>
+            <h2>정보 페이지</h2>
+            <p>이 페이지는 미국 금융 시장의 유동성 현황을 시각화합니다.</p>
         </div>
-
-        <div class="nav-bar">
-            <button class="button" onclick="showLiquidityFlow()">유동성 현황</button>
-            <button class="button" onclick="showGraphIndicators()">그래프 지표</button>
-        </div>
+    </div>
+    
+    <div class="nav-bar">
+        <button class="button" onclick="showPage('mainPage')">유동성 현황</button>
+        <button class="button" onclick="showPage('graphIndicators')">그래프 지표</button>
+        <button class="button" onclick="showPage('infoPage')">정보</button>
     </div>
 
     <script>
-        let myChart = null;
-        let isDragging = false;
-        let startX;
-        let startScrollX;
-        let currentIndicator = null;
-        let currentGraphData = [];
-        let dollarAnimationIntervals = [];
-        const DOLLAR_ANIMATION_DURATION = 3000;
-        const DOLLAR_SPAWN_INTERVAL = DOLLAR_ANIMATION_DURATION / 3;
-        const NUM_DOLLAR_ANIMATIONS = 3;
-
-        const FUNCTION_BASE_URL = '/.netlify/functions/get-csv-data';
-
-        const indicatorTitles = {
-            'WTREGEN': '미 정부 TGA 잔고',
-            'WRESBAL': '미 은행 지급준비금',
-            'RRPONTSYD': '연준 역레포 자금',
-            'MMMFFAQ027S': 'MMF 잔고',
-            'WALCL': '연준 전체 자산 + 부채',
-            'SOFR': 'SOFR 금리',
-            'FEDFUNDS': 'EFFR 금리',
-            'TB3MS': '3개월 미 국채금리',
-            'TB1YR': '1년물 미 국채금리',
-            'DPCREDIT': '연준 할인율',
-            'DRBLACBS': '미 은행 연체율(전체)',
-            'M2SL': 'M2',
-            'M1SL': 'M1',
-            'NASDAQ100': '나스닥100 지수',
-            'SP500': 'S&P500 지수',
-            'SP500_MCAP': 'S&P500 시가총액'
-        };
-
-        async function parseCSV(text) {
-            const lines = text.trim().split('\n');
-            if (lines.length <= 1) return [];
-
-            const headers = lines[0].split(',').map(h => h.trim());
-            
-            // 'Date' 또는 'data' 컬럼 찾기 (대소문자 무시)
-            let dateColIndex = headers.findIndex(h => h.toLowerCase() === 'date');
-            if (dateColIndex === -1) {
-                dateColIndex = headers.findIndex(h => h.toLowerCase() === 'data');
-            }
-
-            // 날짜가 아닌 다른 컬럼을 값 컬럼으로 찾기
-            const valueColName = headers.find((h, i) => i !== dateColIndex);
-            const valueColIdx = headers.indexOf(valueColName);
-
-            if (dateColIndex === -1 || valueColIdx === -1) {
-                console.error("CSV 헤더에서 날짜('Date' 또는 'data') 또는 값 컬럼을 찾을 수 없습니다:", headers.join(', '));
-                return [];
-            }
-
-            const parsedData = [];
-            for (let i = 1; i < lines.length; i++) {
-                const columns = lines[i].split(',');
-                if (columns.length > Math.max(dateColIndex, valueColIdx)) {
-                    const dateStr = columns[dateColIndex].trim();
-                    const valueStr = columns[valueColIdx].trim();
-
-                    const dateObj = new Date(dateStr);
-                    const valueNum = parseFloat(valueStr);
-
-                    if (!isNaN(dateObj.getTime()) && !isNaN(valueNum) && valueStr !== '.') {
-                        parsedData.push({
-                            date: dateStr,
-                            value: valueNum
-                        });
+        const liquidityFlow = document.getElementById('liquidityFlow');
+        const mainPage = document.getElementById('mainPage');
+        const graphPage = document.getElementById('graphPage');
+        const infoPage = document.getElementById('infoPage');
+        const navBar = document.querySelector('.nav-bar');
+        const myChart = new Chart(document.getElementById('myChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                datasets: []
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                },
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'month',
+                            tooltipFormat: 'yyyy-MM-dd',
+                        },
+                        title: {
+                            display: true,
+                            text: '날짜',
+                        },
+                        min: null,
+                        max: null,
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: '값',
+                        },
+                        beginAtZero: false,
                     }
-                }
+                },
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
             }
-            return parsedData;
-        }
-
-        window.addEventListener('load', async function() {
-            showPage('liquidityFlow');
         });
 
-        const pages = ['liquidityFlow', 'graphIndicators', 'graphPage', 'infoPage'];
+        let currentGraphData = [];
+        let currentGraphCSV = '';
+        let currentGraphType = '';
+        let currentGraphLabel = '';
+        let currentGraphColor = '';
+
+        myChart.canvas.addEventListener('wheel', function(event) {
+            event.preventDefault();
+
+            const chartArea = myChart.chartArea;
+            if (event.offsetX < chartArea.left || event.offsetX > chartArea.right || event.offsetY < chartArea.top || event.offsetY > chartArea.bottom) {
+                return;
+            }
+
+            const x_scale = myChart.options.scales.x;
+            if (!x_scale || typeof x_scale.max === 'undefined' || typeof x_scale.min === 'undefined') {
+                return;
+            }
+
+            const mouseX = event.offsetX;
+            const dataX = x_scale.getValueForPixel(mouseX);
+            
+            const zoomFactor = 1.1;
+            let newMin, newMax;
+
+            if (event.deltaY < 0) {
+                newMin = dataX - (dataX - x_scale.min) / zoomFactor;
+                newMax = dataX + (x_scale.max - dataX) / zoomFactor;
+            } else {
+                newMin = dataX - (dataX - x_scale.min) * zoomFactor;
+                newMax = dataX + (x_scale.max - dataX) * zoomFactor;
+            }
+
+            const allDates = currentGraphData.map(d => new Date(d.date).getTime());
+            const minAllowedDate = Math.min(...allDates);
+            const maxAllowedDate = Math.max(...allDates);
+
+            if (newMin < minAllowedDate) newMin = minAllowedDate;
+            if (newMax > maxAllowedDate) newMax = maxAllowedDate;
+            if (newMin >= newMax) return; // Prevent zooming in too far
+            
+            myChart.options.scales.x.min = newMin;
+            myChart.options.scales.x.max = newMax;
+            myChart.update('none');
+        });
 
         function showPage(pageId) {
-            pages.forEach(id => document.getElementById(id).style.display = id === pageId ? 'block' : 'none');
-            if (pageId === 'liquidityFlow') {
-                updateLiquidityFlowAnimation();
+            mainPage.style.display = 'none';
+            graphPage.style.display = 'none';
+            infoPage.style.display = 'none';
+            document.getElementById('graphIndicators').style.display = 'none';
+
+            if (pageId === 'graphIndicators') {
+                document.getElementById('graphIndicators').style.display = 'block';
             } else {
-                stopLiquidityFlowAnimation();
+                document.getElementById(pageId).style.display = 'block';
             }
         }
 
-        function showLiquidityFlow() { showPage('liquidityFlow'); }
-        function showGraphIndicators() { showPage('graphIndicators'); }
+        function showMainPage() {
+            showPage('mainPage');
+        }
 
-        async function showGraph(indicator) {
-            currentIndicator = indicator;
+        function showGraphPage() {
             showPage('graphPage');
-            document.getElementById('graphTitle').textContent = indicatorTitles[indicator] || indicator;
+        }
 
-            const functionUrl = `${FUNCTION_BASE_URL}?indicator=${indicator}`;
+        function parseCSV(csvText) {
+            return Papa.parse(csvText, {
+                header: true,
+                dynamicTyping: true,
+                skipEmptyLines: true
+            }).data;
+        }
 
+        async function fetchAndProcessData() {
             try {
-                renderErrorMessage("데이터를 불러오는 중...");
-                const response = await fetch(functionUrl);
-                if (!response.ok) {
-                    const errorBody = await response.json();
-                    throw new Error(`'${indicatorTitles[indicator]}' 데이터를 찾을 수 없거나 불러오지 못했어요! (${response.status}: ${errorBody.error || response.statusText})`);
-                }
-                const text = await response.text();
-                const data = await parseCSV(text);
+                // TGA 데이터 처리
+                const tgaResponse = await fetch('TGA.csv');
+                const tgaText = await tgaResponse.text();
+                const tgaData = parseCSV(tgaText);
+                processTGAData(tgaData);
 
-                if (data.length === 0) {
-                     renderErrorMessage(`'${indicatorTitles[indicator]}' 지표의 유효한 데이터가 없어요.`);
-                     return;
-                }
+                // MMF to Government 데이터 처리
+                const mmfToGovernmentResponse = await fetch('MMF2GOVERNMENT.csv');
+                const mmfToGovernmentText = await mmfToGovernmentResponse.text();
+                const mmfToGovernmentData = parseCSV(mmfToGovernmentText);
+                processMmfToGovernment(mmfToGovernmentData);
+                
+                // MMF to RRP 데이터 처리
+                const mmfToRrpResponse = await fetch('MMF2RRP.csv');
+                const mmfToRrpText = await mmfToRrpResponse.text();
+                const mmfToRrpData = parseCSV(mmfToRrpText);
+                processMmfToRrp(mmfToRrpData);
 
-                data.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-
-                currentGraphData = data;
-                renderChart(indicator, currentGraphData.map(item => item.date), currentGraphData.map(item => item.value));
-                updateChart('All');
+                // MMF to Market 데이터 처리
+                const mmfToMarketResponse = await fetch('MMF2MARKET.csv');
+                const mmfToMarketText = await mmfToMarketResponse.text();
+                const mmfToMarketData = parseCSV(mmfToMarketText);
+                processMmfToMarket(mmfToMarketData);
 
             } catch (error) {
-                console.error(`CSV 로드 오류 for ${indicator}:`, error);
-                renderErrorMessage(`'${indicatorTitles[indicator]}' 그래프를 그릴 수 없어요! 오류: ${error.message}`);
+                console.error('Failed to fetch data:', error);
             }
         }
 
-        function renderChart(indicator, labels, values) {
-            const ctx = document.getElementById('myChart').getContext('2d');
-            if (myChart) {
-                myChart.destroy();
-                myChart = null;
+        function processTGAData(data) {
+            if (data.length < 30) return;
+
+            const latestDate = data[data.length - 1];
+            const oneMonthAgoDate = data[data.length - 30];
+            const c = latestDate.value - oneMonthAgoDate.value;
+
+            const tgaSlopeDisplay = document.getElementById('tgaSlopeDisplay');
+            const formattedC = (c / 1000).toFixed(2);
+            tgaSlopeDisplay.textContent = `TGA 잔고 변화: ${formattedC} B$/Month`;
+            tgaSlopeDisplay.className = c >= 0 ? 'slope-positive' : 'slope-negative';
+
+            // 애니메이션
+            const startIcon = c >= 0 ? 'Market' : 'Government';
+            const endIcon = c >= 0 ? 'Government' : 'Market';
+            const animationClass = c >= 0 ? 'animated-dollar-to-government' : 'animated-dollar-from-government';
+
+            createDollarAnimation(animationClass, 6000, 3000);
+        }
+
+        function processMmfToGovernment(data) {
+            if (data.length < 30) return;
+
+            const latestDate = data[data.length - 1];
+            const oneMonthAgoDate = data[data.length - 30];
+            const c = latestDate.value - oneMonthAgoDate.value;
+
+            const mmfToGovernmentDisplay = document.getElementById('mmfToGovernmentDisplay');
+            const formattedC = (c / 1000).toFixed(2);
+            mmfToGovernmentDisplay.textContent = `MMF 현금 조달 : ${formattedC} B$/Month`;
+            mmfToGovernmentDisplay.className = c >= 0 ? 'slope-positive' : 'slope-negative';
+            
+            // 애니메이션
+            const animationClass = c >= 0 ? 'animated-dollar-from-mmf-to-government' : 'animated-dollar-from-government-to-mmf';
+            createDollarAnimation(animationClass, 6000, 3000);
+        }
+        
+        function processMmfToRrp(data) {
+            if (data.length < 30) return;
+
+            const latestDate = data[data.length - 1];
+            const oneMonthAgoDate = data[data.length - 30];
+            const c = latestDate.value - oneMonthAgoDate.value;
+
+            const mmfToRrpDisplay = document.getElementById('mmfToRrpDisplay');
+            const formattedC = (c / 1000).toFixed(2);
+            mmfToRrpDisplay.textContent = `RRP 현금 조달 : ${formattedC} B$/Month`;
+            mmfToRrpDisplay.className = c >= 0 ? 'slope-positive' : 'slope-negative';
+
+            // 애니메이션
+            const animationClass = c >= 0 ? 'animated-dollar-from-mmf-to-fed' : 'animated-dollar-from-fed-to-mmf';
+            createDollarAnimation(animationClass, 6000, 3000);
+        }
+
+        function processMmfToMarket(data) {
+            if (data.length < 30) return;
+
+            const latestDate = data[data.length - 1];
+            const oneMonthAgoDate = data[data.length - 30];
+            const c = latestDate.value - oneMonthAgoDate.value;
+
+            const mmfToMarketDisplay = document.getElementById('mmfToMarketDisplay');
+            const formattedC = (c / 1000).toFixed(2);
+            mmfToMarketDisplay.textContent = `Market 현금 조달 : ${formattedC} B$/Month`;
+            mmfToMarketDisplay.className = c >= 0 ? 'slope-positive' : 'slope-negative';
+
+            // 애니메이션
+            const animationClass = c >= 0 ? 'animated-dollar-from-mmf-to-market' : 'animated-dollar-from-market-to-mmf';
+            createDollarAnimation(animationClass, 6000, 3000);
+        }
+
+        function createDollarAnimation(animationClass, duration, interval) {
+            const dollarIconSrc = "https://raw.githubusercontent.com/yoon-seok/images/main/dollar.gif";
+            let dollarObject = document.createElement('img');
+            dollarObject.src = dollarIconSrc;
+            dollarObject.className = 'dollar-animated-object';
+
+            liquidityFlow.appendChild(dollarObject);
+            
+            let animationDuration = duration;
+            let animationInterval = interval;
+            
+            const animate = () => {
+                dollarObject.style.animation = ``;
+                setTimeout(() => {
+                    dollarObject.style.setProperty('--animation-duration', `${animationDuration}ms`);
+                    dollarObject.classList.add(animationClass);
+                }, 10);
+            };
+
+            const animateLoop = () => {
+                animate();
+                setTimeout(() => {
+                    dollarObject.classList.remove(animationClass);
+                    animateLoop();
+                }, animationDuration + animationInterval);
+            };
+
+            animateLoop();
+        }
+
+        async function showGraph(csvFile, graphType, labelText, color) {
+            const response = await fetch(csvFile);
+            const csvText = await response.text();
+            currentGraphData = parseCSV(csvText);
+            currentGraphCSV = csvFile;
+            currentGraphType = graphType;
+            currentGraphLabel = labelText;
+            currentGraphColor = color;
+            
+            document.getElementById('graphTitle').textContent = `${currentGraphLabel} (${currentGraphType})`;
+
+            updateChart(currentGraphData, currentGraphLabel, currentGraphColor);
+            showGraphPage();
+        }
+
+        function updateChart(data, label, color) {
+            const dates = data.map(row => new Date(row.date));
+            const values = data.map(row => row.value);
+            const datasets = [{
+                label: label,
+                data: values.map((val, i) => ({ x: dates[i], y: val })),
+                borderColor: color,
+                backgroundColor: color,
+                borderWidth: 2,
+                pointRadius: 0,
+                tension: 0.1,
+                fill: false
+            }];
+
+            myChart.data.datasets = datasets;
+            myChart.update();
+        }
+
+        function setGraphTimeframe(timeframe) {
+            const allDates = currentGraphData.map(d => new Date(d.date).getTime());
+            if (allDates.length === 0) return;
+
+            const maxDate = Math.max(...allDates);
+            let minDate;
+
+            switch(timeframe) {
+                case '1y':
+                    minDate = new Date(maxDate);
+                    minDate.setFullYear(minDate.getFullYear() - 1);
+                    break;
+                case '3y':
+                    minDate = new Date(maxDate);
+                    minDate.setFullYear(minDate.getFullYear() - 3);
+                    break;
+                case '5y':
+                    minDate = new Date(maxDate);
+                    minDate.setFullYear(minDate.getFullYear() - 5);
+                    break;
+                case 'all':
+                default:
+                    minDate = Math.min(...allDates);
+                    break;
             }
+            
+            myChart.options.scales.x.min = minDate;
+            myChart.options.scales.x.max = maxDate;
+            myChart.update('none');
+        }
 
-            try {
-                myChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: indicatorTitles[indicator] || indicator,
-                            data: values,
-                            borderColor: '#007bff',
-                            backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                            fill: false,
-                            tension: 0.1,
-                            pointRadius: 0
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            x: {
-                                type: 'time',
-                                time: {
-                                    unit: 'month',
-                                    tooltipFormat: 'yyyy-MM-dd',
-                                    displayFormats: {
-                                        day: 'yyyy-MM-dd',
-                                        month: 'yyyy-MM',
-                                        quarter: 'yyyy [Q]Q',
-                                        year: 'yyyy'
-                                    }
-                                },
-                                title: { display: true, text: 'Date' },
-                                grid: { display: true },
-                                reverse: false
-                            },
-                            y: {
-                                title: { display: true, text: 'Value' },
-                                grid: { display: true },
-                                beginAtZero: false,
-                                ticks: {
-                                    callback: function(value, index, values) {
-                                        if (Math.abs(value) >= 1000000000000) return (value / 1000000000000) + 'T';
-                                        if (Math.abs(value) >= 1000000000) return (value / 1000000000) + 'B';
-                                        if (Math.abs(value) >= 1000000) return (value / 1000000) + 'M';
-                                        if (Math.abs(value) >= 1000) return (value / 1000) + 'K';
-                                        return value;
-                                    }
-                                }
-                            }
-                        },
-                        plugins: { legend: { display: true }, tooltip: { mode: 'index', intersect: false } },
-                        onHover: (event, chartElement) => {
-                            event.native.target.style.cursor = chartElement.length ? 'grab' : 'default';
-                        }
-                    }
-                });
-
-                const canvas = document.getElementById('myChart');
-                canvas.removeEventListener('
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchAndProcessData();
+            showPage('mainPage');
+        });
+    </script>
+</body>
+</html>
