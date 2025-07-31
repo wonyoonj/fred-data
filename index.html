@@ -68,11 +68,74 @@
             border: 1px solid #ccc;
             text-align: center;
         }
-
-        #tgaSlopeDisplay {
+        
+        /* 팝업 컨테이너 및 팝업 스타일 */
+        .tga-popup-container {
+            position: absolute;
             top: calc(50% + 80px + 14px + 10px);
             left: 20%;
+            transform: translateX(-50%);
+            z-index: 20;
         }
+
+        #tgaSlopeDisplay {
+            position: relative;
+            z-index: 10;
+            cursor: help;
+        }
+
+        .tga-tooltip {
+            visibility: hidden;
+            background-color: #555;
+            color: #fff;
+            text-align: left;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 120%; /* TGA 잔고 위에 위치 */
+            left: 50%;
+            margin-left: -120px; /* 중앙 정렬 */
+            width: 240px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            line-height: 1.5;
+            white-space: normal;
+        }
+        .tga-tooltip p {
+            margin-top: 0;
+            margin-bottom: 5px;
+            font-size: 12px;
+            font-weight: normal;
+        }
+        .tga-tooltip .graph-btn {
+            background: #009688;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        .tga-tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+        .tga-popup-container:hover .tga-tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
         #fedLiquidityDisplay {
             top: calc(50% + 80px + 14px + 30px);
             left: 20%;
@@ -239,7 +302,15 @@
                 white-space: normal;
             }
 
-            #tgaSlopeDisplay { top: calc(40% + 60px + 12px + 15px); left: 15%; }
+            .tga-popup-container {
+                top: calc(40% + 60px + 12px + 15px);
+                left: 15%;
+            }
+            .tga-tooltip {
+                margin-left: -100px;
+                width: 200px;
+            }
+
             #fedLiquidityDisplay { top: calc(40% + 60px + 12px + 35px); left: 15%; }
             #mmfToRrpDisplay { top: calc(40% - 60px - 10px); left: 85%; }
             #mmfToMarketDisplay { top: calc(40% + 60px + 12px + 15px); left: 85%; }
@@ -274,7 +345,13 @@
 <body>
     <div class="container">
         <div id="liquidityFlow" class="page">
-            <div id="tgaSlopeDisplay"></div>
+            <div class="tga-popup-container">
+                <div id="tgaSlopeDisplay"></div>
+                <div class="tga-tooltip">
+                    <p>최근 한 달 동안의 TGA 잔고 변화를 나타냅니다. 이 변화가 마이너스면, 미국 재무부가 시장에 유동을 공급합니다. 반대로 플러스면 시장에서 재무부로 유동을 흡수합니다.</p>
+                    <button class="graph-btn" onclick="showGraph('WTREGEN')">그래프</button>
+                </div>
+            </div>
             <div id="fedLiquidityDisplay"></div>
             <div id="mmfToRrpDisplay"></div>
             <div id="mmfToMarketDisplay"></div>
