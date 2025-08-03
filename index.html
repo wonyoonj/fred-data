@@ -470,19 +470,38 @@
             'SP500_MCAP': 'S&P500 시가총액'
         };
 
+        // --- 수정된 부분 1: Y축 제목에 사용할 단위 정의 ---
+        const indicatorUnits = {
+            'WTREGEN': 'Billions of U.S. Dollars',
+            'WRESBAL': 'Billions of Dollars',
+            'RRPONTSYD': 'Billions of Dollars',
+            'MMMFFAQ027S': 'Billions of Dollars',
+            'WALCL': 'Billions of Dollars',
+            'M2SL': 'Billions of Dollars',
+            'M1SL': 'Billions of Dollars',
+            'SP500_MCAP': 'Billions of Dollars',
+            'SOFR': '%',
+            'FEDFUNDS': '%',
+            'TB3MS': '%',
+            'TB1YR': '%',
+            'DPCREDIT': '%',
+            'DRBLACBS': '%',
+            'NASDAQ100': 'Index',
+            'SP500': 'Index'
+        };
+
+
         async function parseCSV(text) {
             const lines = text.trim().split('\n');
             if (lines.length <= 1) return [];
 
             const headers = lines[0].split(',').map(h => h.trim());
             
-            // 'Date' 또는 'data' 컬럼 찾기 (대소문자 무시)
             let dateColIndex = headers.findIndex(h => h.toLowerCase() === 'date');
             if (dateColIndex === -1) {
                 dateColIndex = headers.findIndex(h => h.toLowerCase() === 'data');
             }
 
-            // 날짜가 아닌 다른 컬럼을 값 컬럼으로 찾기
             const valueColName = headers.find((h, i) => i !== dateColIndex);
             const valueColIdx = headers.indexOf(valueColName);
 
@@ -551,6 +570,15 @@
                      renderErrorMessage(`'${indicatorTitles[indicator]}' 지표의 유효한 데이터가 없어요.`);
                      return;
                 }
+                
+                // --- 수정된 부분 2: 데이터 단위 변환 ---
+                data.forEach(item => {
+                    if (indicator === 'WALCL') {
+                        item.value = item.value / 1000; // Millions to Billions
+                    } else if (indicator === 'MMMFFAQ027S' || indicator === 'SP500_MCAP') {
+                        item.value = item.value / 1000000000; // Dollars to Billions
+                    }
+                });
 
                 data.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
@@ -607,7 +635,14 @@
                                 reverse: false
                             },
                             y: {
-                                title: { display: true, text: 'Value' },
+                                // --- 수정된 부분 3: Y축 제목에 단위 표시 및 Bold 처리 ---
+                                title: { 
+                                    display: true, 
+                                    text: indicatorUnits[indicator] || 'Value',
+                                    font: {
+                                        weight: 'bold'
+                                    }
+                                },
                                 grid: { display: true },
                                 beginAtZero: false,
                                 ticks: {
