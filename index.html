@@ -211,18 +211,23 @@
             80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 50%; }
             100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 50%; }
         }
-        @keyframes dollarFlowFromMmfToMarket {
+        
+        /* MMF to Market의 새로운 경로 - 포물선으로 수정 */
+        @keyframes dollarFlowFromMmfToMarket_parabolic {
             0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 50%; }
             20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 50%; }
+            50% { transform: translate(-50%, -50%) scale(1) translateY(50px); opacity: 1; left: 65%; top: 65%; } 
             80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
             100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
         }
-        @keyframes dollarFlowFromMarketToMmf {
+        @keyframes dollarFlowFromMarketToMmf_parabolic {
             0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
             20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
+            50% { transform: translate(-50%, -50%) scale(1) translateY(50px); opacity: 1; left: 65%; top: 65%; }
             80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 50%; }
             100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 50%; }
         }
+
         @keyframes dollarFlowFromMmfToGovernment {
             0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 50%; }
             20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 50%; }
@@ -232,20 +237,6 @@
         @keyframes dollarFlowFromGovernmentToMmf {
             0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 20%; top: 50%; }
             20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 20%; top: 50%; }
-            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 50%; }
-            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 50%; }
-        }
-
-        /* MMF to Market의 새로운 경로 */
-        @keyframes dollarFlowFromMmfToMarket_new {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 50%; }
-            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 50%; }
-            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
-            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
-        }
-        @keyframes dollarFlowFromMarketToMmf_new {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
-            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
             80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 50%; }
             100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 50%; }
         }
@@ -264,8 +255,8 @@
         .animated-dollar-from-government-to-mmf { animation: dollarFlowFromGovernmentToMmf var(--animation-duration) linear forwards; }
 
         /* 신규 MMF 애니메이션 적용 */
-        .animated-dollar-from-mmf-to-market_new { animation: dollarFlowFromMmfToMarket_new var(--animation-duration) linear forwards; }
-        .animated-dollar-from-market-to-mmf_new { animation: dollarFlowFromMarketToMmf_new var(--animation-duration) linear forwards; }
+        .animated-dollar-from-mmf-to-market_parabolic { animation: dollarFlowFromMmfToMarket_parabolic var(--animation-duration) linear forwards; }
+        .animated-dollar-from-market-to-mmf_parabolic { animation: dollarFlowFromMarketToMmf_parabolic var(--animation-duration) linear forwards; }
 
         #graphIndicators { padding: 20px; text-align: center; }
         .indicator-section { margin-bottom: 20px; }
@@ -812,7 +803,7 @@
                         data.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
                         dataStore[indicator] = data;
                     } else {
-                        throw new Error("Parsed data is empty");
+                        dataStore[indicator] = [];
                     }
                 } catch (error) {
                     console.error(`${indicator} 데이터 로드 실패:`, error.message);
@@ -928,7 +919,7 @@
                     const combinedDiff = diffMarket + diffGov;
 
                     formatDisplay(mmfToMarketDisplay, 'MMF ->시장:', combinedDiff);
-                    animationTasks.push(combinedDiff > 0 ? 'animated-dollar-from-mmf-to-market_new' : 'animated-dollar-from-market-to-mmf_new');
+                    animationTasks.push(combinedDiff > 0 ? 'animated-dollar-from-mmf-to-market_parabolic' : 'animated-dollar-from-market-to-mmf_parabolic');
                 } else {
                     mmfToMarketDisplay.textContent = "MMF->Mkt: 데이터 부족";
                 }
@@ -947,24 +938,24 @@
                 
                 if (latestVal !== null && pastVal !== null) {
                     const c = latestVal - pastVal; // 이미 빌리언 단위로 변환되어 있음
-                    const formattedC = (c).toFixed(2);
+                    const formattedC = (c/1000000000).toFixed(2);
                     const sign = c > 0 ? '+' : '';
                     const colorClass = c > 0 ? 'slope-positive' : 'slope-negative';
                     
-                    mmfLiquidityDisplay.innerHTML = `MMF 현금 조달:<br>${sign}${formattedC} B $/Month`;
+                    mmfLiquidityDisplay.innerHTML = `MMF 자산변화:<br>${sign}${formattedC} B $/Month`;
                     mmfLiquidityDisplay.className = colorClass;
 
-                    // MMF 현금 조달 (c) 값에 따라 Market-MMF 애니메이션 추가
+                    // MMF 현금 조달 (c) 값에 따라 Market-MMF 애니메이션 추가 (포물선 적용)
                     if (c > 0) {
-                        animationTasks.push('animated-dollar-from-market-to-mmf_new');
+                        animationTasks.push('animated-dollar-from-market-to-mmf_parabolic');
                     } else if (c < 0) {
-                        animationTasks.push('animated-dollar-from-mmf-to-market_new');
+                        animationTasks.push('animated-dollar-from-mmf-to-market_parabolic');
                     }
                 } else {
-                    mmfLiquidityDisplay.textContent = "MMF 현금 조달: 데이터 부족";
+                    mmfLiquidityDisplay.textContent = "MMF 자산변화: 데이터 부족";
                 }
             } else {
-                mmfLiquidityDisplay.textContent = "MMF 현금 조달: 로드 오류";
+                mmfLiquidityDisplay.textContent = "MMF 자산변화: 로드 오류";
             }
             
 
