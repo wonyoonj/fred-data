@@ -813,9 +813,9 @@
 
                     // WALCL 값을 1000으로 나누어 단위를 수십억 달러로 통일
                     const walclDiff = (latest.walcl / 1000) - (past.walcl / 1000);
-                    const otherDiffs = (latest.tga - past.tga) + (latest.rrp - past.rrp) + (latest.resbal - past.resbal);
-                    const t = walclDiff - 2 * otherDiffs;
-
+                    const otherDiffs = (latest.tga - past.tga) + 2 * (latest.rrp - past.rrp) + 2 * (latest.resbal - past.resbal);
+                    const t = walclDiff - otherDiffs;
+                    
                     const tInBillion = (t).toFixed(2);
                     fedLiquidityDisplay.innerHTML = `연준 유동성:<br>${tInBillion} B $/Month`;
                     fedLiquidityDisplay.className = t >= 0 ? 'slope-positive' : 'slope-negative';
