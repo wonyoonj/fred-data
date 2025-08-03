@@ -473,26 +473,6 @@
             'SP500': 'S&P500 지수',
             'SP500_MCAP': 'S&P500 시가총액'
         };
-        
-        // 지표별 y축 단위 추가
-        const indicatorUnits = {
-            'WTREGEN': 'Billions of U.S. Dollars',
-            'WRESBAL': 'Billions of Dollars',
-            'RRPONTSYD': 'Billions of Dollars',
-            'MMMFFAQ027S': 'Millions of Dollars',
-            'WALCL': 'Millions of U.S. Dollars',
-            'SOFR': 'Percent',
-            'FEDFUNDS': 'Percent',
-            'TB3MS': 'Percent',
-            'TB1YR': 'Percent',
-            'DPCREDIT': 'Percent',
-            'DRBLACBS': 'Percent',
-            'M2SL': 'Billions of Dollars',
-            'M1SL': 'Billions of Dollars',
-            'NASDAQ100': 'Index',
-            'SP500': 'Index',
-            'SP500_MCAP': 'Trillions of U.S. Dollars'
-        };
 
         async function parseCSV(text) {
             const lines = text.trim().split('\n');
@@ -595,14 +575,6 @@
                 myChart = null;
             }
 
-            // S&P500 시가총액 단위 변환
-            let convertedValues = values;
-            let unitText = indicatorUnits[indicator] || 'Value';
-
-            if (indicator === 'SP500_MCAP') {
-                convertedValues = values.map(v => v / 1000000000000); // 달러 -> Trillion 달러
-            }
-
             try {
                 myChart = new Chart(ctx, {
                     type: 'line',
@@ -610,7 +582,7 @@
                         labels: labels,
                         datasets: [{
                             label: indicatorTitles[indicator] || indicator,
-                            data: convertedValues,
+                            data: values,
                             borderColor: '#007bff',
                             backgroundColor: 'rgba(0, 123, 255, 0.1)',
                             fill: false,
@@ -639,15 +611,15 @@
                                 reverse: false
                             },
                             y: {
-                                title: { display: true, text: unitText },
+                                title: { display: true, text: 'Value' },
                                 grid: { display: true },
                                 beginAtZero: false,
                                 ticks: {
                                     callback: function(value, index, values) {
-                                        if (Math.abs(value) >= 1000000000000) return (value / 1000000000000).toFixed(2) + 'T';
-                                        if (Math.abs(value) >= 1000000000) return (value / 1000000000).toFixed(2) + 'B';
-                                        if (Math.abs(value) >= 1000000) return (value / 1000000).toFixed(2) + 'M';
-                                        if (Math.abs(value) >= 1000) return (value / 1000).toFixed(2) + 'K';
+                                        if (Math.abs(value) >= 1000000000000) return (value / 1000000000000) + 'T';
+                                        if (Math.abs(value) >= 1000000000) return (value / 1000000000) + 'B';
+                                        if (Math.abs(value) >= 1000000) return (value / 1000000) + 'M';
+                                        if (Math.abs(value) >= 1000) return (value / 1000) + 'K';
                                         return value;
                                     }
                                 }
@@ -775,7 +747,7 @@
                 el.style.color = "black";
             });
 
-            const indicators = ['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL', 'MMMFFAQ027S'];
+            const indicators = ['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL', 'MMF2RRP', 'MMF2MARKET', 'MMF2GOVERNMENT'];
             const dataStore = {};
 
             // 모든 지표 데이터 병렬로 가져오기
@@ -839,11 +811,11 @@
                     tgaSlopeDisplay.className = tgaDiff < 0 ? 'slope-negative' : 'slope-positive';
                     animationTasks.push(tgaDiff < 0 ? 'animated-dollar-from-government' : 'animated-dollar-to-government');
 
-                    const fedLiquidityDiff = (latest.walcl * 1000) - (past.walcl * 1000); // Millions of Dollars -> Billions of Dollars
-                    const fedLiquidityDiffInBillion = (fedLiquidityDiff / 1000000000).toFixed(2);
-                    fedLiquidityDisplay.innerHTML = `연준 유동성:<br>${fedLiquidityDiffInBillion} B $/Month`;
-                    fedLiquidityDisplay.className = fedLiquidityDiff >= 0 ? 'slope-positive' : 'slope-negative';
-                    animationTasks.push(fedLiquidityDiff < 0 ? 'animated-dollar-to-fed' : 'animated-dollar-to-market');
+                    const t = (latest.walcl - past.walcl) - 2 * ((latest.tga - past.tga) + (latest.rrp - past.rrp) + (latest.resbal - past.resbal));
+                    const tInBillion = (t / 1000000000).toFixed(2);
+                    fedLiquidityDisplay.innerHTML = `연준 유동성:<br>${tInBillion} B $/Month`;
+                    fedLiquidityDisplay.className = t >= 0 ? 'slope-positive' : 'slope-negative';
+                    animationTasks.push(t < 0 ? 'animated-dollar-to-fed' : 'animated-dollar-to-market');
                 } else {
                      tgaSlopeDisplay.textContent = "TGA: 데이터 부족";
                      fedLiquidityDisplay.textContent = "연준: 데이터 부족";
@@ -853,47 +825,69 @@
                 fedLiquidityDisplay.textContent = "연준: 로드 오류";
             }
 
-            // --- MMF to RRP, Market, Government 처리 ---
-            const mmfRelatedData = dataStore.MMMFFAQ027S;
-            if (mmfRelatedData && mmfRelatedData.length > 0) {
-                const latestDate = new Date(mmfRelatedData[mmfRelatedData.length - 1].date);
+            // --- MMF to RRP 처리 ---
+            if (dataStore.MMF2RRP && dataStore.MMF2RRP.length > 0) {
+                const latestDate = new Date(dataStore.MMF2RRP[dataStore.MMF2RRP.length - 1].date);
                 const oneMonthAgo = new Date(latestDate);
                 oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-                
-                const latestVal = getClosestPastDataValue(mmfRelatedData, latestDate);
-                const pastVal = getClosestPastDataValue(mmfRelatedData, oneMonthAgo);
-                
+
+                const latestVal = getClosestPastDataValue(dataStore.MMF2RRP, latestDate);
+                const pastVal = getClosestPastDataValue(dataStore.MMF2RRP, oneMonthAgo);
+
                 if (latestVal !== null && pastVal !== null) {
-                    const mmfDiff = latestVal - pastVal;
-                    const mmfDiffInBillion = (mmfDiff / 1000).toFixed(2); // Millions to Billions
-                    
-                    // 여기서는 임시로 mmf 잔고 변화를 3개 경로에 동일하게 분배한다고 가정합니다.
-                    const diffToRrp = mmfDiff;
-                    const diffToMarket = mmfDiff;
-                    const diffToGovernment = mmfDiff;
-
-                    const diffToRrpInBillion = (diffToRrp / 1000).toFixed(2);
-                    mmfToRrpDisplay.innerHTML = `MMF <-> FED:<br>${diffToRrpInBillion} B $/Month`;
-                    mmfToRrpDisplay.className = diffToRrp >= 0 ? 'slope-negative' : 'slope-positive'; // MMF->FED는 유동성 흡수
-                    animationTasks.push(diffToRrp >= 0 ? 'animated-dollar-from-mmf-to-fed' : 'animated-dollar-from-fed-to-mmf');
-
-                    const diffToMarketInBillion = (diffToMarket / 1000).toFixed(2);
-                    mmfToMarketDisplay.innerHTML = `MMF <-> 시장:<br>${diffToMarketInBillion} B $/Month`;
-                    mmfToMarketDisplay.className = diffToMarket >= 0 ? 'slope-positive' : 'slope-negative';
-                    animationTasks.push(diffToMarket >= 0 ? 'animated-dollar-from-mmf-to-market' : 'animated-dollar-from-market-to-mmf');
-
-                    const diffToGovernmentInBillion = (diffToGovernment / 1000).toFixed(2);
-                    mmfToGovernmentDisplay.innerHTML = `MMF <-> 정부:<br>${diffToGovernmentInBillion} B $/Month`;
-                    mmfToGovernmentDisplay.className = diffToGovernment >= 0 ? 'slope-positive' : 'slope-negative';
-                    animationTasks.push(diffToGovernment >= 0 ? 'animated-dollar-from-mmf-to-government' : 'animated-dollar-from-government-to-mmf');
+                    const diff = latestVal - pastVal;
+                    const diffInBillion = (diff / 1000000000).toFixed(2);
+                    mmfToRrpDisplay.innerHTML = `MMF -> FED:<br>${diffInBillion} B $/Month`;
+                    mmfToRrpDisplay.className = diff >= 0 ? 'slope-positive' : 'slope-negative';
+                    animationTasks.push(diff >= 0 ? 'animated-dollar-from-mmf-to-fed' : 'animated-dollar-from-fed-to-mmf');
                 } else {
                     mmfToRrpDisplay.textContent = "MMF->RRP: 데이터 부족";
-                    mmfToMarketDisplay.textContent = "MMF->Mkt: 데이터 부족";
-                    mmfToGovernmentDisplay.textContent = "MMF->Gov: 데이터 부족";
                 }
             } else {
                 mmfToRrpDisplay.textContent = "MMF->RRP: 로드 오류";
-                mmfToMarketDisplay.textContent = "MMF->Mkt: 로드 오류";
+            }
+
+            // --- MMF to Market 처리 ---
+            if (dataStore.MMF2MARKET && dataStore.MMF2MARKET.length > 0) {
+                const latestDate = new Date(dataStore.MMF2MARKET[dataStore.MMF2MARKET.length - 1].date);
+                const oneMonthAgo = new Date(latestDate);
+                oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+                
+                const latestVal = getClosestPastDataValue(dataStore.MMF2MARKET, latestDate);
+                const pastVal = getClosestPastDataValue(dataStore.MMF2MARKET, oneMonthAgo);
+                
+                if (latestVal !== null && pastVal !== null) {
+                    const diff = latestVal - pastVal;
+                    const diffInBillion = (diff / 1000000000).toFixed(2);
+                    mmfToMarketDisplay.innerHTML = `MMF ->시장:<br>${diffInBillion} B $/Month`;
+                    mmfToMarketDisplay.className = diff >= 0 ? 'slope-positive' : 'slope-negative';
+                    animationTasks.push(diff >= 0 ? 'animated-dollar-from-mmf-to-market' : 'animated-dollar-from-market-to-mmf');
+                } else {
+                     mmfToMarketDisplay.textContent = "MMF->Mkt: 데이터 부족";
+                }
+            } else {
+                 mmfToMarketDisplay.textContent = "MMF->Mkt: 로드 오류";
+            }
+
+            // --- MMF to Government 처리 ---
+            if (dataStore.MMF2GOVERNMENT && dataStore.MMF2GOVERNMENT.length > 0) {
+                const latestDate = new Date(dataStore.MMF2GOVERNMENT[dataStore.MMF2GOVERNMENT.length - 1].date);
+                const oneMonthAgo = new Date(latestDate);
+                oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+                
+                const latestVal = getClosestPastDataValue(dataStore.MMF2GOVERNMENT, latestDate);
+                const pastVal = getClosestPastDataValue(dataStore.MMF2GOVERNMENT, oneMonthAgo);
+                
+                if (latestVal !== null && pastVal !== null) {
+                    const diff = latestVal - pastVal;
+                    const diffInBillion = (diff / 1000000000).toFixed(2);
+                    mmfToGovernmentDisplay.innerHTML = `MMF ->정부:<br>${diffInBillion} B $/Month`;
+                    mmfToGovernmentDisplay.className = diff >= 0 ? 'slope-positive' : 'slope-negative';
+                    animationTasks.push(diff >= 0 ? 'animated-dollar-from-mmf-to-government' : 'animated-dollar-from-government-to-mmf');
+                } else {
+                     mmfToGovernmentDisplay.textContent = "MMF->Gov: 데이터 부족";
+                }
+            } else {
                 mmfToGovernmentDisplay.textContent = "MMF->Gov: 로드 오류";
             }
 
