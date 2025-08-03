@@ -811,14 +811,18 @@
                     tgaSlopeDisplay.className = tgaDiff < 0 ? 'slope-negative' : 'slope-positive';
                     animationTasks.push(tgaDiff < 0 ? 'animated-dollar-from-government' : 'animated-dollar-to-government');
 
-                    const t = (latest.walcl - past.walcl) - 2 * ((latest.tga - past.tga) + (latest.rrp - past.rrp) + (latest.resbal - past.resbal));
+                    // WALCL 값을 1000으로 나누어 단위를 수십억 달러로 통일
+                    const walclDiff = (latest.walcl / 1000) - (past.walcl / 1000);
+                    const otherDiffs = (latest.tga - past.tga) + (latest.rrp - past.rrp) + (latest.resbal - past.resbal);
+                    const t = walclDiff - 2 * otherDiffs;
+
                     const tInBillion = (t).toFixed(2);
                     fedLiquidityDisplay.innerHTML = `연준 유동성:<br>${tInBillion} B $/Month`;
                     fedLiquidityDisplay.className = t >= 0 ? 'slope-positive' : 'slope-negative';
                     animationTasks.push(t < 0 ? 'animated-dollar-to-fed' : 'animated-dollar-to-market');
                 } else {
-                     tgaSlopeDisplay.textContent = "TGA: 데이터 부족";
-                     fedLiquidityDisplay.textContent = "연준: 데이터 부족";
+                    tgaSlopeDisplay.textContent = "TGA: 데이터 부족";
+                    fedLiquidityDisplay.textContent = "연준: 데이터 부족";
                 }
             } else {
                 tgaSlopeDisplay.textContent = "TGA: 로드 오류";
