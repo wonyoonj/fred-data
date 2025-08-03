@@ -312,7 +312,6 @@
             #mmfToMarketDisplay { top: calc(35% + 60px + 12px + 15px); left: 75%; }
             
 
-
             .dollar-animated-object {
                 width: 22.5px;
                 height: 22.5px;
@@ -470,6 +469,26 @@
             'SP500_MCAP': 'S&P500 시가총액'
         };
 
+        const indicatorYAxisUnits = {
+            'WTREGEN': 'Billions of U.S. Dollars',
+            'WRESBAL': 'Billions of Dollars',
+            'RRPONTSYD': 'Billions of Dollars',
+            'WALCL': 'Millions of U.S. Dollars', // WALCL은 Millions이 맞음
+            'MMMFFAQ027S': 'Billions of U.S Dollars', // MMF는 Billions로 통일
+            'SP500_MCAP': 'Billions of U.S Dollars', // S&P500 시가총액은 Billions로 통일
+            'SOFR': 'Percent',
+            'FEDFUNDS': 'Percent',
+            'TB3MS': 'Percent',
+            'TB1YR': 'Percent',
+            'DPCREDIT': 'Percent',
+            'DRBLACBS': 'Percent',
+            'M2SL': 'Billions of Dollars',
+            'M1SL': 'Billions of Dollars',
+            'NASDAQ100': 'Index',
+            'SP500': 'Index'
+        };
+        
+
         async function parseCSV(text) {
             const lines = text.trim().split('\n');
             if (lines.length <= 1) return [];
@@ -551,6 +570,21 @@
                      renderErrorMessage(`'${indicatorTitles[indicator]}' 지표의 유효한 데이터가 없어요.`);
                      return;
                 }
+                
+                if (indicator === 'MMMFFAQ027S' || indicator === 'SP500_MCAP') {
+                    data.forEach(item => {
+                        if (item.value) {
+                            item.value /= 1000; // Millions -> Billions
+                        }
+                    });
+                }
+                if (indicator === 'WALCL') {
+                    data.forEach(item => {
+                        if (item.value) {
+                            item.value /= 1000; // Millions -> Billions
+                        }
+                    });
+                }
 
                 data.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
@@ -570,6 +604,8 @@
                 myChart.destroy();
                 myChart = null;
             }
+
+            const yAxisUnit = indicatorYAxisUnits[indicator] || 'Value';
 
             try {
                 myChart = new Chart(ctx, {
@@ -607,15 +643,15 @@
                                 reverse: false
                             },
                             y: {
-                                title: { display: true, text: 'Value' },
+                                title: { display: true, text: yAxisUnit },
                                 grid: { display: true },
                                 beginAtZero: false,
                                 ticks: {
                                     callback: function(value, index, values) {
-                                        if (Math.abs(value) >= 1000000000000) return (value / 1000000000000) + 'T';
-                                        if (Math.abs(value) >= 1000000000) return (value / 1000000000) + 'B';
-                                        if (Math.abs(value) >= 1000000) return (value / 1000000) + 'M';
-                                        if (Math.abs(value) >= 1000) return (value / 1000) + 'K';
+                                        if (yAxisUnit === 'Index' || yAxisUnit === 'Percent') {
+                                            return value;
+                                        }
+                                        if (Math.abs(value) >= 1000) return (value / 1000) + 'T';
                                         return value;
                                     }
                                 }
@@ -704,7 +740,7 @@
             const info = {
                 'WTREGEN': {'title': '미 정부 TGA 잔고', 'content': {'경제적 의미': 'Treasury General Account (TGA)는 미국 정부의 현금 잔고 입니다. 이 잔고의 증가는 정부가 지출을 줄이거나 차입을 늘렸음을, 감소는 지출 증가나 상환을 의미할 수 있습니다.', '왜 필요한 지표인가': 'TGA 잔고는 유동성(시장에 순환하는 돈의 양)에 직접적인 영향을 미치며, 특히 연준의 통화 정책과 상호작용합니다. 잔고가 급격히 변동하면 단기 금리나 금융 시장 안정성에 영향을 줄 수 있어 모니터링이 필요합니다.'}},
                 'WRESBAL': {'title': '미 은행 지급준비금', 'content': {'경제적 의미': '은행이 연방준비제도(FRB)에 예치한 의무적 예금으로, 은행 시스템의 유동성을 조절하는 데 사용됩니다. 이 수치가 높으면 은행이 대출을 줄일 가능성이 있고, 낮으면 대출이 증가할 수 있습니다.', '왜 필요한 지표인가': '지급준비금은 통화 공급량과 신용 창출에 영향을 미치며, 연준의 통화 정책(예: 양적 완화 또는 긴축)의 효과를 평가하는 데 핵심 지표입니다. 경제 과열이나 침체를 방지하기 위해 모니터링됩니다.'}},
-                'M2SL': {'title': 'M2', 'content': {'경제적 의미': 'M2는 전통적인 은행 활동에 의한 화폐 공급량을 의미합니다. 예를 들면 은행에서의 현금, 수시입출금 예금, 저축 예금, 그리고 소액의 정기 예금을 포함합니다. 하지만 최근들어 MMF(Money Market Fund)의 자금 조달로 인한 M2에 간접적인 영향을 줄 수는 있겠으나, MMF 자금 유동성이 급격히 변동하더라도, M2 수치에 즉각적으로 반영되진 않을 수 있습니다. Stable Coin에 의한 자금 유동성 또한 M2에 직접 포함되지는 않습니다.', '왜 필요한 지표인가': 'M2는 전통적인 인플레이션, 경제 성장, 소비 동향을 예측하는 데 사용됩니다. 급격한 증가나 감소는 통화 정책 조정(예: 금리 인상/인하)의 신호로 해석될 수 있어 중요합니다.'}},
+                'M2SL': {'title': 'M2', 'content': {'경제적 의미': 'M2는 전통적인 은행 활동에 의한 화폐 공급량을 의미합니다. 예를 들면 은행에서의 현금, 수시입출금 예금, 저축 예금, 그리고 소액의 정기 예금을 포함합니다. 하지만 최근들어 MMF(Money Market Fund)의 자금 조달로 인한 M2에 간접적인 영향을 줄 수는 있겠으나, MMF 자금 유동성이 급격하게 변동하더라도, M2 수치에 즉각적으로 반영되지는 않습니다. Stable Coin에 의한 자금 유동성 또한 M2에 직접 포함되지는 않습니다.', '왜 필요한 지표인가': 'M2는 전통적인 인플레이션, 경제 성장, 소비 동향을 예측하는 데 사용됩니다. 급격한 증가나 감소는 통화 정책 조정(예: 금리 인상/인하)의 신호로 해석될 수 있어 중요합니다.'}},
                 'M1SL': {'title': 'M1', 'content': {'경제적 의미': 'M1은 화폐 공급량의 좁은 정의로, 현금과 수시입출금 예금을 포함합니다. 이는 가장 유동성이 높은 자산을 나타냅니다. M2와 마찬가지로 MMF와 Stable Coin에 의한 영향성은 제한적입니다.', '왜 필요한 지표인가': 'M1은 단기적인 지출 능력과 유동성 수준을 반영하며, 경제 활동의 초기 신호를 제공합니다. 특히 통화 정책의 실시간 영향을 분석하는 데 유용합니다.'}},
                 'SOFR': {'title': 'SOFR 금리', 'content': {'경제적 의미': 'SOFR은 Secured Overnight Financing Rate의 약자로, 미국에서 한밤사이(overnight) 동안 담보(예: 미국 재무부 증권)를 기반으로 한 대출 거래의 이자율을 평균한 기준 금리입니다. 즉, SOFR은 은행이 다른 금융기관(예: 증권사, 헤지펀드 등)으로부터 담보를 제공하고 자금을 빌리는 비용을 나타냅니다.', '왜 필요한 지표인가': 'SOFR은 단기 자금 시장의 유동성과 수요-공급 상황을 반영합니다. 예를 들어, 시장에 자금이 부족하면 SOFR이 상승하고, 자금이 풍부하면 하락합니다. 이는 금융기관이 하루 동안 자금을 조달하거나 투자할 때 참고하는 중요한 기준 금리입니다. 시중에 자금이 넘치는지, 안넘치는지의 지표가 될 수 있습니다.'}},
                 'FEDFUNDS': {'title': 'EFFR 금리', 'content': {'경제적 의미': 'Effective Federal Funds Rate는 은행들이 연준에 예치된 자금을 상호 대출할 때 적용되는 실제 금리를 의미합니다. 연준 기준 금리와 밀접하게 연관됩니다.', '왜 필요한 지표인가': 'EFFR은 연준의 통화 정책 방향을 보여주며, 경제 성장, 인플레이션, 고용에 영향을 미칩니다. 예를 들면, EFFR 금리가 높다는건, 은행간의 대출 부담을 높여서 시중에 빌리는 돈의 규모를 축소한다는 의미가 될 수 있습니다. 결과적으로 긴축 효과를 냅니다.'}},
