@@ -56,7 +56,7 @@
         .Market-container { top: 80%; left: 50%; }
         .MMF-container { top: 50%; left: 80%; }
 
-        #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay, #mmfToGovernmentDisplay {
+        #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay {
             position: absolute;
             transform: translateX(-50%);
             font-size: 0.8em;
@@ -151,11 +151,7 @@
             left: 70%;
         }
 
-        #mmfToGovernmentDisplay {
-            top: 50%; 
-            left: 68%; 
-            transform: translate(-50%, -50%);
-        }
+        
 
         .slope-positive { color: blue; }
         .slope-negative { color: red; }
@@ -296,7 +292,7 @@
             .Market-container { top: 85%; left: 50%; }
             .MMF-container { top: 40%; left: 85%; }
 
-            #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay, #mmfToGovernmentDisplay {
+            #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay {
                 font-size: 0.7em;
                 padding: 2px 4px;
                 white-space: normal;
@@ -314,7 +310,7 @@
             #fedLiquidityDisplay { top: calc(40% + 60px + 12px + 35px); left: 15%; }
             #mmfToRrpDisplay { top: calc(40% - 60px - 10px); left: 75%; }
             #mmfToMarketDisplay { top: calc(35% + 60px + 12px + 15px); left: 75%; }
-            #mmfToGovernmentDisplay { top: 40%; left: 70%; }
+            
 
 
             .dollar-animated-object {
@@ -355,7 +351,7 @@
             <div id="fedLiquidityDisplay"></div>
             <div id="mmfToRrpDisplay"></div>
             <div id="mmfToMarketDisplay"></div>
-            <div id="mmfToGovernmentDisplay"></div>
+            
 
             <div class="icon-container FED-container">
                 <span class="icon-label">중앙은행 FED</span>
@@ -739,10 +735,10 @@
             const fedLiquidityDisplay = document.getElementById('fedLiquidityDisplay');
             const mmfToRrpDisplay = document.getElementById('mmfToRrpDisplay');
             const mmfToMarketDisplay = document.getElementById('mmfToMarketDisplay');
-            const mmfToGovernmentDisplay = document.getElementById('mmfToGovernmentDisplay');
+            
             
             // 모든 디스플레이 초기화
-            [tgaSlopeDisplay, fedLiquidityDisplay, mmfToRrpDisplay, mmfToMarketDisplay, mmfToGovernmentDisplay].forEach(el => {
+            [tgaSlopeDisplay, fedLiquidityDisplay, mmfToRrpDisplay, mmfToMarketDisplay].forEach(el => {
                 el.textContent = "계산 중...";
                 el.style.color = "black";
             });
