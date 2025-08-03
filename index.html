@@ -806,13 +806,13 @@
 
                 if (Object.values(latest).every(v => v !== null) && Object.values(past).every(v => v !== null)) {
                     const tgaDiff = latest.tga - past.tga;
-                    const tgaDiffInBillion = (tgaDiff / 1000000000).toFixed(2);
+                    const tgaDiffInBillion = (tgaDiff).toFixed(2);
                     tgaSlopeDisplay.innerHTML = `TGA 잔고:<br>${tgaDiffInBillion} B $/Month`;
                     tgaSlopeDisplay.className = tgaDiff < 0 ? 'slope-negative' : 'slope-positive';
                     animationTasks.push(tgaDiff < 0 ? 'animated-dollar-from-government' : 'animated-dollar-to-government');
 
                     const t = (latest.walcl - past.walcl) - 2 * ((latest.tga - past.tga) + (latest.rrp - past.rrp) + (latest.resbal - past.resbal));
-                    const tInBillion = (t / 1000000000).toFixed(2);
+                    const tInBillion = (t).toFixed(2);
                     fedLiquidityDisplay.innerHTML = `연준 유동성:<br>${tInBillion} B $/Month`;
                     fedLiquidityDisplay.className = t >= 0 ? 'slope-positive' : 'slope-negative';
                     animationTasks.push(t < 0 ? 'animated-dollar-to-fed' : 'animated-dollar-to-market');
