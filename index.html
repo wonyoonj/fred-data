@@ -833,63 +833,24 @@
                 element.className = colorClass;
             };
 
-            // 정확한 날짜 매칭을 위한 헬퍼 함수들
-            function findExactDateValue(data, targetDate, valueField) {
-                const targetDateStr = targetDate.toISOString().split('T')[0]; // YYYY-MM-DD 형식
-                
-                for (let i = 0; i < data.length; i++) {
-                    const dataDate = new Date(data[i].date);
-                    const dataDateStr = dataDate.toISOString().split('T')[0];
-                    
-                    if (dataDateStr === targetDateStr) {
-                        return parseFloat(data[i][valueField]);
-                    }
-                }
-                return null;
-            }
-
-            function findClosestPastValue(data, targetDate, valueField) {
-                let bestMatch = null;
-                let bestValue = null;
-                
-                for (let i = 0; i < data.length; i++) {
-                    const dataDate = new Date(data[i].date);
-                    
-                    // 목표 날짜보다 이전이거나 같은 날짜 중에서
-                    if (dataDate <= targetDate) {
-                        if (!bestMatch || dataDate > bestMatch) {
-                            bestMatch = dataDate;
-                            bestValue = parseFloat(data[i][valueField]);
-                        }
-                    }
-                }
-                
-                return bestValue;
-            }
-
-            function getDataValue(data, targetDate, valueField) {
-                return findExactDateValue(data, targetDate, valueField) || 
-                    findClosestPastValue(data, targetDate, valueField);
-            }
-
             // --- TGA 및 연준 유동성 처리 ---
             const tgaRelatedData = [dataStore.WTREGEN, dataStore.WALCL, dataStore.RRPONTSYD, dataStore.WRESBAL];
             if (tgaRelatedData.every(d => d && d.length > 0)) {
                 const latestDate = new Date(dataStore.WTREGEN[dataStore.WTREGEN.length - 1].date);
                 const oneMonthAgo = new Date(latestDate);
-                oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+                oneMonthAgo.setDate(oneMonthAgo.getDate() - 30); // *** 수정된 부분 ***
                 
                 const latest = {
-                    tga: getDataValue(dataStore.WTREGEN, latestDate, 'WTREGEN'),
-                    walcl: getDataValue(dataStore.WALCL, latestDate, 'WALCL'),
-                    rrp: getDataValue(dataStore.RRPONTSYD, latestDate, 'RRPONTSYD'),
-                    resbal: getDataValue(dataStore.WRESBAL, latestDate, 'WRESBAL'),
+                    tga: getClosestPastDataValue(dataStore.WTREGEN, latestDate),
+                    walcl: getClosestPastDataValue(dataStore.WALCL, latestDate),
+                    rrp: getClosestPastDataValue(dataStore.RRPONTSYD, latestDate),
+                    resbal: getClosestPastDataValue(dataStore.WRESBAL, latestDate),
                 };
                 const past = {
-                    tga: getDataValue(dataStore.WTREGEN, oneMonthAgo, 'WTREGEN'),
-                    walcl: getDataValue(dataStore.WALCL, oneMonthAgo, 'WALCL'),
-                    rrp: getDataValue(dataStore.RRPONTSYD, oneMonthAgo, 'RRPONTSYD'),
-                    resbal: getDataValue(dataStore.WRESBAL, oneMonthAgo, 'WRESBAL'),
+                    tga: getClosestPastDataValue(dataStore.WTREGEN, oneMonthAgo),
+                    walcl: getClosestPastDataValue(dataStore.WALCL, oneMonthAgo),
+                    rrp: getClosestPastDataValue(dataStore.RRPONTSYD, oneMonthAgo),
+                    resbal: getClosestPastDataValue(dataStore.WRESBAL, oneMonthAgo),
                 };
 
                 if (Object.values(latest).every(v => v !== null) && Object.values(past).every(v => v !== null)) {
@@ -903,12 +864,6 @@
                     
                     formatDisplay(fedLiquidityDisplay, '연준 유동성:', t);
                     animationTasks.push(t < 0 ? 'animated-dollar-to-fed' : 'animated-dollar-to-market');
-                    
-                    // 디버깅 로그
-                    console.log('TGA - Latest Date:', latestDate.toISOString().split('T')[0]);
-                    console.log('TGA - One Month Ago:', oneMonthAgo.toISOString().split('T')[0]);
-                    console.log('TGA Latest Values:', latest);
-                    console.log('TGA Past Values:', past);
                 } else {
                     tgaSlopeDisplay.textContent = "TGA: 데이터 부족";
                     fedLiquidityDisplay.textContent = "연준: 데이터 부족";
@@ -922,21 +877,13 @@
             if (dataStore.MMF2RRP && dataStore.MMF2RRP.length > 0) {
                 const latestDate = new Date(dataStore.MMF2RRP[dataStore.MMF2RRP.length - 1].date);
                 const oneMonthAgo = new Date(latestDate);
-                oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+                oneMonthAgo.setDate(oneMonthAgo.getDate() - 30); // *** 수정된 부분 ***
 
-                const latestVal = getDataValue(dataStore.MMF2RRP, latestDate, 'MMF-MMF_RP_wFR-M');
-                const pastVal = getDataValue(dataStore.MMF2RRP, oneMonthAgo, 'MMF-MMF_RP_wFR-M');
+                const latestVal = getClosestPastDataValue(dataStore.MMF2RRP, latestDate);
+                const pastVal = getClosestPastDataValue(dataStore.MMF2RRP, oneMonthAgo);
 
                 if (latestVal !== null && pastVal !== null) {
                     const diff = (latestVal - pastVal) / 1000000000;
-                    
-                    // 디버깅 로그
-                    console.log('MMF2RRP - Latest Date:', latestDate.toISOString().split('T')[0]);
-                    console.log('MMF2RRP - One Month Ago:', oneMonthAgo.toISOString().split('T')[0]);
-                    console.log('MMF2RRP - Latest Value:', latestVal);
-                    console.log('MMF2RRP - Past Value:', pastVal);
-                    console.log('MMF2RRP - Difference (billions):', diff);
-                    
                     formatDisplay(mmfToRrpDisplay, 'MMF -> FED:', diff);
                     animationTasks.push(diff >= 0 ? 'animated-dollar-from-mmf-to-fed' : 'animated-dollar-from-fed-to-mmf');
                 } else {
@@ -952,17 +899,17 @@
                 
                 const latestDateMarket = new Date(dataStore.MMF2MARKET[dataStore.MMF2MARKET.length - 1].date);
                 const oneMonthAgoMarket = new Date(latestDateMarket);
-                oneMonthAgoMarket.setMonth(oneMonthAgoMarket.getMonth() - 1);
+                oneMonthAgoMarket.setDate(oneMonthAgoMarket.getDate() - 30); // *** 수정된 부분 ***
                 
-                const latestValMarket = getDataValue(dataStore.MMF2MARKET, latestDateMarket, 'Prime Total');
-                const pastValMarket = getDataValue(dataStore.MMF2MARKET, oneMonthAgoMarket, 'Prime Total');
+                const latestValMarket = getClosestPastDataValue(dataStore.MMF2MARKET, latestDateMarket);
+                const pastValMarket = getClosestPastDataValue(dataStore.MMF2MARKET, oneMonthAgoMarket);
 
                 const latestDateGov = new Date(dataStore.MMF2GOVERNMENT[dataStore.MMF2GOVERNMENT.length - 1].date);
                 const oneMonthAgoGov = new Date(latestDateGov);
-                oneMonthAgoGov.setMonth(oneMonthAgoGov.getMonth() - 1);
+                oneMonthAgoGov.setDate(oneMonthAgoGov.getDate() - 30); // *** 수정된 부분 ***
                 
-                const latestValGov = getDataValue(dataStore.MMF2GOVERNMENT, latestDateGov, 'Government Total');
-                const pastValGov = getDataValue(dataStore.MMF2GOVERNMENT, oneMonthAgoGov, 'Government Total');
+                const latestValGov = getClosestPastDataValue(dataStore.MMF2GOVERNMENT, latestDateGov);
+                const pastValGov = getClosestPastDataValue(dataStore.MMF2GOVERNMENT, oneMonthAgoGov);
 
                 if (latestValMarket !== null && pastValMarket !== null &&
                     latestValGov !== null && pastValGov !== null) {
@@ -970,11 +917,6 @@
                     const diffMarket = (latestValMarket - pastValMarket) / 1000000000;
                     const diffGov = (latestValGov - pastValGov) / 1000000000;
                     const combinedDiff = diffMarket + diffGov;
-
-                    // 디버깅 로그
-                    console.log('MMF2MARKET - Market Diff:', diffMarket);
-                    console.log('MMF2MARKET - Gov Diff:', diffGov);
-                    console.log('MMF2MARKET - Combined Diff:', combinedDiff);
 
                     formatDisplay(mmfToMarketDisplay, 'MMF ->시장:', combinedDiff);
                     animationTasks.push(combinedDiff > 0 ? 'animated-dollar-from-mmf-to-market_parabolic' : 'animated-dollar-from-market-to-mmf_parabolic');
@@ -989,21 +931,16 @@
             if (dataStore.MMMFFAQ027S && dataStore.MMMFFAQ027S.length > 0) {
                 const latestDate = new Date(dataStore.MMMFFAQ027S[dataStore.MMMFFAQ027S.length - 1].date);
                 const oneMonthAgo = new Date(latestDate);
-                oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+                oneMonthAgo.setDate(oneMonthAgo.getDate() - 30); // *** 수정된 부분 ***
                 
-                const latestVal = getDataValue(dataStore.MMMFFAQ027S, latestDate, 'MMMFFAQ027S');
-                const pastVal = getDataValue(dataStore.MMMFFAQ027S, oneMonthAgo, 'MMMFFAQ027S');
+                const latestVal = getClosestPastDataValue(dataStore.MMMFFAQ027S, latestDate);
+                const pastVal = getClosestPastDataValue(dataStore.MMMFFAQ027S, oneMonthAgo);
                 
                 if (latestVal !== null && pastVal !== null) {
                     const c = latestVal - pastVal; // 이미 빌리언 단위로 변환되어 있음
                     const formattedC = (c/1000000000).toFixed(2);
                     const sign = c > 0 ? '+' : '';
                     const colorClass = c > 0 ? 'slope-positive' : 'slope-negative';
-                    
-                    // 디버깅 로그
-                    console.log('MMMFFAQ027S - Latest Value:', latestVal);
-                    console.log('MMMFFAQ027S - Past Value:', pastVal);
-                    console.log('MMMFFAQ027S - Change (c):', c);
                     
                     mmfLiquidityDisplay.innerHTML = `MMF 자산변화:<br>${sign}${formattedC} B $/Month`;
                     mmfLiquidityDisplay.className = colorClass;
