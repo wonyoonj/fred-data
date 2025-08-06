@@ -52,9 +52,12 @@
         }
 
         .FED-container { top: 20%; left: 50%; }
-        .Government-container { top: 50%; left: 20%; }
-        .Market-container { top: 80%; left: 50%; }
-        .MMF-container { top: 50%; left: 80%; }
+        /* 수정된 부분: 미국 정부 아이콘 위치 아래로 조정 (5%) */
+        .Government-container { top: 55%; left: 20%; }
+        /* 수정된 부분: 미국 시장 아이콘 위치 아래로 조정 (10%) */
+        .Market-container { top: 90%; left: 50%; }
+        /* 수정된 부분: MMF 아이콘 위치 아래로 조정 (5%) */
+        .MMF-container { top: 55%; left: 80%; }
 
         #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay {
             position: absolute;
@@ -75,30 +78,37 @@
             z-index: 20;
         }
         
+        /* 수정된 부분: TGA 팝업 컨테이너 위치 조정 (정부 아이콘 위치에 맞게) */
         .tga-popup-container {
-            top: calc(50% + 80px + 14px + 10px);
+            top: calc(55% + 80px + 14px + 10px);
             left: 20%;
             transform: translateX(-50%);
         }
 
+        /* 수정된 부분: 연준 팝업 컨테이너 위치를 아래로 변경 */
         .fed-popup-container {
-            top: calc(50% - 80px - 10px);
+            top: auto;
+            bottom: calc(50% + 80px + 14px + 10px);
             left: 35%;
             transform: translateX(-50%);
         }
         
+        /* 수정된 부분: MMF->FED 팝업 컨테이너 위치를 아래로 변경 */
         .mmf-fed-popup-container {
-            top: calc(50% - 80px - 10px);
+            top: auto;
+            bottom: calc(50% + 80px + 14px + 10px);
             left: 70%;
             transform: translateX(-50%);
         }
 
+        /* 수정된 부분: MMF->시장 팝업 컨테이너 위치 조정 (MMF 아이콘 위치에 맞게) */
         .mmf-market-popup-container {
-            top: calc(50% + 80px + 14px + 10px);
+            top: calc(55% + 80px + 14px + 10px);
             left: 80%;
             transform: translateX(-50%);
         }
 
+        /* 수정된 부분: 팝업창이 아이콘 아래에 뜨도록 bottom 속성 수정 */
         .tooltip-container {
             visibility: hidden;
             background-color: #555;
@@ -108,7 +118,8 @@
             padding: 10px;
             position: absolute;
             z-index: 1;
-            bottom: 100%;
+            bottom: auto; /* 기존 bottom 속성 제거 */
+            top: 100%; /* 팝업을 아래쪽으로 이동 */
             left: 50%;
             margin-left: -100px;
             width: 180px;
@@ -147,10 +158,12 @@
             display: block;
         }
         
+        /* 수정된 부분: 팝업창 위치가 아래로 변경됨에 따라 화살표 위치 및 방향 수정 */
         .tooltip-container::after {
             content: "";
             position: absolute;
-            top: 100%;
+            bottom: auto; /* 기존 top 속성 제거 */
+            top: -5px; /* 팝업 아래에 위치 */
             left: 50%;
             margin-left: -5px;
             border-width: 5px;
@@ -158,6 +171,7 @@
             border-color: #555 transparent transparent transparent;
         }
 
+        /* Hover 시 팝업 위치를 아래쪽으로 고정 */
         .tga-popup-container:hover .tooltip-container,
         .fed-popup-container:hover .tooltip-container,
         .mmf-fed-popup-container:hover .tooltip-container,
@@ -182,75 +196,75 @@
             z-index: 5;
         }
 
-        /* 기존 애니메이션 */
+        /* 수정된 부분: 아이콘 위치 변경에 따른 애니메이션 키프레임 수정 */
         @keyframes dollarFlowToMarket {
             0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 20%; }
             20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 20%; }
-            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
-            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 90%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 90%; }
         }
 
         @keyframes dollarFlowToFED {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
-            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 90%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 90%; }
             80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 20%; }
             100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 20%; }
         }
 
         @keyframes dollarFlowToGovernment {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
-            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
-            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 20%; top: 50%; }
-            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 20%; top: 50%; }
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 90%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 90%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 20%; top: 55%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 20%; top: 55%; }
         }
 
         @keyframes dollarFlowFromGovernment {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 20%; top: 50%; }
-            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 20%; top: 50%; }
-            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
-            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 20%; top: 55%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 20%; top: 55%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 90%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 90%; }
         }
 
         /* 신규 MMF 애니메이션 */
         @keyframes dollarFlowFromMmfToFed {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 50%; }
-            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 50%; }
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 55%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 55%; }
             80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 20%; }
             100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 20%; }
         }
         @keyframes dollarFlowFromFedToMmf {
             0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 20%; }
             20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 20%; }
-            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 50%; }
-            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 50%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 55%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 55%; }
         }
         
         @keyframes dollarFlowFromMmfToMarket_parabolic {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 50%; }
-            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 50%; }
-            50% { transform: translate(-50%, -50%) scale(1) translateY(50px); opacity: 1; left: 65%; top: 65%; } 
-            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
-            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 55%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 55%; }
+            50% { transform: translate(-50%, -50%) scale(1) translateY(50px); opacity: 1; left: 65%; top: 72.5%; } 
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 90%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 90%; }
         }
         @keyframes dollarFlowFromMarketToMmf_parabolic {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
-            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
-            50% { transform: translate(-50%, -50%) scale(1) translateY(50px); opacity: 1; left: 65%; top: 65%; }
-            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 50%; }
-            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 50%; }
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 90%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 90%; }
+            50% { transform: translate(-50%, -50%) scale(1) translateY(50px); opacity: 1; left: 65%; top: 72.5%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 55%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 55%; }
         }
 
         @keyframes dollarFlowFromMmfToGovernment {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 50%; }
-            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 50%; }
-            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 20%; top: 50%; }
-            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 20%; top: 50%; }
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 55%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 55%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 20%; top: 55%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 20%; top: 55%; }
         }
         @keyframes dollarFlowFromGovernmentToMmf {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 20%; top: 50%; }
-            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 20%; top: 50%; }
-            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 50%; }
-            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 50%; }
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 20%; top: 55%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 20%; top: 55%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 55%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 55%; }
         }
 
 
@@ -307,9 +321,12 @@
             #liquidityFlow .icon-label { font-size: 12px; }
 
             .FED-container { top: 15%; left: 50%; }
-            .Government-container { top: 40%; left: 15%; }
-            .Market-container { top: 85%; left: 50%; }
-            .MMF-container { top: 40%; left: 85%; }
+            /* 수정된 부분: 모바일 - 미국 정부 아이콘 위치 아래로 조정 (5%) */
+            .Government-container { top: 45%; left: 15%; }
+            /* 수정된 부분: 모바일 - 미국 시장 아이콘 위치 아래로 조정 (10%) */
+            .Market-container { top: 95%; left: 50%; }
+            /* 수정된 부분: 모바일 - MMF 아이콘 위치 아래로 조정 (5%) */
+            .MMF-container { top: 45%; left: 85%; }
 
             #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay {
                 font-size: 0.7em;
@@ -317,13 +334,28 @@
                 white-space: normal;
             }
 
+            /* 수정된 부분: 모바일 - TGA 팝업 컨테이너 위치 조정 */
             .tga-popup-container {
-                top: calc(40% + 60px + 12px + 15px);
+                top: calc(45% + 60px + 12px + 15px);
                 left: 15%;
             }
-            .fed-popup-container { top: calc(40% - 60px - 10px); left: 15%; }
-            .mmf-fed-popup-container { top: calc(40% - 60px - 10px); left: 75%; }
-            .mmf-market-popup-container { top: calc(40% + 60px + 12px + 15px); left: 85%; }
+            /* 수정된 부분: 모바일 - 연준 팝업 컨테이너 위치를 아래로 변경 */
+            .fed-popup-container {
+                top: auto;
+                bottom: calc(100% - (45% - 60px - 10px));
+                left: 15%;
+            }
+            /* 수정된 부분: 모바일 - MMF->FED 팝업 컨테이너 위치를 아래로 변경 */
+            .mmf-fed-popup-container { 
+                top: auto;
+                bottom: calc(100% - (45% - 60px - 10px));
+                left: 75%;
+            }
+            /* 수정된 부분: 모바일 - MMF->시장 팝업 컨테이너 위치 조정 */
+            .mmf-market-popup-container { 
+                top: calc(45% + 60px + 12px + 15px); 
+                left: 85%; 
+            }
 
             .tooltip-container {
                 margin-left: -100px;
