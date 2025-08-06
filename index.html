@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body { font-family: 'Arial', sans-serif; margin: 0; padding: 0; background: #f4f4f4; color: #333; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; min-height: 10vh; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; min-height: 100vh; }
         .header { text-align: center; padding: 10px; background: #007bff; color: white; }
         .back-btn { position: absolute; top: 10px; left: 10px; background: none; border: none; cursor: pointer; font-size: 24px; font-weight: bold; color: black; width: 30px; text-align: center; }
         .back-btn::before { content: "◄"; font-size: 36px; }
@@ -70,36 +70,36 @@
         }
         
         /* 팝업 컨테이너 및 팝업 스타일 */
-        .tga-popup-container {
+        .tga-popup-container, .fed-popup-container, .mmf-fed-popup-container, .mmf-market-popup-container {
             position: absolute;
+            z-index: 20;
+        }
+        
+        .tga-popup-container {
             top: calc(50% + 80px + 14px + 10px);
             left: 20%;
             transform: translateX(-50%);
-            z-index: 20;
         }
 
-        #tgaSlopeDisplay, .fed-popup-container, .mmf-fed-popup-container, .mmf-market-popup-container {
-            position: relative;
-            z-index: 10;
-            cursor: help;
-        }
-        
         .fed-popup-container {
             top: calc(50% - 80px - 10px);
             left: 35%;
+            transform: translateX(-50%);
+        }
+        
+        .mmf-fed-popup-container {
+            top: calc(50% - 80px - 10px);
+            left: 70%;
+            transform: translateX(-50%);
         }
 
-        .mmf-fed-popup-container {
-            top: calc(50% - 80px - 10px); /* MMF 아이콘 위에 위치 */
-            left: 70%;
-        }
         .mmf-market-popup-container {
-            top: calc(50% + 80px + 14px + 10px); /* MMF 아이콘과 라벨 아래에 위치 */
+            top: calc(50% + 80px + 14px + 10px);
             left: 80%;
             transform: translateX(-50%);
         }
 
-        .tga-tooltip, .fed-tooltip, .mmf-fed-tooltip, .mmf-market-tooltip {
+        .tooltip-container {
             visibility: hidden;
             background-color: #555;
             color: #fff;
@@ -108,22 +108,24 @@
             padding: 10px;
             position: absolute;
             z-index: 1;
-            bottom: 100%; /* TGA 잔고 위에 위치 */
+            bottom: 100%;
             left: 50%;
-            margin-left: -100px; /* 중앙 정렬 */
+            margin-left: -100px;
             width: 180px;
             opacity: 0;
             transition: opacity 0.3s;
             line-height: 1.5;
             white-space: normal;
         }
-        .tga-tooltip p, .fed-tooltip p, .mmf-fed-tooltip p, .mmf-market-tooltip p {
+
+        .tooltip-container p {
             margin-top: 0;
             margin-bottom: 5px;
             font-size: 12px;
             font-weight: normal;
         }
-        .tga-tooltip .graph-btn, .fed-tooltip .graph-btn, .mmf-fed-tooltip .graph-btn, .mmf-market-tooltip .graph-btn {
+
+        .tooltip-container .graph-btn {
             background: #009688;
             color: white;
             border: none;
@@ -136,7 +138,16 @@
             cursor: pointer;
             border-radius: 3px;
         }
-        .tga-tooltip::after, .fed-tooltip::after, .mmf-fed-tooltip::after, .mmf-market-tooltip::after {
+
+        .tooltip-container .update-date {
+            font-size: 10px;
+            color: #ccc;
+            text-align: right;
+            margin-top: 10px;
+            display: block;
+        }
+        
+        .tooltip-container::after {
             content: "";
             position: absolute;
             top: 100%;
@@ -146,24 +157,19 @@
             border-style: solid;
             border-color: #555 transparent transparent transparent;
         }
-        .tga-popup-container:hover .tga-tooltip,
-        .fed-popup-container:hover .fed-tooltip,
-        .mmf-fed-popup-container:hover .mmf-fed-tooltip,
-        .mmf-market-popup-container:hover .mmf-market-tooltip {
+
+        .tga-popup-container:hover .tooltip-container,
+        .fed-popup-container:hover .tooltip-container,
+        .mmf-fed-popup-container:hover .tooltip-container,
+        .mmf-market-popup-container:hover .tooltip-container {
             visibility: visible;
             opacity: 1;
         }
 
-        #fedLiquidityDisplay {
+        #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay {
             position: relative;
-        }
-        
-        #mmfToRrpDisplay {
-            position: relative;
-        }
-
-        #mmfToMarketDisplay {
-            position: relative;
+            z-index: 10;
+            cursor: help;
         }
 
         .slope-positive { color: red; }
@@ -315,18 +321,14 @@
                 top: calc(40% + 60px + 12px + 15px);
                 left: 15%;
             }
-            .tga-tooltip {
+            .fed-popup-container { top: calc(40% - 60px - 10px); left: 15%; }
+            .mmf-fed-popup-container { top: calc(40% - 60px - 10px); left: 75%; }
+            .mmf-market-popup-container { top: calc(40% + 60px + 12px + 15px); left: 85%; }
+
+            .tooltip-container {
                 margin-left: -100px;
                 width: 200px;
             }
-            .fed-popup-container {
-                top: calc(15% + 60px + 12px + 15px);
-                left: 50%;
-            }
-
-            #fedLiquidityDisplay { top: calc(40% + 60px + 12px + 35px); left: 15%; }
-            #mmfToRrpDisplay { top: calc(40% - 60px - 10px); left: 75%; }
-            #mmfToMarketDisplay { top: calc(40% + 60px + 12px + 15px); left: 85%; }
             
             .dollar-animated-object {
                 width: 22.5px;
@@ -358,46 +360,25 @@
         <div id="liquidityFlow" class="page">
             <div class="tga-popup-container">
                 <div id="tgaSlopeDisplay"></div>
-                <div class="tga-tooltip">
-                    <p>최근 한 달 동안, 미국 재무부 잔고 변화를 나타냅니다.</p>
-                    <p>+양수 : 시장에서 재무부로 달러 유동성 흡수</p>
-                    <p>-음수 : 미국 재무부가 시장에 달러 유동성 공급</p>
-                    <button class="graph-btn" onclick="showGraph('WTREGEN')">그래프</button>
-                    <div id="tgaUpdateDate" style="font-size: 10px; text-align: right; margin-top: 5px;"></div>
+                <div class="tooltip-container" id="tga-tooltip-content">
                 </div>
             </div>
             
             <div class="fed-popup-container">
                 <div id="fedLiquidityDisplay"></div>
-                <div class="fed-tooltip">
-                    <p>최근 한 달 동안, 부채를 제외한 연준의 순자산(국채+모기지채 등) 변화를 나타냅니다.</p>
-                    <p>+양수 : 시장의 채권 등 자산 구매를 통해 달러를 시장에 공급</p>
-                    <p>-음수 : 자산 매각을 통해 시중의 달러를 다시 회수 (긴축)</p>
-                    <button class="graph-btn" onclick="showGraph('WALCL')">그래프</button>
-                    <div id="fedUpdateDate" style="font-size: 10px; text-align: right; margin-top: 5px;"></div>
+                <div class="tooltip-container" id="fed-tooltip-content">
                 </div>
             </div>
 
             <div class="mmf-fed-popup-container">
                 <div id="mmfToRrpDisplay"></div>
-                <div class="mmf-fed-tooltip">
-                    <p>최근 한 달 동안, MMF가 연준에게 돈을 맡긴 자금의 양 변화를 나타냅니다.</p>
-                    <p>+양수 : MMF가 연준에게 역레포 자금을 빌려줌</p>
-                    <p>-음수 : 연준에게 빌려준 역레포 자금을 다시 회수</p>
-                    <button class="graph-btn" onclick="showGraph('RRPONTSYD')">그래프</button>
-                    <div id="mmfFedUpdateDate" style="font-size: 10px; text-align: right; margin-top: 5px;"></div>
+                <div class="tooltip-container" id="mmf-fed-tooltip-content">
                 </div>
             </div>
 
             <div class="mmf-market-popup-container">
                 <div id="mmfToMarketDisplay"></div>
-                <div class="mmf-market-tooltip">
-                    <p>최근 한 달 동안, MMF가 시장에 돈을 공급한 자금의 양 변화를 나타냅니다.</p>
-                    <p>이 결과는 MMF가 시장에 공급한 유동성에서 시장이 MMF에 투자한 양을 뺀 결과입니다.</p>
-                    <p>+양수 : MMF가 시장에 유동성 공급량이 큰 상황</p>
-                    <p>-음수 : 시장이 MMF에 자금을 투자한 양이 큰 상황</p>
-                    <div id="mmfMarketValues" style="margin-top: 10px; font-size: 11px;"></div>
-                    <div id="mmfMarketUpdateDate" style="font-size: 10px; text-align: right; margin-top: 5px;"></div>
+                <div class="tooltip-container" id="mmf-market-tooltip-content">
                 </div>
             </div>
             
@@ -739,22 +720,19 @@
                 mmf_fed: document.getElementById('mmfToRrpDisplay'),
                 mmf_market: document.getElementById('mmfToMarketDisplay')
             };
-
-            const updateDates = {
-                tga: document.getElementById('tgaUpdateDate'),
-                fed: document.getElementById('fedUpdateDate'),
-                mmf_fed: document.getElementById('mmfFedUpdateDate'),
-                mmf_market: document.getElementById('mmfMarketUpdateDate'),
-            };
-
-            const mmfMarketValues = document.getElementById('mmfMarketValues');
-
             Object.values(displays).forEach(el => {
                 if(el) {
                     el.textContent = "계산 중...";
                     el.style.color = "black";
                 }
             });
+
+            const tooltips = {
+                tga: document.getElementById('tga-tooltip-content'),
+                fed: document.getElementById('fed-tooltip-content'),
+                mmf_fed: document.getElementById('mmf-fed-tooltip-content'),
+                mmf_market: document.getElementById('mmf-market-tooltip-content')
+            };
 
             const indicators = ['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL', 'MMMFFAQ027S', 'MMF2RRP', 'MMF2MARKET', 'MMF2GOVERNMENT'];
             const dataStore = {};
@@ -787,13 +765,13 @@
 
             // --- 모든 값 계산 ---
             let tgaDiff = null, fedLiquidityDiff = null, mmfToFedDiff = null, finalMmfToMarketDiff = null;
-            let latestDate = null;
-            let mmfToMarketCombined = null;
-            let mmfAssetChange = null;
+            let tgaLatestDate = null, fedLatestDate = null, mmfFedLatestDate = null, mmfMarketLatestDate = null;
+            let mmfToMarketCombined = null, mmfAssetChange = null;
 
             // TGA, 연준 유동성
             if (['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL'].every(i => dataStore[i] && dataStore[i].length > 0)) {
-                latestDate = new Date(dataStore.WTREGEN[dataStore.WTREGEN.length - 1].date);
+                const latestDate = new Date(dataStore.WTREGEN[dataStore.WTREGEN.length - 1].date);
+                tgaLatestDate = latestDate.toISOString().split('T')[0];
                 const pastDate = thirtyDaysAgo(latestDate);
                 const latest = { tga: getClosestPastDataValue(dataStore.WTREGEN, latestDate), walcl: getClosestPastDataValue(dataStore.WALCL, latestDate), rrp: getClosestPastDataValue(dataStore.RRPONTSYD, latestDate), resbal: getClosestPastDataValue(dataStore.WRESBAL, latestDate) };
                 const past = { tga: getClosestPastDataValue(dataStore.WTREGEN, pastDate), walcl: getClosestPastDataValue(dataStore.WALCL, pastDate), rrp: getClosestPastDataValue(dataStore.RRPONTSYD, pastDate), resbal: getClosestPastDataValue(dataStore.WRESBAL, pastDate) };
@@ -803,22 +781,23 @@
                     const walclDiff = (latest.walcl / 1000) - (past.walcl / 1000);
                     const otherDiffs = (latest.tga - past.tga) + 2 * (latest.rrp - past.rrp) + 2 * (latest.resbal - past.resbal);
                     fedLiquidityDiff = walclDiff - otherDiffs;
+                    fedLatestDate = latestDate.toISOString().split('T')[0];
                 }
             }
 
             // MMF -> FED
-            if (dataStore.RRPONTSYD && dataStore.RRPONTSYD.length > 0) {
-                 const latestDateRRP = new Date(dataStore.RRPONTSYD[dataStore.RRPONTSYD.length - 1].date);
-                 const pastDateRRP = thirtyDaysAgo(latestDateRRP);
-                 const latestVal = getClosestPastDataValue(dataStore.RRPONTSYD, latestDateRRP);
-                 const pastVal = getClosestPastDataValue(dataStore.RRPONTSYD, pastDateRRP);
-                 if (latestVal !== null && pastVal !== null) {
-                     mmfToFedDiff = latestVal - pastVal; // 역레포 자금은 MMF에서 연준으로 흐르는 양을 보여주므로, RRP 변화량 자체가 MMF->FED 흐름임
-                 }
-                 if (!latestDate) latestDate = latestDateRRP;
+            if (dataStore.MMF2RRP && dataStore.MMF2RRP.length > 0) {
+                const latestDate = new Date(dataStore.MMF2RRP[dataStore.MMF2RRP.length - 1].date);
+                mmfFedLatestDate = latestDate.toISOString().split('T')[0];
+                const pastDate = thirtyDaysAgo(latestDate);
+                const latestVal = getClosestPastDataValue(dataStore.MMF2RRP, latestDate);
+                const pastVal = getClosestPastDataValue(dataStore.MMF2RRP, pastDate);
+                if (latestVal !== null && pastVal !== null) {
+                    mmfToFedDiff = (latestVal - pastVal) / 1e9;
+                }
             }
 
-            // MMF -> 시장
+            // MMF -> 시장 (수정된 계산)
             if (dataStore.MMF2MARKET?.length > 0 && dataStore.MMF2GOVERNMENT?.length > 0) {
                  const latestDateM = new Date(dataStore.MMF2MARKET[dataStore.MMF2MARKET.length - 1].date);
                  const pastDateM = thirtyDaysAgo(latestDateM);
@@ -829,64 +808,88 @@
                  const pastDateG = thirtyDaysAgo(latestDateG);
                  const latestG = getClosestPastDataValue(dataStore.MMF2GOVERNMENT, latestDateG);
                  const pastG = getClosestPastDataValue(dataStore.MMF2GOVERNMENT, pastDateG);
+                 
+                 mmfMarketLatestDate = latestDateM.toISOString().split('T')[0];
 
                  if(latestM !== null && pastM !== null && latestG !== null && pastG !== null) {
                     mmfToMarketCombined = ((latestM - pastM) / 1e9) + ((latestG - pastG) / 1e9);
                  }
-                 if (!latestDate) latestDate = latestDateM;
             }
             
             if(dataStore.MMMFFAQ027S?.length > 0) {
-                const latestDateMMF = new Date(dataStore.MMMFFAQ027S[dataStore.MMMFFAQ027S.length-1].date);
-                const pastDateMMF = thirtyDaysAgo(latestDateMMF);
-                const latestVal = getClosestPastDataValue(dataStore.MMMFFAQ027S, latestDateMMF);
-                const pastVal = getClosestPastDataValue(dataStore.MMMFFAQ027S, pastDateMMF);
+                const latestDate = new Date(dataStore.MMMFFAQ027S[dataStore.MMMFFAQ027S.length-1].date);
+                const pastDate = thirtyDaysAgo(latestDate);
+                const latestVal = getClosestPastDataValue(dataStore.MMMFFAQ027S, latestDate);
+                const pastVal = getClosestPastDataValue(dataStore.MMMFFAQ027S, pastDate);
                 if(latestVal !== null && pastVal !== null){
                     mmfAssetChange = (latestVal - pastVal) / 1e9; // 단위 Billions로
                 }
-                if (!latestDate) latestDate = latestDateMMF;
             }
 
             if (mmfToMarketCombined !== null && mmfAssetChange !== null) {
-                finalMmfToMarketDiff = mmfAssetChange - mmfToMarketCombined; // MMF자산 변화량 - MMF의 시장 공급
+                finalMmfToMarketDiff = mmfToMarketCombined - mmfAssetChange;
             }
-            
-            const formatDate = (date) => date ? `Update Date: ${date.toISOString().slice(0, 10)}` : '';
-            const sign = (value) => value > 0 ? '+' : '';
 
             // 계산된 값들을 배열에 추가
-            if (tgaDiff !== null) {
-                 calculatedValues.push({ value: tgaDiff, element: displays.tga, label: 'TGA 잔고:', animationClass: tgaDiff < 0 ? 'animated-dollar-from-government' : 'animated-dollar-to-government' });
-                 updateDates.tga.textContent = formatDate(latestDate);
-            }
-            if (fedLiquidityDiff !== null) {
-                 calculatedValues.push({ value: fedLiquidityDiff, element: displays.fed, label: '연준 유동성:', animationClass: fedLiquidityDiff < 0 ? 'animated-dollar-to-fed' : 'animated-dollar-to-market' });
-                 updateDates.fed.textContent = formatDate(latestDate);
-            }
-            if (mmfToFedDiff !== null) {
-                 calculatedValues.push({ value: mmfToFedDiff, element: displays.mmf_fed, label: 'MMF -> FED:', animationClass: mmfToFedDiff >= 0 ? 'animated-dollar-from-mmf-to-fed' : 'animated-dollar-from-fed-to-mmf' });
-                 updateDates.mmf_fed.textContent = formatDate(latestDate);
-            }
-            if (finalMmfToMarketDiff !== null) {
-                 calculatedValues.push({ value: finalMmfToMarketDiff, element: displays.mmf_market, label: 'MMF ->시장:', animationClass: finalMmfToMarketDiff > 0 ? 'animated-dollar-from-mmf-to-market_parabolic' : 'animated-dollar-from-market-to-mmf_parabolic' });
-                 updateDates.mmf_market.textContent = formatDate(latestDate);
-                 if (mmfToMarketCombined !== null && mmfAssetChange !== null) {
-                     mmfMarketValues.innerHTML = `MMF의 시장 유동성 공급 변화량 = ${sign(mmfToMarketCombined)}${mmfToMarketCombined.toFixed(2)} B $/Month<br>시장의 MMF 투자 변화량 = ${sign(mmfAssetChange)}${mmfAssetChange.toFixed(2)} B $/Month`;
-                 }
-            }
-            
+            if (tgaDiff !== null) calculatedValues.push({ value: tgaDiff, element: displays.tga, label: 'TGA 잔고:', animationClass: tgaDiff < 0 ? 'animated-dollar-from-government' : 'animated-dollar-to-government' , date: tgaLatestDate });
+            if (fedLiquidityDiff !== null) calculatedValues.push({ value: fedLiquidityDiff, element: displays.fed, label: '연준 유동성:', animationClass: fedLiquidityDiff < 0 ? 'animated-dollar-to-fed' : 'animated-dollar-to-market', date: fedLatestDate });
+            if (mmfToFedDiff !== null) calculatedValues.push({ value: mmfToFedDiff, element: displays.mmf_fed, label: 'MMF -> FED:', animationClass: mmfToFedDiff >= 0 ? 'animated-dollar-from-mmf-to-fed' : 'animated-dollar-from-fed-to-mmf', date: mmfFedLatestDate });
+            if (finalMmfToMarketDiff !== null) calculatedValues.push({ value: finalMmfToMarketDiff, element: displays.mmf_market, label: 'MMF ->시장:', animationClass: finalMmfToMarketDiff > 0 ? 'animated-dollar-from-mmf-to-market_parabolic' : 'animated-dollar-from-market-to-mmf_parabolic', date: mmfMarketLatestDate });
 
             // 절대값 기준으로 순위 매기기
             const rankedAnimations = calculatedValues.sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
             
             // 텍스트 표시
-            rankedAnimations.forEach(({ value, element, label }) => {
+            rankedAnimations.forEach(({ value, element, label, date }) => {
                 if (element) {
                     const sign = value > 0 ? '+' : '';
                     element.innerHTML = `${label}<br>${sign}${value.toFixed(2)} B $/Month`;
                     element.className = value > 0 ? 'slope-positive' : 'slope-negative';
                 }
             });
+
+            // 팝업 내용 생성 및 표시
+            if (tgaDiff !== null) {
+                tooltips.tga.innerHTML = `
+                    <p>최근 한 달 동안, 미국 재무부 잔고 변화를 나타냅니다.</p>
+                    <p><b>+양수 :</b> 시장에서 재무부로 달러 유동성 흡수<br><b>-음수 :</b> 미국 재무부가 시장에 달러 유동성 공급</p>
+                    <button class="graph-btn" onclick="showGraph('WTREGEN')">그래프</button>
+                    <span class="update-date">Update Date: ${tgaLatestDate}</span>
+                `;
+            }
+
+            if (fedLiquidityDiff !== null) {
+                tooltips.fed.innerHTML = `
+                    <p>최근 한 달 동안, 부채를 제외한 연준의 순자산(국채+모기지채 등) 변화를 나타냅니다.</p>
+                    <p><b>+양수 :</b> 시장의 채권 등 자산 구매를 통해 달러를 시장에 공급<br><b>-음수 :</b> 자산 매각을 통해 시중의 달러를 다시 회수 (긴축)</p>
+                    <button class="graph-btn" onclick="showGraph('WALCL')">그래프</button>
+                    <span class="update-date">Update Date: ${fedLatestDate}</span>
+                `;
+            }
+
+            if (mmfToFedDiff !== null) {
+                tooltips.mmf_fed.innerHTML = `
+                    <p>최근 한 달 동안, MMF가 연준에게 돈을 맡긴 자금의 양 변화를 나타냅니다.</p>
+                    <p><b>+양수 :</b> MMF가 연준에게 역레포 자금을 빌려줌<br><b>-음수 :</b> 연준에게 빌려준 역레포 자금을 다시 회수</p>
+                    <button class="graph-btn" onclick="showGraph('RRPONTSYD')">그래프</button>
+                    <span class="update-date">Update Date: ${mmfFedLatestDate}</span>
+                `;
+            }
+
+            if (finalMmfToMarketDiff !== null) {
+                const sign1 = mmfToMarketCombined > 0 ? '+' : '';
+                const sign2 = finalMmfToMarketDiff > 0 ? '+' : '';
+                tooltips.mmf_market.innerHTML = `
+                    <p>최근 한 달 동안, MMF가 시장에 돈을 공급한 자금의 양 변화를 나타냅니다.<br>
+                    이 결과는 MMF가 시장에 공급한 유동성에서 시장이 MMF에 투자한 양을 뺀 결과입니다.</p>
+                    <p><b>+양수 :</b> MMF가 시장에 유동성 공급량이 큰 상황<br><b>-음수 :</b> 시장이 MMF에 자금을 투자한 양이 큰 상황</p>
+                    <hr>
+                    <p>MMF의 시장 유동성 공급 변화량 = ${sign1}${mmfToMarketCombined.toFixed(2)} B</p>
+                    <p>시장의 MMF 투자 변화량 = ${sign2}${finalMmfToMarketDiff.toFixed(2)} B</p>
+                    <span class="update-date">Update Date: ${mmfMarketLatestDate}</span>
+                `;
+            }
+
 
             // 애니메이션 실행
             const startAnimations = () => {
