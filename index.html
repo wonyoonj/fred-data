@@ -147,19 +147,16 @@
         }
 
         #mmfToMarketDisplay {
-            top: calc(40% + 80px + 14px + 10px); /* MMF 아이콘과 라벨 아래에 위치 */
-            left: 70%;
+            top: calc(50% + 80px + 14px + 10px); /* MMF 아이콘과 라벨 아래에 위치 */
+            left: 80%;
+            transform: translateX(-50%);
         }
-
-        
 
         .slope-positive { color: red; }
         .slope-negative { color: blue; }
 
         .dollar-animated-object {
             position: absolute;
-            width: 37.5px;
-            height: 37.5px;
             object-fit: contain;
             opacity: 0;
             z-index: 5;
@@ -208,7 +205,6 @@
             100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 50%; }
         }
         
-        /* MMF to Market의 새로운 경로 - 포물선으로 수정 */
         @keyframes dollarFlowFromMmfToMarket_parabolic {
             0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 50%; }
             20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 50%; }
@@ -245,12 +241,7 @@
         
         .animated-dollar-from-mmf-to-fed { animation: dollarFlowFromMmfToFed var(--animation-duration) linear forwards; }
         .animated-dollar-from-fed-to-mmf { animation: dollarFlowFromFedToMmf var(--animation-duration) linear forwards; }
-        .animated-dollar-from-mmf-to-market { animation: dollarFlowFromMmfToMarket var(--animation-duration) linear forwards; }
-        .animated-dollar-from-market-to-mmf { animation: dollarFlowFromMarketToMmf var(--animation-duration) linear forwards; }
-        .animated-dollar-from-mmf-to-government { animation: dollarFlowFromMmfToGovernment var(--animation-duration) linear forwards; }
-        .animated-dollar-from-government-to-mmf { animation: dollarFlowFromGovernmentToMmf var(--animation-duration) linear forwards; }
-
-        /* 신규 MMF 애니메이션 적용 */
+        
         .animated-dollar-from-mmf-to-market_parabolic { animation: dollarFlowFromMmfToMarket_parabolic var(--animation-duration) linear forwards; }
         .animated-dollar-from-market-to-mmf_parabolic { animation: dollarFlowFromMarketToMmf_parabolic var(--animation-duration) linear forwards; }
 
@@ -317,10 +308,8 @@
 
             #fedLiquidityDisplay { top: calc(40% + 60px + 12px + 35px); left: 15%; }
             #mmfToRrpDisplay { top: calc(40% - 60px - 10px); left: 75%; }
-            #mmfToMarketDisplay { top: calc(35% + 60px + 12px + 15px); left: 75%; }
+            #mmfToMarketDisplay { top: calc(40% + 60px + 12px + 15px); left: 85%; }
             
-            
-
             .dollar-animated-object {
                 width: 22.5px;
                 height: 22.5px;
@@ -360,8 +349,6 @@
             <div id="mmfToRrpDisplay"></div>
             <div id="mmfToMarketDisplay"></div>
             
-            
-
             <div class="icon-container FED-container">
                 <span class="icon-label">중앙은행 FED</span>
                 <img src="./icon/fed.jpg" alt="FED" class="icon">
@@ -454,8 +441,10 @@
         let currentIndicator = null;
         let currentGraphData = [];
         let dollarAnimationIntervals = [];
-        const DOLLAR_ANIMATION_DURATION = 3000;
-        const DOLLAR_SPAWN_INTERVAL = DOLLAR_ANIMATION_DURATION / 3;
+        
+        // --- 수정된 부분: 애니메이션 기준값 설정 ---
+        const BASE_ANIMATION_DURATION = 3000;
+        const BASE_DOLLAR_SIZE = 37.5; // 기본 달러 아이콘 크기
         const NUM_DOLLAR_ANIMATIONS = 3;
 
         const FUNCTION_BASE_URL = '/.netlify/functions/get-csv-data';
@@ -498,25 +487,17 @@
             'SP500': 'Index'
         };
 
-
         async function parseCSV(text) {
             const lines = text.trim().split('\n');
             if (lines.length <= 1) return [];
 
             const headers = lines[0].split(',').map(h => h.trim());
             
-            let dateColIndex = headers.findIndex(h => h.toLowerCase() === 'date');
-            if (dateColIndex === -1) {
-                dateColIndex = headers.findIndex(h => h.toLowerCase() === 'data');
-            }
-
+            let dateColIndex = headers.findIndex(h => h.toLowerCase() === 'date' || h.toLowerCase() === 'data');
             const valueColName = headers.find((h, i) => i !== dateColIndex);
             const valueColIdx = headers.indexOf(valueColName);
 
-            if (dateColIndex === -1 || valueColIdx === -1) {
-                console.error("CSV 헤더에서 날짜('Date' 또는 'data') 또는 값 컬럼을 찾을 수 없습니다:", headers.join(', '));
-                return [];
-            }
+            if (dateColIndex === -1 || valueColIdx === -1) return [];
 
             const parsedData = [];
             for (let i = 1; i < lines.length; i++) {
@@ -529,19 +510,14 @@
                     const valueNum = parseFloat(valueStr);
 
                     if (!isNaN(dateObj.getTime()) && !isNaN(valueNum) && valueStr !== '.') {
-                        parsedData.push({
-                            date: dateStr,
-                            value: valueNum
-                        });
+                        parsedData.push({ date: dateStr, value: valueNum });
                     }
                 }
             }
             return parsedData;
         }
 
-        window.addEventListener('load', async function() {
-            showPage('liquidityFlow');
-        });
+        window.addEventListener('load', () => showPage('liquidityFlow'));
 
         const pages = ['liquidityFlow', 'graphIndicators', 'graphPage', 'infoPage'];
 
@@ -572,7 +548,7 @@
                     throw new Error(`'${indicatorTitles[indicator]}' 데이터를 찾을 수 없거나 불러오지 못했어요! (${response.status}: ${errorBody.error || response.statusText})`);
                 }
                 const text = await response.text();
-                const data = await parseCSV(text);
+                let data = await parseCSV(text);
 
                 if (data.length === 0) {
                      renderErrorMessage(`'${indicatorTitles[indicator]}' 지표의 유효한 데이터가 없어요.`);
@@ -580,150 +556,88 @@
                 }
                 
                 data.forEach(item => {
-                    if (indicator === 'WALCL') {
-                        item.value = item.value / 1000; // Millions to Billions
-                    } else if (indicator === 'MMMFFAQ027S' || indicator === 'SP500_MCAP') {
-                        item.value = item.value / 1000000000; // Dollars to Billions
-                    }
+                    if (indicator === 'WALCL') item.value /= 1000;
+                    else if (indicator === 'MMMFFAQ027S' || indicator === 'SP500_MCAP') item.value /= 1000000000;
                 });
 
-                data.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+                data.sort((a, b) => new Date(a.date) - new Date(b.date));
 
                 currentGraphData = data;
-                renderChart(indicator, currentGraphData.map(item => item.date), currentGraphData.map(item => item.value));
                 updateChart('All');
 
             } catch (error) {
-                console.error(`CSV 로드 오류 for ${indicator}:`, error);
                 renderErrorMessage(`'${indicatorTitles[indicator]}' 그래프를 그릴 수 없어요! 오류: ${error.message}`);
             }
         }
 
         function renderChart(indicator, labels, values) {
             const ctx = document.getElementById('myChart').getContext('2d');
-            if (myChart) {
-                myChart.destroy();
-                myChart = null;
-            }
+            if (myChart) myChart.destroy();
 
-            try {
-                myChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: indicatorTitles[indicator] || indicator,
-                            data: values,
-                            borderColor: '#007bff',
-                            backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                            fill: false,
-                            tension: 0.1,
-                            pointRadius: 0
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            x: {
-                                type: 'time',
-                                time: {
-                                    unit: 'month',
-                                    tooltipFormat: 'yyyy-MM-dd',
-                                    displayFormats: {
-                                        day: 'yyyy-MM-dd',
-                                        month: 'yyyy-MM',
-                                        quarter: 'yyyy [Q]Q',
-                                        year: 'yyyy'
-                                    }
-                                },
-                                title: { display: true, text: 'Date' },
-                                grid: { display: true },
-                                reverse: false
-                            },
-                            y: {
-                                title: { 
-                                    display: true, 
-                                    text: indicatorUnits[indicator] || 'Value',
-                                    font: {
-                                        weight: 'bold'
-                                    }
-                                },
-                                grid: { display: true },
-                                beginAtZero: false,
-                                ticks: {
-                                    callback: function(value, index, values) {
-                                        if (Math.abs(value) >= 1000000000000) return (value / 1000000000000) + 'T';
-                                        if (Math.abs(value) >= 1000000000) return (value / 1000000000) + 'B';
-                                        if (Math.abs(value) >= 1000000) return (value / 1000000) + 'M';
-                                        if (Math.abs(value) >= 1000) return (value / 1000) + 'K';
-                                        return value;
-                                    }
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: indicatorTitles[indicator] || indicator,
+                        data: values,
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                        fill: false,
+                        tension: 0.1,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: { unit: 'month', tooltipFormat: 'yyyy-MM-dd', displayFormats: { day: 'yyyy-MM-dd', month: 'yyyy-MM', year: 'yyyy' }},
+                            title: { display: true, text: 'Date' }
+                        },
+                        y: {
+                            title: { display: true, text: indicatorUnits[indicator] || 'Value', font: { weight: 'bold' }},
+                            ticks: {
+                                callback: value => {
+                                    if (Math.abs(value) >= 1e12) return (value / 1e12) + 'T';
+                                    if (Math.abs(value) >= 1e9) return (value / 1e9) + 'B';
+                                    if (Math.abs(value) >= 1e6) return (value / 1e6) + 'M';
+                                    if (Math.abs(value) >= 1e3) return (value / 1e3) + 'K';
+                                    return value;
                                 }
                             }
-                        },
-                        plugins: { legend: { display: true }, tooltip: { mode: 'index', intersect: false } },
-                        onHover: (event, chartElement) => {
-                            event.native.target.style.cursor = chartElement.length ? 'grab' : 'default';
                         }
-                    }
-                });
+                    },
+                    plugins: { legend: { display: true }, tooltip: { mode: 'index', intersect: false } },
+                    onHover: (event, chartElement) => { event.native.target.style.cursor = chartElement.length ? 'grab' : 'default'; }
+                }
+            });
 
-                const canvas = document.getElementById('myChart');
-                canvas.removeEventListener('mousedown', startDragging);
-                canvas.removeEventListener('mousemove', drag);
-                canvas.removeEventListener('mouseup', stopDragging);
-                canvas.removeEventListener('mouseleave', stopDragging);
-                canvas.removeEventListener('wheel', zoomChart);
-
-                canvas.addEventListener('mousedown', startDragging);
-                canvas.addEventListener('mousemove', drag);
-                canvas.addEventListener('mouseup', stopDragging);
-                canvas.addEventListener('mouseleave', stopDragging);
-                canvas.addEventListener('wheel', zoomChart);
-            } catch (error) {
-                console.error('Chart 렌더링 오류:', error);
-                renderErrorMessage('그래프를 그릴 수 없어요! 오류: ' + error.message);
-            }
+            const canvas = document.getElementById('myChart');
+            canvas.onmousedown = startDragging;
+            canvas.onmousemove = drag;
+            canvas.onmouseup = stopDragging;
+            canvas.onmouseleave = stopDragging;
+            canvas.onwheel = zoomChart;
         }
 
         function updateChart(range) {
-            const indicatorKey = currentIndicator;
-
-            if (!currentGraphData || currentGraphData.length === 0) {
-                renderErrorMessage('기간별 데이터를 업데이트할 수 없습니다. 다시 지표를 선택해주세요.');
-                return;
-            }
-
-            let filteredByRangeData = [...currentGraphData];
-
-            const lastDate = new Date(filteredByRangeData[filteredByRangeData.length - 1].date);
-
+            if (!currentGraphData || currentGraphData.length === 0) return;
+            
+            let dataToShow = [...currentGraphData];
             if (range !== 'All') {
+                const lastDate = new Date(dataToShow[dataToShow.length - 1].date);
                 const cutoff = new Date(lastDate);
-                switch(range) {
-                    case '1M': cutoff.setMonth(lastDate.getMonth() - 1); break;
-                    case '6M': cutoff.setMonth(lastDate.getMonth() - 6); break;
-                    case '1Y': cutoff.setFullYear(lastDate.getFullYear() - 1); break;
-                    case '5Y': cutoff.setFullYear(lastDate.getFullYear() - 5); break;
-                    case '10Y': cutoff.setFullYear(lastDate.getFullYear() - 10); break;
-                }
-
-                filteredByRangeData = filteredByRangeData.filter(item => new Date(item.date).getTime() >= cutoff.getTime());
+                if (range === '1M') cutoff.setMonth(lastDate.getMonth() - 1);
+                else if (range === '6M') cutoff.setMonth(lastDate.getMonth() - 6);
+                else cutoff.setFullYear(lastDate.getFullYear() - { '1Y': 1, '5Y': 5, '10Y': 10 }[range]);
+                dataToShow = dataToShow.filter(item => new Date(item.date) >= cutoff);
             }
 
-            if (filteredByRangeData.length > 0) {
-                const labels = filteredByRangeData.map(item => item.date);
-                const values = filteredByRangeData.map(item => item.value);
-                if(myChart) {
-                    let unit = 'year';
-                    if (range === '1M' || range === '6M') unit = 'day';
-                    else if (range === '1Y') unit = 'month';
-                    myChart.options.scales.x.time.unit = unit;
-                    myChart.options.scales.x.min = null;
-                    myChart.options.scales.x.max = null;
-                }
-                renderChart(indicatorKey, labels, values);
+            if (dataToShow.length > 0) {
+                renderChart(currentIndicator, dataToShow.map(item => item.date), dataToShow.map(item => item.value));
             } else {
                 renderErrorMessage('해당 기간의 데이터가 없어요!');
             }
@@ -733,10 +647,8 @@
             const ctx = document.getElementById('myChart').getContext('2d');
             if (myChart) myChart.destroy();
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-            ctx.fillStyle = '#666';
-            ctx.font = '16px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText(message, ctx.canvas.width/2, ctx.canvas.height/2);
+            ctx.fillStyle = '#666'; ctx.font = '16px Arial'; ctx.textAlign = 'center';
+            ctx.fillText(message, ctx.canvas.width / 2, ctx.canvas.height / 2);
         }
 
         function showInfo() {
@@ -761,318 +673,234 @@
                 'SP500_MCAP': {'title': 'S&P500 시가총액', 'content': {'경제적 의미': 'S&P500 지수에 포함된 기업들의 총 시가총액입니다. 이는 미국 주식 시장의 전반적인 규모와 가치를 나타내며, 경제의 전반적인 건전성과 투자 심리를 반영합니다.', '왜 필요한 지표인가': '주식 시장의 과열 또는 침체 여부를 판단하는 데 중요한 지표입니다. 시가총액의 증가는 경제 성장과 기업 수익성 개선을, 감소는 경기 둔화나 불확실성 증대를 시사할 수 있습니다.'}}
             }[indicator] || { title: indicator, content: { '경제적 의미': '정보 없음' } };
 
-            const infoContentDiv = document.getElementById('infoContent');
-            document.getElementById('infoTitle').textContent = info.title || 'Unknown Indicator';
-            infoContentDiv.innerHTML = '';
-            for(const key in info.content) {
-                infoContentDiv.innerHTML += `<p><strong>${key}:</strong> ${info.content[key]}</p>`;
-            }
+            document.getElementById('infoTitle').textContent = info.title || 'Unknown';
+            document.getElementById('infoContent').innerHTML = Object.entries(info.content)
+                .map(([key, value]) => `<p><strong>${key}:</strong> ${value}</p>`).join('');
         }
 
         async function updateLiquidityFlowAnimation() {
             stopLiquidityFlowAnimation();
 
-            const tgaSlopeDisplay = document.getElementById('tgaSlopeDisplay');
-            const fedLiquidityDisplay = document.getElementById('fedLiquidityDisplay');
-            const mmfToRrpDisplay = document.getElementById('mmfToRrpDisplay');
-            const mmfToMarketDisplay = document.getElementById('mmfToMarketDisplay');
-            
-            
-            // 모든 디스플레이 초기화
-            [tgaSlopeDisplay, fedLiquidityDisplay, mmfToRrpDisplay, mmfToMarketDisplay].forEach(el => {
-                el.textContent = "계산 중...";
-                el.style.color = "black";
+            const displays = {
+                tga: document.getElementById('tgaSlopeDisplay'),
+                fed: document.getElementById('fedLiquidityDisplay'),
+                mmf_fed: document.getElementById('mmfToRrpDisplay'),
+                mmf_market: document.getElementById('mmfToMarketDisplay')
+            };
+            Object.values(displays).forEach(el => {
+                if(el) {
+                    el.textContent = "계산 중...";
+                    el.style.color = "black";
+                }
             });
 
             const indicators = ['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL', 'MMMFFAQ027S', 'MMF2RRP', 'MMF2MARKET', 'MMF2GOVERNMENT'];
             const dataStore = {};
 
-            // 모든 지표 데이터 병렬로 가져오기
             await Promise.all(indicators.map(async (indicator) => {
                 try {
-                    const functionUrl = `${FUNCTION_BASE_URL}?indicator=${indicator}`;
-                    const response = await fetch(functionUrl);
+                    const response = await fetch(`${FUNCTION_BASE_URL}?indicator=${indicator}`);
                     if (!response.ok) throw new Error(`Status ${response.status}`);
-                    const text = await response.text();
-                    const data = await parseCSV(text);
-                    if (data.length > 0) {
-                        data.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-                        dataStore[indicator] = data;
-                    } else {
-                        dataStore[indicator] = [];
-                    }
+                    const data = await parseCSV(await response.text());
+                    dataStore[indicator] = data.length > 0 ? data.sort((a, b) => new Date(a.date) - new Date(b.date)) : [];
                 } catch (error) {
                     console.error(`${indicator} 데이터 로드 실패:`, error.message);
-                    dataStore[indicator] = []; // 실패 시 빈 배열 저장
+                    dataStore[indicator] = [];
                 }
             }));
-            
+
             const getClosestPastDataValue = (data, targetDate) => {
                 if (!data || data.length === 0) return null;
-                let closestItem = null;
-                for (let i = data.length - 1; i >= 0; i--) {
-                    if (new Date(data[i].date).getTime() <= targetDate.getTime()) {
-                        closestItem = data[i];
-                        break;
-                    }
-                }
+                const closestItem = data.filter(d => new Date(d.date) <= targetDate).pop();
                 return closestItem ? closestItem.value : null;
             };
 
-            const animationTasks = [];
+            const calculatedValues = [];
 
-            const formatDisplay = (element, label, diff, isNegativeRed = false) => {
-                const sign = diff > 0 ? '+' : '';
-                const colorClass = diff > 0 ? 'slope-positive' : 'slope-negative';
-                const formattedDiff = (diff).toFixed(2);
-                element.innerHTML = `${label}<br>${sign}${formattedDiff} B $/Month`;
-                element.className = colorClass;
+            const thirtyDaysAgo = (date) => {
+                const newDate = new Date(date);
+                newDate.setDate(newDate.getDate() - 30);
+                return newDate;
             };
 
-            // --- TGA 및 연준 유동성 처리 ---
-            const tgaRelatedData = [dataStore.WTREGEN, dataStore.WALCL, dataStore.RRPONTSYD, dataStore.WRESBAL];
-            if (tgaRelatedData.every(d => d && d.length > 0)) {
+            // --- 모든 값 계산 ---
+            let tgaDiff = null, fedLiquidityDiff = null, mmfToFedDiff = null, finalMmfToMarketDiff = null;
+
+            // TGA, 연준 유동성
+            if (['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL'].every(i => dataStore[i] && dataStore[i].length > 0)) {
                 const latestDate = new Date(dataStore.WTREGEN[dataStore.WTREGEN.length - 1].date);
-                const oneMonthAgo = new Date(latestDate);
-                oneMonthAgo.setDate(oneMonthAgo.getDate() - 30); // *** 수정된 부분 ***
-                
-                const latest = {
-                    tga: getClosestPastDataValue(dataStore.WTREGEN, latestDate),
-                    walcl: getClosestPastDataValue(dataStore.WALCL, latestDate),
-                    rrp: getClosestPastDataValue(dataStore.RRPONTSYD, latestDate),
-                    resbal: getClosestPastDataValue(dataStore.WRESBAL, latestDate),
-                };
-                const past = {
-                    tga: getClosestPastDataValue(dataStore.WTREGEN, oneMonthAgo),
-                    walcl: getClosestPastDataValue(dataStore.WALCL, oneMonthAgo),
-                    rrp: getClosestPastDataValue(dataStore.RRPONTSYD, oneMonthAgo),
-                    resbal: getClosestPastDataValue(dataStore.WRESBAL, oneMonthAgo),
-                };
+                const pastDate = thirtyDaysAgo(latestDate);
+                const latest = { tga: getClosestPastDataValue(dataStore.WTREGEN, latestDate), walcl: getClosestPastDataValue(dataStore.WALCL, latestDate), rrp: getClosestPastDataValue(dataStore.RRPONTSYD, latestDate), resbal: getClosestPastDataValue(dataStore.WRESBAL, latestDate) };
+                const past = { tga: getClosestPastDataValue(dataStore.WTREGEN, pastDate), walcl: getClosestPastDataValue(dataStore.WALCL, pastDate), rrp: getClosestPastDataValue(dataStore.RRPONTSYD, pastDate), resbal: getClosestPastDataValue(dataStore.WRESBAL, pastDate) };
 
                 if (Object.values(latest).every(v => v !== null) && Object.values(past).every(v => v !== null)) {
-                    const tgaDiff = latest.tga - past.tga;
-                    formatDisplay(tgaSlopeDisplay, 'TGA 잔고:', tgaDiff);
-                    animationTasks.push(tgaDiff < 0 ? 'animated-dollar-from-government' : 'animated-dollar-to-government');
-
+                    tgaDiff = latest.tga - past.tga;
                     const walclDiff = (latest.walcl / 1000) - (past.walcl / 1000);
                     const otherDiffs = (latest.tga - past.tga) + 2 * (latest.rrp - past.rrp) + 2 * (latest.resbal - past.resbal);
-                    const t = walclDiff - otherDiffs;
-                    
-                    formatDisplay(fedLiquidityDisplay, '연준 자산:', t);
-                    animationTasks.push(t < 0 ? 'animated-dollar-to-fed' : 'animated-dollar-to-market');
-                } else {
-                    tgaSlopeDisplay.textContent = "TGA: 데이터 부족";
-                    fedLiquidityDisplay.textContent = "연준: 데이터 부족";
+                    fedLiquidityDiff = walclDiff - otherDiffs;
                 }
-            } else {
-                tgaSlopeDisplay.textContent = "TGA: 로드 오류";
-                fedLiquidityDisplay.textContent = "연준: 로드 오류";
             }
 
-            // --- MMF to RRP 처리 ---
+            // MMF -> FED
             if (dataStore.MMF2RRP && dataStore.MMF2RRP.length > 0) {
                 const latestDate = new Date(dataStore.MMF2RRP[dataStore.MMF2RRP.length - 1].date);
-                const oneMonthAgo = new Date(latestDate);
-                oneMonthAgo.setDate(oneMonthAgo.getDate() - 30); // *** 수정된 부분 ***
-
+                const pastDate = thirtyDaysAgo(latestDate);
                 const latestVal = getClosestPastDataValue(dataStore.MMF2RRP, latestDate);
-                const pastVal = getClosestPastDataValue(dataStore.MMF2RRP, oneMonthAgo);
-
+                const pastVal = getClosestPastDataValue(dataStore.MMF2RRP, pastDate);
                 if (latestVal !== null && pastVal !== null) {
-                    const diff = (latestVal - pastVal) / 1000000000;
-                    formatDisplay(mmfToRrpDisplay, 'MMF -> FED:', diff);
-                    animationTasks.push(diff >= 0 ? 'animated-dollar-from-mmf-to-fed' : 'animated-dollar-from-fed-to-mmf');
-                } else {
-                    mmfToRrpDisplay.textContent = "MMF->RRP: 데이터 부족";
+                    mmfToFedDiff = (latestVal - pastVal) / 1e9;
                 }
-            } else {
-                mmfToRrpDisplay.textContent = "MMF->RRP: 로드 오류";
             }
 
-            // --- MMF to Market 처리 (정부와 시장 값 합산) ---
-            if (dataStore.MMF2MARKET && dataStore.MMF2MARKET.length > 0 &&
-                dataStore.MMF2GOVERNMENT && dataStore.MMF2GOVERNMENT.length > 0 &&
-                dataStore.MMMFFAQ027S && dataStore.MMMFFAQ027S.length > 0) {
-                
-                const latestDateMarket = new Date(dataStore.MMF2MARKET[dataStore.MMF2MARKET.length - 1].date);
-                const oneMonthAgoMarket = new Date(latestDateMarket);
-                oneMonthAgoMarket.setDate(oneMonthAgoMarket.getDate() - 30); // *** 수정된 부분 ***
-                
-                const latestValMarket = getClosestPastDataValue(dataStore.MMF2MARKET, latestDateMarket);
-                const pastValMarket = getClosestPastDataValue(dataStore.MMF2MARKET, oneMonthAgoMarket);
+            // MMF -> 시장 (수정된 계산)
+            let mmfToMarketCombined = null;
+            if (dataStore.MMF2MARKET?.length > 0 && dataStore.MMF2GOVERNMENT?.length > 0) {
+                 const latestDateM = new Date(dataStore.MMF2MARKET[dataStore.MMF2MARKET.length - 1].date);
+                 const pastDateM = thirtyDaysAgo(latestDateM);
+                 const latestM = getClosestPastDataValue(dataStore.MMF2MARKET, latestDateM);
+                 const pastM = getClosestPastDataValue(dataStore.MMF2MARKET, pastDateM);
+                 
+                 const latestDateG = new Date(dataStore.MMF2GOVERNMENT[dataStore.MMF2GOVERNMENT.length - 1].date);
+                 const pastDateG = thirtyDaysAgo(latestDateG);
+                 const latestG = getClosestPastDataValue(dataStore.MMF2GOVERNMENT, latestDateG);
+                 const pastG = getClosestPastDataValue(dataStore.MMF2GOVERNMENT, pastDateG);
 
-                const latestDateGov = new Date(dataStore.MMF2GOVERNMENT[dataStore.MMF2GOVERNMENT.length - 1].date);
-                const oneMonthAgoGov = new Date(latestDateGov);
-                oneMonthAgoGov.setDate(oneMonthAgoGov.getDate() - 30); // *** 수정된 부분 ***
-                
-                const latestValGov = getClosestPastDataValue(dataStore.MMF2GOVERNMENT, latestDateGov);
-                const pastValGov = getClosestPastDataValue(dataStore.MMF2GOVERNMENT, oneMonthAgoGov);
-
-                const latestDateMMF = new Date(dataStore.MMMFFAQ027S[dataStore.MMMFFAQ027S.length - 1].date);
-                const oneMonthAgoMMF = new Date(latestDateMMF);
-                oneMonthAgoMMF.setDate(oneMonthAgoMMF.getDate() - 30); // *** 수정된 부분 ***
-                
-                const latestValMMF = getClosestPastDataValue(dataStore.MMMFFAQ027S, latestDate);
-                const pastValMMF = getClosestPastDataValue(dataStore.MMMFFAQ027S, oneMonthAgo);
-
-                if (latestValMarket !== null && pastValMarket !== null &&
-                    latestValGov !== null && pastValGov !== null &&
-                    latestValMMF !== null && pastValMMF !== null) {
-                    
-                    const diffMarket = (latestValMarket - pastValMarket) / 1000000000;
-                    const diffGov = (latestValGov - pastValGov) / 1000000000;
-                    const diffMMF = (latestValMMF - pastValMMF) / 1000000000;
-                    const combinedDiff = diffMarket + diffGov - diffMMF;
-
-                    formatDisplay(mmfToMarketDisplay, 'MMF ->시장:', combinedDiff);
-                    animationTasks.push(combinedDiff > 0 ? 'animated-dollar-from-mmf-to-market_parabolic' : 'animated-dollar-from-market-to-mmf_parabolic');
-                } else {
-                    mmfToMarketDisplay.textContent = "MMF->Mkt: 데이터 부족";
-                }
-            } else {
-                mmfToMarketDisplay.textContent = "MMF->Mkt: 로드 오류";
+                 if(latestM !== null && pastM !== null && latestG !== null && pastG !== null) {
+                    mmfToMarketCombined = ((latestM - pastM) / 1e9) + ((latestG - pastG) / 1e9);
+                 }
             }
-
             
+            let mmfAssetChange = null;
+            if(dataStore.MMMFFAQ027S?.length > 0) {
+                const latestDate = new Date(dataStore.MMMFFAQ027S[dataStore.MMMFFAQ027S.length-1].date);
+                const pastDate = thirtyDaysAgo(latestDate);
+                const latestVal = getClosestPastDataValue(dataStore.MMMFFAQ027S, latestDate);
+                const pastVal = getClosestPastDataValue(dataStore.MMMFFAQ027S, pastDate);
+                if(latestVal !== null && pastVal !== null){
+                    mmfAssetChange = (latestVal - pastVal) / 1e9; // 단위 Billions로
+                }
+            }
+
+            if (mmfToMarketCombined !== null && mmfAssetChange !== null) {
+                finalMmfToMarketDiff = mmfToMarketCombined - mmfAssetChange;
+            }
+
+            // 계산된 값들을 배열에 추가
+            if (tgaDiff !== null) calculatedValues.push({ value: tgaDiff, element: displays.tga, label: 'TGA 잔고:', animationClass: tgaDiff < 0 ? 'animated-dollar-from-government' : 'animated-dollar-to-government' });
+            if (fedLiquidityDiff !== null) calculatedValues.push({ value: fedLiquidityDiff, element: displays.fed, label: '연준 유동성:', animationClass: fedLiquidityDiff < 0 ? 'animated-dollar-to-fed' : 'animated-dollar-to-market' });
+            if (mmfToFedDiff !== null) calculatedValues.push({ value: mmfToFedDiff, element: displays.mmf_fed, label: 'MMF -> FED:', animationClass: mmfToFedDiff >= 0 ? 'animated-dollar-from-mmf-to-fed' : 'animated-dollar-from-fed-to-mmf' });
+            if (finalMmfToMarketDiff !== null) calculatedValues.push({ value: finalMmfToMarketDiff, element: displays.mmf_market, label: 'MMF ->시장:', animationClass: finalMmfToMarketDiff > 0 ? 'animated-dollar-from-mmf-to-market_parabolic' : 'animated-dollar-from-market-to-mmf_parabolic' });
+
+            // 절대값 기준으로 순위 매기기
+            const rankedAnimations = calculatedValues.sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
+            
+            // 텍스트 표시
+            rankedAnimations.forEach(({ value, element, label }) => {
+                if (element) {
+                    const sign = value > 0 ? '+' : '';
+                    element.innerHTML = `${label}<br>${sign}${value.toFixed(2)} B $/Month`;
+                    element.className = value > 0 ? 'slope-positive' : 'slope-negative';
+                }
+            });
 
             // 애니메이션 실행
             const startAnimations = () => {
-                for (let i = 0; i < NUM_DOLLAR_ANIMATIONS; i++) {
-                    const delay = i * DOLLAR_SPAWN_INTERVAL;
-                    const timeoutId = setTimeout(() => {
-                        animationTasks.forEach(task => createAndAnimateDollar(task));
-                    }, delay);
-                    dollarAnimationIntervals.push(timeoutId);
-                }
+                rankedAnimations.forEach((task, index) => {
+                    const factor = (4 - index) / 4.0;
+                    if (factor <= 0) return;
+
+                    const size = BASE_DOLLAR_SIZE * factor;
+                    const duration = BASE_ANIMATION_DURATION / factor; // 속도는 배율에 반비례
+                    const spawnInterval = duration / NUM_DOLLAR_ANIMATIONS;
+
+                    for (let i = 0; i < NUM_DOLLAR_ANIMATIONS; i++) {
+                        const delay = i * spawnInterval;
+                        const timeoutId = setTimeout(() => {
+                            createAndAnimateDollar(task.animationClass, size, duration);
+                        }, delay);
+                        dollarAnimationIntervals.push(timeoutId);
+                    }
+                });
             };
-            
-            if (animationTasks.length > 0) {
+
+            if (rankedAnimations.length > 0) {
                 startAnimations();
-                const resetIntervalId = setInterval(startAnimations, DOLLAR_ANIMATION_DURATION);
+                const resetIntervalId = setInterval(startAnimations, BASE_ANIMATION_DURATION);
                 dollarAnimationIntervals.push(resetIntervalId);
             }
         }
-
-        function createAndAnimateDollar(animationClass) {
+        
+        function createAndAnimateDollar(animationClass, size, duration) {
             const dollar = document.createElement('img');
             dollar.src = "./icon/dollar.jpg";
             dollar.alt = "Dollar";
-            dollar.classList.add('dollar-animated-object', animationClass);
-            dollar.style.setProperty('--animation-duration', `${DOLLAR_ANIMATION_DURATION / 1000}s`);
+            dollar.className = 'dollar-animated-object';
+            dollar.style.width = `${size}px`;
+            dollar.style.height = `${size}px`;
+            dollar.style.setProperty('--animation-duration', `${duration / 1000}s`);
+            dollar.classList.add(animationClass);
+            
             document.getElementById('liquidityFlow').appendChild(dollar);
-            dollar.addEventListener('animationend', () => {
-                if (dollar) dollar.remove();
-            });
+            dollar.addEventListener('animationend', () => dollar.remove());
         }
 
         function stopLiquidityFlowAnimation() {
             dollarAnimationIntervals.forEach(id => clearTimeout(id));
             dollarAnimationIntervals.forEach(id => clearInterval(id));
             dollarAnimationIntervals = [];
-
-            const existingDollars = document.querySelectorAll('.dollar-animated-object');
-            existingDollars.forEach(dollar => dollar.remove());
+            document.querySelectorAll('.dollar-animated-object').forEach(el => el.remove());
         }
 
-        function startDragging(event) {
-            if (!myChart) return;
-            isDragging = true;
-            startX = event.pageX - event.target.getBoundingClientRect().left;
-            startScrollX = myChart.options.scales.x.min;
-            event.target.style.cursor = 'grabbing';
-        }
-
-        function drag(event) {
+        function startDragging(e) { if(myChart) { isDragging = true; startX = e.pageX - e.target.getBoundingClientRect().left; startScrollX = myChart.options.scales.x.min; e.target.style.cursor = 'grabbing'; }}
+        function drag(e) {
             if (!isDragging || !myChart) return;
-            event.preventDefault();
-
-            const currentX = event.pageX - event.target.getBoundingClientRect().left;
-            const diffX = (currentX - startX) * 0.6;
-
-            const chartArea = myChart.chartArea;
-            const x_scale = myChart.scales.x;
-
-            if (!x_scale || typeof x_scale.max === 'undefined' || typeof x_scale.min === 'undefined') {
-                return;
-            }
-
-            const dataRange = x_scale.max - x_scale.min;
-            const pixelRange = chartArea.right - chartArea.left;
+            e.preventDefault();
+            const { x } = myChart.scales;
+            const dataRange = x.max - x.min;
+            const pixelRange = myChart.chartArea.right - myChart.chartArea.left;
             if (pixelRange <= 0) return;
 
-            const dataOffset = (diffX / pixelRange) * dataRange;
-
+            const dataOffset = ((e.pageX - e.target.getBoundingClientRect().left - startX) * 0.6 / pixelRange) * dataRange;
             let newMin = startScrollX - dataOffset;
-            let newMax = startScrollX + dataRange - dataOffset;
+            let newMax = newMin + dataRange;
 
             const allDates = currentGraphData.map(d => new Date(d.date).getTime());
-            const minAllowedDate = Math.min(...allDates);
-            const maxAllowedDate = Math.max(...allDates);
+            const minAllowed = Math.min(...allDates);
+            const maxAllowed = Math.max(...allDates);
 
-            if (newMin < minAllowedDate) {
-                newMin = minAllowedDate;
-                newMax = minAllowedDate + dataRange;
-            }
-            if (newMax > maxAllowedDate) {
-                newMax = maxAllowedDate;
-                newMin = maxAllowedDate - dataRange;
-            }
+            if (newMin < minAllowed) { newMin = minAllowed; newMax = newMin + dataRange; }
+            if (newMax > maxAllowed) { newMax = maxAllowed; newMin = newMax - dataRange; }
 
             myChart.options.scales.x.min = newMin;
             myChart.options.scales.x.max = newMax;
             myChart.update('none');
         }
-
-        function stopDragging(event) {
-            if (!isDragging) return;
-            isDragging = false;
-            event.target.style.cursor = 'grab';
-        }
-
-        function zoomChart(event) {
+        function stopDragging(e) { if(isDragging) { isDragging = false; e.target.style.cursor = 'grab'; }}
+        function zoomChart(e) {
             if (!myChart) return;
-            event.preventDefault();
-
-            const chartArea = myChart.chartArea;
-            const x_scale = myChart.scales.x;
-
-            if (!x_scale || typeof x_scale.max === 'undefined' || typeof x_scale.min === 'undefined') {
-                return;
-            }
-
-            const mouseX = event.offsetX;
-            const dataX = x_scale.getValueForPixel(mouseX);
+            e.preventDefault();
+            const { x } = myChart.scales;
+            const { min, max } = x;
+            const range = max - min;
+            const zoomFactor = e.deltaY < 0 ? 0.9 : 1.1;
+            const mouseX = e.offsetX;
+            const center = x.getValueForPixel(mouseX);
             
-            const zoomFactor = 1.1;
-            let newMin, newMax;
-
-            if (event.deltaY < 0) {
-                newMin = dataX - (dataX - x_scale.min) / zoomFactor;
-                newMax = dataX + (x_scale.max - dataX) / zoomFactor;
-            } else {
-                newMin = dataX - (dataX - x_scale.min) * zoomFactor;
-                newMax = dataX + (x_scale.max - dataX) * zoomFactor;
-            }
+            const newMin = center - (center - min) * zoomFactor;
+            const newMax = center + (max - center) * zoomFactor;
 
             const allDates = currentGraphData.map(d => new Date(d.date).getTime());
-            const minAllowedDate = Math.min(...allDates);
-            const maxAllowedDate = Math.max(...allDates);
+            const minAllowed = Math.min(...allDates);
+            const maxAllowed = Math.max(...allDates);
 
-            if (newMin < minAllowedDate) newMin = minAllowedDate;
-            if (newMax > maxAllowedDate) newMax = maxAllowedDate;
-            if (newMin >= newMax) return; // Prevent zooming in too far
-            
-            myChart.options.scales.x.min = newMin;
-            myChart.options.scales.x.max = newMax;
-            myChart.update('none');
-        }
-
-        function goBackToGraph() {
-            showPage('graphPage');
-            if (currentIndicator && myChart) {
-                updateChart('All');
+            if (newMin >= minAllowed && newMax <= maxAllowed) {
+                myChart.options.scales.x.min = newMin;
+                myChart.options.scales.x.max = newMax;
+                myChart.update('none');
             }
         }
+        function goBackToGraph() { if (currentIndicator && myChart) { showPage('graphPage'); updateChart('All'); } }
+
     </script>
 </body>
 </html>
