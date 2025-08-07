@@ -209,7 +209,8 @@
             z-index: 10;
             cursor: help;
         }
-
+        
+        /* [수정 2] 색상 변경 클래스 */
         .slope-positive { color: red; }
         .slope-negative { color: blue; }
 
@@ -957,12 +958,12 @@
             // 절대값 기준으로 순위 매기기
             const rankedAnimations = calculatedValues.sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
             
-            // 텍스트 표시
+            // [수정 2] 텍스트 및 색상 표시
             rankedAnimations.forEach(({ value, element, label, date }) => {
                 if (element) {
                     const sign = value > 0 ? '+' : '';
-                    element.innerHTML = `${label}<br>${sign}${value.toFixed(2)} B $/Month`;
-                    element.className = value > 0 ? 'slope-positive' : 'slope-negative';
+                    const valueSpan = `<span class="${value > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${value.toFixed(2)} B $/Month</span>`;
+                    element.innerHTML = `${label}<br>${valueSpan}`;
                 }
             });
 
@@ -994,20 +995,22 @@
                 `;
             }
 
+            // [수정 3] MMF -> 시장 팝업 내용
             if (finalMmfToMarketDiff !== null) {
                 const sign1 = mmfToMarketCombined > 0 ? '+' : '';
                 const sign2 = mmfAssetChange > 0 ? '+' : '';
+                const colorClass1 = mmfToMarketCombined > 0 ? 'slope-positive' : 'slope-negative';
+                const colorClass2 = mmfAssetChange > 0 ? 'slope-positive' : 'slope-negative';
                 tooltips.mmf_market.innerHTML = `
                     <p>최근 한 달 동안, MMF가 시장에 돈을 공급한 자금의 양 변화를 나타냅니다.<br>
                     이 결과는 MMF가 시장에 공급한 유동성에서 시장이 MMF에 투자한 양을 뺀 결과입니다.</p>
                     <p><b>+양수 :</b> MMF가 시장에 유동성 공급량이 큰 상황<br><b>-음수 :</b> 시장이 MMF에 자금을 투자한 양이 큰 상황</p>
                     <hr>
-                    <p>MMF의 시장 유동성 공급 변화량 = ${sign1}${mmfToMarketCombined.toFixed(2)} B</p>
-                    <p>시장의 MMF 투자 변화량 = ${sign2}${mmfAssetChange.toFixed(2)} B</p>
+                    <p>MMF의 시장 유동성 공급 변화량 = <span class="${colorClass1}">${sign1}${mmfToMarketCombined.toFixed(2)} B</span></p>
+                    <p>시장의 MMF 투자 변화량 = <span class="${colorClass2}">${sign2}${mmfAssetChange.toFixed(2)} B</span></p>
                     <span class="update-date">Update Date: ${mmfMarketLatestDate}</span>
                 `;
             }
-
 
             // 애니메이션 실행
             const startAnimations = () => {
