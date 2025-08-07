@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body { font-family: 'Arial', sans-serif; margin: 0; padding: 0; background: #f4f4f4; color: #333; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; min-height: 100vh; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; min-height: 10vh; }
         .header { text-align: center; padding: 10px; background: #007bff; color: white; }
         .back-btn { position: absolute; top: 10px; left: 10px; background: none; border: none; cursor: pointer; font-size: 24px; font-weight: bold; color: black; width: 30px; text-align: center; }
         .back-btn::before { content: "◄"; font-size: 36px; }
@@ -110,7 +110,7 @@
             padding: 10px;
             position: absolute;
             /* [수정 1] 팝업 창이 레이블보다 앞에 표시되도록 z-index 값을 높임 */
-            z-index: 30;
+            z-index: 40;
             /* 기본 위치는 위쪽 */
             bottom: 100%;
             left: 50%;
@@ -370,14 +370,16 @@
                 top: calc(28% - 30px - 5px); /* 수정됨 */
                 left: 42%; /* 수정됨 */
             }
+            /* 수정된 부분 2 */
             .mmf-fed-popup-container { 
                 top: calc(30%); /* 수정됨 */
-                left: 85%; /* 수정됨 */
+                left: 65%; /* 수정됨 */
             }
             .mmf-market-popup-container { 
                 top: calc(55%); /* 수정됨 */
-                left: 85%; /* 수정됨 */
+                left: 65%; /* 수정됨 */
             }
+            /* 수정된 부분 2 끝 */
 
             .tooltip-container {
                 margin-left: -100px;
@@ -453,8 +455,18 @@
                 100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 85%; top: 47%; }
             }
 
-
-            .indicator-buttons { grid-template-columns: 1fr; max-width: 100%; }
+            /* 수정된 부분 3 */
+            .indicator-buttons {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 5px;
+                max-width: 100%;
+            }
+            .indicator-buttons .button {
+                border: 1px solid black;
+                width: 95%;
+                margin: 5px auto;
+            }
+            /* 수정된 부분 3 끝 */
             .button { margin: 5px 0; }
             .time-buttons { justify-content: space-around; }
             .time-btn {
