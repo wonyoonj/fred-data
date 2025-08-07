@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body { font-family: 'Arial', sans-serif; margin: 0; padding: 0; background: #f4f4f4; color: #333; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; min-height: 100vh; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; min-height: 110vh; }
         .header { text-align: center; padding: 10px; background: #007bff; color: white; }
         .back-btn { position: absolute; top: 10px; left: 10px; background: none; border: none; cursor: pointer; font-size: 24px; font-weight: bold; color: black; width: 30px; text-align: center; }
         .back-btn::before { content: "◄"; font-size: 36px; }
@@ -78,25 +78,25 @@
         
         /* 레이블 위치 수정됨 */
         .tga-popup-container {
-            top: calc(57% + 40px + 5px); /* 수정됨 */
+            top: calc(38% - 40px - 10px); /* 수정됨 */
             left: 30%; /* 수정됨 */
             transform: translateX(-50%);
         }
 
         .fed-popup-container {
-            top: calc(20% - 40px - 25px); /* 수정됨 */
+            top: calc(25% - 40px - 25px); /* 수정됨 */
             left: 45%; /* 수정됨 */
             transform: translateX(-50%);
         }
         
         .mmf-fed-popup-container {
-            top: calc(38% - 40px - 10px); /* 수정됨 */
-            left: 75%; /* 수정됨 */
+            top: calc(42% - 40px - 10px); /* 수정됨 */
+            left: 80%; /* 수정됨 */
             transform: translateX(-50%);
         }
 
         .mmf-market-popup-container {
-            top: calc(73% + 40px); /* 수정됨 */
+            top: calc(25% - 40px - 25px); /* 수정됨 */
             left: 80%;
             transform: translateX(-50%);
         }
@@ -354,20 +354,20 @@
             
             /* 모바일 레이블 위치 수정됨 */
             .tga-popup-container {
-                top: calc(47% + 30px + 12px); /* 수정됨 */
-                left: 25%; /* 수정됨 */
+                top: calc(31% - 30px - 5px); /* 수정됨 */
+                left: 30%; /* 수정됨 */
             }
             .fed-popup-container { 
                 top: calc(15% - 30px - 15px); /* 수정됨 */
                 left: 35%; /* 수정됨 */
             }
             .mmf-fed-popup-container { 
-                top: calc(31% - 30px - 5px); /* 수정됨 */
-                left: 70%; /* 수정됨 */
+                top: calc(40% - 30px - 5px); /* 수정됨 */
+                left: 80%; /* 수정됨 */
             }
             .mmf-market-popup-container { 
-                top: calc(71% + 30px); /* 수정됨 */
-                left: 80%; /* 수정됨 */
+                top: calc(15% - 30px - 15px); /* 수정됨 */
+                left: 85%; /* 수정됨 */
             }
 
             .tooltip-container {
@@ -441,7 +441,7 @@
             </div>
             <div class="icon-container MMF-container">
                 <img src="./icon/MMF.jpg" alt="MMF" class="icon">
-                <span class="icon-label">MMF(Money Market Fund)</span>
+                <span class="icon-label">MMF<p>(Money Market Fund)</p></span>
             </div>
         </div>
 
