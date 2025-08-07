@@ -75,6 +75,13 @@
             position: absolute;
             z-index: 20;
         }
+
+        .tga-popup-container:hover,
+        .fed-popup-container:hover,
+        .mmf-fed-popup-container:hover,
+        .mmf-market-popup-container:hover {
+            z-index: 30; /* 마우스를 올렸을 때 z-index를 높여 최상단으로 올림 */
+        }
         
         /* 레이블 위치 수정됨 */
         .tga-popup-container {
@@ -109,8 +116,8 @@
             border-radius: 6px;
             padding: 10px;
             position: absolute;
-            /* [수정 1] 팝업 창이 레이블보다 앞에 표시되도록 z-index 값을 높임 */
-            z-index: 999;
+            /* 팝업 창이 모든 레이블보다 앞에 표시되도록 z-index 값을 매우 높게 설정 */
+            z-index: 9999;
             /* 기본 위치는 위쪽 */
             bottom: 100%;
             left: 50%;
@@ -188,11 +195,11 @@
             top: -1px;
         }
         .mmf-fed-popup-container:hover .tooltip-container {
-            margin-left: -150px; /* 왼쪽으로 이동 */
+            margin-left: -220px; /* 왼쪽으로 이동 */
             top: -1px;
         }
         .mmf-market-popup-container:hover .tooltip-container {
-            margin-left: -150px; /* 왼쪽으로 이동 */
+            margin-left: -220px; /* 왼쪽으로 이동 */
         }
 
 
