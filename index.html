@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body { font-family: 'Arial', sans-serif; margin: 0; padding: 0; background: #f4f4f4; color: #333; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; min-height: 110vh; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; min-height: 100vh; }
         .header { text-align: center; padding: 10px; background: #007bff; color: white; }
         .back-btn { position: absolute; top: 10px; left: 10px; background: none; border: none; cursor: pointer; font-size: 24px; font-weight: bold; color: black; width: 30px; text-align: center; }
         .back-btn::before { content: "◄"; font-size: 36px; }
@@ -78,25 +78,25 @@
         
         /* 레이블 위치 수정됨 */
         .tga-popup-container {
-            top: calc(38% - 40px - 10px); /* 수정됨 */
+            top: calc(57% + 40px + 5px); /* 수정됨 */
             left: 30%; /* 수정됨 */
             transform: translateX(-50%);
         }
 
         .fed-popup-container {
-            top: calc(25% - 40px - 25px); /* 수정됨 */
+            top: calc(20% - 40px - 25px); /* 수정됨 */
             left: 45%; /* 수정됨 */
             transform: translateX(-50%);
         }
         
         .mmf-fed-popup-container {
-            top: calc(42% - 40px - 10px); /* 수정됨 */
-            left: 80%; /* 수정됨 */
+            top: calc(38% - 40px - 10px); /* 수정됨 */
+            left: 75%; /* 수정됨 */
             transform: translateX(-50%);
         }
 
         .mmf-market-popup-container {
-            top: calc(25% - 40px - 25px); /* 수정됨 */
+            top: calc(73% + 40px); /* 수정됨 */
             left: 80%;
             transform: translateX(-50%);
         }
@@ -354,20 +354,20 @@
             
             /* 모바일 레이블 위치 수정됨 */
             .tga-popup-container {
-                top: calc(31% - 30px - 5px); /* 수정됨 */
-                left: 30%; /* 수정됨 */
+                top: calc(47% + 30px + 12px); /* 수정됨 */
+                left: 25%; /* 수정됨 */
             }
             .fed-popup-container { 
                 top: calc(15% - 30px - 15px); /* 수정됨 */
                 left: 35%; /* 수정됨 */
             }
             .mmf-fed-popup-container { 
-                top: calc(40% - 30px - 5px); /* 수정됨 */
-                left: 80%; /* 수정됨 */
+                top: calc(31% - 30px - 5px); /* 수정됨 */
+                left: 70%; /* 수정됨 */
             }
             .mmf-market-popup-container { 
-                top: calc(15% - 30px - 15px); /* 수정됨 */
-                left: 85%; /* 수정됨 */
+                top: calc(71% + 30px); /* 수정됨 */
+                left: 80%; /* 수정됨 */
             }
 
             .tooltip-container {
@@ -441,7 +441,7 @@
             </div>
             <div class="icon-container MMF-container">
                 <img src="./icon/MMF.jpg" alt="MMF" class="icon">
-                <span class="icon-label">MMF<p>(Money Market Fund)</p></span>
+                <span class="icon-label"><b>MMF</b>(Money Market Fund)</span>
             </div>
         </div>
 
@@ -923,14 +923,14 @@
 
             if (finalMmfToMarketDiff !== null) {
                 const sign1 = mmfToMarketCombined > 0 ? '+' : '';
-                const sign2 = finalMmfToMarketDiff > 0 ? '+' : '';
+                const sign2 = mmfAssetChange > 0 ? '+' : '';
                 tooltips.mmf_market.innerHTML = `
                     <p>최근 한 달 동안, MMF가 시장에 돈을 공급한 자금의 양 변화를 나타냅니다.<br>
                     이 결과는 MMF가 시장에 공급한 유동성에서 시장이 MMF에 투자한 양을 뺀 결과입니다.</p>
                     <p><b>+양수 :</b> MMF가 시장에 유동성 공급량이 큰 상황<br><b>-음수 :</b> 시장이 MMF에 자금을 투자한 양이 큰 상황</p>
                     <hr>
                     <p>MMF의 시장 유동성 공급 변화량 = ${sign1}${mmfToMarketCombined.toFixed(2)} B</p>
-                    <p>시장의 MMF 투자 변화량 = ${sign2}${finalMmfToMarketDiff.toFixed(2)} B</p>
+                    <p>시장의 MMF 투자 변화량 = ${sign2}${mmfAssetChange.toFixed(2)} B</p>
                     <span class="update-date">Update Date: ${mmfMarketLatestDate}</span>
                 `;
             }
