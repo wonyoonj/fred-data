@@ -902,6 +902,9 @@
                 return closest ? closest.value : null;
             };
 
+            // 기존 호출부 호환용
+            const getClosestPastDataValue = getClosestDataValue;
+
             const thirtyDaysAgo = (date) => {
                 const newDate = new Date(date);
                 newDate.setDate(newDate.getDate() - 30);
