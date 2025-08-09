@@ -57,7 +57,7 @@
         .Market-container { top: 90%; left: 50%; } /* 수정됨 */
         .MMF-container { top: 57%; left: 80%; } /* 수정됨 */
 
-        #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay {
+        #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay, #netMarketFlowDisplay {
             position: absolute;
             transform: translateX(-50%);
             font-size: 0.8em;
@@ -70,6 +70,16 @@
             text-align: center;
         }
         
+        /* [수정 1 시작] 시장 아이콘 아래 계산 결과값 위치 */
+        #netMarketFlowDisplay {
+            top: 98%;
+            left: 50%;
+            background: none;
+            border: none;
+            font-size: 0.9em;
+        }
+        /* [수정 1 끝] */
+
         /* 팝업 컨테이너 및 팝업 스타일 */
         .tga-popup-container, .fed-popup-container, .mmf-fed-popup-container, .mmf-market-popup-container {
             position: absolute;
@@ -217,7 +227,6 @@
             cursor: help;
         }
         
-        /* [수정 2] 색상 변경 클래스 */
         .slope-positive { color: red; }
         .slope-negative { color: blue; }
 
@@ -357,6 +366,12 @@
             .Market-container { top: 80%; left: 50%; } /* 수정됨 */
             .MMF-container { top: 47%; left: 85%; } /* 수정됨 */
 
+            /* [수정 2 시작] 모바일에서 시장 아이콘 아래 계산 결과값 위치 */
+            #netMarketFlowDisplay {
+                top: 90%;
+            }
+            /* [수정 2 끝] */
+
             #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay {
                 font-size: 0.7em;
                 padding: 2px 4px;
@@ -398,7 +413,6 @@
                 height: 22.5px;
             }
 
-            /* [수정 2] 모바일 화면에 맞는 달러 아이콘 애니메이션 좌표 설정 */
             @keyframes dollarFlowToMarket {
                 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 15%; }
                 20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 15%; }
@@ -462,7 +476,6 @@
                 100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 85%; top: 47%; }
             }
 
-            /* 수정된 부분 3 */
             .indicator-buttons {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 5px;
@@ -473,7 +486,7 @@
                 width: 95%;
                 margin: 5px auto;
             }
-            /* 수정된 부분 3 끝 */
+
             .button { margin: 5px 0; }
             .time-buttons { justify-content: space-around; }
             .time-btn {
@@ -531,7 +544,8 @@
             <div class="icon-container Market-container">
                 <img src="./icon/Market.jpg" alt="Market" class="icon">
                 <span class="icon-label">미국 시장(Market)</span>
-            </div>
+                <div id="netMarketFlowDisplay"></div>
+                </div>
             <div class="icon-container MMF-container">
                 <img src="./icon/MMF.jpg" alt="MMF" class="icon">
                 <span class="icon-label">MMF<br>(Money Market Fund)</span>
@@ -613,9 +627,8 @@
         let currentGraphData = [];
         let dollarAnimationIntervals = [];
         
-        // --- 수정된 부분: 애니메이션 기준값 설정 ---
         const BASE_ANIMATION_DURATION = 3000;
-        const BASE_DOLLAR_SIZE = 37.5; // 기본 달러 아이콘 크기
+        const BASE_DOLLAR_SIZE = 37.5; 
         const NUM_DOLLAR_ANIMATIONS = 3;
 
         const FUNCTION_BASE_URL = '/.netlify/functions/get-csv-data';
@@ -856,11 +869,15 @@
                 tga: document.getElementById('tgaSlopeDisplay'),
                 fed: document.getElementById('fedLiquidityDisplay'),
                 mmf_fed: document.getElementById('mmfToRrpDisplay'),
-                mmf_market: document.getElementById('mmfToMarketDisplay')
+                mmf_market: document.getElementById('mmfToMarketDisplay'),
+                net_market_flow: document.getElementById('netMarketFlowDisplay') // [수정 4 시작] 새 표시 요소 추가
             };
             Object.values(displays).forEach(el => {
                 if(el) {
-                    el.textContent = "계산 중...";
+                    // netMarketFlowDisplay는 "계산 중..." 텍스트를 표시하지 않음
+                    if (el.id !== 'netMarketFlowDisplay') {
+                        el.textContent = "계산 중...";
+                    }
                     el.style.color = "black";
                 }
             });
@@ -887,7 +904,6 @@
                 }
             }));
 
-            // 기존 getClosestPastDataValue → 새로운 closest-by-abs 유틸 추가
             const getClosestDataValue = (data, targetDate) => {
                 if (!data || data.length === 0) return null;
                 let closest = data[0];
@@ -902,7 +918,6 @@
                 return closest ? closest.value : null;
             };
 
-            // 기존 호출부 호환용
             const getClosestPastDataValue = getClosestDataValue;
 
             const thirtyDaysAgo = (date) => {
@@ -911,16 +926,13 @@
                 return newDate;
             };
 
-            // --- 모든 값 계산 ---
             let tgaDiff = null, fedLiquidityDiff = null, mmfToFedDiff = null, finalMmfToMarketDiff = null;
             let tgaLatestDate = null, fedLatestDate = null, mmfFedLatestDate = null, mmfMarketLatestDate = null;
             let mmfToMarketCombined = null, mmfAssetChange = null;
 
             const calculatedValues = [];
 
-            // TGA, 연준 유동성
             if (['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL'].every(i => dataStore[i] && dataStore[i].length > 0)) {
-                // 공통 latest 날짜 산출
                 const lastDates = ['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL']
                     .map(i => new Date(dataStore[i][dataStore[i].length - 1].date));
                 const commonLatestTs = Math.min(...lastDates.map(d => d.getTime()));
@@ -929,7 +941,6 @@
                 tgaLatestDate = commonLatest.toISOString().split('T')[0];
                 const pastDate = thirtyDaysAgo(commonLatest);
 
-                // closest-by-abs 방식으로 latest, past 값 추출
                 const latest = {
                     tga: getClosestDataValue(dataStore.WTREGEN, commonLatest),
                     walcl: getClosestDataValue(dataStore.WALCL, commonLatest),
@@ -945,15 +956,14 @@
 
                 if (Object.values(latest).every(v => v !== null) && Object.values(past).every(v => v !== null)) {
                     tgaDiff = latest.tga - past.tga;
-                    const walclDiff = (latest.walcl / 1000) - (past.walcl / 1000); // 기존 단위 변환 유지
-                    const otherDiffs = (latest.tga - past.tga) + 2 * (latest.rrp - past.rrp) + 2 * (latest.resbal - past.resbal); // 변경 금지
+                    const walclDiff = (latest.walcl / 1000) - (past.walcl / 1000);
+                    const otherDiffs = (latest.tga - past.tga) + 2 * (latest.rrp - past.rrp) + 2 * (latest.resbal - past.resbal);
                     fedLiquidityDiff = walclDiff - otherDiffs;
                     fedLatestDate = commonLatest.toISOString().split('T')[0];
                 }
             }
 
 
-            // MMF -> FED
             if (dataStore.MMF2RRP && dataStore.MMF2RRP.length > 0) {
                 const latestDate = new Date(dataStore.MMF2RRP[dataStore.MMF2RRP.length - 1].date);
                 mmfFedLatestDate = latestDate.toISOString().split('T')[0];
@@ -965,7 +975,6 @@
                 }
             }
 
-            // MMF -> 시장 (수정된 계산)
             if (dataStore.MMF2MARKET?.length > 0 && dataStore.MMF2GOVERNMENT?.length > 0) {
                  const latestDateM = new Date(dataStore.MMF2MARKET[dataStore.MMF2MARKET.length - 1].date);
                  const pastDateM = thirtyDaysAgo(latestDateM);
@@ -990,7 +999,7 @@
                 const latestVal = getClosestPastDataValue(dataStore.MMMFFAQ027S, latestDate);
                 const pastVal = getClosestPastDataValue(dataStore.MMMFFAQ027S, pastDate);
                 if(latestVal !== null && pastVal !== null){
-                    mmfAssetChange = (latestVal - pastVal) / 1e9; // 단위 Billions로
+                    mmfAssetChange = (latestVal - pastVal) / 1e9;
                 }
             }
 
@@ -998,16 +1007,28 @@
                 finalMmfToMarketDiff = mmfToMarketCombined - mmfAssetChange;
             }
 
-            // 계산된 값들을 배열에 추가
+            // [수정 5 시작] 순수 시장 유동성 계산 및 표시
+            if (fedLiquidityDiff !== null && tgaDiff !== null && finalMmfToMarketDiff !== null) {
+                const netMarketFlow = fedLiquidityDiff - tgaDiff - finalMmfToMarketDiff;
+                const sign = netMarketFlow > 0 ? '+' : '';
+                const colorClass = netMarketFlow > 0 ? 'slope-positive' : 'slope-negative';
+                if(displays.net_market_flow) {
+                    displays.net_market_flow.innerHTML = `<span class="${colorClass}">${sign}${netMarketFlow.toFixed(2)} B $/Month</span>`;
+                }
+            } else {
+                 if(displays.net_market_flow) {
+                    displays.net_market_flow.textContent = '';
+                 }
+            }
+            // [수정 5 끝]
+
             if (tgaDiff !== null) calculatedValues.push({ value: tgaDiff, element: displays.tga, label: 'TGA 잔고:', animationClass: tgaDiff < 0 ? 'animated-dollar-from-government' : 'animated-dollar-to-government' , date: tgaLatestDate });
             if (fedLiquidityDiff !== null) calculatedValues.push({ value: fedLiquidityDiff, element: displays.fed, label: '연준 유동성:', animationClass: fedLiquidityDiff < 0 ? 'animated-dollar-to-fed' : 'animated-dollar-to-market', date: fedLatestDate });
             if (mmfToFedDiff !== null) calculatedValues.push({ value: mmfToFedDiff, element: displays.mmf_fed, label: 'MMF -> FED:', animationClass: mmfToFedDiff >= 0 ? 'animated-dollar-from-mmf-to-fed' : 'animated-dollar-from-fed-to-mmf', date: mmfFedLatestDate });
             if (finalMmfToMarketDiff !== null) calculatedValues.push({ value: finalMmfToMarketDiff, element: displays.mmf_market, label: 'MMF ->시장:', animationClass: finalMmfToMarketDiff > 0 ? 'animated-dollar-from-mmf-to-market_parabolic' : 'animated-dollar-from-market-to-mmf_parabolic', date: mmfMarketLatestDate });
 
-            // 절대값 기준으로 순위 매기기
             const rankedAnimations = calculatedValues.sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
             
-            // [수정 2] 텍스트 및 색상 표시
             rankedAnimations.forEach(({ value, element, label, date }) => {
                 if (element) {
                     const sign = value > 0 ? '+' : '';
@@ -1016,7 +1037,6 @@
                 }
             });
 
-            // 팝업 내용 생성 및 표시
             if (tgaDiff !== null) {
                 tooltips.tga.innerHTML = `
                     <p>최근 한 달 동안, 미국 재무부 잔고 변화를 나타냅니다.</p>
@@ -1044,7 +1064,7 @@
                 `;
             }
 
-            // [수정 3] MMF -> 시장 팝업 내용
+            // [수정 6 시작] MMF -> 시장 팝업에 그래프 버튼 추가
             if (finalMmfToMarketDiff !== null) {
                 const sign1 = mmfToMarketCombined > 0 ? '+' : '';
                 const sign2 = mmfAssetChange > 0 ? '+' : '';
@@ -1057,18 +1077,19 @@
                     <hr>
                     <p>MMF의 시장 유동성 공급 변화량 = <span class="${colorClass1}">${sign1}${mmfToMarketCombined.toFixed(2)} B $/Month</span></p>
                     <p>시장의 MMF 투자 변화량 = <span class="${colorClass2}">${sign2}${mmfAssetChange.toFixed(2)} B $/Month</span></p>
+                    <button class="graph-btn" onclick="showGraph('MMMFFAQ027S')">그래프</button>
                     <span class="update-date">Update Date: ${mmfMarketLatestDate}</span>
                 `;
             }
+            // [수정 6 끝]
 
-            // 애니메이션 실행
             const startAnimations = () => {
                 rankedAnimations.forEach((task, index) => {
                     const factor = (4 - index) / 4.0;
                     if (factor <= 0) return;
 
                     const size = BASE_DOLLAR_SIZE * factor;
-                    const duration = BASE_ANIMATION_DURATION / factor; // 속도는 배율에 반비례
+                    const duration = BASE_ANIMATION_DURATION / factor;
                     const spawnInterval = duration / NUM_DOLLAR_ANIMATIONS;
 
                     for (let i = 0; i < NUM_DOLLAR_ANIMATIONS; i++) {
