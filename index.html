@@ -17,7 +17,7 @@
             text-align: center;
             padding: 20px;
             position: relative;
-            height: 600px; /* 수정됨: 아이콘 이동에 따른 높이 확보 */
+            height: 600px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -51,11 +51,10 @@
             margin-top: 0;
         }
 
-        /* 아이콘 위치 수정됨 */
         .FED-container { top: 20%; left: 50%; }
-        .Government-container { top: 57%; left: 20%; } /* 수정됨 */
-        .Market-container { top: 90%; left: 50%; } /* 수정됨 */
-        .MMF-container { top: 57%; left: 80%; } /* 수정됨 */
+        .Government-container { top: 57%; left: 20%; }
+        .Market-container { top: 90%; left: 50%; }
+        .MMF-container { top: 57%; left: 80%; }
 
         #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay, #netMarketFlowDisplay {
             position: absolute;
@@ -69,8 +68,7 @@
             border: 1px solid #ccc;
             text-align: center;
         }
-        
-        /* [수정 1 시작] 시장 아이콘 아래 계산 결과값 위치 */
+
         #netMarketFlowDisplay {
             display: inline-block;
             top: 98%;
@@ -79,9 +77,7 @@
             border: none;
             font-size: 0.9em;
         }
-        /* [수정 1 끝] */
 
-        /* 팝업 컨테이너 및 팝업 스타일 */
         .tga-popup-container, .fed-popup-container, .mmf-fed-popup-container, .mmf-market-popup-container {
             position: absolute;
             z-index: 20;
@@ -91,34 +87,33 @@
         .fed-popup-container:hover,
         .mmf-fed-popup-container:hover,
         .mmf-market-popup-container:hover {
-            z-index: 30; /* 마우스를 올렸을 때 z-index를 높여 최상단으로 올림 */
+            z-index: 30;
         }
-        
-        /* 레이블 위치 수정됨 */
+
         .tga-popup-container {
-            top: calc(60% + 40px + 5px); /* 수정됨 */
-            left: 30%; /* 수정됨 */
+            top: calc(60% + 40px + 5px);
+            left: 30%;
             transform: translateX(-50%);
         }
 
         .fed-popup-container {
-            top: calc(38% - 40px - 10px); /* 수정됨 */
-            left: 45%; /* 수정됨 */
-            transform: translateX(-50%);
-        }
-        
-        .mmf-fed-popup-container {
-            top: calc(42% - 40px - 10px); /* 수정됨 */
-            left: 80%; /* 수정됨 */
+            top: calc(38% - 40px - 10px);
+            left: 45%;
             transform: translateX(-50%);
         }
 
-        .mmf-market-popup-container {
-            top: calc(63% + 40px); /* 수정됨 */
+        .mmf-fed-popup-container {
+            top: calc(42% - 40px - 10px);
             left: 80%;
             transform: translateX(-50%);
         }
 
+        .mmf-market-popup-container {
+            top: calc(63% + 40px);
+            left: 80%;
+            transform: translateX(-50%);
+        }
+        
         .tooltip-container {
             visibility: hidden;
             background-color: #555;
@@ -127,34 +122,31 @@
             border-radius: 6px;
             padding: 10px;
             position: absolute;
-            /* 팝업 창이 모든 레이블보다 앞에 표시되도록 z-index 값을 매우 높게 설정 */
             z-index: 9999;
-            /* 기본 위치는 위쪽 */
             bottom: 100%;
             left: 50%;
-            margin-left: -100px;
-            width: 180px;
+            margin-left: -125px; /* 중앙 정렬을 위해 조정 */
+            width: 250px;
             opacity: 0;
             transition: opacity 0.3s;
             line-height: 1.5;
             white-space: normal;
         }
         
-        /* 수정됨: 아래에 표시될 툴팁 스타일 */
         .fed-popup-container .tooltip-container,
         .mmf-fed-popup-container .tooltip-container {
             bottom: auto;
             top: 100%;
-            margin-top: 10px; /* 약간의 간격 추가 */
+            margin-top: 10px;
         }
-
+        
         .tooltip-container p {
             margin-top: 0;
             margin-bottom: 5px;
             font-size: 12px;
             font-weight: normal;
         }
-
+        
         .tooltip-container .graph-btn {
             background: #009688;
             color: white;
@@ -168,7 +160,7 @@
             cursor: pointer;
             border-radius: 3px;
         }
-
+        
         .tooltip-container .update-date {
             font-size: 10px;
             color: #ccc;
@@ -177,7 +169,6 @@
             display: block;
         }
         
-        /* 기본 화살표 (아래를 향함) */
         .tooltip-container::after {
             content: "";
             position: absolute;
@@ -189,30 +180,27 @@
             border-color: #555 transparent transparent transparent;
         }
         
-        /* 수정됨: 위를 향하는 화살표 */
         .fed-popup-container .tooltip-container::after,
         .mmf-fed-popup-container .tooltip-container::after {
             top: auto;
             bottom: 100%;
             border-color: transparent transparent #555 transparent;
         }
-
-        /* 수정됨: 툴팁 위치 중앙으로 조정 */
+        
         .tga-popup-container:hover .tooltip-container {
-            margin-left: -50px; /* 오른쪽으로 이동 */
+            margin-left: -50px;
         }
         .fed-popup-container:hover .tooltip-container {
-            margin-left: -50px; /* 오른쪽으로 이동 */
+            margin-left: -125px;
             top: -0.2px;
         }
         .mmf-fed-popup-container:hover .tooltip-container {
-            margin-left: -220px; /* 왼쪽으로 이동 */
+            margin-left: -220px;
             top: -0.2px;
         }
         .mmf-market-popup-container:hover .tooltip-container {
-            margin-left: -220px; /* 왼쪽으로 이동 */
+            margin-left: -220px;
         }
-
 
         .tga-popup-container:hover .tooltip-container,
         .fed-popup-container:hover .tooltip-container,
@@ -220,12 +208,6 @@
         .mmf-market-popup-container:hover .tooltip-container {
             visibility: visible;
             opacity: 1;
-        }
-
-        #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay {
-            position: relative;
-            z-index: 10;
-            cursor: help;
         }
         
         .slope-positive { color: red; }
@@ -238,384 +220,150 @@
             z-index: 5;
         }
 
-        /* 애니메이션 좌표 수정됨 */
         @keyframes dollarFlowToMarket {
             0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 20%; }
             20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 20%; }
-            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 90%; } /* 수정 */
-            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 90%; } /* 수정 */
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 90%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 90%; }
         }
 
         @keyframes dollarFlowToFED {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 90%; } /* 수정 */
-            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 90%; } /* 수정 */
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 90%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 90%; }
             80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 20%; }
             100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 20%; }
         }
 
         @keyframes dollarFlowToGovernment {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 90%; } /* 수정 */
-            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 90%; } /* 수정 */
-            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 20%; top: 57%; } /* 수정 */
-            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 20%; top: 57%; } /* 수정 */
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 90%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 90%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 20%; top: 57%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 20%; top: 57%; }
         }
 
         @keyframes dollarFlowFromGovernment {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 20%; top: 57%; } /* 수정 */
-            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 20%; top: 57%; } /* 수정 */
-            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 90%; } /* 수정 */
-            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 90%; } /* 수정 */
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 20%; top: 57%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 20%; top: 57%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 90%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 90%; }
         }
 
         @keyframes dollarFlowFromMmfToFed {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 57%; } /* 수정 */
-            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 57%; } /* 수정 */
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 57%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 57%; }
             80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 20%; }
             100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 20%; }
         }
         @keyframes dollarFlowFromFedToMmf {
             0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 20%; }
             20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 20%; }
-            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 57%; } /* 수정 */
-            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 57%; } /* 수정 */
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 57%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 57%; }
         }
         
         @keyframes dollarFlowFromMmfToMarket_parabolic {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 57%; } /* 수정 */
-            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 57%; } /* 수정 */
-            50% { transform: translate(-50%, -50%) scale(1) translateY(50px); opacity: 1; left: 65%; top: 75%; } /* 수정 */
-            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 90%; } /* 수정 */
-            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 90%; } /* 수정 */
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 57%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 57%; }
+            50% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 65%; top: 73.5%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 90%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 90%; }
         }
         @keyframes dollarFlowFromMarketToMmf_parabolic {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 90%; } /* 수정 */
-            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 90%; } /* 수정 */
-            50% { transform: translate(-50%, -50%) scale(1) translateY(50px); opacity: 1; left: 65%; top: 75%; } /* 수정 */
-            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 57%; } /* 수정 */
-            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 57%; } /* 수정 */
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 90%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 90%; }
+            50% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 65%; top: 73.5%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 57%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 57%; }
         }
 
-        @keyframes dollarFlowFromMmfToGovernment {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 57%; } /* 수정 */
-            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 57%; } /* 수정 */
-            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 20%; top: 57%; } /* 수정 */
-            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 20%; top: 57%; } /* 수정 */
-        }
-        @keyframes dollarFlowFromGovernmentToMmf {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 20%; top: 57%; } /* 수정 */
-            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 20%; top: 57%; } /* 수정 */
-            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 57%; } /* 수정 */
-            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 57%; } /* 수정 */
-        }
-
-
-        .animated-dollar-to-market { animation: dollarFlowToMarket var(--animation-duration) linear forwards; }
-        .animated-dollar-to-fed { animation: dollarFlowToFED var(--animation-duration) linear forwards; }
-        .animated-dollar-to-government { animation: dollarFlowToGovernment var(--animation-duration) linear forwards; }
-        .animated-dollar-from-government { animation: dollarFlowFromGovernment var(--animation-duration) linear forwards; }
-        
-        .animated-dollar-from-mmf-to-fed { animation: dollarFlowFromMmfToFed var(--animation-duration) linear forwards; }
-        .animated-dollar-from-fed-to-mmf { animation: dollarFlowFromFedToMmf var(--animation-duration) linear forwards; }
-        
-        .animated-dollar-from-mmf-to-market_parabolic { animation: dollarFlowFromMmfToMarket_parabolic var(--animation-duration) linear forwards; }
-        .animated-dollar-from-market-to-mmf_parabolic { animation: dollarFlowFromMarketToMmf_parabolic var(--animation-duration) linear forwards; }
-
-        #graphIndicators { padding: 20px; text-align: center; }
-        .indicator-section { margin-bottom: 20px; }
-        .indicator-section h3 { font-size: 18px; margin-bottom: 10px; color: #007bff; }
-        .indicator-buttons {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        #graphPage {
-            text-align: center;
-            padding: 20px;
-            height: 500px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        #graphPage canvas {
-            max-width: 100%;
-            width: 100%;
-            height: 400px;
-            cursor: grab;
-            flex-grow: 1;
-        }
-
-        #infoPage { padding: 20px; text-align: center; }
-        .time-buttons { margin: 10px 0; display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; }
-        .time-btn { padding: 5px 10px; background: #e9ecef; border: 1px solid #ced4da; border-radius: 5px; cursor: pointer; font-size: 0.9em; transition: background-color 0.2s; }
-        .time-btn:hover { background-color: #dee2e6; }
-        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #007bff; padding: 10px; display: flex; justify-content: space-around; }
-
-        @media (max-width: 600px) {
-            .container { padding: 10px; }
-            .back-btn { top: 5px; left: 5px; }
-            .info-btn { top: 5px; right: 5px; }
-
-            #liquidityFlow .icon { width: 60px; height: 60px; }
-            #liquidityFlow .icon-label { font-size: 12px; }
-
-            /* 모바일 아이콘 위치 수정됨 */
-            .FED-container { top: 15%; left: 50%; }
-            .Government-container { top: 47%; left: 15%; } /* 수정됨 */
-            .Market-container { top: 80%; left: 50%; } /* 수정됨 */
-            .MMF-container { top: 47%; left: 85%; } /* 수정됨 */
-
-            /* [수정 2 시작] 모바일에서 시장 아이콘 아래 계산 결과값 위치 */
-            #netMarketFlowDisplay {
-                top: 90%;
-            }
-            /* [수정 2 끝] */
-
-            #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay {
-                font-size: 0.7em;
-                padding: 2px 4px;
-                white-space: normal;
-            }
-
-            /* [수정 3] 모바일에서 MMF 관련 라벨 넓이 고정 */
-            #mmfToRrpDisplay, #mmfToMarketDisplay {
-                width: 90px;
-            }
-            
-            /* 모바일 레이블 위치 수정됨 */
-            .tga-popup-container {
-                top: calc(47% + 30px + 12px); /* 수정됨 */
-                left: 28%; /* 수정됨 */
-            }
-            .fed-popup-container { 
-                top: calc(28% - 30px - 5px); /* 수정됨 */
-                left: 42%; /* 수정됨 */
-            }
-            /* 수정된 부분 2 */
-            .mmf-fed-popup-container { 
-                top: calc(30%); /* 수정됨 */
-                left: 85%; /* 수정됨 */
-            }
-            .mmf-market-popup-container { 
-                top: calc(55%); /* 수정됨 */
-                left: 85%; /* 수정됨 */
-            }
-            /* 수정된 부분 2 끝 */
-
-            .tooltip-container {
-                margin-left: -100px;
-                width: 200px;
-            }
-            
-            .dollar-animated-object {
-                width: 22.5px;
-                height: 22.5px;
-            }
-
-            @keyframes dollarFlowToMarket {
-                0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 15%; }
-                20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 15%; }
-                80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
-                100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
-            }
-            @keyframes dollarFlowToFED {
-                0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
-                20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
-                80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 15%; }
-                100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 15%; }
-            }
-            @keyframes dollarFlowToGovernment {
-                0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
-                20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
-                80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 15%; top: 47%; }
-                100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 15%; top: 47%; }
-            }
-            @keyframes dollarFlowFromGovernment {
-                0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 15%; top: 47%; }
-                20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 15%; top: 47%; }
-                80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
-                100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
-            }
-            @keyframes dollarFlowFromMmfToFed {
-                0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 85%; top: 47%; }
-                20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 85%; top: 47%; }
-                80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 15%; }
-                100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 15%; }
-            }
-            @keyframes dollarFlowFromFedToMmf {
-                0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 15%; }
-                20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 15%; }
-                80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 85%; top: 47%; }
-                100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 85%; top: 47%; }
-            }
-            @keyframes dollarFlowFromMmfToMarket_parabolic {
-                0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 85%; top: 47%; }
-                20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 85%; top: 47%; }
-                50% { transform: translate(-50%, -50%) scale(1) translateY(25px); opacity: 1; left: 67.5%; top: 68%; }
-                80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
-                100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
-            }
-            @keyframes dollarFlowFromMarketToMmf_parabolic {
-                0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
-                20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
-                50% { transform: translate(-50%, -50%) scale(1) translateY(25px); opacity: 1; left: 67.5%; top: 68%; }
-                80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 85%; top: 47%; }
-                100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 85%; top: 47%; }
-            }
-            @keyframes dollarFlowFromMmfToGovernment {
-                0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 85%; top: 47%; }
-                20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 85%; top: 47%; }
-                80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 15%; top: 47%; }
-                100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 15%; top: 47%; }
-            }
-            @keyframes dollarFlowFromGovernmentToMmf {
-                0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 15%; top: 47%; }
-                20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 15%; top: 47%; }
-                80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 85%; top: 47%; }
-                100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 85%; top: 47%; }
-            }
-
-            .indicator-buttons {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 5px;
-                max-width: 100%;
-            }
-            .indicator-buttons .button {
-                border: 1px solid black;
-                width: 95%;
-                margin: 5px auto;
-            }
-
-            .button { margin: 5px 0; }
-            .time-buttons { justify-content: space-around; }
-            .time-btn {
-                padding: 5px 8px;
-                font-size: 0.85em;
-                margin: 2px;
-                flex-basis: auto;
-                width: auto;
-            }
-            #graphPage canvas {
-                width: 100%;
-                height: 300px;
-            }
-            .nav-bar { padding: 5px; }
-        }
+        .graph-section { display: none; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .graph-controls { text-align: center; margin-bottom: 20px; }
+        .graph-controls button { margin: 0 5px; padding: 8px 16px; font-size: 14px; cursor: pointer; }
+        .tooltip-text { font-size: 14px; font-weight: normal; }
+        .tooltip-text-label { font-weight: bold; }
+        .tooltip-text-value { font-weight: normal; }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 </head>
 <body>
     <div class="container">
-        <div id="liquidityFlow" class="page">
-            <div class="tga-popup-container">
-                <div id="tgaSlopeDisplay"></div>
-                <div class="tooltip-container" id="tga-tooltip-content">
+        <div id="mainContent">
+            <div id="liquidityFlow">
+                <div class="icon-container FED-container">
+                    <img class="icon" src="https://drive.google.com/uc?export=view&id=1E-y2P7X-3k4E93i7-Pq-jS2u0_4e_l8z" alt="Federal Reserve">
+                    <span class="icon-label">연준</span>
                 </div>
-            </div>
-            
-            <div class="fed-popup-container">
-                <div id="fedLiquidityDisplay"></div>
-                <div class="tooltip-container" id="fed-tooltip-content">
+                <div class="icon-container Government-container">
+                    <img class="icon" src="https://drive.google.com/uc?export=view&id=1xV72R75w_k63H_2-q8n_oF7r3t6M89_a" alt="U.S. Treasury">
+                    <span class="icon-label">미재무부 (TGA)</span>
+                    <div id="tga-popup" class="tga-popup-container">
+                        <span id="tgaSlopeDisplay" class="icon-label">TGA 증감:</span>
+                        <div class="tooltip-container">
+                            <p class="tooltip-text-label">TGA 증감</p>
+                            <p class="tooltip-text">TGA 계좌 잔액의 1개월 변화량. 재무부가 국채를 발행하면 잔고가 늘어나고, 지출하면 줄어듭니다.</p>
+                            <button class="graph-btn" onclick="showGraph('tga_balance')">그래프 보기</button>
+                            <span class="update-date"></span>
+                        </div>
+                    </div>
                 </div>
-            </div>
+                <div class="icon-container Market-container">
+                    <img class="icon" src="https://drive.google.com/uc?export=view&id=18Y-eE-9X3T3oG68h7tY6E-r-6zR_V2rR" alt="Money Market">
+                    <span class="icon-label">시장</span>
+                </div>
+                <div class="icon-container MMF-container">
+                    <img class="icon" src="https://drive.google.com/uc?export=view&id=1V-e4l6U_G1-L7y7-J3u-q2T6V-6n3u1m" alt="MMF">
+                    <span class="icon-label">MMF</span>
+                    <div id="mmf-fed-popup" class="mmf-fed-popup-container">
+                        <span id="mmfToRrpDisplay" class="icon-label">역레포 (RRP):</span>
+                        <div class="tooltip-container">
+                            <p class="tooltip-text-label">역레포 (RRP)</p>
+                            <p class="tooltip-text">MMF가 남는 현금을 연준에 맡기는 것을 의미합니다. 시장 유동성을 흡수합니다.</p>
+                            <button class="graph-btn" onclick="showGraph('rrp_total')">그래프 보기</button>
+                            <span class="update-date"></span>
+                        </div>
+                    </div>
+                    <div id="mmf-market-popup" class="mmf-market-popup-container">
+                        <span id="mmfToMarketDisplay" class="icon-label">MMF → 시장:</span>
+                        <div class="tooltip-container">
+                            <p class="tooltip-text-label">MMF → 시장</p>
+                            <p class="tooltip-text">MMF가 연준 역레포 대신 다른 단기 채권에 투자하는 것을 의미합니다. 시장 유동성을 공급합니다.</p>
+                            <button class="graph-btn" onclick="showGraph('mmf_to_market')">그래프 보기</button>
+                            <span class="update-date"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="fed-popup" class="fed-popup-container">
+                    <span id="fedLiquidityDisplay" class="icon-label">연준 유동성:</span>
+                    <div class="tooltip-container">
+                        <p class="tooltip-text-label">연준 유동성</p>
+                        <p class="tooltip-text">시중 유동성 변화를 나타냅니다. 연준이 자산을 매입하거나 (자산 증가) 부채를 상환하면 (부채 감소) 시장으로 유동성이 공급됩니다.</p>
+                        
+                        <p class="tooltip-text" id="fedAssetChange"></p>
+                        <p class="tooltip-text" id="fedLiabilityChange"></p>
+                        <button class="graph-btn" onclick="showGraph('liquidity_change')">그래프 보기</button>
+                        <span class="update-date"></span>
+                    </div>
+                </div>
 
-            <div class="mmf-fed-popup-container">
-                <div id="mmfToRrpDisplay"></div>
-                <div class="tooltip-container" id="mmf-fed-tooltip-content">
-                </div>
-            </div>
-
-            <div class="mmf-market-popup-container">
-                <div id="mmfToMarketDisplay"></div>
-                <div class="tooltip-container" id="mmf-market-tooltip-content">
-                </div>
-            </div>
-            
-            <div class="icon-container FED-container">
-                <span class="icon-label">중앙은행 FED</span>
-                <img src="./icon/fed.jpg" alt="FED" class="icon">
-            </div>
-            <div class="icon-container Government-container">
-                <img src="./icon/government.JPG" alt="Government TGA" class="icon">
-                <span class="icon-label">미국 정부</span>
-            </div>
-            <div class="icon-container Market-container">
-                <img src="./icon/Market.jpg" alt="Market" class="icon">
-                <span class="icon-label">미국 시장(Market)</span>
-                <div id="netMarketFlowDisplay"></div>
-                </div>
-            <div class="icon-container MMF-container">
-                <img src="./icon/MMF.jpg" alt="MMF" class="icon">
-                <span class="icon-label">MMF<br>(Money Market Fund)</span>
+                <img id="dollarIcon" class="dollar-animated-object" src="https://drive.google.com/uc?export=view&id=1t3lB0zV2M7Qo0Q93J0M0F-c-6n0t0_6N" alt="Dollar">
+                <span id="netMarketFlowDisplay" class="icon-label"></span>
             </div>
         </div>
 
-        <div id="graphIndicators" class="page" style="display:none;">
-            <div class="indicator-section">
-                <h3>미국 자금 현황</h3>
-                <div class="indicator-buttons">
-                    <button class="button" onclick="showGraph('WTREGEN')">미 정부 TGA 잔고</button>
-                    <button class="button" onclick="showGraph('WRESBAL')">미 은행 지급준비금</button>
-                    <button class="button" onclick="showGraph('RRPONTSYD')">연준 역레포 자금</button>
-                    <button class="button" onclick="showGraph('MMMFFAQ027S')">MMF 잔고</button>
-                    <button class="button" onclick="showGraph('WALCL')">연준 전체 자산 + 부채</button>
-                </div>
+        <div id="graphSection" class="graph-section">
+            <button class="back-btn" onclick="hideGraph()">◄</button>
+            <div class="graph-controls">
+                <button onclick="changePeriod('3m')">3M</button>
+                <button onclick="changePeriod('6m')">6M</button>
+                <button onclick="changePeriod('1y')">1Y</button>
+                <button onclick="changePeriod('3y')">3Y</button>
+                <button onclick="changePeriod('5y')">5Y</button>
+                <button onclick="changePeriod('all')">ALL</button>
             </div>
-            <div class="indicator-section">
-                <h3>금리</h3>
-                <div class="indicator-buttons">
-                    <button class="button" onclick="showGraph('SOFR')">SOFR 금리</button>
-                    <button class="button" onclick="showGraph('FEDFUNDS')">EFFR 금리</button>
-                    <button class="button" onclick="showGraph('TB3MS')">3개월 미 국채금리</button>
-                    <button class="button" onclick="showGraph('TB1YR')">1년물 미 국채금리</button>
-                    <button class="button" onclick="showGraph('DPCREDIT')">연준 할인율</button>
-                    <button class="button" onclick="showGraph('DRBLACBS')">미 은행 연체율(전체)</button>
-                </div>
-            </div>
-            <div class="indicator-section">
-                <h3>유동성</h3>
-                <div class="indicator-buttons">
-                    <button class="button" onclick="showGraph('M2SL')">M2</button>
-                    <button class="button" onclick="showGraph('M1SL')">M1</button>
-                </div>
-            </div>
-            <div class="indicator-section">
-                <h3>자산 가격</h3>
-                <div class="indicator-buttons">
-                    <button class="button" onclick="showGraph('NASDAQ100')">나스닥100 지수</button>
-                    <button class="button" onclick="showGraph('SP500')">S&P500 지수</button>
-                    <button class="button" onclick="showGraph('SP500_MCAP')">S&P500 시가총액</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="graphPage" class="page" style="display:none;">
-            <button class="back-btn" onclick="showGraphIndicators()">◄</button>
-            <button class="info-btn" onclick="showInfo()">Info</button>
-            <h2 id="graphTitle"></h2>
             <canvas id="myChart"></canvas>
-            <div class="time-buttons">
-                <button class="time-btn" onclick="updateChart('1M')">1M</button>
-                <button class="time-btn" onclick="updateChart('6M')">6M</button>
-                <button class="time-btn" onclick="updateChart('1Y')">1Y</button>
-                <button class="time-btn" onclick="updateChart('5Y')">5Y</button>
-                <button class="time-btn" onclick="updateChart('10Y')">10Y</button>
-                <button class="time-btn" onclick="updateChart('All')">All</button>
-            </div>
-        </div>
-
-        <div id="infoPage" class="page" style="display:none;">
-            <button class="back-btn" onclick="goBackToGraph()">◄</button>
-            <h2 id="infoTitle"></h2>
-            <div id="infoContent"></div>
-        </div>
-
-        <div class="nav-bar">
-            <button class="button" onclick="showLiquidityFlow()">유동성 현황</button>
-            <button class="button" onclick="showGraphIndicators()">그래프 지표</button>
+            <p id="graphTitle" style="text-align: center; margin-top: 10px;"></p>
         </div>
     </div>
 
@@ -1049,8 +797,8 @@
 
             if (fedLiquidityDiff !== null) {
                 tooltips.fed.innerHTML = `
-                    <p>최근 한 달 동안, 부채를 제외한 연준의 순자산(국채+모기지채 등) 변화를 나타냅니다.</p>
-                    <p><b>+양수 :</b> 시장의 채권 등 자산 구매를 통해 달러를 시장에 공급<br><b>-음수 :</b> 자산 매각을 통해 시중의 달러를 다시 회수 (긴축)</p>
+                    <p>최근 한 달 동안, 연준의 순자산(국채+모기지채 등)과 부채의 변화를 나타냅니다.</p>
+                    <p><b>+양수 :</b> 시장의 채권 등 자산 구매를 통해 달러를 시장에 공급 (or) 역레포 자금을 시장에 품<br><b>-음수 :</b> 자산 매각을 통해 시중의 달러를 다시 회수 (or) 시장으로부터 역레포 자금을 충당(긴축)</p>
                     <button class="graph-btn" onclick="showGraph('WALCL')">그래프</button>
                     <span class="update-date">Update Date: ${fedLatestDate}</span>
                 `;
