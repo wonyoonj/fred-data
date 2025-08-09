@@ -889,8 +889,11 @@
 
             const getClosestPastDataValue = (data, targetDate) => {
                 if (!data || data.length === 0) return null;
-                const closestItem = data.filter(d => new Date(d.date) <= targetDate).pop();
-                return closestItem ? closestItem.value : null;
+                const target = new Date(targetDate);
+                const closestItem = data
+                    .filter(d => new Date(d.date) <= target)
+                    .sort((a, b) => Math.abs(new Date(a.date) - target) - Math.abs(new Date(b.date) - target))[0];
+                return closestItem ? parseFloat(closestItem.value) : null;
             };
 
             const calculatedValues = [];
@@ -908,17 +911,35 @@
 
             // TGA, 연준 유동성
             if (['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL'].every(i => dataStore[i] && dataStore[i].length > 0)) {
-                const latestDate = new Date(dataStore.WTREGEN[dataStore.WTREGEN.length - 1].date);
+                // 모든 데이터셋의 최신 날짜 중 가장 이른 날짜 선택
+                const latestDates = [
+                    new Date(dataStore.WTREGEN[dataStore.WTREGEN.length - 1].date),
+                    new Date(dataStore.WALCL[dataStore.WALCL.length - 1].date),
+                    new Date(dataStore.RRPONTSYD[dataStore.RRPONTSYD.length - 1].date),
+                    new Date(dataStore.WRESBAL[dataStore.WRESBAL.length - 1].date)
+                ];
+                const latestDate = new Date(Math.min(...latestDates));
                 tgaLatestDate = latestDate.toISOString().split('T')[0];
                 const pastDate = thirtyDaysAgo(latestDate);
-                const latest = { tga: getClosestPastDataValue(dataStore.WTREGEN, latestDate), walcl: getClosestPastDataValue(dataStore.WALCL, latestDate), rrp: getClosestPastDataValue(dataStore.RRPONTSYD, latestDate), resbal: getClosestPastDataValue(dataStore.WRESBAL, latestDate) };
-                const past = { tga: getClosestPastDataValue(dataStore.WTREGEN, pastDate), walcl: getClosestPastDataValue(dataStore.WALCL, pastDate), rrp: getClosestPastDataValue(dataStore.RRPONTSYD, pastDate), resbal: getClosestPastDataValue(dataStore.WRESBAL, pastDate) };
+
+                const latest = {
+                    tga: getClosestPastDataValue(dataStore.WTREGEN, latestDate),
+                    walcl: getClosestPastDataValue(dataStore.WALCL, latestDate) / 1000, // WALCL을 십억 USD로 변환
+                    rrp: getClosestPastDataValue(dataStore.RRPONTSYD, latestDate),
+                    resbal: getClosestPastDataValue(dataStore.WRESBAL, latestDate)
+                };
+                const past = {
+                    tga: getClosestPastDataValue(dataStore.WTREGEN, pastDate),
+                    walcl: getClosestPastDataValue(dataStore.WALCL, pastDate) / 1000, // WALCL을 십억 USD로 변환
+                    rrp: getClosestPastDataValue(dataStore.RRPONTSYD, pastDate),
+                    resbal: getClosestPastDataValue(dataStore.WRESBAL, pastDate)
+                };
 
                 if (Object.values(latest).every(v => v !== null) && Object.values(past).every(v => v !== null)) {
-                    tgaDiff = latest.tga - past.tga;
-                    const walclDiff = (latest.walcl / 1000) - (past.walcl / 1000);
+                    tgaDiff = latest.tga - past.tga; // TGA 변화 (십억 USD)
+                    const walclDiff = latest.walcl - past.walcl; // WALCL 변화 (십억 USD)
                     const otherDiffs = (latest.tga - past.tga) + 2 * (latest.rrp - past.rrp) + 2 * (latest.resbal - past.resbal);
-                    fedLiquidityDiff = walclDiff - otherDiffs;
+                    fedLiquidityDiff = walclDiff - otherDiffs; // 연준 유동성 (십억 USD)
                     fedLatestDate = latestDate.toISOString().split('T')[0];
                 }
             }
