@@ -17,7 +17,7 @@
             text-align: center;
             padding: 20px;
             position: relative;
-            height: 700px; /* 수정됨: 아이콘 이동에 따른 높이 확보 */
+            height: 1000px; /* 수정됨: 아이콘 이동에 따른 높이 확보 */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -1033,7 +1033,7 @@
                 if (element) {
                     const sign = value > 0 ? '+' : '';
                     const valueSpan = `<span class="${value > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${value.toFixed(2)} B $/Month</span>`;
-                    element.innerHTML = `<p><b>전체 유동 공급량</b> =</p> ${label}<br>${valueSpan}`;
+                    element.innerHTML = `${label}<br>${valueSpan}`;
                 }
             });
 
