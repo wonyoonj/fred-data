@@ -901,99 +901,25 @@
                 return newDate;
             };
 
-            /*
-            * Helper function to find the latest common date among multiple datasets
-            */
-            function findLatestCommonDate(data) {
-                const dates = Object.values(data).map(d => new Set(d.map(item => item.date)));
-                if (dates.length === 0) return null;
-
-                let commonDates = dates[0];
-                for (let i = 1; i < dates.length; i++) {
-                    commonDates = new Set([...commonDates].filter(date => dates[i].has(date)));
-                }
-
-                if (commonDates.size === 0) return null;
-
-                const sortedDates = Array.from(commonDates).sort((a, b) => new Date(b) - new Date(a));
-                return new Date(sortedDates[0]);
-            }
-
-            /*
-            * Helper function to find the closest past date to a reference date from a given dataset
-            */
-            function findClosestPastDate(dates, referenceDate) {
-                const pastDates = dates.filter(d => new Date(d) < referenceDate);
-                if (pastDates.length === 0) return null;
-
-                pastDates.sort((a, b) => new Date(b) - new Date(a));
-                return new Date(pastDates[0]);
-            }
-
-
             // --- 모든 값 계산 ---
-            let tgaDiff = null;
-            let fedLiquidityDiff = null;
+            let tgaDiff = null, fedLiquidityDiff = null, mmfToFedDiff = null, finalMmfToMarketDiff = null;
+            let tgaLatestDate = null, fedLatestDate = null, mmfFedLatestDate = null, mmfMarketLatestDate = null;
+            let mmfToMarketCombined = null, mmfAssetChange = null;
 
             // TGA, 연준 유동성
             if (['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL'].every(i => dataStore[i] && dataStore[i].length > 0)) {
-                // Convert all dates to a common format
-                const formattedDataStore = {};
-                for (const key in dataStore) {
-                    formattedDataStore[key] = dataStore[key].map(d => ({
-                        date: new Date(d.date).toISOString().split('T')[0],
-                        value: d[key]
-                    }));
-                }
-                
-                // Find the latest common date among all datasets
-                const latestDate = findLatestCommonDate({
-                    WTREGEN: formattedDataStore.WTREGEN,
-                    WALCL: formattedDataStore.WALCL,
-                    RRPONTSYD: formattedDataStore.RRPONTSYD,
-                    WRESBAL: formattedDataStore.WRESBAL
-                });
+                const latestDate = new Date(dataStore.WTREGEN[dataStore.WTREGEN.length - 1].date);
+                tgaLatestDate = latestDate.toISOString().split('T')[0];
+                const pastDate = thirtyDaysAgo(latestDate);
+                const latest = { tga: getClosestPastDataValue(dataStore.WTREGEN, latestDate), walcl: getClosestPastDataValue(dataStore.WALCL, latestDate), rrp: getClosestPastDataValue(dataStore.RRPONTSYD, latestDate), resbal: getClosestPastDataValue(dataStore.WRESBAL, latestDate) };
+                const past = { tga: getClosestPastDataValue(dataStore.WTREGEN, pastDate), walcl: getClosestPastDataValue(dataStore.WALCL, pastDate), rrp: getClosestPastDataValue(dataStore.RRPONTSYD, pastDate), resbal: getClosestPastDataValue(dataStore.WRESBAL, pastDate) };
 
-                if (latestDate) {
-                    // Find the closest common date approximately 30 days ago
-                    const pastDates = new Set();
-                    formattedDataStore.WTREGEN.forEach(d => pastDates.add(d.date));
-                    formattedDataStore.WALCL.forEach(d => pastDates.add(d.date));
-                    formattedDataStore.RRPONTSYD.forEach(d => pastDates.add(d.date));
-                    formattedDataStore.WRESBAL.forEach(d => pastDates.add(d.date));
-                    
-                    const referencePastDate = new Date(latestDate);
-                    referencePastDate.setDate(latestDate.getDate() - 30);
-                    
-                    const pastDate = findClosestPastDate(Array.from(pastDates), referencePastDate);
-
-                    if (pastDate) {
-                        // Get values for the latest and past dates
-                        const latestValues = {
-                            tga: getClosestPastDataValue(dataStore.WTREGEN, latestDate),
-                            walcl: getClosestPastDataValue(dataStore.WALCL, latestDate),
-                            rrp: getClosestPastDataValue(dataStore.RRPONTSYD, latestDate),
-                            resbal: getClosestPastDataValue(dataStore.WRESBAL, latestDate)
-                        };
-
-                        const pastValues = {
-                            tga: getClosestPastDataValue(dataStore.WTREGEN, pastDate),
-                            walcl: getClosestPastDataValue(dataStore.WALCL, pastDate),
-                            rrp: getClosestPastDataValue(dataStore.RRPONTSYD, pastDate),
-                            resbal: getClosestPastDataValue(dataStore.WRESBAL, pastDate)
-                        };
-
-                        // Ensure all values are available
-                        if (Object.values(latestValues).every(v => v !== null) && Object.values(pastValues).every(v => v !== null)) {
-                            // TGA Balance Change (WTREGEN is already in B $)
-                            tgaDiff = latestValues.tga - pastValues.tga;
-
-                            // Fed Liquidity Change (WALCL is in M $, others are in B $)
-                            const walclDiff = (latestValues.walcl / 1000) - (pastValues.walcl / 1000);
-                            const otherDiffs = (latestValues.tga - pastValues.tga) + (latestValues.rrp - pastValues.rrp) + (latestValues.resbal - pastValues.resbal);
-                            fedLiquidityDiff = walclDiff - otherDiffs;
-                        }
-                    }
+                if (Object.values(latest).every(v => v !== null) && Object.values(past).every(v => v !== null)) {
+                    tgaDiff = latest.tga - past.tga;
+                    const walclDiff = (latest.walcl / 1000) - (past.walcl / 1000);
+                    const otherDiffs = (latest.tga - past.tga) + 2 * (latest.rrp - past.rrp) + 2 * (latest.resbal - past.resbal);
+                    fedLiquidityDiff = walclDiff - otherDiffs;
+                    fedLatestDate = latestDate.toISOString().split('T')[0];
                 }
             }
 
