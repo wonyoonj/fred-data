@@ -17,7 +17,7 @@
             text-align: center;
             padding: 20px;
             position: relative;
-            height: 600px; /* 수정됨: 아이콘 이동에 따른 높이 확보 */
+            height: 700px; /* 수정됨: 아이콘 이동에 따른 높이 확보 */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -1033,7 +1033,7 @@
                 if (element) {
                     const sign = value > 0 ? '+' : '';
                     const valueSpan = `<span class="${value > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${value.toFixed(2)} B $/Month</span>`;
-                    element.innerHTML = `${label}<br>${valueSpan}`;
+                    element.innerHTML = `<p><b>전체 유동 공급량</b> =</p> ${label}<br>${valueSpan}`;
                 }
             });
 
@@ -1075,8 +1075,8 @@
                     이 결과는 MMF가 시장에 공급한 유동성에서 시장이 MMF에 투자한 양을 뺀 결과입니다.</p>
                     <p><b>+양수 :</b> MMF가 시장에 유동성 공급량이 큰 상황<br><b>-음수 :</b> 시장이 MMF에 자금을 투자한 양이 큰 상황</p>
                     <hr>
-                    <p>MMF의 시장 유동성 공급 변화량 = <span class="${colorClass1}">${sign1}${mmfToMarketCombined.toFixed(2)} B $/Month</span></p>
-                    <p>시장의 MMF 투자 변화량 = <span class="${colorClass2}">${sign2}${mmfAssetChange.toFixed(2)} B $/Month</span></p>
+                    <p>MMF가 시장으로 유동성 공급량 = <span class="${colorClass1}">${sign1}${mmfToMarketCombined.toFixed(2)} B $/Month</span></p>
+                    <p>시장이 MMF에 투자량 = <span class="${colorClass2}">${sign2}${mmfAssetChange.toFixed(2)} B $/Month</span></p>
                     <button class="graph-btn" onclick="showGraph('MMMFFAQ027S')">그래프</button>
                     <span class="update-date">Update Date: ${mmfMarketLatestDate}</span>
                 `;
