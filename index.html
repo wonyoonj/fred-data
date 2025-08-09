@@ -887,14 +887,7 @@
                 }
             }));
 
-            // 유틸 — 날짜로부터 30일 전
-            const thirtyDaysAgo = (date) => {
-                const newDate = new Date(date);
-                newDate.setDate(newDate.getDate() - 30);
-                return newDate;
-            };
-
-            // 유틸 — 배열에서 targetDate에 **절대 차이(closest)** 가 최소인 값 반환
+            // 기존 getClosestPastDataValue → 새로운 closest-by-abs 유틸 추가
             const getClosestDataValue = (data, targetDate) => {
                 if (!data || data.length === 0) return null;
                 let closest = data[0];
@@ -909,20 +902,29 @@
                 return closest ? closest.value : null;
             };
 
-            // --- 모든 값 계산 (수정된 부분) ---
-            let tgaDiff = null, fedLiquidityDiff = null;
-            let tgaLatestDate = null, fedLatestDate = null;
+            const thirtyDaysAgo = (date) => {
+                const newDate = new Date(date);
+                newDate.setDate(newDate.getDate() - 30);
+                return newDate;
+            };
 
+            // --- 모든 값 계산 ---
+            let tgaDiff = null, fedLiquidityDiff = null, mmfToFedDiff = null, finalMmfToMarketDiff = null;
+            let tgaLatestDate = null, fedLatestDate = null, mmfFedLatestDate = null, mmfMarketLatestDate = null;
+            let mmfToMarketCombined = null, mmfAssetChange = null;
+
+            // TGA, 연준 유동성
             if (['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL'].every(i => dataStore[i] && dataStore[i].length > 0)) {
-                // 각 시리즈의 가장 최신 날짜들을 구해서, 모든 시리즈에서 사용할 "공통 latest"를 만든다.
-                const lastDates = ['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL'].map(i => new Date(dataStore[i][dataStore[i].length - 1].date));
+                // 공통 latest 날짜 산출
+                const lastDates = ['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL']
+                    .map(i => new Date(dataStore[i][dataStore[i].length - 1].date));
                 const commonLatestTs = Math.min(...lastDates.map(d => d.getTime()));
                 const commonLatest = new Date(commonLatestTs);
 
                 tgaLatestDate = commonLatest.toISOString().split('T')[0];
                 const pastDate = thirtyDaysAgo(commonLatest);
 
-                // latest / past 값을 '가장 가까운 날짜' 방식으로 가져온다
+                // closest-by-abs 방식으로 latest, past 값 추출
                 const latest = {
                     tga: getClosestDataValue(dataStore.WTREGEN, commonLatest),
                     walcl: getClosestDataValue(dataStore.WALCL, commonLatest),
@@ -938,12 +940,13 @@
 
                 if (Object.values(latest).every(v => v !== null) && Object.values(past).every(v => v !== null)) {
                     tgaDiff = latest.tga - past.tga;
-                    const walclDiff = (latest.walcl / 1000) - (past.walcl / 1000); // 기존대로 유지 (단위 변환)
-                    const otherDiffs = (latest.tga - past.tga) + 2 * (latest.rrp - past.rrp) + 2 * (latest.resbal - past.resbal); // 이 수식은 변경 금지 요청사항을 지킴
+                    const walclDiff = (latest.walcl / 1000) - (past.walcl / 1000); // 기존 단위 변환 유지
+                    const otherDiffs = (latest.tga - past.tga) + 2 * (latest.rrp - past.rrp) + 2 * (latest.resbal - past.resbal); // 변경 금지
                     fedLiquidityDiff = walclDiff - otherDiffs;
                     fedLatestDate = commonLatest.toISOString().split('T')[0];
                 }
             }
+
 
             // MMF -> FED
             if (dataStore.MMF2RRP && dataStore.MMF2RRP.length > 0) {
