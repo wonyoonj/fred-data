@@ -73,12 +73,12 @@
         /* [수정 1 시작] 시장 아이콘 아래 계산 결과값 위치 */
         #netMarketFlowDisplay {
             display: inline-block;
-            top: -25%;
+            top: -30%;
             left: 50%;
             background: none;
             border: none;
             font-size: 0.9em;
-            
+            min-width: 200px;
         }
         /* [수정 1 끝] */
 
@@ -204,11 +204,11 @@
         }
         .fed-popup-container:hover .tooltip-container {
             margin-left: -50px; /* 오른쪽으로 이동 */
-            top: -0.2px;
+            top: 0.2px;
         }
         .mmf-fed-popup-container:hover .tooltip-container {
             margin-left: -220px; /* 왼쪽으로 이동 */
-            top: -0.2px;
+            top: 0.2px;
         }
         .mmf-market-popup-container:hover .tooltip-container {
             margin-left: -220px; /* 왼쪽으로 이동 */
@@ -370,7 +370,8 @@
 
             /* [수정 2 시작] 모바일에서 시장 아이콘 아래 계산 결과값 위치 */
             #netMarketFlowDisplay {
-                top: -25%;
+                top: -30%;
+                min-width: 150px;
                 
             }
             /* [수정 2 끝] */
