@@ -73,12 +73,12 @@
         /* [수정 1 시작] 시장 아이콘 아래 계산 결과값 위치 */
         #netMarketFlowDisplay {
             display: inline-block;
-            top: 60%;
+            top: -25%;
             left: 50%;
             background: none;
             border: none;
             font-size: 0.9em;
-            white-space: nowrap;
+            
         }
         /* [수정 1 끝] */
 
@@ -370,8 +370,8 @@
 
             /* [수정 2 시작] 모바일에서 시장 아이콘 아래 계산 결과값 위치 */
             #netMarketFlowDisplay {
-                top: 60%;
-                white-space: nowrap;
+                top: -25%;
+                
             }
             /* [수정 2 끝] */
 
@@ -1016,7 +1016,7 @@
                 const sign = netMarketFlow > 0 ? '+' : '';
                 const colorClass = netMarketFlow > 0 ? 'slope-positive' : 'slope-negative';
                 if(displays.net_market_flow) {
-                    displays.net_market_flow.innerHTML = `<b>시장 Total 유동 공급량</b> = <span class="${colorClass}">${sign}${netMarketFlow.toFixed(2)} B $/Month</span>`;
+                    displays.net_market_flow.innerHTML = `<b>시장 Total 유동 공급량</b><br> = <span class="${colorClass}">${sign}${netMarketFlow.toFixed(2)} B $/Month</span>`;
                 }
             } else {
                  if(displays.net_market_flow) {
