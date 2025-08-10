@@ -204,11 +204,11 @@
         }
         .fed-popup-container:hover .tooltip-container {
             margin-left: -50px; /* 오른쪽으로 이동 */
-            top: 10px;
+            top: 30px;
         }
         .mmf-fed-popup-container:hover .tooltip-container {
             margin-left: -220px; /* 왼쪽으로 이동 */
-            top: 10px;
+            top: 30px;
         }
         .mmf-market-popup-container:hover .tooltip-container {
             margin-left: -220px; /* 왼쪽으로 이동 */
@@ -370,7 +370,7 @@
 
             /* [수정 2 시작] 모바일에서 시장 아이콘 아래 계산 결과값 위치 */
             #netMarketFlowDisplay {
-                top: -40%;
+                top: -45%;
                 min-width: 150px;
                 
             }
@@ -1013,7 +1013,7 @@
 
             // [수정 5 시작] 순수 시장 유동성 계산 및 표시
             if (fedLiquidityDiff !== null && tgaDiff !== null && finalMmfToMarketDiff !== null) {
-                const netMarketFlow = fedLiquidityDiff - tgaDiff - finalMmfToMarketDiff;
+                const netMarketFlow = fedLiquidityDiff - tgaDiff + finalMmfToMarketDiff;
                 const sign = netMarketFlow > 0 ? '+' : '';
                 const colorClass = netMarketFlow > 0 ? 'slope-positive' : 'slope-negative';
                 if(displays.net_market_flow) {
