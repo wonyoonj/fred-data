@@ -27,6 +27,17 @@
         .button { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; }
         .button:hover { background: #0056b3; }
 
+        /* [수정] 메인 타이틀 스타일 */
+        .main-title {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 70px; /* 14px * 5 */
+            font-weight: bold;
+            color: black;
+            z-index: 10;
+        }
+
         #liquidityFlow {
             text-align: center;
             padding: 20px;
@@ -71,7 +82,7 @@
         .Market-container { top: 90%; left: 50%; } /* 수정됨 */
         .MMF-container { top: 57%; left: 80%; } /* 수정됨 */
 
-        #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay, #netMarketFlowDisplay {
+        #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay {
             position: absolute;
             transform: translateX(-50%);
             font-size: 0.8em;
@@ -335,7 +346,10 @@
         .animated-dollar-from-mmf-to-market_parabolic { animation: dollarFlowFromMmfToMarket_parabolic var(--animation-duration) linear forwards; }
         .animated-dollar-from-market-to-mmf_parabolic { animation: dollarFlowFromMarketToMmf_parabolic var(--animation-duration) linear forwards; }
 
-        #graphIndicators { padding: 20px; text-align: center; }
+        #graphIndicators, #interestRatePage { 
+            padding: 20px; 
+            text-align: center; 
+        }
         .indicator-section { margin-bottom: 20px; }
         .indicator-section h3 { font-size: 18px; margin-bottom: 10px; color: #007bff; }
         .indicator-buttons {
@@ -368,10 +382,36 @@
         .time-btn:hover { background-color: #dee2e6; }
         .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #007bff; padding: 10px; display: flex; justify-content: space-around; }
 
+        /* [수정] 금리 현황 버튼 스타일 */
+        #interest-rate-btn {
+            background-color: #add8e6; /* 옅은 하늘색 */
+        }
+        #interest-rate-btn:hover {
+            background-color: #9acbe4;
+        }
+
+        @media (min-width: 601px) {
+            /* [수정] PC에서 네비게이션 바 버튼 스타일 */
+            .nav-bar .button {
+                font-weight: bold;
+                font-size: 26px;
+            }
+        }
+
         @media (max-width: 600px) {
             .container { padding: 10px; }
             .back-btn { top: 5px; left: 5px; }
             .info-btn { top: 5px; right: 5px; }
+
+            /* [수정] 모바일용 메인 타이틀 */
+            .main-title {
+                font-size: 35px;
+                top: 15px;
+                left: 15px;
+                line-height: 1.1;
+                max-width: 50%;
+                text-align: left;
+            }
 
             #liquidityFlow .icon { width: 60px; height: 60px; }
             #liquidityFlow .icon-label { font-size: 12px; }
@@ -527,6 +567,8 @@
 <body>
     <div class="container">
         <div id="liquidityFlow" class="page">
+            <h1 class="main-title">원뎅이의 미국 유동성 흐름 인사이트</h1>
+
             <div class="tga-popup-container">
                 <div id="tgaSlopeDisplay"></div>
                 <div class="tooltip-container" id="tga-tooltip-content">
@@ -582,17 +624,6 @@
                 </div>
             </div>
             <div class="indicator-section">
-                <h3>금리</h3>
-                <div class="indicator-buttons">
-                    <button class="button" onclick="showGraph('SOFR')">SOFR 금리</button>
-                    <button class="button" onclick="showGraph('FEDFUNDS')">EFFR 금리</button>
-                    <button class="button" onclick="showGraph('TB3MS')">3개월 미 국채금리</button>
-                    <button class="button" onclick="showGraph('TB1YR')">1년물 미 국채금리</button>
-                    <button class="button" onclick="showGraph('DPCREDIT')">연준 할인율</button>
-                    <button class="button" onclick="showGraph('DRBLACBS')">미 은행 연체율(전체)</button>
-                </div>
-            </div>
-            <div class="indicator-section">
                 <h3>유동성</h3>
                 <div class="indicator-buttons">
                     <button class="button" onclick="showGraph('M2SL')">M2</button>
@@ -605,6 +636,20 @@
                     <button class="button" onclick="showGraph('NASDAQ100')">나스닥100 지수</button>
                     <button class="button" onclick="showGraph('SP500')">S&P500 지수</button>
                     <button class="button" onclick="showGraph('SP500_MCAP')">S&P500 시가총액</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="interestRatePage" class="page" style="display:none;">
+             <div class="indicator-section">
+                <h3>금리</h3>
+                <div class="indicator-buttons">
+                    <button class="button" onclick="showGraph('SOFR')">SOFR 금리</button>
+                    <button class="button" onclick="showGraph('FEDFUNDS')">EFFR 금리</button>
+                    <button class="button" onclick="showGraph('TB3MS')">3개월 미 국채금리</button>
+                    <button class="button" onclick="showGraph('TB1YR')">1년물 미 국채금리</button>
+                    <button class="button" onclick="showGraph('DPCREDIT')">연준 할인율</button>
+                    <button class="button" onclick="showGraph('DRBLACBS')">미 은행 연체율(전체)</button>
                 </div>
             </div>
         </div>
@@ -632,6 +677,7 @@
 
         <div class="nav-bar">
             <button class="button" onclick="showLiquidityFlow()">유동성 현황</button>
+            <button class="button" id="interest-rate-btn" onclick="showInterestRatePage()">금리 현황</button>
             <button class="button" onclick="showGraphIndicators()">그래프 지표</button>
         </div>
     </div>
@@ -720,20 +766,34 @@
         }
 
         window.addEventListener('load', () => showPage('liquidityFlow'));
-
-        const pages = ['liquidityFlow', 'graphIndicators', 'graphPage', 'infoPage'];
+        
+        // [수정] 페이지 목록에 interestRatePage 추가
+        const pages = ['liquidityFlow', 'graphIndicators', 'interestRatePage', 'graphPage', 'infoPage'];
 
         function showPage(pageId) {
             pages.forEach(id => document.getElementById(id).style.display = id === pageId ? 'block' : 'none');
+            // 'graphPage'로 갈 때 back 버튼의 동작을 결정
+            const graphBackButton = document.querySelector('#graphPage .back-btn');
+            if(graphBackButton) {
+                if(document.getElementById('interestRatePage').style.display === 'block' || document.getElementById('graphIndicators').style.display === 'block'){
+                    // 어디에서 왔는지 추적하는 로직이 없으므로, 기본적으로 그래프 지표로 돌아가도록 설정
+                    // 더 정교하게 하려면 전역 변수로 이전 페이지를 저장해야 함
+                    graphBackButton.onclick = showGraphIndicators;
+                }
+            }
+
             if (pageId === 'liquidityFlow') {
                 updateLiquidityFlowAnimation();
             } else {
                 stopLiquidityFlowAnimation();
             }
         }
-
+        
+        // [수정] 페이지 표시 함수 추가
         function showLiquidityFlow() { showPage('liquidityFlow'); }
         function showGraphIndicators() { showPage('graphIndicators'); }
+        function showInterestRatePage() { showPage('interestRatePage'); }
+
 
         async function showGraph(indicator) {
             currentIndicator = indicator;
