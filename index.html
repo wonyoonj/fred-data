@@ -36,6 +36,16 @@
             font-weight: bold;
             color: black;
         }
+        
+        /* [추가 3] 메인 페이지 자료 출처 스타일 */
+        .source-credit-main {
+            position: absolute;
+            top: 45px;
+            right: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #555;
+        }
 
         #liquidityFlow, #interestRateFlow {
             text-align: center;
@@ -366,6 +376,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            position: relative; /* [추가 4] 자식 요소의 absolute 위치 기준 */
         }
         #graphPage canvas {
             max-width: 100%;
@@ -374,6 +385,20 @@
             cursor: grab;
             flex-grow: 1;
         }
+
+        /* [추가 4] 그래프 페이지 자료 출처 스타일 */
+        #graphDataSource {
+            position: absolute;
+            top: 70px;
+            right: 25px;
+            font-size: 12px;
+            color: #666;
+            background-color: rgba(240, 240, 240, 0.8);
+            padding: 2px 5px;
+            border-radius: 3px;
+            z-index: 10;
+        }
+
 
         #infoPage { padding: 20px; text-align: center; }
         .time-buttons { margin: 10px 0; display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; }
@@ -391,6 +416,13 @@
                 font-size: 24px;
                 top: 5px;
                 left: 10px;
+            }
+
+            /* [추가 3] 모바일용 메인 페이지 자료 출처 스타일 */
+            .source-credit-main {
+                top: 35px;
+                right: 10px;
+                font-size: 10px;
             }
 
             #liquidityFlow .icon, #interestRateFlow .icon { width: 60px; height: 60px; }
@@ -544,6 +576,12 @@
                 width: 100%;
                 height: 300px;
             }
+            /* [추가 4] 모바일용 그래프 페이지 자료 출처 스타일 */
+            #graphDataSource {
+                top: 55px;
+                right: 15px;
+                font-size: 10px;
+            }
             .nav-bar { padding: 5px; }
         }
     </style>
@@ -554,6 +592,7 @@
     <div class="container">
         <div id="liquidityFlow" class="page">
             <h1 class="page-title">원뎅이의 미국 유동성 흐름 인사이트</h1>
+            <div class="source-credit-main">자료 출처: FRED, Office of Financial Research (OFR)</div>
 
             <div class="tga-popup-container">
                 <div id="tgaSlopeDisplay"></div>
@@ -599,6 +638,9 @@
         </div>
 
         <div id="interestRateFlow" class="page" style="display:none;">
+            <h1 class="page-title">원뎅이의 미국 유동성 흐름 인사이트</h1>
+            <div class="source-credit-main">자료 출처: FRED, Office of Financial Research (OFR)</div>
+
             <div class="tga-popup-container">
                 <div id="tgaSlopeDisplay_interest"></div>
                 <div class="tooltip-container" id="tga-tooltip-content_interest">
@@ -638,7 +680,7 @@
                 </div>
             <div class="icon-container MMF-container">
                 <img src="./icon/MMF.jpg" alt="MMF" class="icon">
-                <span class="icon-label">MMF<br>(Money Market Fund)</span>
+                <span class="icon-label">시중은행(Bank)</span>
             </div>
         </div>
 
@@ -661,6 +703,7 @@
                     <button class="button" onclick="showGraph('FEDFUNDS')">EFFR 금리</button>
                     <button class="button" onclick="showGraph('TB3MS')">3개월 미 국채금리</button>
                     <button class="button" onclick="showGraph('TB1YR')">1년물 미 국채금리</button>
+                    <button class="button" onclick="showGraph('RRPONTSYAWARD')">역레포 금리</button>
                     <button class="button" onclick="showGraph('DPCREDIT')">연준 할인율</button>
                     <button class="button" onclick="showGraph('DRBLACBS')">미 은행 연체율(전체)</button>
                 </div>
@@ -686,6 +729,7 @@
             <button class="back-btn" onclick="showGraphIndicators()">◄</button>
             <button class="info-btn" onclick="showInfo()">Info</button>
             <h2 id="graphTitle"></h2>
+            <div id="graphDataSource"></div>
             <canvas id="myChart"></canvas>
             <div class="time-buttons">
                 <button class="time-btn" onclick="updateChart('1M')">1M</button>
@@ -741,7 +785,8 @@
             'M1SL': 'M1',
             'NASDAQ100': '나스닥100 지수',
             'SP500': 'S&P500 지수',
-            'SP500_MCAP': 'S&P500 시가총액'
+            'SP500_MCAP': 'S&P500 시가총액',
+            'RRPONTSYAWARD': '역레포 금리' // [추가 1]
         };
 
         const indicatorUnits = {
@@ -760,7 +805,8 @@
             'DPCREDIT': 'Percent (%)',
             'DRBLACBS': 'Percent (%)',
             'NASDAQ100': 'Index',
-            'SP500': 'Index'
+            'SP500': 'Index',
+            'RRPONTSYAWARD': 'Percent (%)' // [추가 1]
         };
 
         async function parseCSV(text) {
@@ -821,6 +867,14 @@
             currentIndicator = indicator;
             showPage('graphPage');
             document.getElementById('graphTitle').textContent = indicatorTitles[indicator] || indicator;
+
+            // [추가 4] 그래프 자료 출처 설정
+            const dataSourceEl = document.getElementById('graphDataSource');
+            if (indicator === 'SP500_MCAP') {
+                dataSourceEl.textContent = '자료 출처: https://ycharts.com';
+            } else {
+                dataSourceEl.textContent = '자료 출처: FRED';
+            }
 
             const functionUrl = `${FUNCTION_BASE_URL}?indicator=${indicator}`;
 
@@ -954,7 +1008,9 @@
                 'DRBLACBS': {'title': '미 은행 연체율(전체)', 'content': {'경제적 의미': '은행 대출 중 연체된 비율로, 대출자의 상환 능력과 신용 위험을 나타냅니다.', '왜 필요한 지표인가': '경제 침체 신호나 금융 시스템의 건전성을 평가하며, 대출 정책과 규제 강화의 기초 자료로 사용됩니다.'}},
                 'NASDAQ100': {'title': '나스닥100 지수', 'content': {'경제적 의미': '기술주 중심의 100개 기업 주가를 반영한 지수로, 기술 섹터의 성과를 보여줍니다.', '왜 필요한 지표인가': '기술 산업의 성장과 혁신을 반영하며, 글로벌 경제에서 기술 의존도가 높아짐에 따라 중요한 기준이 됩니다.'}},
                 'WALCL': {'title': '연준 전체 자산 + 부채', 'content': {'경제적 의미': '연준의 총 자산(예: 채권 보유량)과 부채(예: 준비금)를 합친 금액으로, 연준의 재무 상태를 나타냅니다.', '왜 필요한 지표인가': '양적 완화나 긴축 정책의 규모를 보여주며, 연준의 통화 정책과 시장 유동성에 미치는 영향을 분석하는 데 필수적입니다.'}},
-                'SP500_MCAP': {'title': 'S&P500 시가총액', 'content': {'경제적 의미': 'S&P500 지수에 포함된 기업들의 총 시가총액입니다. 이는 미국 주식 시장의 전반적인 규모와 가치를 나타내며, 경제의 전반적인 건전성과 투자 심리를 반영합니다.', '왜 필요한 지표인가': '주식 시장의 과열 또는 침체 여부를 판단하는 데 중요한 지표입니다. 시가총액의 증가는 경제 성장과 기업 수익성 개선을, 감소는 경기 둔화나 불확실성 증대를 시사할 수 있습니다.'}}
+                'SP500_MCAP': {'title': 'S&P500 시가총액', 'content': {'경제적 의미': 'S&P500 지수에 포함된 기업들의 총 시가총액입니다. 이는 미국 주식 시장의 전반적인 규모와 가치를 나타내며, 경제의 전반적인 건전성과 투자 심리를 반영합니다.', '왜 필요한 지표인가': '주식 시장의 과열 또는 침체 여부를 판단하는 데 중요한 지표입니다. 시가총액의 증가는 경제 성장과 기업 수익성 개선을, 감소는 경기 둔화나 불확실성 증대를 시사할 수 있습니다.'}},
+                // [추가 1] 역레포 금리 정보
+                'RRPONTSYAWARD': {'title': '역레포 금리', 'content': {'경제적 의미': '연준이 금융기관으로부터 자금을 빌릴 때 지급하는 금리로, 시중에 넘치는 유동성을 흡수하기 위한 기준 금리입니다. 즉, 금리가 높아질수록 시중의 유동성을 흡수하는 역할을 합니다.', '왜 필요한 지표인가': '시장의 유동성이 지나치게 풍부할 때 연준의 의도로 금리가 떨어지는 것을 막는 역할을 합니다.'}}
             }[indicator] || { title: indicator, content: { '경제적 의미': '정보 없음' } };
 
             document.getElementById('infoTitle').textContent = info.title || 'Unknown';
@@ -1309,7 +1365,6 @@
                     fedLiquidityDiff = walclDiff - otherDiffs;
                     fedLatestDate = commonLatest.toISOString().split('T')[0];
 
-                    // ▼▼▼ 2. '금리 현황' 페이지에도 동일한 로직 적용 ▼▼▼
                     let fedAssetChange = walclDiff - tgaDiff - rrpDiff - resbalDiff;
                     let fedLiabilityChange = rrpDiff + resbalDiff;
 
@@ -1331,7 +1386,6 @@
                         <button class="graph-btn" onclick="showGraph('WALCL')">그래프</button>
                         <span class="update-date">Update Date: ${fedLatestDate}</span>
                     `;
-                    // ▲▲▲ 2. '금리 현황' 페이지에도 동일한 로직 적용 ▲▲▲
                 }
             }
 
@@ -1376,11 +1430,12 @@
                  if(displays.net_market_flow) displays.net_market_flow.textContent = '';
             }
 
+            // [수정 5] 금리 현황 페이지 라벨 변경
             const displayData = [
                 { value: tgaDiff, element: displays.tga, label: 'TGA 잔고:', date: tgaLatestDate, tooltipElement: tooltips.tga },
                 { value: fedLiquidityDiff, element: displays.fed, label: '연준 유동성:', date: fedLatestDate, tooltipElement: tooltips.fed },
-                { value: mmfToFedDiff, element: displays.mmf_fed, label: 'MMF -> FED:', date: mmfFedLatestDate, tooltipElement: tooltips.mmf_fed },
-                { value: finalMmfToMarketDiff, element: displays.mmf_market, label: 'MMF ->시장:', date: mmfMarketLatestDate, tooltipElement: tooltips.mmf_market }
+                { value: mmfToFedDiff, element: displays.mmf_fed, label: '시중은행 -> FED:', date: mmfFedLatestDate, tooltipElement: tooltips.mmf_fed },
+                { value: finalMmfToMarketDiff, element: displays.mmf_market, label: '시중은행 ->시장:', date: mmfMarketLatestDate, tooltipElement: tooltips.mmf_market }
             ];
 
             displayData.forEach(({ value, element, label }) => {
@@ -1390,16 +1445,17 @@
                     element.innerHTML = `${label}<br>${valueSpan}`;
                 }
             });
-
+            
+            // [수정 5] 금리 현황 페이지 툴팁 내용 변경
             if (tgaDiff !== null) tooltips.tga.innerHTML = `<p>최근 한 달 동안, 미국 재무부 잔고 변화를 나타냅니다.</p><p><b>+양수 :</b> 시장에서 재무부로 달러 유동성 흡수<br><b>-음수 :</b> 미국 재무부가 시장에 달러 유동성 공급</p><button class="graph-btn" onclick="showGraph('WTREGEN')">그래프</button><span class="update-date">Update Date: ${tgaLatestDate}</span>`;
-            if (fedLiquidityDiff === null && tooltips.fed) { // 데이터 계산 실패 시 기본 툴팁
+            if (fedLiquidityDiff === null && tooltips.fed) {
                 tooltips.fed.innerHTML = `<p>데이터를 계산하는 중 오류가 발생했습니다.</p>`;
             }
-            if (mmfToFedDiff !== null) tooltips.mmf_fed.innerHTML = `<p>최근 한 달 동안, MMF가 연준에게 돈을 맡긴 자금의 양 변화를 나타냅니다.</p><p><b>+양수 :</b> MMF가 연준에게 역레포 자금을 빌려줌<br><b>-음수 :</b> 연준에게 빌려준 역레포 자금을 다시 회수</p><button class="graph-btn" onclick="showGraph('RRPONTSYD')">그래프</button><span class="update-date">Update Date: ${mmfFedLatestDate}</span>`;
+            if (mmfToFedDiff !== null) tooltips.mmf_fed.innerHTML = `<p>최근 한 달 동안, 시중은행이 연준에게 돈을 맡긴 자금의 양 변화를 나타냅니다.</p><p><b>+양수 :</b> 시중은행이 연준에게 역레포 자금을 빌려줌<br><b>-음수 :</b> 연준에게 빌려준 역레포 자금을 다시 회수</p><button class="graph-btn" onclick="showGraph('RRPONTSYD')">그래프</button><span class="update-date">Update Date: ${mmfFedLatestDate}</span>`;
             if (finalMmfToMarketDiff !== null) {
                 const sign1 = mmfToMarketCombined > 0 ? '+' : ''; const sign2 = mmfAssetChange > 0 ? '+' : '';
                 const colorClass1 = mmfToMarketCombined > 0 ? 'slope-positive' : 'slope-negative'; const colorClass2 = mmfAssetChange > 0 ? 'slope-positive' : 'slope-negative';
-                tooltips.mmf_market.innerHTML = `<p>최근 한 달 동안, MMF가 시장에 돈을 공급한 자금의 양 변화를 나타냅니다.<br>이 결과는 MMF가 시장에 공급한 유동성에서 시장이 MMF에 투자한 양을 뺀 결과입니다.</p><p><b>+양수 :</b> MMF가 시장에 유동성 공급량이 큰 상황<br><b>-음수 :</b> 시장이 MMF에 자금을 투자한 양이 큰 상황</p><hr><p>MMF가 시장으로 유동성 공급량 = <span class="${colorClass1}">${sign1}${mmfToMarketCombined.toFixed(2)} B $/Month</span></p><p>시장이 MMF에 투자량 = <span class="${colorClass2}">${sign2}${mmfAssetChange.toFixed(2)} B $/Month</span></p><button class="graph-btn" onclick="showGraph('MMMFFAQ027S')">그래프</button><span class="update-date">Update Date: ${mmfMarketLatestDate}</span>`;
+                tooltips.mmf_market.innerHTML = `<p>최근 한 달 동안, 시중은행이 시장에 돈을 공급한 자금의 양 변화를 나타냅니다.<br>이 결과는 시중은행이 시장에 공급한 유동성에서 시장이 시중은행에 투자한 양을 뺀 결과입니다.</p><p><b>+양수 :</b> 시중은행이 시장에 유동성 공급량이 큰 상황<br><b>-음수 :</b> 시장이 시중은행에 자금을 투자한 양이 큰 상황</p><hr><p>시중은행이 시장으로 유동성 공급량 = <span class="${colorClass1}">${sign1}${mmfToMarketCombined.toFixed(2)} B $/Month</span></p><p>시장이 시중은행에 투자량 = <span class="${colorClass2}">${sign2}${mmfAssetChange.toFixed(2)} B $/Month</span></p><button class="graph-btn" onclick="showGraph('MMMFFAQ027S')">그래프</button><span class="update-date">Update Date: ${mmfMarketLatestDate}</span>`;
             }
         }
 
