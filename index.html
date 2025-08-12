@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -95,7 +93,7 @@
 
         #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay,
         #tgaSlopeDisplay_interest, #fedLiquidityDisplay_interest, #mmfToRrpDisplay_interest, #mmfToMarketDisplay_interest,
-        #tgaSlopeDisplay_interest_1yr, #fedLiquidityDisplay_interest_discount {
+        #tgaSlopeDisplay_interest_1yr, #fedLiquidityDisplay_interest_discount, #tgaSlopeDisplay_interest_10yr {
             position: absolute;
             transform: translateX(-50%);
             font-size: 0.8em;
@@ -140,6 +138,13 @@
         /* [추가 5] 1년물 국채금리 레이블 위치 */
         .tga-popup-container-1yr {
             top: calc(60% + 40px + 5px + 50px); /* TGA 레이블 아래로 이동 */
+            left: 30%;
+            transform: translateX(-50%);
+        }
+
+        /* [요청사항 2] 10년물 국채금리 레이블 위치 */
+        .tga-popup-container-10yr {
+            top: calc(60% + 40px + 5px + 100px); /* 1년물 레이블 아래로 이동 */
             left: 30%;
             transform: translateX(-50%);
         }
@@ -245,7 +250,8 @@
         }
 
         .tga-popup-container:hover .tooltip-container,
-        .tga-popup-container-1yr:hover .tooltip-container {
+        .tga-popup-container-1yr:hover .tooltip-container,
+        .tga-popup-container-10yr:hover .tooltip-container {
             margin-left: -50px; 
         }
         .fed-popup-container:hover .tooltip-container,
@@ -271,7 +277,7 @@
 
         #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay,
         #tgaSlopeDisplay_interest, #fedLiquidityDisplay_interest, #mmfToRrpDisplay_interest, #mmfToMarketDisplay_interest,
-        #tgaSlopeDisplay_interest_1yr, #fedLiquidityDisplay_interest_discount {
+        #tgaSlopeDisplay_interest_1yr, #fedLiquidityDisplay_interest_discount, #tgaSlopeDisplay_interest_10yr {
             position: relative;
             z-index: 10;
             cursor: help;
@@ -434,7 +440,7 @@
             
             #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay,
             #tgaSlopeDisplay_interest, #fedLiquidityDisplay_interest, #mmfToRrpDisplay_interest, #mmfToMarketDisplay_interest,
-            #tgaSlopeDisplay_interest_1yr, #fedLiquidityDisplay_interest_discount {
+            #tgaSlopeDisplay_interest_1yr, #fedLiquidityDisplay_interest_discount, #tgaSlopeDisplay_interest_10yr {
                 font-size: 0.7em;
                 padding: 2px 4px;
                 white-space: normal;
@@ -452,6 +458,12 @@
             /* [추가 5] 모바일용 1년물 국채금리 레이블 위치 */
             .tga-popup-container-1yr {
                  top: calc(47% + 30px + 12px + 45px); /* 3개월 국채 아래로 */
+                 left: 28%;
+            }
+
+            /* [요청사항 2] 모바일용 10년물 국채금리 레이블 위치 */
+            .tga-popup-container-10yr {
+                 top: calc(47% + 30px + 12px + 90px); /* 1년물 국채 아래로 */
                  left: 28%;
             }
 
@@ -648,6 +660,11 @@
                 <div id="tgaSlopeDisplay_interest_1yr"></div>
                 <div class="tooltip-container" id="tga-tooltip-content_interest_1yr"></div>
             </div>
+
+            <div class="tga-popup-container-10yr popup-container">
+                <div id="tgaSlopeDisplay_interest_10yr"></div>
+                <div class="tooltip-container" id="tga-tooltip-content_interest_10yr"></div>
+            </div>
             
             <div class="fed-popup-container popup-container">
                 <div id="fedLiquidityDisplay_interest"></div>
@@ -702,10 +719,11 @@
             <div class="indicator-section">
                 <h3>금리</h3>
                 <div class="indicator-buttons">
-                    <button class="button" onclick="showGraph('SOFR')">SOFR 금리</button>
-                    <button class="button" onclick="showGraph('FEDFUNDS')">EFFR 금리</button>
                     <button class="button" onclick="showGraph('TB3MS')">3개월 미 국채금리</button>
                     <button class="button" onclick="showGraph('TB1YR')">1년물 미 국채금리</button>
+                    <button class="button" onclick="showGraph('DGS10')">10년물 미 국채금리</button>
+                    <button class="button" onclick="showGraph('SOFR')">SOFR 금리</button>
+                    <button class="button" onclick="showGraph('FEDFUNDS')">EFFR 금리</button>
                     <button class="button" onclick="showGraph('RRPONTSYAWARD')">역레포 금리</button>
                     <button class="button" onclick="showGraph('DPCREDIT')">연준 할인율</button>
                     <button class="button" onclick="showGraph('DRBLACBS')">미 은행 연체율(전체)</button>
@@ -789,6 +807,7 @@
             'FEDFUNDS': 'EFFR 금리',
             'TB3MS': '3개월 미 국채금리',
             'TB1YR': '1년물 미 국채금리',
+            'DGS10': '10년물 미 국채금리', // [요청사항 1] 지표 타이틀 추가
             'DPCREDIT': '연준 할인율',
             'DRBLACBS': '미 은행 연체율(전체)',
             'M2SL': 'M2',
@@ -797,8 +816,8 @@
             'SP500': 'S&P500 지수',
             'SP500_MCAP': 'S&P500 시가총액',
             'RRPONTSYAWARD': '역레포 금리',
-            'ALTSALES': '자동차, 트럭 판매량', // [추가 7]
-            'HOUST': '주택 착공 허가 건수' // [추가 8]
+            'ALTSALES': '자동차, 트럭 판매량',
+            'HOUST': '주택 착공 허가 건수'
         };
 
         const indicatorUnits = {
@@ -814,13 +833,14 @@
             'FEDFUNDS': 'Percent (%)',
             'TB3MS': 'Percent (%)',
             'TB1YR': 'Percent (%)',
+            'DGS10': 'Percent (%)', // [요청사항 1] 지표 단위 추가
             'DPCREDIT': 'Percent (%)',
             'DRBLACBS': 'Percent (%)',
             'NASDAQ100': 'Index',
             'SP500': 'Index',
             'RRPONTSYAWARD': 'Percent (%)',
-            'ALTSALES': 'Millions of Units', // [추가 7]
-            'HOUST': 'Thousands of Units' // [추가 8]
+            'ALTSALES': 'Millions of Units',
+            'HOUST': 'Thousands of Units'
         };
 
         async function parseCSV(text) {
@@ -1012,6 +1032,8 @@
                 'FEDFUNDS': {'title': 'EFFR 금리', 'content': {'경제적 의미': 'Effective Federal Funds Rate는 은행들이 연준에 예치된 자금을 상호 대출할 때 적용되는 실제 금리를 의미합니다. 연준 기준 금리와 밀접하게 연관됩니다.', '왜 필요한 지표인가': 'EFFR은 연준의 통화 정책 방향을 보여주며, 경제 성장, 인플레이션, 고용에 영향을 미칩니다. 예를 들면, EFFR 금리가 높다는건, 은행간의 대출 부담을 높여서 시중에 빌리는 돈의 규모를 축소한다는 의미가 될 수 있습니다. 결과적으로 긴축 효과를 냅니다.'}},
                 'TB3MS': {'title': '3개월 미 국채금리', 'content': {'경제적 의미': '3개월 만기 미국 재무부 증권의 수익률로, 단기 시장 금리와 인플레이션 기대치를 반영합니다.', '왜 필요한 지표인가': '단기 금리 동향을 파악하고, 경제 회복 또는 침체 신호를 분석하는 데 유용합니다. 금리가 상승한다는 의미는, 미국 정부가 국채 발행을 많이해서 원하는 곳에 돈을 많이 풀고 싶다는 간접적인 의미가 될 수 있고, 반대로 미국채 수요가 적어서 금리가 상승할 수 있습니다.'}},
                 'TB1YR': {'title': '1년물 미 국채금리', 'content': {'경제적 의미': '1년 만기 미국 재무부 증권의 수익률로, 중단기 금리와 경제 전망을 반영합니다.', '왜 필요한 지표인가': '단기와 장기 금리 간 관계를 통해 경제 성장 기대치나 인플레이션 우려를 파악할 수 있어, 투자자와 정책 입안자에게 중요합니다. 또한 금리가 상승한다는 의미는, 미국 정부가 국채 발행을 많이해서 원하는 곳에 돈을 많이 풀고 싶다는 간접적인 의미가 될 수 있고, 반대로 미국채 수요가 적어서 금리가 상승할 수 있습니다.'}},
+                // [요청사항 1] 10년물 국채금리 정보 추가
+                'DGS10': {'title': '10년물 미 국채금리', 'content': {'경제적 의미': '10년물 미국채 금리는 10년 만기 미국 재무부 증권의 수익률을 의미합니다. 이는 중장기 금리를 대표하며, 시장의 경제 성장 기대치와 인플레이션 전망을 반영하는 핵심 지표입니다. 투자자들이 미래에 대한 긍정적인 전망을 하면 금리가 오르고, 비관적인 전망을 하면 금리가 떨어지는 경향이 있습니다.', '왜 필요한 지표인가': '10년물 미국채 금리는 경제의 현재 상황과 미래 전망을 보여주는 바로미터 역할을 하며, 정부의 재정 정책과 시장의 투자 심리가 복합적으로 반영된 지표입니다.'}},
                 'RRPONTSYD': {'title': '연준 역레포 자금', 'content': {'경제적 의미': 'Reverse Repurchase Agreement는 연준이 금융기관으로부터 자산을 매입하고 나중에 되팔며 유동성을 흡수하는 도구입니다. 이 금액은 시장의 잉여 자금을 보여줍니다.', '왜 필요한 지표인가': '연준이 금리를 통제하거나 유동성을 조절할 때 사용되며, 시장의 과도한 유동성(예: 인플레이션 위험)을 관리하는 데 필요합니다. 즉, 연레포 자금이 증가한다는 것은, 시중에 풀린 돈을 중앙은행에 묶어둔다는 뜻 입니다. 이렇게 되면 유동성이 긴축되어 시장의 주가가 감소할 수 있습니다.'}},
                 'MMMFFAQ027S': {'title': 'MMF 잔고', 'content': {'경제적 의미': 'Money Market Fund의 총 자산 잔고로, 투자자들이 안전 자산에 얼마나 많은 자금을 넣는지 보여줍니다. 주로 기준금리가 높은 시기에 수익율이 높아서 몰리거나, 시장(주식) 가격이 불안정할 수 있다고 예상되면 MMF로 자금이 몰리게 됩니다.', '왜 필요한 지표인가': 'MMF 잔고는 투자 심리와 위험 회피 성향을 반영하며, 금융 시장 불확실성이 높을 때 증가하는 경향이 있어 경제 안정성 평가에 유용합니다.'}},
                 'SP500': {'title': 'S&P500 지수', 'content': {'경제적 의미': '미국 500대 기업의 주식 성과를 종합한 지수로, 주식 시장의 전반적인 건강 상태를 나타냅니다.', '왜 필요한 지표인가': '경제 성장, 기업 수익, 투자자 신뢰를 반영하며, 소비자 지출과 연결되므로 거시경제 분석에 필수적입니다.'}},
@@ -1021,9 +1043,7 @@
                 'WALCL': {'title': '연준 전체 자산 + 부채', 'content': {'경제적 의미': '연준의 총 자산(예: 채권 보유량)과 부채(예: 준비금)를 합친 금액으로, 연준의 재무 상태를 나타냅니다.', '왜 필요한 지표인가': '양적 완화나 긴축 정책의 규모를 보여주며, 연준의 통화 정책과 시장 유동성에 미치는 영향을 분석하는 데 필수적입니다.'}},
                 'SP500_MCAP': {'title': 'S&P500 시가총액', 'content': {'경제적 의미': 'S&P500 지수에 포함된 기업들의 총 시가총액입니다. 이는 미국 주식 시장의 전반적인 규모와 가치를 나타내며, 경제의 전반적인 건전성과 투자 심리를 반영합니다.', '왜 필요한 지표인가': '주식 시장의 과열 또는 침체 여부를 판단하는 데 중요한 지표입니다. 시가총액의 증가는 경제 성장과 기업 수익성 개선을, 감소는 경기 둔화나 불확실성 증대를 시사할 수 있습니다.'}},
                 'RRPONTSYAWARD': {'title': '역레포 금리', 'content': {'경제적 의미': '연준이 금융기관으로부터 자금을 빌릴 때 지급하는 금리로, 시중에 넘치는 유동성을 흡수하기 위한 기준 금리입니다. 즉, 금리가 높아질수록 시중의 유동성을 흡수하는 역할을 합니다.', '왜 필요한 지표인가': '시장의 유동성이 지나치게 풍부할 때 연준의 의도로 금리가 떨어지는 것을 막는 역할을 합니다.'}},
-                // [추가 7] ALTSALES 정보 추가
                 'ALTSALES': {'title': '자동차, 트럭 판매량', 'content': {'경제적 의미': '자동차 및 모든 승용차 판매량에 대한 미 상무부 경제분석국의 보고입니다. 높은 수치는 강한 경제를 나타냅니다.', '왜 필요한 지표인가': '미국 시장의 주요한 경제 선행지표 중 하나입니다.'}},
-                 // [추가 8] HOUST 정보 추가
                 'HOUST': {'title': '주택 착공 허가 건수', 'content': {'경제적 의미': '주택 착공은 특정 달에 시작된 새로운 주거 건설 프로젝트의 수를 의미합니다. 주택 착공 추정치에는 기존 기반 위에 완전히 재건되는 건물의 단위도 포함됩니다. 높은 수치는 강한 경제를 나타냅니다.', '왜 필요한 지표인가': '미국 시장의 주요한 경제 선행지표 중 하나입니다.'}}
             }[indicator] || { title: indicator, content: { '경제적 의미': '정보 없음' } };
 
@@ -1295,22 +1315,25 @@
         }
         
         async function updateInterestRateFlowData() {
-            // 금리 현황 페이지의 레이블 요소들을 가져옵니다.
+            // [요청사항 2] 10년물 국채금리 레이블 추가 반영
             const displays = {
                 sofr: document.getElementById('mmfToMarketDisplay_interest'), // 1. SOFR 금리
                 effr: document.getElementById('mmfToRrpDisplay_interest'),   // 2. EFFR 금리
                 rrp_rate: document.getElementById('fedLiquidityDisplay_interest'), // 3. 역레포 금리
                 tb3ms: document.getElementById('tgaSlopeDisplay_interest'),      // 4. 3개월 미 국채금리
                 tb1yr: document.getElementById('tgaSlopeDisplay_interest_1yr'),  // 5. 1년물 미 국채금리
+                tb10yr: document.getElementById('tgaSlopeDisplay_interest_10yr'), // [추가] 10년물 미 국채금리
                 discount: document.getElementById('fedLiquidityDisplay_interest_discount') // 6. 연준 할인율
             };
-            // 툴팁 요소들을 가져옵니다.
+            
+            // [요청사항 2] 10년물 국채금리 툴팁 추가 반영
             const tooltips = {
                 sofr: document.getElementById('mmf-market-tooltip-content_interest'),
                 effr: document.getElementById('mmf-fed-tooltip-content_interest'),
                 rrp_rate: document.getElementById('fed-tooltip-content_interest'),
                 tb3ms: document.getElementById('tga-tooltip-content_interest'),
                 tb1yr: document.getElementById('tga-tooltip-content_interest_1yr'),
+                tb10yr: document.getElementById('tga-tooltip-content_interest_10yr'), // [추가]
                 discount: document.getElementById('fed-tooltip-content_interest_discount')
             };
 
@@ -1326,13 +1349,14 @@
              }
 
 
-            // 필요한 금리 지표 목록
+            // [요청사항 2] 10년물 국채금리 지표 추가 반영
             const indicators = {
                 sofr: 'SOFR',
                 effr: 'FEDFUNDS',
                 rrp_rate: 'RRPONTSYAWARD',
                 tb3ms: 'TB3MS',
                 tb1yr: 'TB1YR',
+                tb10yr: 'DGS10', // [추가]
                 discount: 'DPCREDIT'
             };
 
@@ -1392,6 +1416,15 @@
                                     <p>1년 만기 미국 재무부 증권의 수익률로, 중단기 금리와 경제 전망을 반영합니다.</p>
                                     <p><b>어떤 지표인가? :</b> 단기와 장기 금리 간 관계를 통해 경제 성장 기대치나 인플레이션 우려를 파악할 수 있어, 투자자와 정책 입안자에게 중요합니다. 또한 금리가 상승한다는 의미는, 미국 정부가 국채 발행을 많이해서 원하는 곳에 돈을 많이 풀고 싶다는 간접적인 의미가 될 수 있고, 반대로 미국채 수요가 적어서 금리가 상승할 수 있습니다.</p>
                                     <button class="graph-btn" onclick="showGraph('TB1YR')">그래프</button>
+                                    <span class="update-date">Update Date: ${latestDate}</span>`;
+                                break;
+                             // [요청사항 2] 10년물 국채금리 case 추가
+                            case 'tb10yr':
+                                labelText = '10년물 미 국채금리 :';
+                                tooltipHTML = `
+                                    <p>10년 만기 미국 재무부 증권의 수익률로, 시장의 경제 성장 기대치와 인플레이션 전망을 반영하는 핵심 지표입니다.</p>
+                                    <p><b>어떤 지표인가? :</b> 10년물 미국채 금리는 경제의 현재 상황과 미래 전망을 보여주는 바로미터 역할을 하며, 정부의 재정 정책과 시장의 투자 심리가 복합적으로 반영된 지표입니다.</p>
+                                    <button class="graph-btn" onclick="showGraph('DGS10')">그래프</button>
                                     <span class="update-date">Update Date: ${latestDate}</span>`;
                                 break;
                             case 'discount':
