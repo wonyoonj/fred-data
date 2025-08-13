@@ -92,8 +92,8 @@
         .MMF-container { top: 57%; left: 80%; } /* 수정됨 */
 
         #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay,
-        #tgaSlopeDisplay_interest, #fedLiquidityDisplay_interest, #mmfToRrpDisplay_interest, #mmfToMarketDisplay_interest,
-        #tgaSlopeDisplay_interest_1yr, #fedLiquidityDisplay_interest_discount, #tgaSlopeDisplay_interest_10yr {
+        #tb3msRateDisplay_interest, #rrpRateDisplay_interest, #effrRateDisplay_interest, #sofrRateDisplay_interest,
+        #tb1yrRateDisplay_interest, #discountRateDisplay_interest, #tb10yrRateDisplay_interest {
             position: absolute;
             transform: translateX(-50%);
             font-size: 0.8em;
@@ -276,8 +276,8 @@
         }
 
         #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay,
-        #tgaSlopeDisplay_interest, #fedLiquidityDisplay_interest, #mmfToRrpDisplay_interest, #mmfToMarketDisplay_interest,
-        #tgaSlopeDisplay_interest_1yr, #fedLiquidityDisplay_interest_discount, #tgaSlopeDisplay_interest_10yr {
+        #tb3msRateDisplay_interest, #rrpRateDisplay_interest, #effrRateDisplay_interest, #sofrRateDisplay_interest,
+        #tb1yrRateDisplay_interest, #discountRateDisplay_interest, #tb10yrRateDisplay_interest {
             position: relative;
             z-index: 10;
             cursor: help;
@@ -439,15 +439,15 @@
             }
             
             #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay,
-            #tgaSlopeDisplay_interest, #fedLiquidityDisplay_interest, #mmfToRrpDisplay_interest, #mmfToMarketDisplay_interest,
-            #tgaSlopeDisplay_interest_1yr, #fedLiquidityDisplay_interest_discount, #tgaSlopeDisplay_interest_10yr {
+            #tb3msRateDisplay_interest, #rrpRateDisplay_interest, #effrRateDisplay_interest, #sofrRateDisplay_interest,
+            #tb1yrRateDisplay_interest, #discountRateDisplay_interest, #tb10yrRateDisplay_interest {
                 font-size: 0.7em;
                 padding: 2px 4px;
                 white-space: normal;
             }
             
             #mmfToRrpDisplay, #mmfToMarketDisplay,
-            #mmfToRrpDisplay_interest, #mmfToMarketDisplay_interest {
+            #effrRateDisplay_interest, #sofrRateDisplay_interest {
                 width: 90px;
             }
             
@@ -652,38 +652,38 @@
             <div class="source-credit-main">자료 출처: FRED</div>
 
             <div class="tga-popup-container popup-container">
-                <div id="tgaSlopeDisplay_interest"></div>
-                <div class="tooltip-container" id="tga-tooltip-content_interest"></div>
+                <div id="tb3msRateDisplay_interest"></div>
+                <div class="tooltip-container" id="tb3ms-tooltip-content_interest"></div>
             </div>
             
             <div class="tga-popup-container-1yr popup-container">
-                <div id="tgaSlopeDisplay_interest_1yr"></div>
-                <div class="tooltip-container" id="tga-tooltip-content_interest_1yr"></div>
+                <div id="tb1yrRateDisplay_interest"></div>
+                <div class="tooltip-container" id="tb1yr-tooltip-content_interest"></div>
             </div>
 
             <div class="tga-popup-container-10yr popup-container">
-                <div id="tgaSlopeDisplay_interest_10yr"></div>
-                <div class="tooltip-container" id="tga-tooltip-content_interest_10yr"></div>
+                <div id="tb10yrRateDisplay_interest"></div>
+                <div class="tooltip-container" id="tb10yr-tooltip-content_interest"></div>
             </div>
             
             <div class="fed-popup-container popup-container">
-                <div id="fedLiquidityDisplay_interest"></div>
-                <div class="tooltip-container" id="fed-tooltip-content_interest"></div>
+                <div id="rrpRateDisplay_interest"></div>
+                <div class="tooltip-container" id="rrp-rate-tooltip-content_interest"></div>
             </div>
 
             <div class="fed-popup-container-discount popup-container">
-                <div id="fedLiquidityDisplay_interest_discount"></div>
-                <div class="tooltip-container" id="fed-tooltip-content_interest_discount"></div>
+                <div id="discountRateDisplay_interest"></div>
+                <div class="tooltip-container" id="discount-rate-tooltip-content_interest"></div>
             </div>
 
             <div class="mmf-fed-popup-container popup-container">
-                <div id="mmfToRrpDisplay_interest"></div>
-                <div class="tooltip-container" id="mmf-fed-tooltip-content_interest"></div>
+                <div id="effrRateDisplay_interest"></div>
+                <div class="tooltip-container" id="effr-rate-tooltip-content_interest"></div>
             </div>
 
             <div class="mmf-market-popup-container popup-container">
-                <div id="mmfToMarketDisplay_interest"></div>
-                <div class="tooltip-container" id="mmf-market-tooltip-content_interest"></div>
+                <div id="sofrRateDisplay_interest"></div>
+                <div class="tooltip-container" id="sofr-rate-tooltip-content_interest"></div>
             </div>
             
             <div class="icon-container FED-container">
@@ -1319,26 +1319,26 @@
         }
         
         async function updateInterestRateFlowData() {
-            // [요청사항 2] 10년물 국채금리 레이블 추가 반영
+            // 수정된 ID를 참조하도록 displays 객체 업데이트
             const displays = {
-                sofr: document.getElementById('mmfToMarketDisplay_interest'), // 1. SOFR 금리
-                effr: document.getElementById('mmfToRrpDisplay_interest'),   // 2. EFFR 금리
-                rrp_rate: document.getElementById('fedLiquidityDisplay_interest'), // 3. 역레포 금리
-                tb3ms: document.getElementById('tgaSlopeDisplay_interest'),      // 4. 3개월 미 국채금리
-                tb1yr: document.getElementById('tgaSlopeDisplay_interest_1yr'),  // 5. 1년물 미 국채금리
-                tb10yr: document.getElementById('tgaSlopeDisplay_interest_10yr'), // [추가] 10년물 미 국채금리
-                discount: document.getElementById('fedLiquidityDisplay_interest_discount') // 6. 연준 할인율
+                sofr: document.getElementById('sofrRateDisplay_interest'),
+                effr: document.getElementById('effrRateDisplay_interest'),
+                rrp_rate: document.getElementById('rrpRateDisplay_interest'),
+                tb3ms: document.getElementById('tb3msRateDisplay_interest'),
+                tb1yr: document.getElementById('tb1yrRateDisplay_interest'),
+                tb10yr: document.getElementById('tb10yrRateDisplay_interest'),
+                discount: document.getElementById('discountRateDisplay_interest')
             };
             
-            // [요청사항 2] 10년물 국채금리 툴팁 추가 반영
+            // 수정된 ID를 참조하도록 tooltips 객체 업데이트
             const tooltips = {
-                sofr: document.getElementById('mmf-market-tooltip-content_interest'),
-                effr: document.getElementById('mmf-fed-tooltip-content_interest'),
-                rrp_rate: document.getElementById('fed-tooltip-content_interest'),
-                tb3ms: document.getElementById('tga-tooltip-content_interest'),
-                tb1yr: document.getElementById('tga-tooltip-content_interest_1yr'),
-                tb10yr: document.getElementById('tga-tooltip-content_interest_10yr'), // [추가]
-                discount: document.getElementById('fed-tooltip-content_interest_discount')
+                sofr: document.getElementById('sofr-rate-tooltip-content_interest'),
+                effr: document.getElementById('effr-rate-tooltip-content_interest'),
+                rrp_rate: document.getElementById('rrp-rate-tooltip-content_interest'),
+                tb3ms: document.getElementById('tb3ms-tooltip-content_interest'),
+                tb1yr: document.getElementById('tb1yr-tooltip-content_interest'),
+                tb10yr: document.getElementById('tb10yr-tooltip-content_interest'),
+                discount: document.getElementById('discount-rate-tooltip-content_interest')
             };
 
             // 초기화
@@ -1352,15 +1352,13 @@
                  document.getElementById('netMarketFlowDisplay_interest').textContent = ''; // Total 유동성 계산값은 비움
              }
 
-
-            // [요청사항 2] 10년물 국채금리 지표 추가 반영
             const indicators = {
                 sofr: 'SOFR',
                 effr: 'FEDFUNDS',
                 rrp_rate: 'RRPONTSYAWARD',
                 tb3ms: 'TB3MS',
                 tb1yr: 'TB1YR',
-                tb10yr: 'DGS10', // [추가]
+                tb10yr: 'DGS10',
                 discount: 'DPCREDIT'
             };
 
@@ -1422,7 +1420,6 @@
                                     <button class="graph-btn" onclick="showGraph('TB1YR')">그래프</button>
                                     <span class="update-date">Update Date: ${latestDate}</span>`;
                                 break;
-                             // [요청사항 2] 10년물 국채금리 case 추가
                             case 'tb10yr':
                                 labelText = '10년물 미 국채금리 :';
                                 tooltipHTML = `
