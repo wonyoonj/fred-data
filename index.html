@@ -249,26 +249,56 @@
             border-color: transparent transparent #555 transparent;
         }
 
-        .tga-popup-container:hover .tooltip-container,
-        .tga-popup-container-1yr:hover .tooltip-container,
-        .tga-popup-container-10yr:hover .tooltip-container {
-            margin-left: -500px; 
+        /* --- [코드 수정 시작] PC 화면 팝업(툴팁) 위치 개별화 --- */
+        /* 유동성 현황 페이지 팝업 */
+        .liquidity-tga-popup:hover .tooltip-container {
+            margin-left: -50px;
         }
-        .fed-popup-container:hover .tooltip-container,
-        .fed-popup-container-discount:hover .tooltip-container {
+        .liquidity-fed-popup:hover .tooltip-container {
             margin-left: -50px; 
             top: 25px;
             width: 250px; 
         }
-        .mmf-fed-popup-container:hover .tooltip-container {
+        .liquidity-mmf-fed-popup:hover .tooltip-container {
             margin-left: -300px;
             top: 25px;
             width: 250px; 
         }
-        .mmf-market-popup-container:hover .tooltip-container {
+        .liquidity-mmf-market-popup:hover .tooltip-container {
             margin-left: -220px;
             width: 280px;
         }
+
+        /* 금리 현황 페이지 팝업 */
+        .interest-tb3ms-popup:hover .tooltip-container {
+            margin-left: -50px;
+        }
+        .interest-tb1yr-popup:hover .tooltip-container {
+            margin-left: -50px;
+        }
+        .interest-tb10yr-popup:hover .tooltip-container {
+            margin-left: -50px;
+        }
+        .interest-rrp-rate-popup:hover .tooltip-container {
+            margin-left: -50px; 
+            top: 25px;
+            width: 250px; 
+        }
+        .interest-discount-rate-popup:hover .tooltip-container {
+            margin-left: -50px; 
+            top: 25px;
+            width: 250px; 
+        }
+        .interest-effr-rate-popup:hover .tooltip-container {
+            margin-left: -300px;
+            top: 25px;
+            width: 250px; 
+        }
+        .interest-sofr-rate-popup:hover .tooltip-container {
+            margin-left: -220px;
+            width: 280px;
+        }
+        /* --- [코드 수정 끝] --- */
 
         .popup-container:hover .tooltip-container {
             visibility: visible;
@@ -490,10 +520,21 @@
                 margin-left: -100px;
                 width: 200px;
             }
-            .fed-popup-container:hover .tooltip-container,
-            .fed-popup-container-discount:hover .tooltip-container {
+
+            /* --- [코드 수정 시작] 모바일 화면 팝업(툴팁) 위치 개별화 --- */
+            /* 유동성 현황 페이지 팝업 */
+            .liquidity-fed-popup:hover .tooltip-container {
                 width: 250px;
             }
+
+            /* 금리 현황 페이지 팝업 */
+            .interest-rrp-rate-popup:hover .tooltip-container {
+                width: 250px;
+            }
+            .interest-discount-rate-popup:hover .tooltip-container {
+                width: 250px;
+            }
+            /* --- [코드 수정 끝] --- */
             
             .dollar-animated-object {
                 width: 22.5px;
@@ -604,25 +645,25 @@
             <h1 class="page-title">원뎅이의 미국 유동성 흐름 인사이트</h1>
             <div class="source-credit-main">자료 출처: FRED, Office of Financial Research (OFR)</div>
 
-            <div class="tga-popup-container popup-container">
+            <div class="tga-popup-container popup-container liquidity-tga-popup">
                 <div id="tgaSlopeDisplay"></div>
                 <div class="tooltip-container" id="tga-tooltip-content">
                 </div>
             </div>
             
-            <div class="fed-popup-container popup-container">
+            <div class="fed-popup-container popup-container liquidity-fed-popup">
                 <div id="fedLiquidityDisplay"></div>
                 <div class="tooltip-container" id="fed-tooltip-content">
                 </div>
             </div>
 
-            <div class="mmf-fed-popup-container popup-container">
+            <div class="mmf-fed-popup-container popup-container liquidity-mmf-fed-popup">
                 <div id="mmfToRrpDisplay"></div>
                 <div class="tooltip-container" id="mmf-fed-tooltip-content">
                 </div>
             </div>
 
-            <div class="mmf-market-popup-container popup-container">
+            <div class="mmf-market-popup-container popup-container liquidity-mmf-market-popup">
                 <div id="mmfToMarketDisplay"></div>
                 <div class="tooltip-container" id="mmf-market-tooltip-content">
                 </div>
@@ -651,37 +692,37 @@
             <h1 class="page-title">원뎅이의 미국 유동성 흐름 인사이트</h1>
             <div class="source-credit-main">자료 출처: FRED</div>
 
-            <div class="tga-popup-container popup-container">
+            <div class="tga-popup-container popup-container interest-tb3ms-popup">
                 <div id="tb3msRateDisplay_interest"></div>
                 <div class="tooltip-container" id="tb3ms-tooltip-content_interest"></div>
             </div>
             
-            <div class="tga-popup-container-1yr popup-container">
+            <div class="tga-popup-container-1yr popup-container interest-tb1yr-popup">
                 <div id="tb1yrRateDisplay_interest"></div>
                 <div class="tooltip-container" id="tb1yr-tooltip-content_interest"></div>
             </div>
 
-            <div class="tga-popup-container-10yr popup-container">
+            <div class="tga-popup-container-10yr popup-container interest-tb10yr-popup">
                 <div id="tb10yrRateDisplay_interest"></div>
                 <div class="tooltip-container" id="tb10yr-tooltip-content_interest"></div>
             </div>
             
-            <div class="fed-popup-container popup-container">
+            <div class="fed-popup-container popup-container interest-rrp-rate-popup">
                 <div id="rrpRateDisplay_interest"></div>
                 <div class="tooltip-container" id="rrp-rate-tooltip-content_interest"></div>
             </div>
 
-            <div class="fed-popup-container-discount popup-container">
+            <div class="fed-popup-container-discount popup-container interest-discount-rate-popup">
                 <div id="discountRateDisplay_interest"></div>
                 <div class="tooltip-container" id="discount-rate-tooltip-content_interest"></div>
             </div>
 
-            <div class="mmf-fed-popup-container popup-container">
+            <div class="mmf-fed-popup-container popup-container interest-effr-rate-popup">
                 <div id="effrRateDisplay_interest"></div>
                 <div class="tooltip-container" id="effr-rate-tooltip-content_interest"></div>
             </div>
 
-            <div class="mmf-market-popup-container popup-container">
+            <div class="mmf-market-popup-container popup-container interest-sofr-rate-popup">
                 <div id="sofrRateDisplay_interest"></div>
                 <div class="tooltip-container" id="sofr-rate-tooltip-content_interest"></div>
             </div>
