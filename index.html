@@ -249,7 +249,7 @@
             border-color: transparent transparent #555 transparent;
         }
 
-        /* --- [코드 수정 시작] PC 화면 팝업(툴팁) 위치 개별화 --- */
+        /* --- PC 화면 팝업(툴팁) 위치 개별화 --- */
         /* 유동성 현황 페이지 팝업 */
         .liquidity-tga-popup:hover .tooltip-container {
             margin-left: -150px;
@@ -298,8 +298,7 @@
             margin-left: -200px;
             width: 280px;
         }
-        /* --- [코드 수정 끝] --- */
-
+        
         .popup-container:hover .tooltip-container {
             visibility: visible;
             opacity: 1;
@@ -523,16 +522,40 @@
 
             /* --- [코드 수정 시작] 모바일 화면 팝업(툴팁) 위치 개별화 --- */
             /* 유동성 현황 페이지 팝업 */
+            .liquidity-tga-popup:hover .tooltip-container {
+                width: 200px; /* 기본값 명시 */
+            }
             .liquidity-fed-popup:hover .tooltip-container {
                 width: 250px;
             }
+            .liquidity-mmf-fed-popup:hover .tooltip-container {
+                width: 200px; /* 기본값 명시 */
+            }
+            .liquidity-mmf-market-popup:hover .tooltip-container {
+                width: 200px; /* 기본값 명시 */
+            }
 
             /* 금리 현황 페이지 팝업 */
+            .interest-tb3ms-popup:hover .tooltip-container {
+                width: 200px; /* 기본값 명시 */
+            }
+            .interest-tb1yr-popup:hover .tooltip-container {
+                width: 200px; /* 기본값 명시 */
+            }
+            .interest-tb10yr-popup:hover .tooltip-container {
+                width: 200px; /* 기본값 명시 */
+            }
             .interest-rrp-rate-popup:hover .tooltip-container {
                 width: 250px;
             }
             .interest-discount-rate-popup:hover .tooltip-container {
                 width: 250px;
+            }
+            .interest-effr-rate-popup:hover .tooltip-container {
+                width: 200px; /* 기본값 명시 */
+            }
+            .interest-sofr-rate-popup:hover .tooltip-container {
+                width: 200px; /* 기본값 명시 */
             }
             /* --- [코드 수정 끝] --- */
             
