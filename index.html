@@ -1259,7 +1259,7 @@
                     const rrpDiff = latest.rrp - past.rrp;
                     const resbalDiff = latest.resbal - past.resbal;
                     
-                    fedLiquidityDiff = walclDiff - (tgaDiff + rrpDiff + resbalDiff);
+                    fedLiquidityDiff = walclDiff - (tgaDiff + 2 * rrpDiff + 2 * resbalDiff);
                     
                     const fedAssetChange = walclDiff - tgaDiff - rrpDiff - resbalDiff;
                     const fedLiabilityChange = rrpDiff + resbalDiff;
