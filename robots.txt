@@ -1,3 +1,0 @@
-User-agent: *
-Allow:/
-Sitemap: https://americayoudongsung.netlify.app/sitemap.xml
