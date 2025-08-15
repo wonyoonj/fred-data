@@ -1,14 +1,22 @@
 [build]
   command = "npm run build"
-  publish = "."
+  publish = "."                 
   functions = "netlify/functions"
 
 [functions]
   node_bundler = "esbuild"
   external_node_modules = ["node-fetch"]
 
+
 [[redirects]]
-from = "/sitemap.xml"
-to = "/sitemap.xml"
-status = 200
-force = true
+  from = "/sitemap.xml"
+  to = "/sitemap.xml"
+  status = 200
+  force = true
+
+
+[[redirects]]
+  from = "/robots.txt"
+  to = "/robots.txt"
+  status = 200
+  force = true
