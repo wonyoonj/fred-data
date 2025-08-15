@@ -877,6 +877,41 @@
         const NUM_DOLLAR_ANIMATIONS = 3;
 
         const FUNCTION_BASE_URL = '/.netlify/functions/get-csv-data';
+        
+        // --- [OPTIMIZATION 1] Data Caching ---
+        const dataCache = new Map();
+        const CACHE_TTL = 3600 * 1000; // 1 hour in milliseconds
+
+        async function fetchAndCacheData(indicator) {
+            if (dataCache.has(indicator)) {
+                const { data, timestamp } = dataCache.get(indicator);
+                if (Date.now() - timestamp < CACHE_TTL) {
+                    return Promise.resolve(data); // Return cached data
+                }
+            }
+
+            const functionUrl = `${FUNCTION_BASE_URL}?indicator=${indicator}`;
+            try {
+                const response = await fetch(functionUrl);
+                if (!response.ok) {
+                    const errorBody = await response.json();
+                    throw new Error(`'${indicatorTitles[indicator] || indicator}' 데이터를 찾을 수 없거나 불러오지 못했어요! (${response.status}: ${errorBody.error || response.statusText})`);
+                }
+                const text = await response.text();
+                const parsedData = await parseCSV(text);
+
+                if (parsedData.length > 0) {
+                    // Data is sorted once after parsing and then cached
+                    parsedData.sort((a, b) => new Date(a.date) - new Date(b.date));
+                    dataCache.set(indicator, { data: parsedData, timestamp: Date.now() });
+                }
+                return parsedData;
+            } catch (error) {
+                 console.error(`Failed to fetch ${indicator}:`, error);
+                 throw error; // Rethrow to be caught by callers
+            }
+        }
+        // --- End of Optimization 1 ---
 
         const indicatorTitles = {
             'WTREGEN': '미 정부 TGA 잔고',
@@ -984,37 +1019,26 @@
             document.getElementById('graphTitle').textContent = indicatorTitles[indicator] || indicator;
 
             const dataSourceEl = document.getElementById('graphDataSource');
-            if (indicator === 'SP500_MCAP') {
-                dataSourceEl.textContent = '자료 출처: https://ycharts.com';
-            } else {
-                dataSourceEl.textContent = '자료 출처: FRED';
-            }
-
-            const functionUrl = `${FUNCTION_BASE_URL}?indicator=${indicator}`;
+            dataSourceEl.textContent = (indicator === 'SP500_MCAP') ? '자료 출처: https://ycharts.com' : '자료 출처: FRED';
 
             try {
                 renderErrorMessage("데이터를 불러오는 중...");
-                const response = await fetch(functionUrl);
-                if (!response.ok) {
-                    const errorBody = await response.json();
-                    throw new Error(`'${indicatorTitles[indicator]}' 데이터를 찾을 수 없거나 불러오지 못했어요! (${response.status}: ${errorBody.error || response.statusText})`);
-                }
-                const text = await response.text();
-                let data = await parseCSV(text);
-
+                let data = await fetchAndCacheData(indicator); // Use caching
+                
                 if (data.length === 0) {
                      renderErrorMessage(`'${indicatorTitles[indicator]}' 지표의 유효한 데이터가 없어요.`);
                      return;
                 }
                 
-                data.forEach(item => {
-                    if (indicator === 'WALCL') item.value /= 1000;
-                    else if (indicator === 'MMMFFAQ027S' || indicator === 'SP500_MCAP') item.value /= 1000000000;
+                // Create a copy for manipulation to avoid altering cached data
+                let processedData = data.map(item => {
+                    let value = item.value;
+                    if (indicator === 'WALCL') value /= 1000;
+                    else if (indicator === 'MMMFFAQ027S' || indicator === 'SP500_MCAP') value /= 1000000000;
+                    return { ...item, value };
                 });
-
-                data.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-                currentGraphData = data;
+                
+                currentGraphData = processedData;
                 updateChart('All');
 
             } catch (error) {
@@ -1115,7 +1139,6 @@
                 'FEDFUNDS': {'title': 'EFFR 금리', 'content': {'경제적 의미': 'EFFR는 Effective Federal Funds Rate의 약자로, 은행들이 연준에 예치된 자금을 다른 은행에 상호 대출할 때 적용되는 실제 금리를 의미합니다. 연준 기준 금리와 밀접하게 연관됩니다.', '왜 필요한 지표인가': 'EFFR은 연준의 통화 정책 방향을 보여주며, 경제 성장, 인플레이션, 고용에 영향을 미칩니다. 예를 들면, EFFR 금리가 높다는건, 은행간의 대출 부담을 높여서 시중에 빌리는 돈의 규모를 축소한다는 의미가 될 수 있습니다. 결과적으로 긴축 효과를 냅니다.'}},
                 'TB3MS': {'title': '3개월 미 국채금리', 'content': {'경제적 의미': '3개월 만기 미국 재무부 증권의 수익률로, 단기 시장 금리와 인플레이션 기대치를 반영합니다.', '왜 필요한 지표인가': '단기 금리 동향을 파악하고, 경제 회복 또는 침체 신호를 분석하는 데 유용합니다. 3개월 만기 국채 금리가 상승한다는 의미는, 미국 정부가 국채 발행을 많이해서 원하는 곳에 돈을 많이 풀고 싶다는 간접적인 의미가 될 수 있고, 반대로 미국채 수요가 적어서 금리가 상승할 수 있습니다.'}},
                 'TB1YR': {'title': '1년물 미 국채금리', 'content': {'경제적 의미': '1년 만기 미국 재무부 증권의 수익률로, 중단기 금리와 경제 전망을 반영합니다.', '왜 필요한 지표인가': '단기와 장기 금리 간 관계를 통해 경제 성장 기대치나 인플레이션 우려를 파악할 수 있어, 투자자와 정책 입안자에게 중요합니다. 또한 금리가 상승한다는 의미는, 미국 정부가 국채 발행을 많이해서 원하는 곳에 돈을 많이 풀고 싶다는 간접적인 의미가 될 수 있고, 반대로 미국채 수요가 적어서 금리가 상승할 수 있습니다.'}},
-                // [요청사항 1] 10년물 국채금리 정보 추가
                 'DGS10': {'title': '10년물 미 국채금리', 'content': {'경제적 의미': '10년물 미국채 금리는 10년 만기 미국 재무부 증권의 수익률을 의미합니다. 이는 중장기 금리를 대표하며, 시장의 경제 성장 기대치와 인플레이션 전망을 반영하는 핵심 지표입니다. 투자자들이 미래에 대한 긍정적인 전망을 하면 금리가 오르고, 비관적인 전망을 하면 금리가 떨어지는 경향이 있습니다.', '왜 필요한 지표인가': '10년물 미국채 금리는 경제의 현재 상황과 미래 전망을 보여주는 바로미터 역할을 하며, 정부의 재정 정책과 시장의 투자 심리가 복합적으로 반영된 지표입니다.'}},
                 'RRPONTSYD': {'title': '연준 역레포 자금', 'content': {'경제적 의미': 'Reverse Repurchase Agreement(RRP)는 연준이 금융기관으로부터 자산을 매입하며 시중의 유동성을 흡수하는 도구입니다. 이 금액은 시장의 묶여있는 돈. 즉, 잉여 자금을 보여줍니다.', '왜 필요한 지표인가': '연준이 금리를 통제하거나 유동성을 조절할 때 사용되며, 시장의 과도한 유동성(예: 인플레이션 위험)을 관리하는 데 필요합니다. 즉, 연레포 자금이 증가한다는 것은, 시중에 풀린 돈을 중앙은행에 묶어둔다는 뜻 입니다. 이렇게 되면 유동성이 긴축되어 시장의 주가가 감소할 수 있습니다.'}},
                 'MMMFFAQ027S': {'title': 'MMF 잔고', 'content': {'경제적 의미': 'Money Market Fund(MMF)의 총 자산 잔고로, 투자자들이 안전 자산에 얼마나 많은 자금을 넣는지 보여줍니다. 주로 기준금리가 높은 시기에 수익율이 높아서 몰리거나, 시장(주식) 가격이 불안정할 수 있다고 예상되면 MMF로 자금이 몰리게 됩니다.', '왜 필요한 지표인가': 'MMF 잔고는 투자 심리와 위험 회피 성향을 반영하며, 금융 시장 불확실성이 높을 때 증가하는 경향이 있어 경제 안정성 평가에 유용합니다.'}},
@@ -1135,6 +1158,28 @@
             document.getElementById('infoContent').innerHTML = Object.entries(info.content)
                 .map(([key, value]) => `<p><strong>${key}:</strong> ${value}</p>`).join('');
         }
+        
+        // --- [OPTIMIZATION 2] Faster data lookup function ---
+        const getClosestData = (data, targetDate) => {
+            if (!data || data.length === 0) return null;
+            let closest = data[data.length - 1];
+            let minDiff = Math.abs(new Date(closest.date) - targetDate);
+
+            // Iterate backwards from the end of the sorted array
+            for (let i = data.length - 2; i >= 0; i--) {
+                const currentData = data[i];
+                const diff = Math.abs(new Date(currentData.date) - targetDate);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    closest = currentData;
+                } else {
+                    // Since the array is sorted, if the difference starts increasing,
+                    // we've passed the closest point and can stop searching.
+                    break;
+                }
+            }
+            return closest;
+        };
 
         async function updateLiquidityFlowAnimation() {
             stopLiquidityFlowAnimation();
@@ -1147,10 +1192,8 @@
                 net_market_flow: document.getElementById('netMarketFlowDisplay')
             };
             Object.values(displays).forEach(el => {
-                if(el) {
-                    if (el.id !== 'netMarketFlowDisplay') {
-                        el.textContent = "계산 중...";
-                    }
+                if (el) {
+                    el.innerHTML = el.id !== 'netMarketFlowDisplay' ? "계산 중..." : "";
                     el.style.color = "black";
                 }
             });
@@ -1165,33 +1208,25 @@
             const indicators = ['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL', 'MMMFFAQ027S', 'MMF2RRP', 'MMF2MARKET', 'MMF2GOVERNMENT'];
             const dataStore = {};
 
-            await Promise.all(indicators.map(async (indicator) => {
-                try {
-                    const response = await fetch(`${FUNCTION_BASE_URL}?indicator=${indicator}`);
-                    if (!response.ok) throw new Error(`Status ${response.status}`);
-                    const data = await parseCSV(await response.text());
-                    dataStore[indicator] = data.length > 0 ? data.sort((a, b) => new Date(a.date) - new Date(b.date)) : [];
-                } catch (error) {
-                    console.error(`${indicator} 데이터 로드 실패:`, error.message);
-                    dataStore[indicator] = [];
-                }
-            }));
+            try {
+                const results = await Promise.all(
+                    indicators.map(indicator => fetchAndCacheData(indicator).catch(e => {
+                        console.error(`Error fetching ${indicator}:`, e);
+                        return []; // Return empty array on failure to not break Promise.all
+                    }))
+                );
+                indicators.forEach((indicator, index) => {
+                    dataStore[indicator] = results[index];
+                });
+            } catch (error) {
+                console.error("Failed to load initial data for liquidity flow", error);
+                Object.values(displays).forEach(el => { if (el) el.textContent = "데이터 오류"; });
+                return;
+            }
 
-            const getClosestDataValue = (data, targetDate) => {
-                if (!data || data.length === 0) return null;
-                let closest = data[0];
-                let minDiff = Math.abs(new Date(closest.date) - targetDate);
-                for (let i = 1; i < data.length; i++) {
-                    const diff = Math.abs(new Date(data[i].date) - targetDate);
-                    if (diff < minDiff) {
-                        minDiff = diff;
-                        closest = data[i];
-                    }
-                }
-                return closest ? closest.value : null;
-            };
-
-            const getClosestPastDataValue = getClosestDataValue;
+            let tgaDiff = null, fedLiquidityDiff = null, mmfToFedDiff = null, finalMmfToMarketDiff = null;
+            let tgaLatestDate = null, fedLatestDate = null, mmfFedLatestDate = null, mmfMarketLatestDate = null;
+            let mmfToMarketCombined = null, mmfAssetChange = null;
 
             const thirtyDaysAgo = (date) => {
                 const newDate = new Date(date);
@@ -1199,193 +1234,159 @@
                 return newDate;
             };
 
-            let tgaDiff = null, fedLiquidityDiff = null, mmfToFedDiff = null, finalMmfToMarketDiff = null;
-            let tgaLatestDate = null, fedLatestDate = null, mmfFedLatestDate = null, mmfMarketLatestDate = null;
-            let mmfToMarketCombined = null, mmfAssetChange = null;
-
-            const calculatedValues = [];
-
             if (['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL'].every(i => dataStore[i] && dataStore[i].length > 0)) {
-                const lastDates = ['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL']
-                    .map(i => new Date(dataStore[i][dataStore[i].length - 1].date));
-                const commonLatestTs = Math.min(...lastDates.map(d => d.getTime()));
-                const commonLatest = new Date(commonLatestTs);
-
-                tgaLatestDate = commonLatest.toISOString().split('T')[0];
+                const lastDates = ['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL'].map(i => new Date(dataStore[i][dataStore[i].length - 1].date));
+                const commonLatest = new Date(Math.min(...lastDates));
+                tgaLatestDate = fedLatestDate = commonLatest.toISOString().split('T')[0];
                 const pastDate = thirtyDaysAgo(commonLatest);
 
                 const latest = {
-                    tga: getClosestDataValue(dataStore.WTREGEN, commonLatest),
-                    walcl: getClosestDataValue(dataStore.WALCL, commonLatest),
-                    rrp: getClosestDataValue(dataStore.RRPONTSYD, commonLatest),
-                    resbal: getClosestDataValue(dataStore.WRESBAL, commonLatest)
+                    tga: getClosestData(dataStore.WTREGEN, commonLatest)?.value,
+                    walcl: getClosestData(dataStore.WALCL, commonLatest)?.value,
+                    rrp: getClosestData(dataStore.RRPONTSYD, commonLatest)?.value,
+                    resbal: getClosestData(dataStore.WRESBAL, commonLatest)?.value
                 };
                 const past = {
-                    tga: getClosestDataValue(dataStore.WTREGEN, pastDate),
-                    walcl: getClosestDataValue(dataStore.WALCL, pastDate),
-                    rrp: getClosestDataValue(dataStore.RRPONTSYD, pastDate),
-                    resbal: getClosestDataValue(dataStore.WRESBAL, pastDate)
+                    tga: getClosestData(dataStore.WTREGEN, pastDate)?.value,
+                    walcl: getClosestData(dataStore.WALCL, pastDate)?.value,
+                    rrp: getClosestData(dataStore.RRPONTSYD, pastDate)?.value,
+                    resbal: getClosestData(dataStore.WRESBAL, pastDate)?.value
                 };
 
-                if (Object.values(latest).every(v => v !== null) && Object.values(past).every(v => v !== null)) {
+                if (Object.values(latest).every(v => v != null) && Object.values(past).every(v => v != null)) {
                     tgaDiff = latest.tga - past.tga;
                     const walclDiff = (latest.walcl / 1000) - (past.walcl / 1000);
                     const rrpDiff = latest.rrp - past.rrp;
                     const resbalDiff = latest.resbal - past.resbal;
                     
-                    const otherDiffs = tgaDiff + 2 * rrpDiff + 2 * resbalDiff;
-                    fedLiquidityDiff = walclDiff - otherDiffs;
-                    fedLatestDate = commonLatest.toISOString().split('T')[0];
-
-                    let fedAssetChange = walclDiff - tgaDiff - rrpDiff - resbalDiff;
-                    let fedLiabilityChange = rrpDiff + resbalDiff;
-
-                    const formatValue = (value) => {
-                        const sign = value > 0 ? '+' : '';
-                        const colorClass = value > 0 ? 'slope-positive' : 'slope-negative';
-                        return `<span class="${colorClass}">${sign}${value.toFixed(2)} B $/Month</span>`;
-                    };
-
-                    const fedAssetChangeHTML = formatValue(fedAssetChange);
-                    const fedLiabilityChangeHTML = formatValue(fedLiabilityChange);
+                    fedLiquidityDiff = walclDiff - (tgaDiff + rrpDiff + resbalDiff);
                     
+                    const fedAssetChange = walclDiff - tgaDiff - rrpDiff - resbalDiff;
+                    const fedLiabilityChange = rrpDiff + resbalDiff;
+
+                    const formatValue = (value) => `<span class="${value > 0 ? 'slope-positive' : 'slope-negative'}">${value > 0 ? '+' : ''}${value.toFixed(2)} B $/Month</span>`;
+
                     tooltips.fed.innerHTML = `
                         <p>최근 한 달 동안, 연준의 순자산(국채+모기지채 등)과 부채의 변화를 나타냅니다.</p>
                         <p><b>+양수 :</b> 시장의 채권 등 자산 구매를 통해 달러를 시장에 공급 (or) 역레포 자금을 시장에 품<br><b>-음수 :</b> 자산 매각을 통해 시중의 달러를 다시 회수 (or) 시장으로부터 역레포 자금을 충당(긴축)</p>
                         <hr>
-                        <p>연준 자산 변화량 = ${fedAssetChangeHTML}</p>
-                        <p>연준의 부채 (역레포와 지급준비금) 변화량 = ${fedLiabilityChangeHTML}</p>
+                        <p>연준 자산 변화량 = ${formatValue(fedAssetChange)}</p>
+                        <p>연준의 부채 (역레포와 지급준비금) 변화량 = ${formatValue(fedLiabilityChange)}</p>
                         <button class="graph-btn" onclick="showGraph('WALCL')">그래프</button>
-                        <span class="update-date">Update Date: ${fedLatestDate}</span>
-                    `;
+                        <span class="update-date">Update Date: ${fedLatestDate}</span>`;
                 }
             }
 
-
-            if (dataStore.MMF2RRP && dataStore.MMF2RRP.length > 0) {
+            if (dataStore.MMF2RRP?.length > 0) {
                 const latestDate = new Date(dataStore.MMF2RRP[dataStore.MMF2RRP.length - 1].date);
                 mmfFedLatestDate = latestDate.toISOString().split('T')[0];
                 const pastDate = thirtyDaysAgo(latestDate);
-                const latestVal = getClosestPastDataValue(dataStore.MMF2RRP, latestDate);
-                const pastVal = getClosestPastDataValue(dataStore.MMF2RRP, pastDate);
-                if (latestVal !== null && pastVal !== null) {
+                const latestVal = getClosestData(dataStore.MMF2RRP, latestDate)?.value;
+                const pastVal = getClosestData(dataStore.MMF2RRP, pastDate)?.value;
+                if (latestVal != null && pastVal != null) {
                     mmfToFedDiff = (latestVal - pastVal) / 1e9;
                 }
             }
-
+            
             if (dataStore.MMF2MARKET?.length > 0 && dataStore.MMF2GOVERNMENT?.length > 0) {
                  const latestDateM = new Date(dataStore.MMF2MARKET[dataStore.MMF2MARKET.length - 1].date);
                  const pastDateM = thirtyDaysAgo(latestDateM);
-                 const latestM = getClosestPastDataValue(dataStore.MMF2MARKET, latestDateM);
-                 const pastM = getClosestPastDataValue(dataStore.MMF2MARKET, pastDateM);
+                 const latestM = getClosestData(dataStore.MMF2MARKET, latestDateM)?.value;
+                 const pastM = getClosestData(dataStore.MMF2MARKET, pastDateM)?.value;
                  
                  const latestDateG = new Date(dataStore.MMF2GOVERNMENT[dataStore.MMF2GOVERNMENT.length - 1].date);
                  const pastDateG = thirtyDaysAgo(latestDateG);
-                 const latestG = getClosestPastDataValue(dataStore.MMF2GOVERNMENT, latestDateG);
-                 const pastG = getClosestPastDataValue(dataStore.MMF2GOVERNMENT, pastDateG);
+                 const latestG = getClosestData(dataStore.MMF2GOVERNMENT, latestDateG)?.value;
+                 const pastG = getClosestData(dataStore.MMF2GOVERNMENT, pastDateG)?.value;
                  
                  mmfMarketLatestDate = latestDateM.toISOString().split('T')[0];
 
-                 if(latestM !== null && pastM !== null && latestG !== null && pastG !== null) {
-                    mmfToMarketCombined = ((latestM - pastM) / 1e9) + ((latestG - pastG) / 1e9);
+                 if(latestM != null && pastM != null && latestG != null && pastG != null) {
+                    mmfToMarketCombined = ((latestM - pastM) + (latestG - pastG)) / 1e9;
                  }
             }
             
-            if(dataStore.MMMFFAQ027S?.length > 0) {
+            if (dataStore.MMMFFAQ027S?.length > 0) {
                 const latestDate = new Date(dataStore.MMMFFAQ027S[dataStore.MMMFFAQ027S.length-1].date);
                 const pastDate = thirtyDaysAgo(latestDate);
-                const latestVal = getClosestPastDataValue(dataStore.MMMFFAQ027S, latestDate);
-                const pastVal = getClosestPastDataValue(dataStore.MMMFFAQ027S, pastDate);
-                if(latestVal !== null && pastVal !== null){
+                const latestVal = getClosestData(dataStore.MMMFFAQ027S, latestDate)?.value;
+                const pastVal = getClosestData(dataStore.MMMFFAQ027S, pastDate)?.value;
+                if(latestVal != null && pastVal != null){
                     mmfAssetChange = (latestVal - pastVal) / 1e9;
                 }
             }
-
-            if (mmfToMarketCombined !== null && mmfAssetChange !== null) {
+            
+            if (mmfToMarketCombined != null && mmfAssetChange != null) {
                 finalMmfToMarketDiff = mmfToMarketCombined - mmfAssetChange;
             }
-
-            if (fedLiquidityDiff !== null && tgaDiff !== null && finalMmfToMarketDiff !== null) {
-                const netMarketFlow = fedLiquidityDiff - tgaDiff + finalMmfToMarketDiff;
-                const sign = netMarketFlow > 0 ? '+' : '';
-                const colorClass = netMarketFlow > 0 ? 'slope-positive' : 'slope-negative';
-                if(displays.net_market_flow) {
-                    displays.net_market_flow.innerHTML = `<b>시장 Total 유동 공급량<br> = <span class="${colorClass}">${sign}${netMarketFlow.toFixed(2)} B $/Month</span></b>`;
-                }
-            } else {
-                 if(displays.net_market_flow) {
-                    displays.net_market_flow.textContent = '';
-                 }
-            }
-
-            if (tgaDiff !== null) calculatedValues.push({ value: tgaDiff, element: displays.tga, label: 'TGA 잔고:', animationClass: tgaDiff < 0 ? 'animated-dollar-from-government' : 'animated-dollar-to-government' , date: tgaLatestDate });
-            if (fedLiquidityDiff !== null) calculatedValues.push({ value: fedLiquidityDiff, element: displays.fed, label: '연준 유동성:', animationClass: fedLiquidityDiff < 0 ? 'animated-dollar-to-fed' : 'animated-dollar-to-market', date: fedLatestDate });
-            if (mmfToFedDiff !== null) calculatedValues.push({ value: mmfToFedDiff, element: displays.mmf_fed, label: 'MMF -> FED:', animationClass: mmfToFedDiff >= 0 ? 'animated-dollar-from-mmf-to-fed' : 'animated-dollar-from-fed-to-mmf', date: mmfFedLatestDate });
-            if (finalMmfToMarketDiff !== null) calculatedValues.push({ value: finalMmfToMarketDiff, element: displays.mmf_market, label: 'MMF ->시장:', animationClass: finalMmfToMarketDiff > 0 ? 'animated-dollar-from-mmf-to-market_parabolic' : 'animated-dollar-from-market-to-mmf_parabolic', date: mmfMarketLatestDate });
-
-            const rankedAnimations = calculatedValues.sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
             
-            rankedAnimations.forEach(({ value, element, label, date }) => {
-                if (element) {
-                    const sign = value > 0 ? '+' : '';
-                    const valueSpan = `<span class="${value > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${value.toFixed(2)} B $/Month</span>`;
-                    element.innerHTML = `${label}<br>${valueSpan}`;
-                }
-            });
+            const calculatedValues = [];
+            if (tgaDiff != null) calculatedValues.push({ value: tgaDiff, animationClass: tgaDiff < 0 ? 'animated-dollar-from-government' : 'animated-dollar-to-government' });
+            if (fedLiquidityDiff != null) calculatedValues.push({ value: fedLiquidityDiff, animationClass: fedLiquidityDiff < 0 ? 'animated-dollar-to-fed' : 'animated-dollar-to-market' });
+            if (mmfToFedDiff != null) calculatedValues.push({ value: mmfToFedDiff, animationClass: mmfToFedDiff >= 0 ? 'animated-dollar-from-mmf-to-fed' : 'animated-dollar-from-fed-to-mmf' });
+            if (finalMmfToMarketDiff != null) calculatedValues.push({ value: finalMmfToMarketDiff, animationClass: finalMmfToMarketDiff > 0 ? 'animated-dollar-from-mmf-to-market_parabolic' : 'animated-dollar-from-market-to-mmf_parabolic' });
 
-            if (tgaDiff !== null) {
+            // --- [OPTIMIZATION 3] Update DOM after all calculations ---
+            if (tgaDiff != null) {
+                const sign = tgaDiff > 0 ? '+' : '';
+                displays.tga.innerHTML = `TGA 잔고:<br><span class="${tgaDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${tgaDiff.toFixed(2)} B $/Month</span>`;
                 tooltips.tga.innerHTML = `
                     <p>최근 한 달 동안, 미국 재무부 잔고 변화를 나타냅니다.</p>
                     <p><b>+양수 :</b> 시장에서 재무부로 달러 유동성 흡수<br><b>-음수 :</b> 미국 재무부가 시장에 달러 유동성 공급</p>
                     <button class="graph-btn" onclick="showGraph('WTREGEN')">그래프</button>
-                    <span class="update-date">Update Date: ${tgaLatestDate}</span>
-                `;
-            }
+                    <span class="update-date">Update Date: ${tgaLatestDate}</span>`;
+            } else { displays.tga.textContent = "TGA 데이터 오류"; }
+            
+            if (fedLiquidityDiff != null) {
+                const sign = fedLiquidityDiff > 0 ? '+' : '';
+                displays.fed.innerHTML = `연준 유동성:<br><span class="${fedLiquidityDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${fedLiquidityDiff.toFixed(2)} B $/Month</span>`;
+            } else { displays.fed.textContent = "연준 데이터 오류"; }
 
-            if (fedLiquidityDiff === null && tooltips.fed) { // 데이터 계산 실패 시 기본 툴팁
-                tooltips.fed.innerHTML = `<p>데이터를 계산하는 중 오류가 발생했습니다.</p>`;
-            }
-
-            if (mmfToFedDiff !== null) {
+            if (mmfToFedDiff != null) {
+                const sign = mmfToFedDiff > 0 ? '+' : '';
+                displays.mmf_fed.innerHTML = `MMF -> FED:<br><span class="${mmfToFedDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${mmfToFedDiff.toFixed(2)} B $/Month</span>`;
                 tooltips.mmf_fed.innerHTML = `
                     <p>최근 한 달 동안, MMF가 연준에게 돈을 맡긴 자금의 양 변화를 나타냅니다.</p>
                     <p><b>+양수 :</b> MMF가 연준에게 역레포 자금을 빌려줌<br><b>-음수 :</b> 연준에게 빌려준 역레포 자금을 다시 회수</p>
                     <button class="graph-btn" onclick="showGraph('RRPONTSYD')">그래프</button>
-                    <span class="update-date">Update Date: ${mmfFedLatestDate}</span>
-                `;
-            }
+                    <span class="update-date">Update Date: ${mmfFedLatestDate}</span>`;
+            } else { displays.mmf_fed.textContent = "MMF->FED 데이터 오류"; }
 
-            if (finalMmfToMarketDiff !== null) {
+            if (finalMmfToMarketDiff != null) {
+                const sign = finalMmfToMarketDiff > 0 ? '+' : '';
+                displays.mmf_market.innerHTML = `MMF ->시장:<br><span class="${finalMmfToMarketDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${finalMmfToMarketDiff.toFixed(2)} B $/Month</span>`;
                 const sign1 = mmfToMarketCombined > 0 ? '+' : '';
                 const sign2 = mmfAssetChange > 0 ? '+' : '';
-                const colorClass1 = mmfToMarketCombined > 0 ? 'slope-positive' : 'slope-negative';
-                const colorClass2 = mmfAssetChange > 0 ? 'slope-positive' : 'slope-negative';
                 tooltips.mmf_market.innerHTML = `
                     <p>최근 한 달 동안, MMF가 시장에 돈을 공급한 자금의 양 변화를 나타냅니다.<br>
                     이 결과는 MMF가 시장에 공급한 유동성에서 시장이 MMF에 투자한 양을 뺀 결과입니다.</p>
                     <p><b>+양수 :</b> MMF가 시장에 유동성 공급량이 큰 상황<br><b>-음수 :</b> 시장이 MMF에 자금을 투자한 양이 큰 상황</p>
                     <hr>
-                    <p>MMF가 시장으로 유동성 공급량 = <span class="${colorClass1}">${sign1}${mmfToMarketCombined.toFixed(2)} B $/Month</span></p>
-                    <p>시장이 MMF에 투자량 = <span class="${colorClass2}">${sign2}${mmfAssetChange.toFixed(2)} B $/Month</span></p>
+                    <p>MMF가 시장으로 유동성 공급량 = <span class="${mmfToMarketCombined > 0 ? 'slope-positive' : 'slope-negative'}">${sign1}${mmfToMarketCombined.toFixed(2)} B $/Month</span></p>
+                    <p>시장이 MMF에 투자량 = <span class="${mmfAssetChange > 0 ? 'slope-positive' : 'slope-negative'}">${sign2}${mmfAssetChange.toFixed(2)} B $/Month</span></p>
                     <button class="graph-btn" onclick="showGraph('MMMFFAQ027S')">그래프</button>
-                    <span class="update-date">Update Date: ${mmfMarketLatestDate}</span>
-                `;
-            }
+                    <span class="update-date">Update Date: ${mmfMarketLatestDate}</span>`;
+            } else { displays.mmf_market.textContent = "MMF->시장 데이터 오류"; }
 
+            if (fedLiquidityDiff != null && tgaDiff != null && finalMmfToMarketDiff != null) {
+                const netMarketFlow = fedLiquidityDiff - tgaDiff + finalMmfToMarketDiff;
+                const sign = netMarketFlow > 0 ? '+' : '';
+                displays.net_market_flow.innerHTML = `<b>시장 Total 유동 공급량<br> = <span class="${netMarketFlow > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${netMarketFlow.toFixed(2)} B $/Month</span></b>`;
+            } else {
+                displays.net_market_flow.textContent = '';
+            }
+            
+            const rankedAnimations = calculatedValues.sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
+            
             const startAnimations = () => {
                 rankedAnimations.forEach((task, index) => {
                     const factor = (4 - index) / 4.0;
                     if (factor <= 0) return;
-
                     const size = BASE_DOLLAR_SIZE * factor;
                     const duration = BASE_ANIMATION_DURATION / factor;
                     const spawnInterval = duration / NUM_DOLLAR_ANIMATIONS;
-
                     for (let i = 0; i < NUM_DOLLAR_ANIMATIONS; i++) {
-                        const delay = i * spawnInterval;
-                        const timeoutId = setTimeout(() => {
-                            createAndAnimateDollar(task.animationClass, size, duration);
-                        }, delay);
+                        const timeoutId = setTimeout(() => createAndAnimateDollar(task.animationClass, size, duration), i * spawnInterval);
                         dollarAnimationIntervals.push(timeoutId);
                     }
                 });
@@ -1398,138 +1399,64 @@
             }
         }
         
+        // --- [OPTIMIZATION 4] Refactored and optimized interest rate update function ---
         async function updateInterestRateFlowData() {
-            // 수정된 ID를 참조하도록 displays 객체 업데이트
-            const displays = {
-                sofr: document.getElementById('sofrRateDisplay_interest'),
-                effr: document.getElementById('effrRateDisplay_interest'),
-                rrp_rate: document.getElementById('rrpRateDisplay_interest'),
-                tb3ms: document.getElementById('tb3msRateDisplay_interest'),
-                tb1yr: document.getElementById('tb1yrRateDisplay_interest'),
-                tb10yr: document.getElementById('tb10yrRateDisplay_interest'),
-                discount: document.getElementById('discountRateDisplay_interest')
-            };
-            
-            // 수정된 ID를 참조하도록 tooltips 객체 업데이트
-            const tooltips = {
-                sofr: document.getElementById('sofr-rate-tooltip-content_interest'),
-                effr: document.getElementById('effr-rate-tooltip-content_interest'),
-                rrp_rate: document.getElementById('rrp-rate-tooltip-content_interest'),
-                tb3ms: document.getElementById('tb3ms-tooltip-content_interest'),
-                tb1yr: document.getElementById('tb1yr-tooltip-content_interest'),
-                tb10yr: document.getElementById('tb10yr-tooltip-content_interest'),
-                discount: document.getElementById('discount-rate-tooltip-content_interest')
+            const indicatorConfigs = {
+                sofr: { code: 'SOFR', label: 'SOFR 금리 :',
+                    tooltip: `<p>SOFR 금리는 미국에서 한밤사이 동안 금융기관이 다른 금융기관에 담보(예: 국채)를 제공하고 자금을 빌리는 비용을 나타냅니다.</p><p><b>왜 중요한가? :</b> SOFR은 단기 자금 시장의 유동성과 수요-공급 상황을 반영합니다. 예를 들어, 시장에 자금이 부족하면 SOFR이 상승하고, 자금이 풍부하면 하락합니다.</p>`,
+                    displayEl: document.getElementById('sofrRateDisplay_interest'),
+                    tooltipEl: document.getElementById('sofr-rate-tooltip-content_interest') },
+                effr: { code: 'FEDFUNDS', label: 'EFFR 금리 :',
+                    tooltip: `<p>EFFR 금리는 은행들이 연준에 예치된 자금을 시중은행 간 상호 대출할 때 적용되는 실제 금리를 의미합니다.</p><p><b>왜 중요한가? :</b> EFFR 금리가 높다는건, 은행간의 대출 부담을 높여서 시중에 빌리는 돈의 규모를 축소한다는 의미가 될 수 있습니다.</p>`,
+                    displayEl: document.getElementById('effrRateDisplay_interest'),
+                    tooltipEl: document.getElementById('effr-rate-tooltip-content_interest') },
+                rrp_rate: { code: 'RRPONTSYAWARD', label: '역레포 금리 :',
+                    tooltip: `<p>연준이 금융기관으로부터 자금을 빌릴 때 지급하는 금리로, 시중에 넘치는 유동성을 흡수하기 위한 기준 금리입니다.</p><p><b>왜 중요한가? :</b> 역레포 금리가 높아질수록 시중의 유동성을 흡수하는 역할을 합니다.</p>`,
+                    displayEl: document.getElementById('rrpRateDisplay_interest'),
+                    tooltipEl: document.getElementById('rrp-rate-tooltip-content_interest') },
+                tb3ms: { code: 'TB3MS', label: '3개월 미 국채금리 :',
+                    tooltip: `<p>3개월 만기 미국 재무부 증권의 수익률로, 단기 시장 금리와 인플레이션 기대치를 반영합니다.</p><p><b>왜 중요한가? :</b> 3개월 금리가 상승한다는 의미는, 미국 정부가 국채 발행을 많이해서 원하는 곳에 돈을 많이 풀고 싶다는 간접적인 의미가 될 수 있고, 반대로 미국채 수요가 적어서 금리가 상승할 수 있습니다.</p>`,
+                    displayEl: document.getElementById('tb3msRateDisplay_interest'),
+                    tooltipEl: document.getElementById('tb3ms-tooltip-content_interest') },
+                tb1yr: { code: 'TB1YR', label: '1년물 미 국채금리 :',
+                    tooltip: `<p>1년 만기 미국 재무부 증권의 수익률로, 중단기 금리와 경제 전망을 반영합니다.</p><p><b>왜 중요한가? :</b> 1년 만기 금리가 상승한다는 의미는, 미국 정부가 국채 발행을 많이해서 원하는 곳에 돈을 많이 풀고 싶다는 간접적인 의미가 될 수 있고, 반대로 미국채 수요가 적어서 금리가 상승할 수 있습니다.</p>`,
+                    displayEl: document.getElementById('tb1yrRateDisplay_interest'),
+                    tooltipEl: document.getElementById('tb1yr-tooltip-content_interest') },
+                tb10yr: { code: 'DGS10', label: '10년물 미 국채금리 :',
+                    tooltip: `<p>10년 만기 미국 재무부 증권의 수익률로, 시장의 경제 성장 기대치와 인플레이션 전망을 반영하는 핵심 지표입니다.</p><p><b>왜 중요한가? :</b> 10년물 미국채 금리는 경제의 현재 상황과 미래 전망을 보여주는 바로미터 역할을 하며, 정부의 재정 정책과 시장의 투자 심리가 복합적으로 반영된 지표입니다.</p>`,
+                    displayEl: document.getElementById('tb10yrRateDisplay_interest'),
+                    tooltipEl: document.getElementById('tb10yr-tooltip-content_interest') },
+                discount: { code: 'DPCREDIT', label: '연준 할인율 :',
+                    tooltip: `<p>연준 할인율은 연준이 상업 은행에 대출할 때 적용하는 이자율로, 금융기관의 자금 조달 비용을 결정합니다. </p><p><b>왜 중요한가? :</b> 할인율이 낮게 되면, 연준이 시중 은행에 돈을 풀고 싶다는 의미가 될 수 있습니다.</p>`,
+                    displayEl: document.getElementById('discountRateDisplay_interest'),
+                    tooltipEl: document.getElementById('discount-rate-tooltip-content_interest') }
             };
 
-            // 초기화
-            Object.values(displays).forEach(el => {
-                if(el) {
-                    el.textContent = "계산 중...";
-                    el.style.color = "black";
-                }
+            Object.values(indicatorConfigs).forEach(({ displayEl }) => {
+                if(displayEl) displayEl.textContent = "계산 중...";
             });
-             if(document.getElementById('netMarketFlowDisplay_interest')) {
-                 document.getElementById('netMarketFlowDisplay_interest').textContent = ''; // Total 유동성 계산값은 비움
-             }
+            if(document.getElementById('netMarketFlowDisplay_interest')) {
+                document.getElementById('netMarketFlowDisplay_interest').textContent = '';
+            }
 
-            const indicators = {
-                sofr: 'SOFR',
-                effr: 'FEDFUNDS',
-                rrp_rate: 'RRPONTSYAWARD',
-                tb3ms: 'TB3MS',
-                tb1yr: 'TB1YR',
-                tb10yr: 'DGS10',
-                discount: 'DPCREDIT'
-            };
-
-            // 각 지표에 대한 정보를 업데이트하는 함수
             const updateIndicator = async (key) => {
-                const indicatorCode = indicators[key];
+                const config = indicatorConfigs[key];
                 try {
-                    const response = await fetch(`${FUNCTION_BASE_URL}?indicator=${indicatorCode}`);
-                    if (!response.ok) throw new Error(`Status ${response.status}`);
-                    
-                    const data = await parseCSV(await response.text());
-                    if (data.length > 0) {
-                        const latestData = data[data.length - 1];
-                        const latestValue = latestData.value.toFixed(2);
-                        const latestDate = latestData.date;
-                        
-                        let labelText = '';
-                        let tooltipHTML = '';
-
-                        // 각 지표에 맞는 레이블과 툴팁 내용 설정
-                        switch(key) {
-                            case 'sofr':
-                                labelText = 'SOFR 금리 :';
-                                tooltipHTML = `
-                                    <p>SOFR 금리는 미국에서 한밤사이 동안 금융기관이 다른 금융기관에 담보(예: 국채)를 제공하고 자금을 빌리는 비용을 나타냅니다.</p>
-                                    <p><b>왜 중요한가? :</b> SOFR은 단기 자금 시장의 유동성과 수요-공급 상황을 반영합니다. 예를 들어, 시장에 자금이 부족하면 SOFR이 상승하고, 자금이 풍부하면 하락합니다.</p>
-                                    <button class="graph-btn" onclick="showGraph('SOFR')">그래프</button>
-                                    <span class="update-date">Update Date: ${latestDate}</span>`;
-                                break;
-                            case 'effr':
-                                labelText = 'EFFR 금리 :';
-                                tooltipHTML = `
-                                    <p>EFFR 금리는 은행들이 연준에 예치된 자금을 시중은행 간 상호 대출할 때 적용되는 실제 금리를 의미합니다.</p>
-                                    <p><b>왜 중요한가? :</b> EFFR 금리가 높다는건, 은행간의 대출 부담을 높여서 시중에 빌리는 돈의 규모를 축소한다는 의미가 될 수 있습니다.</p>
-                                    <button class="graph-btn" onclick="showGraph('FEDFUNDS')">그래프</button>
-                                    <span class="update-date">Update Date: ${latestDate}</span>`;
-                                break;
-                            case 'rrp_rate':
-                                labelText = '역레포 금리 :';
-                                tooltipHTML = `
-                                    <p>연준이 금융기관으로부터 자금을 빌릴 때 지급하는 금리로, 시중에 넘치는 유동성을 흡수하기 위한 기준 금리입니다.</p>
-                                    <p><b>왜 중요한가? :</b> 역레포 금리가 높아질수록 시중의 유동성을 흡수하는 역할을 합니다.</p>
-                                    <button class="graph-btn" onclick="showGraph('RRPONTSYAWARD')">그래프</button>
-                                    <span class="update-date">Update Date: ${latestDate}</span>`;
-                                break;
-                            case 'tb3ms':
-                                labelText = '3개월 미 국채금리 :';
-                                tooltipHTML = `
-                                    <p>3개월 만기 미국 재무부 증권의 수익률로, 단기 시장 금리와 인플레이션 기대치를 반영합니다.</p>
-                                    <p><b>왜 중요한가? :</b> 3개월 금리가 상승한다는 의미는, 미국 정부가 국채 발행을 많이해서 원하는 곳에 돈을 많이 풀고 싶다는 간접적인 의미가 될 수 있고, 반대로 미국채 수요가 적어서 금리가 상승할 수 있습니다.</p>
-                                    <button class="graph-btn" onclick="showGraph('TB3MS')">그래프</button>
-                                    <span class="update-date">Update Date: ${latestDate}</span>`;
-                                break;
-                            case 'tb1yr':
-                                labelText = '1년물 미 국채금리 :';
-                                tooltipHTML = `
-                                    <p>1년 만기 미국 재무부 증권의 수익률로, 중단기 금리와 경제 전망을 반영합니다.</p>
-                                    <p><b>왜 중요한가? :</b> 1년 만기 금리가 상승한다는 의미는, 미국 정부가 국채 발행을 많이해서 원하는 곳에 돈을 많이 풀고 싶다는 간접적인 의미가 될 수 있고, 반대로 미국채 수요가 적어서 금리가 상승할 수 있습니다.</p>
-                                    <button class="graph-btn" onclick="showGraph('TB1YR')">그래프</button>
-                                    <span class="update-date">Update Date: ${latestDate}</span>`;
-                                break;
-                            case 'tb10yr':
-                                labelText = '10년물 미 국채금리 :';
-                                tooltipHTML = `
-                                    <p>10년 만기 미국 재무부 증권의 수익률로, 시장의 경제 성장 기대치와 인플레이션 전망을 반영하는 핵심 지표입니다.</p>
-                                    <p><b>왜 중요한가? :</b> 10년물 미국채 금리는 경제의 현재 상황과 미래 전망을 보여주는 바로미터 역할을 하며, 정부의 재정 정책과 시장의 투자 심리가 복합적으로 반영된 지표입니다.</p>
-                                    <button class="graph-btn" onclick="showGraph('DGS10')">그래프</button>
-                                    <span class="update-date">Update Date: ${latestDate}</span>`;
-                                break;
-                            case 'discount':
-                                labelText = '연준 할인율 :';
-                                tooltipHTML = `
-                                    <p>연준 할인율은 연준이 상업 은행에 대출할 때 적용하는 이자율로, 금융기관의 자금 조달 비용을 결정합니다. </p>
-                                    <p><b>왜 중요한가? :</b> 할인율이 낮게 되면, 연준이 시중 은행에 돈을 풀고 싶다는 의미가 될 수 있습니다.</p>
-                                    <button class="graph-btn" onclick="showGraph('DPCREDIT')">그래프</button>
-                                    <span class="update-date">Update Date: ${latestDate}</span>`;
-                                break;
-                        }
-                        
-                        // 화면에 업데이트
-                        displays[key].innerHTML = `${labelText}<br><span style="color: black;">${latestValue} %</span>`;
-                        tooltips[key].innerHTML = tooltipHTML;
+                    const data = await fetchAndCacheData(config.code);
+                    if (data && data.length > 0) {
+                        const { value, date } = data[data.length - 1];
+                        config.displayEl.innerHTML = `${config.label}<br><span style="color: black;">${value.toFixed(2)} %</span>`;
+                        config.tooltipEl.innerHTML = `${config.tooltip}<button class="graph-btn" onclick="showGraph('${config.code}')">그래프</button><span class="update-date">Update Date: ${date}</span>`;
+                    } else {
+                        throw new Error("No data available");
                     }
                 } catch (error) {
-                    console.error(`${indicatorCode} 데이터 로드 실패:`, error.message);
-                    displays[key].textContent = '데이터 오류';
+                    console.error(`${config.code} 데이터 로드 실패:`, error.message);
+                    config.displayEl.textContent = '데이터 오류';
                 }
             };
             
-            // 모든 금리 지표에 대해 병렬로 데이터 요청 및 업데이트
-            await Promise.all(Object.keys(indicators).map(key => updateIndicator(key)));
+            await Promise.all(Object.keys(indicatorConfigs).map(key => updateIndicator(key)));
         }
 
         function createAndAnimateDollar(animationClass, size, duration) {
