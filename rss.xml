@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+<channel>
+  <title>원뎅이의 미국 통화 유동성 현황</title>
+  <link>https://americayoudongsung.netlify.app/</link>
+  <description>미국의 FED, 정부, MMF, 시장 간의 유동성 흐름을 애니메이션으로 한눈에 시각화하여 보여줍니다.</description>
+  <language>ko-kr</language>
+  <lastBuildDate>Sun, 17 Aug 2025 10:00:00 GMT</lastBuildDate>
+  <item>
+    <title>원뎅이의 미국 통화 유동성 현황</title>
+    <link>https://americayoudongsung.netlify.app/</link>
+    <description>실시간 지표 데이터를 통해, 현재 미국 시장의 통화 유동성 흐름을 한눈에 파악해보세요! FED, 정부, MMF, 시장 간의 관계를 시각화하여 제공합니다.</description>
+    <pubDate>Sun, 17 Aug 2025 10:00:00 GMT</pubDate>
+    <guid isPermaLink="true">https://americayoudongsung.netlify.app/</guid>
+  </item>
+</channel>
+</rss>

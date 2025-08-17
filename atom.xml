@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>원뎅이의 미국 통화 유동성 현황</title>
+  <subtitle>미국의 FED, 정부, MMF, 시장 간의 유동성 흐름을 애니메이션으로 한눈에 시각화하여 보여줍니다.</subtitle>
+  <link href="https://americayoudongsung.netlify.app/atom.xml" rel="self"/>
+  <link href="https://americayoudongsung.netlify.app/"/>
+  <id>https://americayoudongsung.netlify.app/</id>
+  <updated>2025-08-17T10:00:00Z</updated>
+  <author>
+    <name>원뎅이</name>
+  </author>
+  <entry>
+    <title>원뎅이의 미국 통화 유동성 현황</title>
+    <link href="https://americayoudongsung.netlify.app/"/>
+    <id>https://americayoudongsung.netlify.app/</id>
+    <updated>2025-08-17T10:00:00Z</updated>
+    <summary>실시간 지표 데이터를 통해, 현재 미국 시장의 통화 유동성 흐름을 한눈에 파악해보세요! FED, 정부, MMF, 시장 간의 관계를 시각화하여 제공합니다.</summary>
+  </entry>
+</feed>
