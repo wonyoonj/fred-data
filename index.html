@@ -715,9 +715,12 @@
                     <button class="button" onclick="showGraph('DGS10')">10년물 미 국채금리</button>
                     <button class="button" onclick="showGraph('SOFR')">SOFR 금리</button>
                     <button class="button" onclick="showGraph('FEDFUNDS')">EFFR 금리</button>
+                    <button class="button" onclick="showGraph('IORB')">IORB 금리</button>
                     <button class="button" onclick="showGraph('RRPONTSYAWARD')">역레포 금리</button>
                     <button class="button" onclick="showGraph('DPCREDIT')">연준 할인율</button>
                     <button class="button" onclick="showGraph('DRBLACBS')">미 은행 연체율(전체)</button>
+                    <button class="button" onclick="showGraph('SOFR_FEDFUNDS_SPREAD')">SOFR, EFFR 스프레드</button>
+                    <button class="button" onclick="showGraph('SOFR_IORB_SPREAD')">SOFR, IORB 스프레드</button>
                 </div>
             </div>
             <div class="indicator-section">
@@ -821,16 +824,29 @@
 
         const indicatorTitles = {
             'WTREGEN': '미 정부 TGA 잔고', 'WRESBAL': '미 은행 지급준비금', 'RRPONTSYD': '연준 역레포 자금', 'MMMFFAQ027S': 'MMF 잔고', 'WALCL': '연준 전체 자산 + 부채',
-            'SOFR': 'SOFR 금리', 'FEDFUNDS': 'EFFR 금리', 'TB3MS': '3개월 미 국채금리', 'TB1YR': '1년물 미 국채금리', 'DGS10': '10년물 미 국채금리', 'DPCREDIT': '연준 할인율',
+            'SOFR': 'SOFR 금리', 'FEDFUNDS': 'EFFR 금리', 'IORB': 'IORB 금리', 'TB3MS': '3개월 미 국채금리', 'TB1YR': '1년물 미 국채금리', 'DGS10': '10년물 미 국채금리', 'DPCREDIT': '연준 할인율',
             'DRBLACBS': '미 은행 연체율(전체)', 'M2SL': 'M2', 'M1SL': 'M1', 'NASDAQ100': '나스닥100 지수', 'SP500': 'S&P500 지수', 'SP500_MCAP': 'S&P500 시가총액',
-            'RRPONTSYAWARD': '역레포 금리', 'ALTSALES': '자동차, 트럭 판매량', 'HOUST': '주택 착공 허가 건수', 'DCOILBRENTEU': '국제 유가'
+            'RRPONTSYAWARD': '역레포 금리', 'ALTSALES': '자동차, 트럭 판매량', 'HOUST': '주택 착공 허가 건수', 'DCOILBRENTEU': '국제 유가',
+            'SOFR_FEDFUNDS_SPREAD': 'SOFR, EFFR 스프레드', 'SOFR_IORB_SPREAD': 'SOFR, IORB 스프레드'
         };
 
         const indicatorUnits = {
             'WTREGEN': 'Billions of U.S. Dollars', 'WRESBAL': 'Billions of Dollars', 'RRPONTSYD': 'Billions of Dollars', 'MMMFFAQ027S': 'Billions of Dollars', 'WALCL': 'Billions of Dollars',
-            'M2SL': 'Billions of Dollars', 'M1SL': 'Billions of Dollars', 'SP500_MCAP': 'Billions of Dollars', 'SOFR': 'Percent (%)', 'FEDFUNDS': 'Percent (%)', 'TB3MS': 'Percent (%)',
+            'M2SL': 'Billions of Dollars', 'M1SL': 'Billions of Dollars', 'SP500_MCAP': 'Billions of Dollars', 'SOFR': 'Percent (%)', 'FEDFUNDS': 'Percent (%)', 'IORB': 'Percent (%)', 'TB3MS': 'Percent (%)',
             'TB1YR': 'Percent (%)', 'DGS10': 'Percent (%)', 'DPCREDIT': 'Percent (%)', 'DRBLACBS': 'Percent (%)', 'NASDAQ100': 'Index', 'SP500': 'Index',
-            'RRPONTSYAWARD': 'Percent (%)', 'ALTSALES': 'Millions of Units', 'HOUST': 'Thousands of Units', 'DCOILBRENTEU': 'Dollars per Barrel'
+            'RRPONTSYAWARD': 'Percent (%)', 'ALTSALES': 'Millions of Units', 'HOUST': 'Thousands of Units', 'DCOILBRENTEU': 'Dollars per Barrel',
+            'SOFR_FEDFUNDS_SPREAD': 'Percent (%)', 'SOFR_IORB_SPREAD': 'Percent (%)'
+        };
+        
+        const spreadConfigs = {
+            'SOFR_FEDFUNDS_SPREAD': [
+                { code: 'SOFR', label: 'SOFR', color: '#007bff' },
+                { code: 'FEDFUNDS', label: 'EFFR', color: 'red' }
+            ],
+            'SOFR_IORB_SPREAD': [
+                { code: 'SOFR', label: 'SOFR', color: '#007bff' },
+                { code: 'IORB', label: 'IORB', color: 'red' }
+            ]
         };
 
         async function parseCSV(text) {
@@ -876,34 +892,62 @@
             showPage('graphPage');
             document.getElementById('graphTitle').textContent = indicatorTitles[indicator] || indicator;
             document.getElementById('graphDataSource').textContent = (indicator === 'SP500_MCAP') ? '자료 출처: https://ycharts.com' : '자료 출처: FRED';
+            
             try {
                 renderErrorMessage("데이터를 불러오는 중...");
-                let data = await fetchAndCacheData(indicator);
-                if (data.length === 0) { renderErrorMessage(`'${indicatorTitles[indicator]}' 지표의 유효한 데이터가 없어요.`); return; }
-                let processedData = data.map(item => {
-                    let value = item.value;
-                    if (indicator === 'WALCL') value /= 1000;
-                    else if (indicator === 'MMMFFAQ027S' || indicator === 'SP500_MCAP') value /= 1000000000;
-                    return { ...item, value };
-                });
-                currentGraphData = processedData;
+                
+                const isSpread = spreadConfigs.hasOwnProperty(indicator);
+
+                if (isSpread) {
+                    const configs = spreadConfigs[indicator];
+                    const dataPromises = configs.map(config => fetchAndCacheData(config.code));
+                    const datasetsRaw = await Promise.all(dataPromises);
+
+                    currentGraphData = datasetsRaw.map((data, index) => {
+                        const config = configs[index];
+                        return {
+                            label: config.label,
+                            borderColor: config.color,
+                            data: data.map(item => ({ x: item.date, y: item.value })),
+                            fill: false, tension: 0.1, pointRadius: 0
+                        };
+                    });
+                } else {
+                    let data = await fetchAndCacheData(indicator);
+                    if (data.length === 0) {
+                        renderErrorMessage(`'${indicatorTitles[indicator]}' 지표의 유효한 데이터가 없어요.`);
+                        return;
+                    }
+                    let processedData = data.map(item => {
+                        let value = item.value;
+                        if (indicator === 'WALCL') value /= 1000;
+                        else if (indicator === 'MMMFFAQ027S' || indicator === 'SP500_MCAP') value /= 1000000000;
+                        return { x: item.date, y: value };
+                    });
+
+                    currentGraphData = [{
+                        label: indicatorTitles[indicator] || indicator,
+                        data: processedData,
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                        fill: false, tension: 0.1, pointRadius: 0
+                    }];
+                }
+                
                 updateChart('All');
+
             } catch (error) {
                 renderErrorMessage(`'${indicatorTitles[indicator]}' 그래프를 그릴 수 없어요! 오류: ${error.message}`);
             }
         }
-
-        function renderChart(indicator, labels, values) {
+        
+        function renderChart(indicator, datasets) {
             const ctx = document.getElementById('myChart').getContext('2d');
             if (myChart) myChart.destroy();
             myChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: labels,
-                    datasets: [{
-                        label: indicatorTitles[indicator] || indicator, data: values, borderColor: '#007bff', backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                        fill: false, tension: 0.1, pointRadius: 0
-                    }]
+                    datasets: datasets
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
@@ -926,18 +970,33 @@
 
         function updateChart(range) {
             if (!currentGraphData || currentGraphData.length === 0) return;
-            let dataToShow = [...currentGraphData];
+            
+            let datasetsToShow = JSON.parse(JSON.stringify(currentGraphData)); // Deep copy
+            let hasData = false;
+
             if (range !== 'All') {
-                const lastDate = new Date(dataToShow[dataToShow.length - 1].date);
-                const cutoff = new Date(lastDate);
-                if (range === '1M') cutoff.setMonth(lastDate.getMonth() - 1);
-                else if (range === '6M') cutoff.setMonth(lastDate.getMonth() - 6);
-                else cutoff.setFullYear(lastDate.getFullYear() - { '1Y': 1, '5Y': 5, '10Y': 10 }[range]);
-                dataToShow = dataToShow.filter(item => new Date(item.date) >= cutoff);
+                const lastDate = new Date(Math.max(...datasetsToShow.flatMap(ds => ds.data.map(d => new Date(d.x).getTime()))));
+                if (!isNaN(lastDate.getTime())) {
+                    const cutoff = new Date(lastDate);
+                    if (range === '1M') cutoff.setMonth(lastDate.getMonth() - 1);
+                    else if (range === '6M') cutoff.setMonth(lastDate.getMonth() - 6);
+                    else cutoff.setFullYear(lastDate.getFullYear() - { '1Y': 1, '5Y': 5, '10Y': 10 }[range]);
+                    
+                    datasetsToShow.forEach(ds => {
+                        ds.data = ds.data.filter(item => new Date(item.x) >= cutoff);
+                    });
+                }
             }
-            if (dataToShow.length > 0) { renderChart(currentIndicator, dataToShow.map(item => item.date), dataToShow.map(item => item.value)); } 
-            else { renderErrorMessage('해당 기간의 데이터가 없어요!'); }
+
+            hasData = datasetsToShow.some(ds => ds.data.length > 0);
+
+            if (hasData) {
+                renderChart(currentIndicator, datasetsToShow);
+            } else {
+                renderErrorMessage('해당 기간의 데이터가 없어요!');
+            }
         }
+
 
         function renderErrorMessage(message) {
             const ctx = document.getElementById('myChart').getContext('2d');
@@ -957,6 +1016,9 @@
                 'M1SL': {'title': 'M1', 'content': {'경제적 의미': 'M1은 화폐 공급량의 좁은 정의로, 현금과 수시입출금 예금을 포함합니다. 이는 가장 유동성이 높은 자산을 나타냅니다. M2와 마찬가지로 MMF와 Stable Coin에 의한 영향성은 제한적입니다.', '왜 필요한 지표인가': 'M1은 단기적인 지출 능력과 유동성 수준을 반영하며, 경제 활동의 초기 신호를 제공합니다. 특히 통화 정책의 실시간 영향을 분석하는 데 유용합니다.'}},
                 'SOFR': {'title': 'SOFR 금리', 'content': {'경제적 의미': 'SOFR은 Secured Overnight Financing Rate의 약자로, 미국에서 한밤사이(overnight) 동안 담보(예: 미국 재무부 증권)를 기반으로 한 대출 거래의 이자율을 평균한 기준 금리입니다. 즉, SOFR은 금융기관(예: 증권사, 헤지펀드 등)이 다른 금융기관으로부터 담보를 제공하고 자금을 빌리는 비용을 나타냅니다.', '왜 필요한 지표인가': 'SOFR은 단기 자금 시장의 유동성과 수요-공급 상황을 반영합니다. 예를 들어, 시장에 자금이 부족하면 SOFR이 상승하고, 자금이 풍부하면 하락합니다. 이는 금융기관이 하루 동안 자금을 조달하거나 투자할 때 참고하는 중요한 기준 금리입니다. 시중에 자금이 넘치는지, 안넘치는지의 지표가 될 수 있습니다.'}},
                 'FEDFUNDS': {'title': 'EFFR 금리', 'content': {'경제적 의미': 'EFFR는 Effective Federal Funds Rate의 약자로, 은행들이 연준에 예치된 자금을 다른 은행에 상호 대출할 때 적용되는 실제 금리를 의미합니다. 연준 기준 금리와 밀접하게 연관됩니다.', '왜 필요한 지표인가': 'EFFR은 연준의 통화 정책 방향을 보여주며, 경제 성장, 인플레이션, 고용에 영향을 미칩니다. 예를 들면, EFFR 금리가 높다는건, 은행간의 대출 부담을 높여서 시중에 빌리는 돈의 규모를 축소한다는 의미가 될 수 있습니다. 결과적으로 긴축 효과를 냅니다.'}},
+                'IORB': {'title': 'IORB 금리', 'content': {'경제적 의미': 'IORB(Interest on Reserve Balances)는 은행들이 연준에 예치한 초과 지급준비금에 대해 연준이 지급하는 이자율입니다.', '왜 필요한 지표인가': '연준은 이 금리를 조절함으로써 은행들의 초과준비금 보유 여부와 유동성 공급에 영향을 줍니다. IORB는 연준의 정책금리(페드 펀드 금리) 목표 범위 하단에 위치하며, 은행들이 자금을 대출로 제공하거나 지급준비금으로 보유할 때의 유인을 조절하는 중요한 도구입니다.'}},
+                'SOFR_FEDFUNDS_SPREAD': {'title': 'SOFR, EFFR 스프레드', 'content': {'경제적 의미': '만약 SOFR이 급등하거나 EFFR과의 스프레드가 확대된다면, 이는 은행이 시중으로부터 달러 수요가 급증했음을 의미합니다. 이 같은 상황은 유동성 긴축이나 시장 불안의 신호를 의미할 수 있습니다. 반대로 스프레드가 축소되면 시장의 유동성이 풍부하거나 무담보 대출 환경이 개선된 신호일 수 있습니다.', '왜 필요한 지표인가': '이 스프레드 지표를 통해, 시장의 유동성 상황을 평가하고 미리 파악하는데 도움을 받을 수 있습니다.'}},
+                'SOFR_IORB_SPREAD': {'title': 'SOFR, IORB 스프레드', 'content': {'경제적 의미': 'SOFR이 IORB 이하로 유지되면 시중 유동성이 풍부해지고, 은행 간 자금 조달이 원활하다는 것을 의미합니다. (=유동성 과잉 신호)<br>반대로 SOFR이 IORB보다 높아지면, 은행들이 자금을 연준에 초과준비금으로 예치하는 것보다 시장으로부터 자금을 빌리는 것이 더 비용이 많이 든다는 것을 의미합니다. 이는 은행 간 자금 수요가 많아져 유동성 부족이 발생했음을 시사할 수 있습니다.', '왜 필요한 지표인가': '이 스프레드 지표를 통해, 시장의 유동성 상황을 평가하고 미리 파악하는데 도움을 받을 수 있습니다.'}},
                 'TB3MS': {'title': '3개월 미 국채금리', 'content': {'경제적 의미': '3개월 만기 미국 재무부 증권의 수익률로, 단기 시장 금리와 인플레이션 기대치를 반영합니다.', '왜 필요한 지표인가': '단기 금리 동향을 파악하고, 경제 회복 또는 침체 신호를 분석하는 데 유용합니다. 3개월 만기 국채 금리가 상승한다는 의미는, 미국 정부가 국채 발행을 많이해서 원하는 곳에 돈을 많이 풀고 싶다는 간접적인 의미가 될 수 있고, 반대로 미국채 수요가 적어서 금리가 상승할 수 있습니다.'}},
                 'TB1YR': {'title': '1년물 미 국채금리', 'content': {'경제적 의미': '1년 만기 미국 재무부 증권의 수익률로, 중단기 금리와 경제 전망을 반영합니다.', '왜 필요한 지표인가': '단기와 장기 금리 간 관계를 통해 경제 성장 기대치나 인플레이션 우려를 파악할 수 있어, 투자자와 정책 입안자에게 중요합니다. 또한 금리가 상승한다는 의미는, 미국 정부가 국채 발행을 많이해서 원하는 곳에 돈을 많이 풀고 싶다는 간접적인 의미가 될 수 있고, 반대로 미국채 수요가 적어서 금리가 상승할 수 있습니다.'}},
                 'DGS10': {'title': '10년물 미 국채금리', 'content': {'경제적 의미': '10년물 미국채 금리는 10년 만기 미국 재무부 증권의 수익률을 의미합니다. 이는 중장기 금리를 대표하며, 시장의 경제 성장 기대치와 인플레이션 전망을 반영하는 핵심 지표입니다. 투자자들이 미래에 대한 긍정적인 전망을 하면 금리가 오르고, 비관적인 전망을 하면 금리가 떨어지는 경향이 있습니다.', '왜 필요한 지표인가': '10년물 미국채 금리는 경제의 현재 상황과 미래 전망을 보여주는 바로미터 역할을 하며, 정부의 재정 정책과 시장의 투자 심리가 복합적으로 반영된 지표입니다.'}},
@@ -1173,7 +1235,11 @@
             if (pixelRange <= 0) return;
             const dataOffset = ((e.pageX - e.target.getBoundingClientRect().left - startX) * 0.6 / pixelRange) * dataRange;
             let newMin = startScrollX - dataOffset; let newMax = newMin + dataRange;
-            const allDates = currentGraphData.map(d => new Date(d.date).getTime()); const minAllowed = Math.min(...allDates); const maxAllowed = Math.max(...allDates);
+            
+            const allDates = currentGraphData.flatMap(ds => ds.data.map(d => new Date(d.x).getTime()));
+            const minAllowed = Math.min(...allDates); 
+            const maxAllowed = Math.max(...allDates);
+
             if (newMin < minAllowed) { newMin = minAllowed; newMax = newMin + dataRange; }
             if (newMax > maxAllowed) { newMax = maxAllowed; newMin = newMax - dataRange; }
             myChart.options.scales.x.min = newMin; myChart.options.scales.x.max = newMax; myChart.update('none');
@@ -1185,10 +1251,14 @@
             const { x } = myChart.scales; const { min, max } = x; const range = max - min;
             const zoomFactor = e.deltaY < 0 ? 0.9 : 1.1; const mouseX = e.offsetX; const center = x.getValueForPixel(mouseX);
             const newMin = center - (center - min) * zoomFactor; const newMax = center + (max - center) * zoomFactor;
-            const allDates = currentGraphData.map(d => new Date(d.date).getTime()); const minAllowed = Math.min(...allDates); const maxAllowed = Math.max(...allDates);
+            
+            const allDates = currentGraphData.flatMap(ds => ds.data.map(d => new Date(d.x).getTime()));
+            const minAllowed = Math.min(...allDates); 
+            const maxAllowed = Math.max(...allDates);
+            
             if (newMin >= minAllowed && newMax <= maxAllowed) { myChart.options.scales.x.min = newMin; myChart.options.scales.x.max = newMax; myChart.update('none'); }
         }
-        function goBackToGraph() { if (currentIndicator && myChart) { showPage('graphPage'); updateChart('All'); } }
+        function goBackToGraph() { if (currentIndicator) { showPage('graphPage'); } }
 
     </script>
 </body>
