@@ -404,7 +404,8 @@
         .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0056b3; padding: 10px; display: flex; justify-content: space-around; z-index: 1000; } /* ACCESSIBILITY: Increased contrast */
 
         @media (max-width: 600px) {
-            .container { padding: 10px; }
+            /* ▼▼▼ 1. 모바일 좌우폭 수정 ▼▼▼ */
+            .container { padding: 10px 5px; } 
             .back-btn { top: 5px; left: 5px; }
             .info-btn { top: 5px; right: 5px; }
             .page-title {
@@ -811,10 +812,11 @@
         </div>
     </div>
     
-    <footer style="text-align: center; padding: 20px 20px 80px 20px; background-color: #f8f9fa; border-top: 1px solid #dee2e6; color: #6c757d;">
+    <footer style="text-align: center; padding: 20px 20px 80px 20px; background-color: #f8f9fa; border-top: 1px solid #dee2e6; color: #6c757d; font-size: 12px;">
         <p>&copy; 2024 원뎅이의 미국 통화 유동성 현황. All Rights Reserved.</p>
         <p>본 사이트에서 제공하는 정보는 투자 참고용이며, 투자에 대한 모든 책임은 본인에게 있습니다.</p>
     </footer>
+
     <script>
         let myChart = null;
         let isDragging = false;
