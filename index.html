@@ -53,15 +53,17 @@
             color: #555;
         }
 
+        /* --- Animation Wrapper --- */
+        .animation-container {
+            position: relative;
+            width: 100%;
+            height: 650px;
+            overflow: hidden;
+        }
+
         #liquidityFlow, #interestRateFlow {
             text-align: center;
             padding: 20px;
-            position: relative;
-            height: 650px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
         }
         #liquidityFlow .icon-container, #interestRateFlow .icon-container {
             position: absolute;
@@ -355,8 +357,9 @@
         .animated-dollar-from-market-to-mmf_parabolic { animation: dollarFlowFromMarketToMmf_parabolic var(--animation-duration) linear forwards; }
 
         #graphIndicators { padding: 20px; text-align: center; }
-        .indicator-section { margin-bottom: 20px; }
-        .indicator-section h3 { font-size: 18px; margin-bottom: 10px; color: #007bff; }
+        .indicator-section { margin-bottom: 20px; background-color: #ffffff; padding: 15px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .indicator-section h3 { font-size: 18px; margin-top: 0; margin-bottom: 10px; color: #007bff; }
+        .indicator-section p { font-size: 14px; color: #666; margin-top: 0; margin-bottom: 15px; }
         .indicator-buttons {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -398,7 +401,7 @@
         .time-buttons { margin: 10px 0; display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; }
         .time-btn { padding: 5px 10px; background: #e9ecef; border: 1px solid #ced4da; border-radius: 5px; cursor: pointer; font-size: 0.9em; transition: background-color 0.2s; }
         .time-btn:hover { background-color: #dee2e6; }
-        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0056b3; padding: 10px; display: flex; justify-content: space-around; } /* ACCESSIBILITY: Increased contrast */
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0056b3; padding: 10px; display: flex; justify-content: space-around; z-index: 1000; } /* ACCESSIBILITY: Increased contrast */
 
         @media (max-width: 600px) {
             .container { padding: 10px; }
@@ -414,6 +417,11 @@
                 right: 10px;
                 font-size: 10px;
             }
+             /* --- Mobile Animation Wrapper --- */
+            .animation-container {
+                height: 550px;
+            }
+
             #liquidityFlow .icon, #interestRateFlow .icon { width: 60px; height: 60px; }
             #liquidityFlow .icon-label, #interestRateFlow .icon-label { font-size: 12px; }
 
@@ -594,111 +602,133 @@
             <h1 class="page-title">원뎅이의 미국 통화 유동성 현황</h1>
             <div class="source-credit-main">자료 출처: FRED, Office of Financial Research (OFR)</div>
             
-            <div class="tga-popup-container popup-container liquidity-tga-popup">
-                <div id="tgaSlopeDisplay"></div>
-                <div class="tooltip-container" id="tga-tooltip-content">
-                </div>
+            <div style="padding: 20px; text-align: left; max-width: 800px; margin: 80px auto 20px auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <h2 style="text-align: center;">미국 통화 유동성을 한눈에 파악하세요!</h2>
+                <p>
+                    '원뎅이의 미국 통화 유동성 현황'에 오신 것을 환영합니다. 본 웹사이트는 투자자와 경제에 관심 있는 모든 분들을 위해 미국 시장의 복잡한 통화 유동성 흐름을 실시간 데이터 기반의 애니메이션으로 시각화하여 제공합니다.
+                </p>
+                <p>
+                    미국 연방준비제도(FED), 정부(TGA), 머니마켓펀드(MMF), 그리고 시장 사이에서 돈이 어떻게 흐르는지 직관적으로 이해함으로써, 금리 변동, 양적완화 및 긴축 정책의 영향을 보다 쉽게 파악하고 현명한 투자 결정을 내리는 데 도움을 드리고자 합니다.
+                </p>
+                <h3 style="margin-top: 30px;">주요 기능 안내</h3>
+                <ul>
+                    <li><strong>실시간 유동성 흐름:</strong> 각 주체 간의 자금 이동을 애니메이션으로 시각화하여 돈의 흐름을 쉽게 추적할 수 있습니다.</li>
+                    <li><strong>핵심 금리 현황:</strong> SOFR, EFFR 등 시장의 중요한 금리 지표들을 실시간으로 확인하고 그 의미를 파악할 수 있습니다.</li>
+                    <li><strong>상세 데이터 그래프:</strong> TGA 잔고, M2 통화량, S&P500 지수 등 30여 개의 주요 경제 지표를 상세한 그래프로 분석할 수 있습니다.</li>
+                </ul>
+                <p style="margin-top: 20px; text-align: center; font-weight: bold;">
+                    이제 아래의 시각화 자료를 통해 복잡한 경제의 흐름을 쉽게 탐색해 보세요.
+                </p>
             </div>
-            
-            <div class="fed-popup-container popup-container liquidity-fed-popup">
-                <div id="fedLiquidityDisplay"></div>
-                <div class="tooltip-container" id="fed-tooltip-content">
+            <div class="animation-container">
+                <div class="tga-popup-container popup-container liquidity-tga-popup">
+                    <div id="tgaSlopeDisplay"></div>
+                    <div class="tooltip-container" id="tga-tooltip-content">
+                    </div>
                 </div>
-            </div>
+                
+                <div class="fed-popup-container popup-container liquidity-fed-popup">
+                    <div id="fedLiquidityDisplay"></div>
+                    <div class="tooltip-container" id="fed-tooltip-content">
+                    </div>
+                </div>
 
-            <div class="mmf-fed-popup-container popup-container liquidity-mmf-fed-popup">
-                <div id="mmfToRrpDisplay"></div>
-                <div class="tooltip-container" id="mmf-fed-tooltip-content">
+                <div class="mmf-fed-popup-container popup-container liquidity-mmf-fed-popup">
+                    <div id="mmfToRrpDisplay"></div>
+                    <div class="tooltip-container" id="mmf-fed-tooltip-content">
+                    </div>
                 </div>
-            </div>
 
-            <div class="mmf-market-popup-container popup-container liquidity-mmf-market-popup">
-                <div id="mmfToMarketDisplay"></div>
-                <div class="tooltip-container" id="mmf-market-tooltip-content">
+                <div class="mmf-market-popup-container popup-container liquidity-mmf-market-popup">
+                    <div id="mmfToMarketDisplay"></div>
+                    <div class="tooltip-container" id="mmf-market-tooltip-content">
+                    </div>
+                </div>
+                
+                <div class="icon-container FED-container">
+                    <span class="icon-label">중앙은행 FED</span>
+                    <img src="./icon/fed.jpg" alt="FED" class="icon">
+                </div>
+                <div class="icon-container Government-container">
+                    <img src="./icon/government.JPG" alt="Government TGA" class="icon">
+                    <span class="icon-label">미국 정부</span>
+                </div>
+                <div class="icon-container Market-container">
+                    <img src="./icon/Market.jpg" alt="Market" class="icon">
+                    <span class="icon-label">미국 시장(Market)</span>
+                    <div id="netMarketFlowDisplay"></div>
+                    </div>
+                <div class="icon-container MMF-container">
+                    <img src="./icon/MMF.jpg" alt="MMF" class="icon">
+                    <span class="icon-label">MMF<br>(Money Market Fund)</span>
                 </div>
             </div>
-            
-            <div class="icon-container FED-container">
-                <span class="icon-label">중앙은행 FED</span>
-                <img src="./icon/fed.jpg" alt="FED" class="icon">
-            </div>
-            <div class="icon-container Government-container">
-                <img src="./icon/government.JPG" alt="Government TGA" class="icon">
-                <span class="icon-label">미국 정부</span>
-            </div>
-            <div class="icon-container Market-container">
-                <img src="./icon/Market.jpg" alt="Market" class="icon">
-                <span class="icon-label">미국 시장(Market)</span>
-                <div id="netMarketFlowDisplay"></div>
-                </div>
-            <div class="icon-container MMF-container">
-                <img src="./icon/MMF.jpg" alt="MMF" class="icon">
-                <span class="icon-label">MMF<br>(Money Market Fund)</span>
-            </div>
-        </div>
+             </div>
 
         <div id="interestRateFlow" class="page" style="display:none;">
+            <div class="animation-container">
+                <div class="page-title">원뎅이의 미국 통화 유동성 현황</div>
+                <div class="source-credit-main">자료 출처: FRED</div>
 
-            <div class="page-title">원뎅이의 미국 통화 유동성 현황</div>
-            <div class="source-credit-main">자료 출처: FRED</div>
-
-            <div class="tga-popup-container popup-container interest-tb3ms-popup">
-                <div id="tb3msRateDisplay_interest"></div>
-                <div class="tooltip-container" id="tb3ms-tooltip-content_interest"></div>
-            </div>
-            
-            <div class="tga-popup-container-1yr popup-container interest-tb1yr-popup">
-                <div id="tb1yrRateDisplay_interest"></div>
-                <div class="tooltip-container" id="tb1yr-tooltip-content_interest"></div>
-            </div>
-
-            <div class="tga-popup-container-10yr popup-container interest-tb10yr-popup">
-                <div id="tb10yrRateDisplay_interest"></div>
-                <div class="tooltip-container" id="tb10yr-tooltip-content_interest"></div>
-            </div>
-            
-            <div class="fed-popup-container popup-container interest-rrp-rate-popup">
-                <div id="rrpRateDisplay_interest"></div>
-                <div class="tooltip-container" id="rrp-rate-tooltip-content_interest"></div>
-            </div>
-
-            <div class="fed-popup-container-discount popup-container interest-discount-rate-popup">
-                <div id="discountRateDisplay_interest"></div>
-                <div class="tooltip-container" id="discount-rate-tooltip-content_interest"></div>
-            </div>
-
-            <div class="mmf-fed-popup-container popup-container interest-effr-rate-popup">
-                <div id="effrRateDisplay_interest"></div>
-                <div class="tooltip-container" id="effr-rate-tooltip-content_interest"></div>
-            </div>
-
-            <div class="mmf-market-popup-container popup-container interest-sofr-rate-popup">
-                <div id="sofrRateDisplay_interest"></div>
-                <div class="tooltip-container" id="sofr-rate-tooltip-content_interest"></div>
-            </div>
-            
-            <div class="icon-container FED-container">
-                <span class="icon-label">중앙은행 FED</span>
-                <img src="./icon/fed.jpg" alt="FED" class="icon">
-            </div>
-            <div class="icon-container Government-container">
-                <img src="./icon/government.JPG" alt="Government TGA" class="icon">
-                <span class="icon-label">미국 정부</span>
-            </div>
-            <div class="icon-container Market-container">
-                <img src="./icon/Market.jpg" alt="Market" class="icon">
-                <span class="icon-label">미국 시장(Market)</span>
-                <div id="netMarketFlowDisplay_interest"></div>
+                <div class="tga-popup-container popup-container interest-tb3ms-popup">
+                    <div id="tb3msRateDisplay_interest"></div>
+                    <div class="tooltip-container" id="tb3ms-tooltip-content_interest"></div>
                 </div>
-            <div class="icon-container MMF-container">
-                <img src="./icon/MMF.jpg" alt="MMF" class="icon">
-                <span class="icon-label">시중은행(Bank)</span>
+                
+                <div class="tga-popup-container-1yr popup-container interest-tb1yr-popup">
+                    <div id="tb1yrRateDisplay_interest"></div>
+                    <div class="tooltip-container" id="tb1yr-tooltip-content_interest"></div>
+                </div>
+
+                <div class="tga-popup-container-10yr popup-container interest-tb10yr-popup">
+                    <div id="tb10yrRateDisplay_interest"></div>
+                    <div class="tooltip-container" id="tb10yr-tooltip-content_interest"></div>
+                </div>
+                
+                <div class="fed-popup-container popup-container interest-rrp-rate-popup">
+                    <div id="rrpRateDisplay_interest"></div>
+                    <div class="tooltip-container" id="rrp-rate-tooltip-content_interest"></div>
+                </div>
+
+                <div class="fed-popup-container-discount popup-container interest-discount-rate-popup">
+                    <div id="discountRateDisplay_interest"></div>
+                    <div class="tooltip-container" id="discount-rate-tooltip-content_interest"></div>
+                </div>
+
+                <div class="mmf-fed-popup-container popup-container interest-effr-rate-popup">
+                    <div id="effrRateDisplay_interest"></div>
+                    <div class="tooltip-container" id="effr-rate-tooltip-content_interest"></div>
+                </div>
+
+                <div class="mmf-market-popup-container popup-container interest-sofr-rate-popup">
+                    <div id="sofrRateDisplay_interest"></div>
+                    <div class="tooltip-container" id="sofr-rate-tooltip-content_interest"></div>
+                </div>
+                
+                <div class="icon-container FED-container">
+                    <span class="icon-label">중앙은행 FED</span>
+                    <img src="./icon/fed.jpg" alt="FED" class="icon">
+                </div>
+                <div class="icon-container Government-container">
+                    <img src="./icon/government.JPG" alt="Government TGA" class="icon">
+                    <span class="icon-label">미국 정부</span>
+                </div>
+                <div class="icon-container Market-container">
+                    <img src="./icon/Market.jpg" alt="Market" class="icon">
+                    <span class="icon-label">미국 시장(Market)</span>
+                    <div id="netMarketFlowDisplay_interest"></div>
+                    </div>
+                <div class="icon-container MMF-container">
+                    <img src="./icon/MMF.jpg" alt="MMF" class="icon">
+                    <span class="icon-label">시중은행(Bank)</span>
+                </div>
             </div>
         </div>
 
         <div id="graphIndicators" class="page" style="display:none;">
             <div class="indicator-section">
                 <h3>미국 자금 현황</h3>
+                <p>미국 정부, 은행, 시장에 현재 얼마나 많은 돈이 있는지 보여주는 핵심 지표들입니다.</p>
                 <div class="indicator-buttons">
                     <button class="button" onclick="showGraph('WTREGEN')">미 정부 TGA 잔고</button>
                     <button class="button" onclick="showGraph('WRESBAL')">미 은행 지급준비금</button>
@@ -709,6 +739,7 @@
             </div>
             <div class="indicator-section">
                 <h3>금리</h3>
+                <p>시중 자금의 비용을 나타내는 금리 지표들로, 경제의 건전성과 향후 방향을 예측하는 데 사용됩니다.</p>
                 <div class="indicator-buttons">
                     <button class="button" onclick="showGraph('TB3MS')">3개월 미 국채금리</button>
                     <button class="button" onclick="showGraph('TB1YR')">1년물 미 국채금리</button>
@@ -725,6 +756,7 @@
             </div>
             <div class="indicator-section">
                 <h3>유동성</h3>
+                <p>시중에 풀려있는 전체 통화량을 측정하는 지표로, 인플레이션과 경제 활동 수준을 가늠할 수 있습니다.</p>
                 <div class="indicator-buttons">
                     <button class="button" onclick="showGraph('M2SL')">M2</button>
                     <button class="button" onclick="showGraph('M1SL')">M1</button>
@@ -732,6 +764,7 @@
             </div>
             <div class="indicator-section">
                 <h3>자산 가격</h3>
+                <p>주식 시장의 대표적인 지수들로, 경제 전반의 건전성과 투자자 심리를 반영합니다.</p>
                 <div class="indicator-buttons">
                     <button class="button" onclick="showGraph('NASDAQ100')">나스닥100 지수</button>
                     <button class="button" onclick="showGraph('SP500')">S&P500 지수</button>
@@ -740,13 +773,14 @@
             </div>
             <div class="indicator-section">
                 <h3>선행지표</h3>
+                <p>미래의 경제 활동 방향을 예측하는 데 도움을 주는 지표들로, 소비와 산업 활동의 바로미터입니다.</p>
                 <div class="indicator-buttons">
                     <button class="button" onclick="showGraph('ALTSALES')">자동차, 트럭 판매량</button>
                     <button class="button" onclick="showGraph('HOUST')">주택 착공 허가 건수</button>
                     <button class="button" onclick="showGraph('DCOILBRENTEU')">국제 유가</button>
                 </div>
             </div>
-        </div>
+            </div>
 
         <div id="graphPage" class="page" style="display:none;">
             <button class="back-btn" onclick="showGraphIndicators()">◄</button>
@@ -776,7 +810,11 @@
             <button class="button" onclick="showGraphIndicators()">그래프 지표</button>
         </div>
     </div>
-
+    
+    <footer style="text-align: center; padding: 20px 20px 80px 20px; background-color: #f8f9fa; border-top: 1px solid #dee2e6; color: #6c757d;">
+        <p>&copy; 2024 원뎅이의 미국 통화 유동성 현황. All Rights Reserved.</p>
+        <p>본 사이트에서 제공하는 정보는 투자 참고용이며, 투자에 대한 모든 책임은 본인에게 있습니다.</p>
+    </footer>
     <script>
         let myChart = null;
         let isDragging = false;
@@ -877,7 +915,12 @@
 
         const pages = ['liquidityFlow', 'interestRateFlow', 'graphIndicators', 'graphPage', 'infoPage'];
         function showPage(pageId) {
-            pages.forEach(id => document.getElementById(id).style.display = id === pageId ? 'block' : 'none');
+            pages.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.style.display = id === pageId ? 'block' : 'none';
+                }
+            });
             if (pageId === 'liquidityFlow') { updateLiquidityFlowAnimation(); } 
             else if (pageId === 'interestRateFlow') { updateInterestRateFlowData(); stopLiquidityFlowAnimation(); }
             else { stopLiquidityFlowAnimation(); }
@@ -1217,7 +1260,13 @@
             dollar.style.width = `${size}px`; dollar.style.height = `${size}px`;
             dollar.style.setProperty('--animation-duration', `${duration / 1000}s`);
             dollar.classList.add(animationClass);
-            document.getElementById('liquidityFlow').appendChild(dollar);
+            
+            // Append dollar to the animation container
+            const animationContainer = document.querySelector('#liquidityFlow .animation-container');
+            if (animationContainer) {
+                animationContainer.appendChild(dollar);
+            }
+            
             dollar.addEventListener('animationend', () => dollar.remove());
         }
 
