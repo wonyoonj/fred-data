@@ -660,6 +660,12 @@
                 <p>
                     미국 연방준비제도(FED), 정부(TGA), 머니마켓펀드(MMF), 그리고 시장 사이에서 돈이 어떻게 흐르는지 직관적으로 이해함으로써, 금리 변동, 양적완화 및 긴축 정책의 영향을 보다 쉽게 파악하고 현명한 투자 결정을 내리는 데 도움을 드리고자 합니다.
                 </p>
+                <h3>주요 기능 안내</h3>
+                <ul>
+                    <li><strong>실시간 유동성 흐름:</strong> 각 경제 주체(정부, 중앙은행, MMF, 시장) 간의 월별 자금 이동 규모를 애니메이션으로 시각화하여 돈의 흐름을 쉽게 추적할 수 있습니다.</li>
+                    <li><strong>핵심 금리 현황:</strong> SOFR, EFFR, 국채 금리 등 시장의 중요한 금리 지표들을 실시간으로 확인하고 그 의미를 파악할 수 있습니다.</li>
+                    <li><strong>상세 데이터 그래프:</strong> TGA 잔고, M2 통화량, S&P500 지수 등 30여 개의 주요 경제 지표를 기간별 상세 그래프로 직접 분석할 수 있습니다. 각 지표에 대한 설명(Info)도 제공합니다.</li>
+                </ul>
                 <p style="margin-top: 20px; text-align: center; font-weight: bold;">
                     이제 아래의 시각화 자료를 통해 복잡한 경제의 흐름을 쉽게 탐색해 보세요.
                 </p>
@@ -707,7 +713,25 @@
                     <span class="icon-label">MMF<br>(Money Market Fund)</span>
                 </div>
             </div>
-             </div>
+            <div class="info-box">
+                <h3>데이터는 어떻게 해석해야 하나요?</h3>
+                <p>메인 페이지의 애니메이션은 각 주체 간의 '최근 한 달간 자금 흐름 변화량'을 나타냅니다. 숫자의 의미는 다음과 같습니다.</p>
+                <ul>
+                    <li><strong>정부(TGA) → 시장 (<span class="negative">- 음수</span>):</strong> 정부가 국채 발행 감소나 재정 지출 확대를 통해 시장에 돈을 풀고 있다는 의미입니다. (유동성 공급)</li>
+                    <li><strong>정부(TGA) → 시장 (<span class="positive">+ 양수</span>):</strong> 정부가 세금을 많이 걷거나 국채 발행을 늘려 시장의 돈을 흡수하고 있다는 의미입니다. (유동성 흡수)</li>
+                    <br>
+                    <li><strong>중앙은행(FED) → 시장 (<span class="negative">- 음수</span>):</strong> 연준이 양적완화(자산 매입) 등을 통해 시장에 돈을 공급하고 있다는 의미입니다. (유동성 공급)</li>
+                    <li><strong>중앙은행(FED) → 시장 (<span class="positive">+ 양수</span>):</strong> 연준이 양적긴축(자산 매각) 등을 통해 시장의 돈을 거둬들이고 있다는 의미입니다. (유동성 흡수)</li>
+                    <br>
+                    <li><strong>MMF → FED (<span class="positive">+ 양수</span>):</strong> MMF가 연준의 역레포(RRP)를 통해 자금을 예치하여 시중 유동성이 흡수됨을 의미합니다.</li>
+                    <li><strong>MMF → FED (<span class="negative">- 음수</span>):</strong> MMF가 연준에 예치했던 역레포 자금을 회수하여 시중 유동성이 공급됨을 의미합니다.</li>
+                    <br>
+                    <li><strong>MMF → 시장 (<span class="positive">+ 양수</span>):</strong> MMF가 국채, 회사채 등 시장의 자산을 매입하여 시장에 유동성을 공급하고 있음을 의미합니다.</li>
+                    <li><strong>MMF → 시장 (<span class="negative">- 음수</span>):</strong> 시장 참여자들이 MMF 펀드에 투자하여 시중 유동성이 MMF로 흡수되고 있음을 의미합니다.</li>
+                </ul>
+                <p>결론적으로, <strong>'시장(Market)'으로 들어오는 돈의 총합(Net Market Flow)이 <span class="negative">파란색 음수(-)</span>이면 시장 유동성이 풍부해지는 것</strong>으로, <span class="positive">빨간색 양수(+)</span>이면 유동성이 줄어드는 것으로 해석할 수 있습니다.</p>
+            </div>
+            </div>
 
         <div id="interestRateFlow" class="page" style="display:none;">
             <div class="animation-container">
@@ -767,7 +791,19 @@
                     <span class="icon-label">시중은행(Bank)</span>
                 </div>
             </div>
-        </div>
+            <div class="info-box">
+                <h3>주요 금리 지표 안내</h3>
+                <ul>
+                    <li><strong>역레포 금리:</strong> 연준이 금융기관으로부터 자금을 빌릴 때 지급하는 금리로, 시중 유동성을 흡수하는 기준이 됩니다.</li>
+                    <li><strong>연준 할인율:</strong> 연준이 상업 은행에 대출해 줄 때 적용하는 이자율로, 금융기관의 자금 조달 비용을 결정합니다.</li>
+                    <li><strong>EFFR 금리:</strong> 은행 간에 자금을 빌릴 때 적용되는 실제 금리로, 연준의 통화 정책 방향성을 보여줍니다.</li>
+                    <li><strong>SOFR 금리:</strong> 국채를 담보로 한 초단기 대출 금리로, 단기 자금 시장의 유동성 상황을 직접적으로 반영합니다.</li>
+                    <li><strong>3개월 미 국채금리:</strong> 3개월 만기 국채 수익률로, 단기 시장 금리와 인플레이션 기대치를 나타냅니다.</li>
+                    <li><strong>1년물 미 국채금리:</strong> 1년 만기 국채 수익률로, 중단기 경제 전망을 반영합니다.</li>
+                    <li><strong>10년물 미 국채금리:</strong> 10년 만기 국채 수익률로, 장기 경제 성장과 인플레이션에 대한 시장의 기대를 보여주는 핵심 지표입니다.</li>
+                </ul>
+            </div>
+            </div>
 
         <div id="graphIndicators" class="page" style="display:none;">
             <div class="indicator-section">
@@ -876,12 +912,12 @@
             </div>
         </div>
         <div class="nav-bar">
-            <button class="button" onclick="showLiquidityFlow()">유동성 현황</button>
-            <button class="button" onclick="showInterestRateFlow()">금리 현황</button>
-            <button class="button" onclick="showGraphIndicators()">그래프 지표</button>
-            <button class="button" onclick="showAboutPage()">사이트 안내</button>
-            </div>
-    </div>
+            <button class="button" onclick="showLiquidityFlow()">유동성<br>현황</button>
+            <button class="button" onclick="showInterestRateFlow()">금리<br>현황</button>
+            <button class="button" onclick="showGraphIndicators()">그래프<br>지표</button>
+            <button class="button" onclick="showAboutPage()">사이트<br>안내</button>
+        </div>
+        </div>
     
     <footer style="text-align: center; padding: 20px 20px 80px 20px; background-color: #f8f9fa; border-top: 1px solid #dee2e6; color: #6c757d; font-size: 12px;">
         <p>&copy; 2024 원뎅이의 미국 통화 유동성 현황. All Rights Reserved.</p>
