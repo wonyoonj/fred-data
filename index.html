@@ -101,12 +101,24 @@
         .info-box .positive { color: rgb(222, 3, 3); font-weight: bold; }
         .info-box .negative { color: #729fff; font-weight: bold; }
 
+        /* ▼▼▼ 4. 내부 링크 스타일 추가 ▼▼▼ */
+        .internal-link {
+            cursor: pointer;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .internal-link:hover {
+            text-decoration: underline;
+            color: #0056b3;
+        }
+        /* ▲▲▲ 4. 내부 링크 스타일 추가 ▲▲▲ */
+
 
         /* --- Animation Wrapper --- */
         .animation-container {
             position: relative;
             width: 100%;
-            height: 800px;  /* 기존 650px */
+            height: 800px;
             overflow: hidden;
         }
 
@@ -149,10 +161,11 @@
 
         #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay,
         #tb3msRateDisplay_interest, #rrpRateDisplay_interest, #effrRateDisplay_interest, #sofrRateDisplay_interest,
-        #tb1yrRateDisplay_interest, #discountRateDisplay_interest, #tb10yrRateDisplay_interest {
+        #tb1yrRateDisplay_interest, #discountRateDisplay_interest, #tb10yrRateDisplay_interest,
+        #sofrEffrSpreadDisplay_interest { /* ▼▼▼ 2. SOFR EFFR 스프레드 ID 추가 ▼▼▼ */
             position: absolute;
             transform: translateX(-50%);
-            font-size: 0.85em; /* ACCESSIBILITY: Slightly increased font size */
+            font-size: 0.85em; 
             font-weight: bold;
             z-index: 10;
             background: rgba(255, 255, 255, 0.8);
@@ -181,47 +194,16 @@
             z-index: 30;
         }
         
-        .tga-popup-container {
-            top: calc(60% + 40px + 5px);
-            left: 30%;
-            transform: translateX(-50%);
-        }
+        .tga-popup-container { top: calc(60% + 40px + 5px); left: 30%; transform: translateX(-50%); }
+        .tga-popup-container-1yr { top: calc(60% + 40px + 5px + 50px); left: 30%; transform: translateX(-50%); }
+        .tga-popup-container-10yr { top: calc(60% + 40px + 5px + 100px); left: 30%; transform: translateX(-50%); }
+        .fed-popup-container { top: calc(38% - 40px - 10px); left: 45%; transform: translateX(-50%); }
+        .fed-popup-container-discount { top: calc(38% - 40px - 10px); left: 70%; transform: translateX(-50%); }
+        .mmf-fed-popup-container { top: calc(50% - 40px - 10px); left: 80%; transform: translateX(-50%); }
+        .mmf-market-popup-container { top: calc(63% + 40px); left: 80%; transform: translateX(-50%); }
         
-        .tga-popup-container-1yr {
-            top: calc(60% + 40px + 5px + 50px);
-            left: 30%;
-            transform: translateX(-50%);
-        }
-
-        .tga-popup-container-10yr {
-            top: calc(60% + 40px + 5px + 100px);
-            left: 30%;
-            transform: translateX(-50%);
-        }
-
-        .fed-popup-container {
-            top: calc(38% - 40px - 10px);
-            left: 45%;
-            transform: translateX(-50%);
-        }
-
-        .fed-popup-container-discount {
-            top: calc(38% - 40px - 10px);
-            left: 70%;
-            transform: translateX(-50%);
-        }
-        
-        .mmf-fed-popup-container {
-            top: calc(50% - 40px - 10px);
-            left: 80%;
-            transform: translateX(-50%);
-        }
-
-        .mmf-market-popup-container {
-            top: calc(63% + 40px);
-            left: 80%;
-            transform: translateX(-50%);
-        }
+        /* ▼▼▼ 2. SOFR EFFR 스프레드 위치 스타일 추가 ▼▼▼ */
+        .sofr-effr-popup-container { top: 57%; left: 60%; transform: translateX(-50%); }
 
         .tooltip-container {
             visibility: hidden;
@@ -253,7 +235,7 @@
         .tooltip-container p {
             margin-top: 0;
             margin-bottom: 5px;
-            font-size: 13px; /* ACCESSIBILITY: Slightly increased font size */
+            font-size: 13px;
             font-weight: normal;
         }
 
@@ -309,6 +291,7 @@
         .interest-discount-rate-popup:hover .tooltip-container { margin-left: -200px; top: 25px; width: 250px; }
         .interest-effr-rate-popup:hover .tooltip-container { margin-left: -200px; top: 25px; width: 250px; }
         .interest-sofr-rate-popup:hover .tooltip-container { margin-left: -200px; width: 280px; }
+        .sofr-effr-popup-container:hover .tooltip-container { margin-left: -150px; width: 280px; }
         
         .popup-container:hover .tooltip-container {
             visibility: visible;
@@ -317,14 +300,15 @@
 
         #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay,
         #tb3msRateDisplay_interest, #rrpRateDisplay_interest, #effrRateDisplay_interest, #sofrRateDisplay_interest,
-        #tb1yrRateDisplay_interest, #discountRateDisplay_interest, #tb10yrRateDisplay_interest {
+        #tb1yrRateDisplay_interest, #discountRateDisplay_interest, #tb10yrRateDisplay_interest,
+        #sofrEffrSpreadDisplay_interest {
             position: relative;
             z-index: 10;
             cursor: help;
         }
         
-        .slope-positive { color: rgb(222, 3, 3); } /* ACCESSIBILITY: Increased contrast */
-        .slope-negative { color: #729fff; } /* ACCESSIBILITY: Increased contrast */
+        .slope-positive { color: rgb(222, 3, 3); }
+        .slope-negative { color: #729fff; }
 
         .dollar-animated-object {
             position: absolute;
@@ -446,14 +430,28 @@
             z-index: 10;
         }
 
-        #infoPage { padding: 20px; text-align: center; }
+        /* ▼▼▼ 1. 정보 페이지 스타일 개선 ▼▼▼ */
+        #infoPage { padding: 20px; text-align: left; }
+        #infoContent h3 {
+            color: #007bff;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 8px;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        #infoContent p {
+            line-height: 1.7;
+            text-align: justify;
+        }
+        /* ▲▲▲ 1. 정보 페이지 스타일 개선 ▲▲▲ */
+
         .time-buttons { margin: 10px 0; display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; }
         .time-btn { padding: 5px 10px; background: #e9ecef; border: 1px solid #ced4da; border-radius: 5px; cursor: pointer; font-size: 0.9em; transition: background-color 0.2s; }
         .time-btn:hover { background-color: #dee2e6; }
-        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0056b3; padding: 10px; display: flex; justify-content: space-around; z-index: 1000; } /* ACCESSIBILITY: Increased contrast */
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0056b3; padding: 10px; display: flex; justify-content: space-around; z-index: 1000; }
 
         @media (max-width: 600px) {
-            /* ▼▼▼ 1. 모바일 좌우폭 수정 ▼▼▼ */
             .container { padding: 10px 5px; } 
             .back-btn { top: 5px; left: 5px; }
             .info-btn { top: 5px; right: 5px; }
@@ -467,7 +465,6 @@
                 right: 10px;
                 font-size: 10px;
             }
-             /* --- Mobile Animation Wrapper --- */
             .animation-container {
                 height: 550px;
             }
@@ -487,52 +484,31 @@
             
             #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay,
             #tb3msRateDisplay_interest, #rrpRateDisplay_interest, #effrRateDisplay_interest, #sofrRateDisplay_interest,
-            #tb1yrRateDisplay_interest, #discountRateDisplay_interest, #tb10yrRateDisplay_interest {
+            #tb1yrRateDisplay_interest, #discountRateDisplay_interest, #tb10yrRateDisplay_interest,
+            #sofrEffrSpreadDisplay_interest {
                 font-size: 0.7em;
                 padding: 2px 4px;
                 white-space: normal;
             }
             
             #mmfToRrpDisplay, #mmfToMarketDisplay,
-            #effrRateDisplay_interest, #sofrRateDisplay_interest {
+            #effrRateDisplay_interest, #sofrRateDisplay_interest,
+            #sofrEffrSpreadDisplay_interest {
                 width: 90px;
             }
             
-            .tga-popup-container {
-                top: calc(47% + 30px + 12px);
-                left: 35%;
-            }
-            .tga-popup-container-1yr {
-                 top: calc(47% + 30px + 12px + 45px);
-                 left: 35%;
-            }
-            .tga-popup-container-10yr {
-                 top: calc(47% + 30px + 12px + 90px);
-                 left: 35%;
-            }
+            .tga-popup-container { top: calc(47% + 30px + 12px); left: 35%; }
+            .tga-popup-container-1yr { top: calc(47% + 30px + 12px + 45px); left: 35%; }
+            .tga-popup-container-10yr { top: calc(47% + 30px + 12px + 90px); left: 35%; }
+            .fed-popup-container { top: calc(28% - 30px - 5px); left: 42%; }
+            .fed-popup-container-discount { top: calc(28% - 30px - 5px); left: 65%; }
+            .mmf-fed-popup-container { top: calc(32%); left: 85%; }
+            .mmf-market-popup-container { top: calc(55%); left: 85%; }
 
-            .fed-popup-container { 
-                top: calc(28% - 30px - 5px);
-                left: 42%;
-            }
-            .fed-popup-container-discount {
-                top: calc(28% - 30px - 5px);
-                left: 65%;
-            }
-            .mmf-fed-popup-container { 
-                top: calc(32%);
-                left: 85%;
-            }
-            .mmf-market-popup-container { 
-                top: calc(55%);
-                left: 85%;
-            }
+            /* ▼▼▼ 2. 모바일 SOFR EFFR 스프레드 위치 스타일 추가 ▼▼▼ */
+            .sofr-effr-popup-container { top: 47%; left: 55%; }
 
-            .tooltip-container {
-                margin-left: -100px;
-                width: 200px;
-            }
-
+            .tooltip-container { margin-left: -100px; width: 200px; }
             .liquidity-tga-popup:hover .tooltip-container { width: 200px; left: 30%; margin-left: -70px; }
             .liquidity-fed-popup:hover .tooltip-container { width: 250px; }
             .liquidity-mmf-fed-popup:hover .tooltip-container { width: 200px; }
@@ -544,6 +520,7 @@
             .interest-discount-rate-popup:hover .tooltip-container { width: 250px; }
             .interest-effr-rate-popup:hover .tooltip-container { width: 200px; }
             .interest-sofr-rate-popup:hover .tooltip-container { width: 200px; }
+            .sofr-effr-popup-container:hover .tooltip-container { width: 250px; margin-left: -125px; }
             
             .dollar-animated-object { width: 22.5px; height: 22.5px; }
 
@@ -643,7 +620,7 @@
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns" defer></script>
+    <script src="https://cdn.jsdelivr/npm/chartjs-adapter-date-fns" defer></script>
 </head>
 <body>
     <div class="container">
@@ -717,18 +694,18 @@
                 <h3>데이터는 어떻게 해석해야 하나요?</h3>
                 <p>메인 페이지의 애니메이션은 각 주체 간의 '최근 한 달간 자금 흐름 변화량'을 나타냅니다. 숫자의 의미는 다음과 같습니다.</p>
                 <ul>
-                    <li><strong>정부(TGA) → 시장 (<span class="negative">- 음수</span>):</strong> 정부가 국채 발행 감소나 재정 지출 확대를 통해 시장에 돈을 풀고 있다는 의미입니다. (유동성 공급)</li>
-                    <li><strong>정부(TGA) → 시장 (<span class="positive">+ 양수</span>):</strong> 정부가 세금을 많이 걷거나 국채 발행을 늘려 시장의 돈을 흡수하고 있다는 의미입니다. (유동성 흡수)</li>
+                    <li><span class="internal-link" onclick="showGraph('WTREGEN')"><strong>정부(TGA) → 시장</strong></span> (<span class="negative">- 음수</span>): 정부가 국채 발행 감소나 재정 지출 확대를 통해 시장에 돈을 풀고 있다는 의미입니다. (유동성 공급)</li>
+                    <li><span class="internal-link" onclick="showGraph('WTREGEN')"><strong>정부(TGA) → 시장</strong></span> (<span class="positive">+ 양수</span>): 정부가 세금을 많이 걷거나 국채 발행을 늘려 시장의 돈을 흡수하고 있다는 의미입니다. (유동성 흡수)</li>
                     <br>
-                    <li><strong>중앙은행(FED) → 시장 (<span class="negative">- 음수</span>):</strong> 연준이 양적완화(자산 매입) 등을 통해 시장에 돈을 공급하고 있다는 의미입니다. (유동성 공급)</li>
-                    <li><strong>중앙은행(FED) → 시장 (<span class="positive">+ 양수</span>):</strong> 연준이 양적긴축(자산 매각) 등을 통해 시장의 돈을 거둬들이고 있다는 의미입니다. (유동성 흡수)</li>
+                    <li><span class="internal-link" onclick="showGraph('WALCL')"><strong>중앙은행(FED) → 시장</strong></span> (<span class="negative">- 음수</span>): 연준이 양적완화(자산 매입) 등을 통해 시장에 돈을 공급하고 있다는 의미입니다. (유동성 공급)</li>
+                    <li><span class="internal-link" onclick="showGraph('WALCL')"><strong>중앙은행(FED) → 시장</strong></span> (<span class="positive">+ 양수</span>): 연준이 양적긴축(자산 매각) 등을 통해 시장의 돈을 거둬들이고 있다는 의미입니다. (유동성 흡수)</li>
                     <br>
-                    <li><strong>MMF → FED (<span class="positive">+ 양수</span>):</strong> MMF가 연준의 역레포(RRP)를 통해 자금을 예치하여 시중 유동성이 흡수됨을 의미합니다.</li>
-                    <li><strong>MMF → FED (<span class="negative">- 음수</span>):</strong> MMF가 연준에 예치했던 역레포 자금을 회수하여 시중 유동성이 공급됨을 의미합니다.</li>
+                    <li><span class="internal-link" onclick="showGraph('RRPONTSYD')"><strong>MMF → FED</strong></span> (<span class="positive">+ 양수</span>): MMF가 연준의 역레포(RRP)를 통해 자금을 예치하여 시중 유동성이 흡수됨을 의미합니다.</li>
+                    <li><span class="internal-link" onclick="showGraph('RRPONTSYD')"><strong>MMF → FED</strong></span> (<span class="negative">- 음수</span>): MMF가 연준에 예치했던 역레포 자금을 회수하여 시중 유동성이 공급됨을 의미합니다.</li>
                     <br>
-                    <li><strong>MMF → 시장 (<span class="positive">+ 양수</span>):</strong> MMF가 국채, 회사채 등 시장의 자산을 매입하여 시장에 유동성을 공급하고 있음을 의미합니다.</li>
-                    <li><strong>MMF → 시장 (<span class="negative">- 음수</span>):</strong> 시장 참여자들이 MMF 펀드에 투자하여 시중 유동성이 MMF로 흡수되고 있음을 의미합니다.</li>
-                </ul>
+                    <li><span class="internal-link" onclick="showGraph('MMMFFAQ027S')"><strong>MMF → 시장</strong></span> (<span class="positive">+ 양수</span>): MMF가 국채, 회사채 등 시장의 자산을 매입하여 시장에 유동성을 공급하고 있음을 의미합니다.</li>
+                    <li><span class="internal-link" onclick="showGraph('MMMFFAQ027S')"><strong>MMF → 시장</strong></span> (<span class="negative">- 음수</span>): 시장 참여자들이 MMF 펀드에 투자하여 시중 유동성이 MMF로 흡수되고 있음을 의미합니다.</li>
+                    </ul>
                 <p>결론적으로, <strong>'시장(Market)'으로 들어오는 돈의 총합(Net Market Flow)이 <span class="negative">파란색 음수(-)</span>이면 시장 유동성이 풍부해지는 것</strong>으로, <span class="positive">빨간색 양수(+)</span>이면 유동성이 줄어드는 것으로 해석할 수 있습니다.</p>
             </div>
             </div>
@@ -772,7 +749,11 @@
                     <div id="sofrRateDisplay_interest"></div>
                     <div class="tooltip-container" id="sofr-rate-tooltip-content_interest"></div>
                 </div>
-                
+
+                <div class="sofr-effr-popup-container popup-container">
+                    <div id="sofrEffrSpreadDisplay_interest"></div>
+                    <div class="tooltip-container" id="sofr-effr-spread-tooltip-content_interest"></div>
+                </div>
                 <div class="icon-container FED-container">
                     <span class="icon-label">중앙은행 FED</span>
                     <img src="./icon/fed.jpg" alt="FED" class="icon">
@@ -794,14 +775,15 @@
             <div class="info-box">
                 <h3>주요 금리 지표 안내</h3>
                 <ul>
-                    <li><strong>역레포 금리:</strong> 연준이 금융기관으로부터 자금을 빌릴 때 지급하는 금리로, 시중 유동성을 흡수하는 기준이 됩니다.</li>
-                    <li><strong>연준 할인율:</strong> 연준이 상업 은행에 대출해 줄 때 적용하는 이자율로, 금융기관의 자금 조달 비용을 결정합니다.</li>
-                    <li><strong>EFFR 금리:</strong> 은행 간에 자금을 빌릴 때 적용되는 실제 금리로, 연준의 통화 정책 방향성을 보여줍니다.</li>
-                    <li><strong>SOFR 금리:</strong> 국채를 담보로 한 초단기 대출 금리로, 단기 자금 시장의 유동성 상황을 직접적으로 반영합니다.</li>
-                    <li><strong>3개월 미 국채금리:</strong> 3개월 만기 국채 수익률로, 단기 시장 금리와 인플레이션 기대치를 나타냅니다.</li>
-                    <li><strong>1년물 미 국채금리:</strong> 1년 만기 국채 수익률로, 중단기 경제 전망을 반영합니다.</li>
-                    <li><strong>10년물 미 국채금리:</strong> 10년 만기 국채 수익률로, 장기 경제 성장과 인플레이션에 대한 시장의 기대를 보여주는 핵심 지표입니다.</li>
-                </ul>
+                    <li><span class="internal-link" onclick="showGraph('RRPONTSYAWARD')"><strong>역레포 금리</strong></span>: 연준이 금융기관으로부터 자금을 빌릴 때 지급하는 금리로, 시중 유동성을 흡수하는 기준이 됩니다.</li>
+                    <li><span class="internal-link" onclick="showGraph('DPCREDIT')"><strong>연준 할인율</strong></span>: 연준이 상업 은행에 대출해 줄 때 적용하는 이자율로, 금융기관의 자금 조달 비용을 결정합니다.</li>
+                    <li><span class="internal-link" onclick="showGraph('FEDFUNDS')"><strong>EFFR 금리</strong></span>: 은행 간에 자금을 빌릴 때 적용되는 실제 금리로, 연준의 통화 정책 방향성을 보여줍니다.</li>
+                    <li><span class="internal-link" onclick="showGraph('SOFR')"><strong>SOFR 금리</strong></span>: 국채를 담보로 한 초단기 대출 금리로, 단기 자금 시장의 유동성 상황을 직접적으로 반영합니다.</li>
+                    <li><span class="internal-link" onclick="showGraph('TB3MS')"><strong>3개월 미 국채금리</strong></span>: 3개월 만기 국채 수익률로, 단기 시장 금리와 인플레이션 기대치를 나타냅니다.</li>
+                    <li><span class="internal-link" onclick="showGraph('TB1YR')"><strong>1년물 미 국채금리</strong></span>: 1년 만기 국채 수익률로, 중단기 경제 전망을 반영합니다.</li>
+                    <li><span class="internal-link" onclick="showGraph('DGS10')"><strong>10년물 미 국채금리</strong></span>: 10년 만기 국채 수익률로, 장기 경제 성장과 인플레이션에 대한 시장의 기대를 보여주는 핵심 지표입니다.</li>
+                    <li><span class="internal-link" onclick="showGraph('SOFR_FEDFUNDS_SPREAD')"><strong>SOFR EFFR 스프레드</strong></span>: 담보(SOFR)와 무담보(EFFR) 단기 대출 금리 차이로, 시장의 유동성 및 신용 위험 상태를 나타냅니다. 스프레드 확대는 유동성 긴축 신호일 수 있습니다.</li>
+                    </ul>
             </div>
             </div>
 
@@ -877,13 +859,14 @@
                 <button class="time-btn" onclick="updateChart('All')">All</button>
             </div>
         </div>
-
+        
         <div id="infoPage" class="page" style="display:none;">
             <button class="back-btn" onclick="goBackToGraph()">◄</button>
-            <h2 id="infoTitle"></h2>
-            <div id="infoContent"></div>
+            <div class="info-box" style="margin-top: 20px;">
+                <h2 id="infoTitle"></h2>
+                <div id="infoContent"></div>
+            </div>
         </div>
-
         <div id="aboutPage" class="page" style="display:none;">
             <div class="info-box" style="margin-top: 20px;">
                 <h2>사이트 안내</h2>
@@ -1022,7 +1005,6 @@
 
         window.addEventListener('load', () => showPage('liquidityFlow'));
 
-        // [수정] pages 배열에 'aboutPage' 추가
         const pages = ['liquidityFlow', 'interestRateFlow', 'graphIndicators', 'graphPage', 'infoPage', 'aboutPage'];
         function showPage(pageId) {
             pages.forEach(id => {
@@ -1039,7 +1021,6 @@
         function showLiquidityFlow() { showPage('liquidityFlow'); }
         function showInterestRateFlow() { showPage('interestRateFlow'); }
         function showGraphIndicators() { showPage('graphIndicators'); }
-        // [추가] 사이트 안내 페이지 표시 함수
         function showAboutPage() { showPage('aboutPage'); }
 
 
@@ -1162,6 +1143,7 @@
             ctx.fillText(message, ctx.canvas.width / 2, ctx.canvas.height / 2);
         }
 
+        // ▼▼▼ 1. 정보 페이지 내용 생성 로직 수정 ▼▼▼
         function showInfo() {
             showPage('infoPage');
             const indicator = currentIndicator;
@@ -1193,8 +1175,9 @@
             }[indicator] || { title: indicator, content: { '경제적 의미': '정보 없음' } };
             document.getElementById('infoTitle').textContent = info.title || 'Unknown';
             document.getElementById('infoContent').innerHTML = Object.entries(info.content)
-                .map(([key, value]) => `<p><strong>${key}:</strong> ${value}</p>`).join('');
+                .map(([key, value]) => `<h3>${key}</h3><p>${value}</p>`).join('');
         }
+        // ▲▲▲ 1. 정보 페이지 내용 생성 로직 수정 ▲▲▲
         
         const getClosestData = (data, targetDate) => {
             if (!data || data.length === 0) return null;
@@ -1260,7 +1243,6 @@
                     const rrpDiff = latest.rrp - past.rrp;
                     const resbalDiff = latest.resbal - past.resbal;
                     
-                    // MAINTAINED: Kept the original calculation logic as requested by the user.
                     fedLiquidityDiff = walclDiff - (tgaDiff + 2 * rrpDiff + 2 * resbalDiff);
                     
                     const fedAssetChange = walclDiff - tgaDiff - rrpDiff - resbalDiff;
@@ -1341,6 +1323,7 @@
             if (rankedAnimations.length > 0) { startAnimations(); const resetIntervalId = setInterval(startAnimations, BASE_ANIMATION_DURATION); dollarAnimationIntervals.push(resetIntervalId); }
         }
         
+        // ▼▼▼ 2. 금리 현황 페이지 업데이트 함수 수정 ▼▼▼
         async function updateInterestRateFlowData() {
             const indicatorConfigs = {
                 sofr: { code: 'SOFR', label: 'SOFR 금리 :', tooltip: `<p>SOFR 금리는 미국에서 한밤사이 동안 금융기관이 다른 금융기관에 담보(예: 국채)를 제공하고 자금을 빌리는 비용을 나타냅니다.</p><p><b>왜 중요한가? :</b> SOFR은 단기 자금 시장의 유동성과 수요-공급 상황을 반영합니다. 예를 들어, 시장에 자금이 부족하면 SOFR이 상승하고, 자금이 풍부하면 하락합니다.</p>`, displayEl: document.getElementById('sofrRateDisplay_interest'), tooltipEl: document.getElementById('sofr-rate-tooltip-content_interest') },
@@ -1351,8 +1334,13 @@
                 tb10yr: { code: 'DGS10', label: '10년물 미 국채금리 :', tooltip: `<p>10년 만기 미국 재무부 증권의 수익률로, 시장의 경제 성장 기대치와 인플레이션 전망을 반영하는 핵심 지표입니다.</p><p><b>왜 중요한가? :</b> 10년물 미국채 금리는 경제의 현재 상황과 미래 전망을 보여주는 바로미터 역할을 하며, 정부의 재정 정책과 시장의 투자 심리가 복합적으로 반영된 지표입니다.</p>`, displayEl: document.getElementById('tb10yrRateDisplay_interest'), tooltipEl: document.getElementById('tb10yr-tooltip-content_interest') },
                 discount: { code: 'DPCREDIT', label: '연준 할인율 :', tooltip: `<p>연준 할인율은 연준이 상업 은행에 대출할 때 적용하는 이자율로, 금융기관의 자금 조달 비용을 결정합니다. </p><p><b>왜 중요한가? :</b> 할인율이 낮게 되면, 연준이 시중 은행에 돈을 풀고 싶다는 의미가 될 수 있습니다.</p>`, displayEl: document.getElementById('discountRateDisplay_interest'), tooltipEl: document.getElementById('discount-rate-tooltip-content_interest') }
             };
+            const spreadDisplayEl = document.getElementById('sofrEffrSpreadDisplay_interest');
+            const spreadTooltipEl = document.getElementById('sofr-effr-spread-tooltip-content_interest');
+
             Object.values(indicatorConfigs).forEach(({ displayEl }) => { if(displayEl) displayEl.textContent = "계산 중..."; });
-            if(document.getElementById('netMarketFlowDisplay_interest')) { document.getElementById('netMarketFlowDisplay_interest').textContent = ''; }
+            if(spreadDisplayEl) spreadDisplayEl.textContent = "계산 중...";
+            if(document.getElementById('netMarketFlowDisplay_interest')) document.getElementById('netMarketFlowDisplay_interest').textContent = '';
+
             const updateIndicator = async (key) => {
                 const config = indicatorConfigs[key];
                 try {
@@ -1364,7 +1352,36 @@
                     } else { throw new Error("No data available"); }
                 } catch (error) { console.error(`${config.code} 데이터 로드 실패:`, error.message); config.displayEl.textContent = '데이터 오류'; }
             };
+
             await Promise.all(Object.keys(indicatorConfigs).map(key => updateIndicator(key)));
+
+            // SOFR EFFR 스프레드 계산 및 표시
+            try {
+                const sofrData = dataCache.get('SOFR')?.data;
+                const effrData = dataCache.get('FEDFUNDS')?.data;
+
+                if (sofrData && sofrData.length > 0 && effrData && effrData.length > 0) {
+                    const sofrLatest = sofrData[sofrData.length - 1];
+                    const effrLatest = effrData[effrData.length - 1];
+                    const spread = sofrLatest.value - effrLatest.value;
+                    const latestDate = new Date(sofrLatest.date) > new Date(effrLatest.date) ? sofrLatest.date : effrLatest.date;
+                    
+                    const sign = spread > 0 ? '+' : '';
+                    const colorClass = spread > 0 ? 'slope-positive' : 'slope-negative';
+
+                    spreadDisplayEl.innerHTML = `SOFR EFFR 스프레드:<br><span class="${colorClass}">${sign}${spread.toFixed(2)} %</span>`;
+                    spreadTooltipEl.innerHTML = `
+                        <p>만약 SOFR이 급등하거나 EFFR과의 스프레드가 확대된다면, 이는 은행이 시중으로부터 달러 수요가 급증했음을 의미합니다.</p>
+                        <p>반대로 스프레드가 축소되거나 마이너스면 시장의 유동성이 풍부하거나 무담보 대출 환경이 개선된 신호일 수 있습니다.</p>
+                        <button class="graph-btn" onclick="showGraph('SOFR_FEDFUNDS_SPREAD')">그래프</button>
+                        <span class="update-date">Update Date: ${latestDate}</span>`;
+                } else {
+                    throw new Error("SOFR or EFFR data not in cache");
+                }
+            } catch (error) {
+                console.error('SOFR EFFR 스프레드 계산 실패:', error);
+                if(spreadDisplayEl) spreadDisplayEl.textContent = '데이터 오류';
+            }
         }
 
         function createAndAnimateDollar(animationClass, size, duration) {
@@ -1374,7 +1391,6 @@
             dollar.style.setProperty('--animation-duration', `${duration / 1000}s`);
             dollar.classList.add(animationClass);
             
-            // Append dollar to the animation container
             const animationContainer = document.querySelector('#liquidityFlow .animation-container');
             if (animationContainer) {
                 animationContainer.appendChild(dollar);
