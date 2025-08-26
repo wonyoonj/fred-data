@@ -620,7 +620,7 @@
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" defer></script>
-    <script src="https://cdn.jsdelivr/npm/chartjs-adapter-date-fns" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns" defer></script>
 </head>
 <body>
     <div class="container">
@@ -1080,7 +1080,11 @@
         
         function renderChart(indicator, datasets) {
             const ctx = document.getElementById('myChart').getContext('2d');
-            if (myChart) myChart.destroy();
+            if (myChart) {
+                myChart.destroy();
+                // 🟢 FIX 2: Reset myChart variable to null
+                myChart = null; 
+            }
             myChart = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -1137,7 +1141,11 @@
 
         function renderErrorMessage(message) {
             const ctx = document.getElementById('myChart').getContext('2d');
-            if (myChart) myChart.destroy();
+            if (myChart) {
+                myChart.destroy();
+                // 🟢 FIX 2: Reset myChart variable to null
+                myChart = null;
+            }
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
             ctx.fillStyle = '#666'; ctx.font = '16px Arial'; ctx.textAlign = 'center';
             ctx.fillText(message, ctx.canvas.width / 2, ctx.canvas.height / 2);
