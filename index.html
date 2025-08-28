@@ -654,8 +654,11 @@
                 </p>
             </div>
 
-            <div id="liquidity-analysis-container" class="info-box" style="text-align: center; font-weight: bold; border: 2px solid #007bff; padding: 15px;">
+            <h3 id="ai-analysis-title-liquidity" style="text-align: center; color: black;"></h3>
+            
+            <div id="liquidity-analysis-container" class="info-box" style="text-align: center; font-weight: bold; border: 2px solid #007bff; padding: 15px; margin-top: 0;">
                 </div>
+            
             <div class="animation-container">
                 <div class="tga-popup-container popup-container liquidity-tga-popup">
                     <div id="tgaSlopeDisplay"></div>
@@ -745,8 +748,11 @@
                 </p>
             </div>
 
-            <div id="interest-rate-analysis-container" class="info-box" style="text-align: center; font-weight: bold; border: 2px solid #007bff; padding: 15px;">
+            <h3 id="ai-analysis-title-interest" style="text-align: center; color: black;"></h3>
+
+            <div id="interest-rate-analysis-container" class="info-box" style="text-align: center; font-weight: bold; border: 2px solid #007bff; padding: 15px; margin-top: 0;">
                 </div>
+            
             <div class="animation-container">
                 <div class="tga-popup-container popup-container interest-tb3ms-popup">
                     <div id="tb3msRateDisplay_interest"></div>
@@ -1036,11 +1042,9 @@
             return parsedData;
         }
         
-        // ▼▼▼ financial_analysis.json을 불러와서 페이지에 내용을 삽입하는 함수 ▼▼▼
         async function loadFinancialAnalysis() {
             try {
-                // financial_analysis.json 파일이 index.html과 같은 경로에 있다고 가정
-                const response = await fetch('financial_analysis.json');
+                const response = await fetch('csvfile/financial_analysis.json');
                 if (!response.ok) {
                     throw new Error('네트워크 응답이 올바르지 않습니다.');
                 }
@@ -1050,7 +1054,6 @@
                 const interestRateContainer = document.getElementById('interest-rate-analysis-container');
 
                 if (liquidityContainer && data.liquidity_analysis) {
-                    // <strong> 태그가 렌더링되도록 innerHTML 사용
                     liquidityContainer.innerHTML = data.liquidity_analysis;
                 }
 
@@ -1060,18 +1063,34 @@
 
             } catch (error) {
                 console.error('분석 데이터 로딩 실패:', error);
-                // 오류 발생 시 사용자에게 메시지 표시 (선택 사항)
                 const liquidityContainer = document.getElementById('liquidity-analysis-container');
                 if(liquidityContainer) liquidityContainer.textContent = '유동성 분석 데이터를 불러오는 데 실패했습니다.';
                 const interestRateContainer = document.getElementById('interest-rate-analysis-container');
                 if(interestRateContainer) interestRateContainer.textContent = '금리 분석 데이터를 불러오는 데 실패했습니다.';
             }
         }
-        // ▲▲▲ 추가된 함수 ▲▲▲
+        
+        // ▼▼▼ AI 분석 제목을 설정하는 함수 ▼▼▼
+        function setAiAnalysisTitles() {
+            const today = new Date();
+            const formattedDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+            const titleText = `Ai 인공지능 Daily 분석 (${formattedDate})`;
+
+            const liquidityTitleEl = document.getElementById('ai-analysis-title-liquidity');
+            const interestTitleEl = document.getElementById('ai-analysis-title-interest');
+
+            if (liquidityTitleEl) {
+                liquidityTitleEl.textContent = titleText;
+            }
+            if (interestTitleEl) {
+                interestTitleEl.textContent = titleText;
+            }
+        }
 
         window.addEventListener('load', () => {
             showPage('liquidityFlow');
-            loadFinancialAnalysis(); // ▼▼▼ 페이지 로드 시 JSON 데이터 로딩 함수 호출 ▼▼▼
+            loadFinancialAnalysis();
+            setAiAnalysisTitles(); // ▼▼▼ 페이지 로드 시 제목 설정 함수 호출 ▼▼▼
         });
 
         const pages = ['liquidityFlow', 'interestRateFlow', 'graphIndicators', 'graphPage', 'infoPage', 'aboutPage'];
@@ -1151,7 +1170,6 @@
             const ctx = document.getElementById('myChart').getContext('2d');
             if (myChart) {
                 myChart.destroy();
-                // 🟢 FIX 2: Reset myChart variable to null
                 myChart = null; 
             }
             myChart = new Chart(ctx, {
@@ -1181,7 +1199,7 @@
         function updateChart(range) {
             if (!currentGraphData || currentGraphData.length === 0) return;
             
-            let datasetsToShow = JSON.parse(JSON.stringify(currentGraphData)); // Deep copy
+            let datasetsToShow = JSON.parse(JSON.stringify(currentGraphData)); 
             let hasData = false;
 
             if (range !== 'All') {
@@ -1212,15 +1230,13 @@
             const ctx = document.getElementById('myChart').getContext('2d');
             if (myChart) {
                 myChart.destroy();
-                // 🟢 FIX 2: Reset myChart variable to null
                 myChart = null;
             }
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
             ctx.fillStyle = '#666'; ctx.font = '16px Arial'; ctx.textAlign = 'center';
             ctx.fillText(message, ctx.canvas.width / 2, ctx.canvas.height / 2);
         }
-
-        // ▼▼▼ 1. 정보 페이지 내용 생성 로직 수정 ▼▼▼
+        
         function showInfo() {
             showPage('infoPage');
             const indicator = currentIndicator;
@@ -1254,7 +1270,6 @@
             document.getElementById('infoContent').innerHTML = Object.entries(info.content)
                 .map(([key, value]) => `<h3>${key}</h3><p>${value}</p>`).join('');
         }
-        // ▲▲▲ 1. 정보 페이지 내용 생성 로직 수정 ▲▲▲
         
         const getClosestData = (data, targetDate) => {
             if (!data || data.length === 0) return null;
@@ -1400,7 +1415,6 @@
             if (rankedAnimations.length > 0) { startAnimations(); const resetIntervalId = setInterval(startAnimations, BASE_ANIMATION_DURATION); dollarAnimationIntervals.push(resetIntervalId); }
         }
         
-        // ▼▼▼ 2. 금리 현황 페이지 업데이트 함수 수정 ▼▼▼
         async function updateInterestRateFlowData() {
             const indicatorConfigs = {
                 sofr: { code: 'SOFR', label: 'SOFR 금리 :', tooltip: `<p>SOFR 금리는 미국에서 한밤사이 동안 금융기관이 다른 금융기관에 담보(예: 국채)를 제공하고 자금을 빌리는 비용을 나타냅니다.</p><p><b>왜 중요한가? :</b> SOFR은 단기 자금 시장의 유동성과 수요-공급 상황을 반영합니다. 예를 들어, 시장에 자금이 부족하면 SOFR이 상승하고, 자금이 풍부하면 하락합니다.</p>`, displayEl: document.getElementById('sofrRateDisplay_interest'), tooltipEl: document.getElementById('sofr-rate-tooltip-content_interest') },
@@ -1432,7 +1446,6 @@
 
             await Promise.all(Object.keys(indicatorConfigs).map(key => updateIndicator(key)));
 
-            // SOFR EFFR 스프레드 계산 및 표시
             try {
                 const sofrData = dataCache.get('SOFR')?.data;
                 const effrData = dataCache.get('FEDFUNDS')?.data;
@@ -1446,7 +1459,6 @@
                     const sign = spread > 0 ? '+' : '';
                     const colorClass = spread > 0 ? 'slope-positive' : 'slope-negative';
 
-                    // ★★★ 3번 요청 수정: 모바일 화면에서 줄바꿈되도록 삼항 연산자 추가 ★★★
                     const labelText = window.innerWidth <= 600 ? 'SOFR EFFR<br>스프레드:' : 'SOFR EFFR 스프레드:';
                     spreadDisplayEl.innerHTML = `${labelText}<br><span class="${colorClass}">${sign}${spread.toFixed(2)} %</span>`;
                     
