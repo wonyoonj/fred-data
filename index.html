@@ -509,7 +509,7 @@
             .mmf-market-popup-container { top: calc(55%); left: 83%; }
 
             /* ▼▼▼ 2. 모바일 SOFR EFFR 스프레드 위치 스타일 추가 ▼▼▼ */
-            .sofr-effr-popup-container { top: 40%; left: 68%; }
+            .sofr-effr-popup-container { top: 45%; left: 70%; }
 
             .tooltip-container { margin-left: -100px; width: 200px; }
             .liquidity-tga-popup:hover .tooltip-container { width: 200px; left: 30%; margin-left: -70px; }
@@ -653,6 +653,9 @@
                     (마우스를 갖다대면, 지표 설명이 보여요!)
                 </p>
             </div>
+
+            <div id="liquidity-analysis-container" class="info-box" style="text-align: center; font-weight: bold; border: 2px solid #007bff; padding: 15px;">
+                </div>
             <div class="animation-container">
                 <div class="tga-popup-container popup-container liquidity-tga-popup">
                     <div id="tgaSlopeDisplay"></div>
@@ -741,7 +744,9 @@
                     (마우스를 갖다대면, 지표 설명이 보여요!)
                 </p>
             </div>
-            
+
+            <div id="interest-rate-analysis-container" class="info-box" style="text-align: center; font-weight: bold; border: 2px solid #007bff; padding: 15px;">
+                </div>
             <div class="animation-container">
                 <div class="tga-popup-container popup-container interest-tb3ms-popup">
                     <div id="tb3msRateDisplay_interest"></div>
@@ -1030,8 +1035,44 @@
             }
             return parsedData;
         }
+        
+        // ▼▼▼ financial_analysis.json을 불러와서 페이지에 내용을 삽입하는 함수 ▼▼▼
+        async function loadFinancialAnalysis() {
+            try {
+                // financial_analysis.json 파일이 index.html과 같은 경로에 있다고 가정
+                const response = await fetch('financial_analysis.json');
+                if (!response.ok) {
+                    throw new Error('네트워크 응답이 올바르지 않습니다.');
+                }
+                const data = await response.json();
 
-        window.addEventListener('load', () => showPage('liquidityFlow'));
+                const liquidityContainer = document.getElementById('liquidity-analysis-container');
+                const interestRateContainer = document.getElementById('interest-rate-analysis-container');
+
+                if (liquidityContainer && data.liquidity_analysis) {
+                    // <strong> 태그가 렌더링되도록 innerHTML 사용
+                    liquidityContainer.innerHTML = data.liquidity_analysis;
+                }
+
+                if (interestRateContainer && data.interest_rate_analysis) {
+                    interestRateContainer.innerHTML = data.interest_rate_analysis;
+                }
+
+            } catch (error) {
+                console.error('분석 데이터 로딩 실패:', error);
+                // 오류 발생 시 사용자에게 메시지 표시 (선택 사항)
+                const liquidityContainer = document.getElementById('liquidity-analysis-container');
+                if(liquidityContainer) liquidityContainer.textContent = '유동성 분석 데이터를 불러오는 데 실패했습니다.';
+                const interestRateContainer = document.getElementById('interest-rate-analysis-container');
+                if(interestRateContainer) interestRateContainer.textContent = '금리 분석 데이터를 불러오는 데 실패했습니다.';
+            }
+        }
+        // ▲▲▲ 추가된 함수 ▲▲▲
+
+        window.addEventListener('load', () => {
+            showPage('liquidityFlow');
+            loadFinancialAnalysis(); // ▼▼▼ 페이지 로드 시 JSON 데이터 로딩 함수 호출 ▼▼▼
+        });
 
         const pages = ['liquidityFlow', 'interestRateFlow', 'graphIndicators', 'graphPage', 'infoPage', 'aboutPage'];
         function showPage(pageId) {
