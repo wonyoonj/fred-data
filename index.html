@@ -509,7 +509,7 @@
             .mmf-market-popup-container { top: calc(55%); left: 83%; }
 
             /* ▼▼▼ 2. 모바일 SOFR EFFR 스프레드 위치 스타일 추가 ▼▼▼ */
-            .sofr-effr-popup-container { top: 47%; left: 55%; }
+            .sofr-effr-popup-container { top: 40%; left: 68%; }
 
             .tooltip-container { margin-left: -100px; width: 200px; }
             .liquidity-tga-popup:hover .tooltip-container { width: 200px; left: 30%; margin-left: -70px; }
@@ -649,6 +649,9 @@
                 <p style="margin-top: 20px; text-align: center; font-weight: bold;">
                     이제 아래의 시각화 자료를 통해 복잡한 경제의 흐름을 쉽게 탐색해 보세요.
                 </p>
+                <p>
+                    (마우스를 갖다대면, 지표 설명이 보여요!)
+                </p>
             </div>
             <div class="animation-container">
                 <div class="tga-popup-container popup-container liquidity-tga-popup">
@@ -700,8 +703,8 @@
                     <li><span class="internal-link" onclick="showGraph('WTREGEN')"><strong>정부(TGA) → 시장</strong></span> (<span class="negative">- 음수</span>): 정부가 국채 발행 감소나 재정 지출 확대를 통해 시장에 돈을 풀고 있다는 의미입니다. (유동성 공급)</li>
                     <li><span class="internal-link" onclick="showGraph('WTREGEN')"><strong>정부(TGA) → 시장</strong></span> (<span class="positive">+ 양수</span>): 정부가 세금을 많이 걷거나 국채 발행을 늘려 시장의 돈을 흡수하고 있다는 의미입니다. (유동성 흡수)</li>
                     <br>
-                    <li><span class="internal-link" onclick="showGraph('WALCL')"><strong>중앙은행(FED) → 시장</strong></span> (<span class="negative">- 음수</span>): 연준이 양적완화(자산 매입) 등을 통해 시장에 돈을 공급하고 있다는 의미입니다. (유동성 공급)</li>
-                    <li><span class="internal-link" onclick="showGraph('WALCL')"><strong>중앙은행(FED) → 시장</strong></span> (<span class="positive">+ 양수</span>): 연준이 양적긴축(자산 매각) 등을 통해 시장의 돈을 거둬들이고 있다는 의미입니다. (유동성 흡수)</li>
+                    <li><span class="internal-link" onclick="showGraph('WALCL')"><strong>중앙은행(FED) → 시장</strong></span> (<span class="negative">- 음수</span>): 연준이 양적긴축(자산 매각) 등을 통해 시장의 돈을 거둬들이고 있다는 의미입니다. (유동성 흡수)</li>
+                    <li><span class="internal-link" onclick="showGraph('WALCL')"><strong>중앙은행(FED) → 시장</strong></span> (<span class="positive">+ 양수</span>): 연준이 양적완화(자산 매입) 등을 통해 시장에 돈을 공급하고 있다는 의미입니다. (유동성 공급)</li>
                     <br>
                     <li><span class="internal-link" onclick="showGraph('RRPONTSYD')"><strong>MMF → FED</strong></span> (<span class="positive">+ 양수</span>): MMF가 연준의 역레포(RRP)를 통해 자금을 예치하여 시중 유동성이 흡수됨을 의미합니다.</li>
                     <li><span class="internal-link" onclick="showGraph('RRPONTSYD')"><strong>MMF → FED</strong></span> (<span class="negative">- 음수</span>): MMF가 연준에 예치했던 역레포 자금을 회수하여 시중 유동성이 공급됨을 의미합니다.</li>
@@ -709,7 +712,7 @@
                     <li><span class="internal-link" onclick="showGraph('MMMFFAQ027S')"><strong>MMF → 시장</strong></span> (<span class="positive">+ 양수</span>): MMF가 국채, 회사채 등 시장의 자산을 매입하여 시장에 유동성을 공급하고 있음을 의미합니다.</li>
                     <li><span class="internal-link" onclick="showGraph('MMMFFAQ027S')"><strong>MMF → 시장</strong></span> (<span class="negative">- 음수</span>): 시장 참여자들이 MMF 펀드에 투자하여 시중 유동성이 MMF로 흡수되고 있음을 의미합니다.</li>
                     </ul>
-                <p>결론적으로, <strong>'시장(Market)'으로 들어오는 돈의 총합(Net Market Flow)이 <span class="negative">파란색 음수(-)</span>이면 시장 유동성이 풍부해지는 것</strong>으로, <span class="positive">빨간색 양수(+)</span>이면 유동성이 줄어드는 것으로 해석할 수 있습니다.</p>
+                <p>결론적으로, <strong>'시장(Market)'으로 들어오는 돈의 총합(Net Market Flow)이 <span class="negative">파란색 음수(-)</span>이면 시장 유동성이 줄어드는 것</strong>으로, <span class="positive">빨간색 양수(+)</span>이면 유동성이 풍부해지는 것으로 해석할 수 있습니다.</p>
             </div>
             </div>
 
@@ -733,6 +736,9 @@
                 </ul>
                 <p style="margin-top: 20px; text-align: center; font-weight: bold;">
                     이제 아래의 시각화 자료를 통해 복잡한 경제의 흐름을 쉽게 탐색해 보세요.
+                </p>
+                <p>
+                    (마우스를 갖다대면, 지표 설명이 보여요!)
                 </p>
             </div>
             
@@ -907,10 +913,10 @@
                     <li><strong>정부(TGA) → 시장 (<span class="negative">- 음수</span>):</strong> 정부가 국채 발행 감소나 재정 지출 확대를 통해 시장에 돈을 풀고 있다는 의미입니다. (유동성 공급)</li>
                     <li><strong>정부(TGA) → 시장 (<span class="positive">+ 양수</span>):</strong> 정부가 세금을 많이 걷거나 국채 발행을 늘려 시장의 돈을 흡수하고 있다는 의미입니다. (유동성 흡수)</li>
                     <br>
-                    <li><strong>중앙은행(FED) → 시장 (<span class="negative">- 음수</span>):</strong> 연준이 양적완화(자산 매입) 등을 통해 시장에 돈을 공급하고 있다는 의미입니다. (유동성 공급)</li>
-                    <li><strong>중앙은행(FED) → 시장 (<span class="positive">+ 양수</span>):</strong> 연준이 양적긴축(자산 매각) 등을 통해 시장의 돈을 거둬들이고 있다는 의미입니다. (유동성 흡수)</li>
+                    <li><strong>중앙은행(FED) → 시장 (<span class="negative">- 음수</span>):</strong> 연준이 양적긴축(자산 매각) 등을 통해 시장의 돈을 거둬들이고 있다는 의미입니다. (유동성 흡수)</li>
+                    <li><strong>중앙은행(FED) → 시장 (<span class="positive">+ 양수</span>):</strong> 연준이 양적완화(자산 매입) 등을 통해 시장에 돈을 공급하고 있다는 의미입니다. (유동성 공급)</li>
                 </ul>
-                <p>결론적으로, <strong>'시장(Market)'으로 들어오는 돈의 총합(Net Market Flow)이 <span class="negative">파란색 음수(-)</span>이면 시장 유동성이 풍부해지는 것</strong>으로, <span class="positive">빨간색 양수(+)</span>이면 유동성이 줄어드는 것으로 해석할 수 있습니다.</p>
+                <p>결론적으로, <strong>'시장(Market)'으로 들어오는 돈의 총합(Net Market Flow)이 <span class="negative">파란색 음수(-)</span>이면 시장 유동성이 줄어드는 것</strong>으로, <span class="positive">빨간색 양수(+)</span>이면 유동성이 풍부해지는 것으로 해석할 수 있습니다.</p>
 
                 <h3>데이터 출처 및 업데이트 주기</h3>
                 <p>본 사이트의 대부분 데이터는 미국 연방준비제도 경제 데이터(<strong>FRED</strong>)와 재무부 금융 연구소(<strong>OFR</strong>)에서 제공하는 공식 데이터를 기반으로 합니다. 데이터는 각 지표의 발표 주기에 따라 매일 또는 매주 자동으로 업데이트됩니다.</p>
@@ -925,7 +931,7 @@
         </div>
     
     <footer style="text-align: center; padding: 20px 20px 80px 20px; background-color: #f8f9fa; border-top: 1px solid #dee2e6; color: #6c757d; font-size: 12px;">
-        <p>&copy; 2024 원뎅이의 미국 통화 유동성 현황. All Rights Reserved.</p>
+        <p>&copy; 2025 원뎅이의 미국 통화 유동성 현황. All Rights Reserved.</p>
         <p>본 사이트에서 제공하는 정보는 투자 참고용이며, 투자에 대한 모든 책임은 본인에게 있습니다.</p>
     </footer>
 
