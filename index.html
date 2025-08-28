@@ -203,7 +203,8 @@
         .mmf-market-popup-container { top: calc(63% + 40px); left: 80%; transform: translateX(-50%); }
         
         /* ▼▼▼ 2. SOFR EFFR 스프레드 위치 스타일 추가 ▼▼▼ */
-        .sofr-effr-popup-container { top: 57%; left: 60%; transform: translateX(-50%); }
+        /* ★★★ 3번 요청 수정: SOFR EFFR 스프레드 라벨 위치를 60% -> 70%로 변경 ★★★ */
+        .sofr-effr-popup-container { top: 57%; left: 70%; transform: translateX(-50%); }
 
         .tooltip-container {
             visibility: hidden;
@@ -475,7 +476,8 @@
             .FED-container { top: 15%; left: 50%; }
             .Government-container { top: 47%; left: 15%; }
             .Market-container { top: 80%; left: 50%; }
-            .MMF-container { top: 47%; left: 85%; }
+            /* ★★★ 1번 요청 수정: MMF 아이콘 위치를 85% -> 83%로 변경하여 글자 잘림 방지 ★★★ */
+            .MMF-container { top: 47%; left: 83%; }
 
             #netMarketFlowDisplay, #netMarketFlowDisplay_interest {
                 top: -45%;
@@ -502,8 +504,9 @@
             .tga-popup-container-10yr { top: calc(47% + 30px + 12px + 90px); left: 35%; }
             .fed-popup-container { top: calc(28% - 30px - 5px); left: 42%; }
             .fed-popup-container-discount { top: calc(28% - 30px - 5px); left: 65%; }
-            .mmf-fed-popup-container { top: calc(32%); left: 85%; }
-            .mmf-market-popup-container { top: calc(55%); left: 85%; }
+            /* ★★★ 1번 요청 수정: MMF 관련 팝업 위치를 85% -> 83%로 변경 ★★★ */
+            .mmf-fed-popup-container { top: calc(32%); left: 83%; }
+            .mmf-market-popup-container { top: calc(55%); left: 83%; }
 
             /* ▼▼▼ 2. 모바일 SOFR EFFR 스프레드 위치 스타일 추가 ▼▼▼ */
             .sofr-effr-popup-container { top: 47%; left: 55%; }
@@ -549,34 +552,34 @@
                 100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
             }
             @keyframes dollarFlowFromMmfToFed {
-                0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 85%; top: 47%; }
-                20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 85%; top: 47%; }
+                0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 83%; top: 47%; }
+                20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 83%; top: 47%; }
                 80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 15%; }
                 100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 15%; }
             }
             @keyframes dollarFlowFromFedToMmf {
                 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 15%; }
                 20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 15%; }
-                80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 85%; top: 47%; }
-                100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 85%; top: 47%; }
+                80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 83%; top: 47%; }
+                100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 83%; top: 47%; }
             }
             @keyframes dollarFlowFromMmfToMarket_parabolic {
-                0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 85%; top: 47%; }
-                20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 85%; top: 47%; }
-                50% { transform: translate(-50%, -50%) scale(1) translateY(25px); opacity: 1; left: 67.5%; top: 68%; }
+                0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 83%; top: 47%; }
+                20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 83%; top: 47%; }
+                50% { transform: translate(-50%, -50%) scale(1) translateY(25px); opacity: 1; left: 66.5%; top: 68%; }
                 80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
                 100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
             }
             @keyframes dollarFlowFromMarketToMmf_parabolic {
                 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
                 20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
-                50% { transform: translate(-50%, -50%) scale(1) translateY(25px); opacity: 1; left: 67.5%; top: 68%; }
-                80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 85%; top: 47%; }
-                100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 85%; top: 47%; }
+                50% { transform: translate(-50%, -50%) scale(1) translateY(25px); opacity: 1; left: 66.5%; top: 68%; }
+                80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 83%; top: 47%; }
+                100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 83%; top: 47%; }
             }
             @keyframes dollarFlowFromMmfToGovernment {
-                0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 85%; top: 47%; }
-                20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 85%; top: 47%; }
+                0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 83%; top: 47%; }
+                20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 83%; top: 47%; }
                 80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 15%; top: 47%; }
                 100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 15%; top: 47%; }
             }
@@ -711,10 +714,29 @@
             </div>
 
         <div id="interestRateFlow" class="page" style="display:none;">
-            <div class="animation-container">
-                <div class="page-title">원뎅이의 미국 통화 유동성 현황</div>
-                <div class="source-credit-main">자료 출처: FRED</div>
+            <div class="page-title">원뎅이의 미국 통화 유동성 현황</div>
+            <div class="source-credit-main">자료 출처: FRED</div>
 
+            <div class="info-box" style="margin-top: 80px;">
+                <h2>미국 통화 유동성을 한눈에 파악하세요!</h2>
+                <p>
+                    '원뎅이의 미국 통화 유동성 현황'에 오신 것을 환영합니다. 본 웹사이트는 투자자와 경제에 관심 있는 모든 분들을 위해 미국 시장의 복잡한 통화 유동성 흐름을 실시간 데이터 기반의 애니메이션으로 시각화하여 제공합니다.
+                </p>
+                <p>
+                    미국 연방준비제도(FED), 정부(TGA), 머니마켓펀드(MMF), 그리고 시장 사이에서 돈이 어떻게 흐르는지 직관적으로 이해함으로써, 금리 변동, 양적완화 및 긴축 정책의 영향을 보다 쉽게 파악하고 현명한 투자 결정을 내리는 데 도움을 드리고자 합니다.
+                </p>
+                <h3>주요 기능 안내</h3>
+                <ul>
+                    <li><strong>실시간 유동성 흐름:</strong> 각 경제 주체(정부, 중앙은행, MMF, 시장) 간의 월별 자금 이동 규모를 애니메이션으로 시각화하여 돈의 흐름을 쉽게 추적할 수 있습니다.</li>
+                    <li><strong>핵심 금리 현황:</strong> SOFR, EFFR, 국채 금리 등 시장의 중요한 금리 지표들을 실시간으로 확인하고 그 의미를 파악할 수 있습니다.</li>
+                    <li><strong>상세 데이터 그래프:</strong> TGA 잔고, M2 통화량, S&P500 지수 등 30여 개의 주요 경제 지표를 기간별 상세 그래프로 직접 분석할 수 있습니다. 각 지표에 대한 설명(Info)도 제공합니다.</li>
+                </ul>
+                <p style="margin-top: 20px; text-align: center; font-weight: bold;">
+                    이제 아래의 시각화 자료를 통해 복잡한 경제의 흐름을 쉽게 탐색해 보세요.
+                </p>
+            </div>
+            
+            <div class="animation-container">
                 <div class="tga-popup-container popup-container interest-tb3ms-popup">
                     <div id="tb3msRateDisplay_interest"></div>
                     <div class="tooltip-container" id="tb3ms-tooltip-content_interest"></div>
@@ -1377,7 +1399,10 @@
                     const sign = spread > 0 ? '+' : '';
                     const colorClass = spread > 0 ? 'slope-positive' : 'slope-negative';
 
-                    spreadDisplayEl.innerHTML = `SOFR EFFR 스프레드:<br><span class="${colorClass}">${sign}${spread.toFixed(2)} %</span>`;
+                    // ★★★ 3번 요청 수정: 모바일 화면에서 줄바꿈되도록 삼항 연산자 추가 ★★★
+                    const labelText = window.innerWidth <= 600 ? 'SOFR EFFR<br>스프레드:' : 'SOFR EFFR 스프레드:';
+                    spreadDisplayEl.innerHTML = `${labelText}<br><span class="${colorClass}">${sign}${spread.toFixed(2)} %</span>`;
+                    
                     spreadTooltipEl.innerHTML = `
                         <p>만약 SOFR이 급등하거나 EFFR과의 스프레드가 확대된다면, 이는 은행이 시중으로부터 달러 수요가 급증했음을 의미합니다.</p>
                         <p>반대로 스프레드가 축소되거나 마이너스면 시장의 유동성이 풍부하거나 무담보 대출 환경이 개선된 신호일 수 있습니다.</p>
