@@ -1101,7 +1101,7 @@
             try {
                 // financial_analysis.json 경로를 실제 파일 위치에 맞게 수정해야 합니다.
                 // 예를 들어, 루트에 있다면 '/financial_analysis.json'
-                const response = await fetch('/financial_analysis.json');
+                const response = await fetch('csvfile/financial_analysis.json');
                 if (!response.ok) {
                     throw new Error('네트워크 응답이 올바르지 않습니다.');
                 }
