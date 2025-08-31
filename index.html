@@ -37,6 +37,8 @@
       }
     }
     </script>
+    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.1/kakao.min.js"
+    integrity="sha384-kDljxUXHaJ9xAb2AzRd59KxjrFjzHa5TAoFQ6GbYTCAG0bjM55XohjjDT7tDDC01" crossorigin="anonymous" defer></script>
     <base target="_top">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -317,6 +319,43 @@
             opacity: 0;
             z-index: 5;
         }
+        /* ▼▼▼ AI 분석 제목 날짜 스타일 추가 ▼▼▼ */
+        .update-date-span {
+            font-size: 66%;
+            font-weight: normal;
+            color: #555;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        /* ▼▼▼ 공유 버튼 스타일 추가 ▼▼▼ */
+        .share-buttons-container {
+            display: flex;
+            justify-content: flex-end; /* PC: 오른쪽 정렬 */
+            align-items: center;
+            gap: 10px;
+            padding: 15px 0;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .share-button {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 5px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .share-button:hover {
+            opacity: 0.8;
+        }
+        .share-button.twitter { background-color: #1DA1F2; }
+        .share-button.facebook { background-color: #1877F2; }
+        .share-button.kakao { background-color: #FEE500; color: #191919; }
+        .share-button.line { background-color: #00C300; }
+        /* ▲▲▲ 공유 버튼 스타일 추가 ▲▲▲ */
 
         @keyframes dollarFlowToMarket {
             0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 20%; }
@@ -526,7 +565,11 @@
             .sofr-effr-popup-container:hover .tooltip-container { width: 250px; margin-left: -125px; }
             
             .dollar-animated-object { width: 22.5px; height: 22.5px; }
-
+             /* ▼▼▼ 공유 버튼 모바일 스타일 추가 ▼▼▼ */
+            .share-buttons-container {
+                justify-content: center; /* 모바일: 가운데 정렬 */
+            }
+            /* ▲▲▲ 공유 버튼 모바일 스타일 추가 ▲▲▲ */
             @keyframes dollarFlowToMarket {
                 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 15%; }
                 20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 15%; }
@@ -659,6 +702,12 @@
             <div id="liquidity-analysis-container" class="info-box" style="text-align: left; font-weight: bold; border: 2px solid #007bff; padding: 15px; margin-top: 0;">
                 </div>
             
+            <div class="share-buttons-container">
+                <a class="share-button twitter" onclick="shareOn('twitter')">Twitter</a>
+                <a class="share-button facebook" onclick="shareOn('facebook')">Facebook</a>
+                <a class="share-button kakao" onclick="shareOn('kakao')">Kakao</a>
+                <a class="share-button line" onclick="shareOn('line')">LINE</a>
+            </div>
             <div class="animation-container">
                 <div class="tga-popup-container popup-container liquidity-tga-popup">
                     <div id="tgaSlopeDisplay"></div>
@@ -753,6 +802,12 @@
             <div id="interest-rate-analysis-container" class="info-box" style="text-align: left; font-weight: bold; border: 2px solid #007bff; padding: 15px; margin-top: 0;">
                 </div>
             
+            <div class="share-buttons-container">
+                <a class="share-button twitter" onclick="shareOn('twitter')">Twitter</a>
+                <a class="share-button facebook" onclick="shareOn('facebook')">Facebook</a>
+                <a class="share-button kakao" onclick="shareOn('kakao')">Kakao</a>
+                <a class="share-button line" onclick="shareOn('line')">LINE</a>
+            </div>
             <div class="animation-container">
                 <div class="tga-popup-container popup-container interest-tb3ms-popup">
                     <div id="tb3msRateDisplay_interest"></div>
@@ -1044,7 +1099,9 @@
         
         async function loadFinancialAnalysis() {
             try {
-                const response = await fetch('csvfile/financial_analysis.json');
+                // financial_analysis.json 경로를 실제 파일 위치에 맞게 수정해야 합니다.
+                // 예를 들어, 루트에 있다면 '/financial_analysis.json'
+                const response = await fetch('/financial_analysis.json');
                 if (!response.ok) {
                     throw new Error('네트워크 응답이 올바르지 않습니다.');
                 }
@@ -1060,6 +1117,13 @@
                 if (interestRateContainer && data.interest_rate_analysis) {
                     interestRateContainer.innerHTML = data.interest_rate_analysis;
                 }
+                
+                // ▼▼▼ JSON 파일에서 날짜를 가져와 제목 설정 함수 호출 ▼▼▼
+                if (data.Date) {
+                    setAiAnalysisTitles(data.Date);
+                } else {
+                    setAiAnalysisTitles(null); // 날짜 정보가 없을 경우
+                }
 
             } catch (error) {
                 console.error('분석 데이터 로딩 실패:', error);
@@ -1067,30 +1131,41 @@
                 if(liquidityContainer) liquidityContainer.textContent = '유동성 분석 데이터를 불러오는 데 실패했습니다.';
                 const interestRateContainer = document.getElementById('interest-rate-analysis-container');
                 if(interestRateContainer) interestRateContainer.textContent = '금리 분석 데이터를 불러오는 데 실패했습니다.';
+                setAiAnalysisTitles(null); // 오류 발생 시
             }
         }
         
-        // ▼▼▼ AI 분석 제목을 설정하는 함수 ▼▼▼
-        function setAiAnalysisTitles() {
-            const today = new Date();
-            const formattedDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-            const titleText = `Ai 인공지능 Daily 분석 (${formattedDate})`;
+        // ▼▼▼ AI 분석 제목을 설정하는 함수 수정 ▼▼▼
+        function setAiAnalysisTitles(analysisDate) {
+            const titleText = "Ai 인공지능 Daily 분석";
+            // 날짜가 제공되면 형식에 맞게 추가, 아니면 제목만 표시
+            const fullTitle = analysisDate 
+                ? `${titleText}<span class="update-date-span">(Update Date: ${analysisDate})</span>`
+                : titleText;
 
             const liquidityTitleEl = document.getElementById('ai-analysis-title-liquidity');
             const interestTitleEl = document.getElementById('ai-analysis-title-interest');
 
             if (liquidityTitleEl) {
-                liquidityTitleEl.textContent = titleText;
+                liquidityTitleEl.innerHTML = fullTitle; // textContent에서 innerHTML로 변경
             }
             if (interestTitleEl) {
-                interestTitleEl.textContent = titleText;
+                interestTitleEl.innerHTML = fullTitle; // textContent에서 innerHTML로 변경
             }
         }
 
         window.addEventListener('load', () => {
             showPage('liquidityFlow');
             loadFinancialAnalysis();
-            setAiAnalysisTitles(); // ▼▼▼ 페이지 로드 시 제목 설정 함수 호출 ▼▼▼
+             // ▼▼▼ 카카오 SDK 초기화 (반드시 본인의 JavaScript 키로 변경해야 합니다) ▼▼▼
+            try {
+                if (window.Kakao && !Kakao.isInitialized()) {
+                    // 여기에 본인의 카카오 개발자 JavaScript 키를 입력하세요.
+                    Kakao.init('YOUR_JAVASCRIPT_KEY');
+                }
+            } catch (e) {
+                console.error("카카오 SDK 초기화 실패:", e);
+            }
         });
 
         const pages = ['liquidityFlow', 'interestRateFlow', 'graphIndicators', 'graphPage', 'infoPage', 'aboutPage'];
@@ -1110,6 +1185,55 @@
         function showInterestRateFlow() { showPage('interestRateFlow'); }
         function showGraphIndicators() { showPage('graphIndicators'); }
         function showAboutPage() { showPage('aboutPage'); }
+
+        // ▼▼▼ 공유 기능 함수 추가 ▼▼▼
+        function shareOn(platform) {
+            const pageUrl = encodeURIComponent(window.location.href);
+            const pageTitle = encodeURIComponent(document.title);
+            let shareUrl;
+
+            switch (platform) {
+                case 'twitter':
+                    shareUrl = `https://twitter.com/intent/tweet?url=${pageUrl}&text=${pageTitle}`;
+                    window.open(shareUrl, '_blank', 'width=600,height=400');
+                    break;
+                case 'facebook':
+                    shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`;
+                    window.open(shareUrl, '_blank', 'width=600,height=400');
+                    break;
+                case 'line':
+                    shareUrl = `https://social-plugins.line.me/lineit/share?url=${pageUrl}`;
+                    window.open(shareUrl, '_blank', 'width=600,height=400');
+                    break;
+                case 'kakao':
+                    if (window.Kakao && Kakao.isInitialized()) {
+                        Kakao.Share.sendDefault({
+                            objectType: 'feed',
+                            content: {
+                                title: document.title,
+                                description: document.querySelector('meta[name="description"]').content,
+                                imageUrl: document.querySelector('meta[property="og:image"]').content,
+                                link: {
+                                    mobileWebUrl: window.location.href,
+                                    webUrl: window.location.href,
+                                },
+                            },
+                            buttons: [
+                                {
+                                    title: '웹으로 보기',
+                                    link: {
+                                        mobileWebUrl: window.location.href,
+                                        webUrl: window.location.href,
+                                    },
+                                },
+                            ],
+                        });
+                    } else {
+                        alert('카카오 공유 기능이 준비되지 않았습니다. 잠시 후 다시 시도해주세요.');
+                    }
+                    break;
+            }
+        }
 
 
         async function showGraph(indicator) {
