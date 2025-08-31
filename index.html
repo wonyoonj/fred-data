@@ -1140,7 +1140,7 @@
             const titleText = "Ai 인공지능 Daily 분석";
             // 날짜가 제공되면 형식에 맞게 추가, 아니면 제목만 표시
             const fullTitle = analysisDate 
-                ? `${titleText}<span class="update-date-span">(Update Date: ${analysisDate})</span>`
+                ? `${titleText}<span class="update-date-span" style="font-weight: bold;">(Update Date: ${analysisDate})</span>`
                 : titleText;
 
             const liquidityTitleEl = document.getElementById('ai-analysis-title-liquidity');
@@ -1161,7 +1161,7 @@
             try {
                 if (window.Kakao && !Kakao.isInitialized()) {
                     // 여기에 본인의 카카오 개발자 JavaScript 키를 입력하세요.
-                    Kakao.init('YOUR_JAVASCRIPT_KEY');
+                    Kakao.init('4ae404e0f6a8321cf2e7533ad956ddcc');
                 }
             } catch (e) {
                 console.error("카카오 SDK 초기화 실패:", e);
