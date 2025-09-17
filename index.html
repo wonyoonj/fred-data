@@ -1042,6 +1042,7 @@
         let currentGraphData = [];
         let dollarAnimationIntervals = [];
         let currentLanguage = 'ko';
+        let analysisData = null; // AI 분석 데이터를 저장할 전역 변수
         
         const BASE_ANIMATION_DURATION = 3000;
         const BASE_DOLLAR_SIZE = 37.5; 
@@ -1300,7 +1301,7 @@
                     effr: { label: 'EFFR Rate:', desc: `<p>The EFFR rate is the effective rate at which banks lend their reserves held at the Fed to each other.</p><p><b>Why is it important?:</b> A higher EFFR can increase the burden of interbank lending, potentially reducing the amount of money borrowed and circulated, leading to a tightening effect.</p>` },
                     rrp_rate: { label: 'Reverse Repo Rate:', desc: `<p>The rate the Fed pays to borrow from financial institutions, serving as a floor to absorb excess liquidity from the market.</p><p><b>Why is it important?:</b> A higher reverse repo rate incentivizes absorbing liquidity from the market.</p>` },
                     tb3ms: { label: '3-Month T-Bill Rate:', desc: `<p>The yield on 3-month U.S. Treasury bills, reflecting short-term market interest rates and inflation expectations.</p><p><b>Why is it important?:</b> A rise in the 3-month rate could indirectly mean the U.S. government wants to issue more debt to fund its spending, or it could signal lower demand for U.S. debt.</p>` },
-                    tb1yr: { label: '2-Year T-Note Rate:', desc: `<p>The yield on 2-year U.S. Treasury notes, reflecting medium-term interest rates and economic outlook.</p><p><b>Why is it important?:</b> A rise in the 2-year rate could indirectly mean the U.S. government wants to issue more debt, or it could signal lower demand for U.S. debt.</p>` },
+                    tb1yr: { label: '2-Year T-Note Rate:', desc: `<p>The yield on 2-year U.S. Treasury notes, reflecting medium-term interest rates and economic outlook.</p><p><b>Why is it important?:</b> A rise in the 2-year rate could also imply increased government debt issuance or lower demand.</p>` },
                     tb10yr: { label: '10-Year T-Note Rate:', desc: `<p>The yield on 10-year U.S. Treasury notes is a key indicator reflecting market expectations for long-term economic growth and inflation.</p><p><b>Why is it important?:</b> It acts as a barometer for the economy's current state and future prospects, incorporating both fiscal policy and market investment sentiment.</p>` },
                     discount: { label: 'Fed Discount Rate:', desc: `<p>The interest rate the Fed charges commercial banks for loans, influencing their funding costs.</p><p><b>Why is it important?:</b> A lower discount rate can signal the Fed's intention to release more money to commercial banks.</p>` },
                     sofr_effr_spread: {
@@ -1359,7 +1360,10 @@
                 const response = await fetch(functionUrl);
                 if (!response.ok) {
                     const errorBody = await response.json();
-                    throw new Error(`'${translations[currentLanguage].indicatorTitles[indicator] || indicator}' 데이터를 찾을 수 없거나 불러오지 못했어요! (${response.status}: ${errorBody.error || response.statusText})`);
+                    const errorMsg = currentLanguage === 'ko' 
+                        ? `'${translations[currentLanguage].indicatorTitles[indicator] || indicator}' 데이터를 찾을 수 없거나 불러오지 못했어요! (${response.status}: ${errorBody.error || response.statusText})`
+                        : `Could not find or load data for '${translations[currentLanguage].indicatorTitles[indicator] || indicator}'! (${response.status}: ${errorBody.error || response.statusText})`;
+                    throw new Error(errorMsg);
                 }
                 const text = await response.text();
                 const parsedData = await parseCSV(text);
@@ -1423,31 +1427,42 @@
                 if (!response.ok) {
                     throw new Error('Network response was not ok.');
                 }
-                const data = await response.json();
-
-                const liquidityContainer = document.getElementById('liquidity-analysis-container');
-                const interestRateContainer = document.getElementById('interest-rate-analysis-container');
-
-                if (liquidityContainer && data.liquidity_analysis) {
-                    liquidityContainer.innerHTML = data.liquidity_analysis;
-                }
-
-                if (interestRateContainer && data.interest_rate_analysis) {
-                    interestRateContainer.innerHTML = data.interest_rate_analysis;
-                }
-                
-                if (data.date) {
-                    setAiAnalysisTitles(data.date);
-                } else {
-                    setAiAnalysisTitles(null);
-                }
+                analysisData = await response.json(); // Fetch and store in global variable
+                displayFinancialAnalysis(); // Display for the default language
 
             } catch (error) {
                 console.error('Failed to load analysis data:', error);
+                const errorMsg = currentLanguage === 'ko' ? '분석 데이터를 불러오는 데 실패했습니다.' : 'Failed to load analysis data.';
                 const liquidityContainer = document.getElementById('liquidity-analysis-container');
-                if(liquidityContainer) liquidityContainer.textContent = '유동성 분석 데이터를 불러오는 데 실패했습니다.';
+                if(liquidityContainer) liquidityContainer.textContent = errorMsg;
                 const interestRateContainer = document.getElementById('interest-rate-analysis-container');
-                if(interestRateContainer) interestRateContainer.textContent = '금리 분석 데이터를 불러오는 데 실패했습니다.';
+                if(interestRateContainer) interestRateContainer.textContent = errorMsg;
+                setAiAnalysisTitles(null);
+            }
+        }
+
+        function displayFinancialAnalysis() {
+            if (!analysisData) return; // Exit if data hasn't been loaded
+
+            const liquidityContainer = document.getElementById('liquidity-analysis-container');
+            const interestRateContainer = document.getElementById('interest-rate-analysis-container');
+
+            // Select the correct analysis text based on the current language
+            const liquidityKey = currentLanguage === 'en' ? 'liquidity_analysis_en' : 'liquidity_analysis';
+            const interestKey = currentLanguage === 'en' ? 'interest_rate_analysis_en' : 'interest_rate_analysis';
+
+            if (liquidityContainer && analysisData[liquidityKey]) {
+                liquidityContainer.innerHTML = analysisData[liquidityKey];
+            }
+
+            if (interestRateContainer && analysisData[interestKey]) {
+                interestRateContainer.innerHTML = analysisData[interestKey];
+            }
+            
+            // Set titles with the date from the JSON file
+            if (analysisData.date) {
+                setAiAnalysisTitles(analysisData.date);
+            } else {
                 setAiAnalysisTitles(null);
             }
         }
@@ -1469,7 +1484,6 @@
             }
         }
         
-        // ▼▼▼ 언어 설정 함수 ▼▼▼
         function setLanguage(lang) {
             currentLanguage = lang;
             document.documentElement.lang = lang;
@@ -1481,27 +1495,23 @@
                 }
             });
 
-            // 버튼 활성 상태 업데이트
             document.querySelectorAll('.lang-selector').forEach(selector => {
                 selector.querySelector('.lang-btn.active').classList.remove('active');
                 selector.querySelector(`.lang-btn[onclick="setLanguage('${lang}')"]`).classList.add('active');
             });
             
-            // 동적 콘텐츠 업데이트
             const activePage = document.querySelector('.page[style*="block"]').id;
             if (activePage === 'liquidityFlow') {
                 updateLiquidityFlowAnimation();
             } else if (activePage === 'interestRateFlow') {
                 updateInterestRateFlowData();
             } else if (activePage === 'graphPage') {
-                showGraph(currentIndicator); // 그래프 제목, 정보 등 다시 렌더링
+                showGraph(currentIndicator); 
             } else if (activePage === 'infoPage') {
-                showInfo(); // 정보 페이지 다시 렌더링
+                showInfo(); 
             }
-            // AI 분석 제목 업데이트
-            const analysisDateEl = document.querySelector('#ai-analysis-title-liquidity .update-date-span, #ai-analysis-title-interest .update-date-span');
-            const analysisDate = analysisDateEl ? analysisDateEl.textContent.match(/\(([^)]+)\)/)[1].replace('Update Date: ', '') : null;
-            setAiAnalysisTitles(analysisDate);
+            
+            displayFinancialAnalysis(); // Refresh AI analysis text on language change
         }
 
 
@@ -1515,7 +1525,7 @@
             } catch (e) {
                 console.error("Kakao SDK init failed:", e);
             }
-            setLanguage('ko'); // 기본 언어 설정
+            setLanguage('ko'); 
         });
 
         const pages = ['liquidityFlow', 'interestRateFlow', 'graphIndicators', 'graphPage', 'infoPage', 'aboutPage'];
@@ -1569,7 +1579,7 @@
                             },
                             buttons: [
                                 {
-                                    title: '웹으로 보기',
+                                    title: currentLanguage === 'ko' ? '웹으로 보기' : 'View on Web',
                                     link: {
                                         mobileWebUrl: window.location.href,
                                         webUrl: window.location.href,
@@ -1578,7 +1588,7 @@
                             ],
                         });
                     } else {
-                        alert('카카오 공유 기능이 준비되지 않았습니다. 잠시 후 다시 시도해주세요.');
+                        alert(currentLanguage === 'ko' ? '카카오 공유 기능이 준비되지 않았습니다.' : 'Kakao Share is not ready.');
                     }
                     break;
             }
@@ -1601,7 +1611,6 @@
             const langDict = translations[currentLanguage];
             document.getElementById('graphTitle').textContent = langDict.indicatorTitles[indicator] || indicator;
             
-            // Update back/info buttons text
             document.querySelector('#graphPage .back-btn').textContent = langDict.backBtnText;
             document.querySelector('#graphPage .info-btn').textContent = langDict.infoBtnText;
             
@@ -2029,7 +2038,7 @@
         function drag(e) {
             if (!isDragging || !myChart) return;
             e.preventDefault();
-            const { x } = myChart.scales; const dataRange = x.max - x.min; const pixelRange = myChart.chartArea.right - my.chartArea.left;
+            const { x } = myChart.scales; const dataRange = x.max - x.min; const pixelRange = myChart.chartArea.right - myChart.chartArea.left;
             if (pixelRange <= 0) return;
             const dataOffset = ((e.pageX - e.target.getBoundingClientRect().left - startX) * 0.6 / pixelRange) * dataRange;
             let newMin = startScrollX - dataOffset; let newMax = newMin + dataRange;
