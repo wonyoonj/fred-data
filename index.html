@@ -19,6 +19,10 @@
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
     <meta name="naver-site-verification" content="3c5e34898f2cef35432619edafb1d9362ab55063" />
     <meta name="google-site-verification" content="_jcjvlFGv3HiGbo85WZ6IU_dfDIQx2j2JH0k5uMHq7U" />
+    <link rel="alternate" hreflang="ko" href="https://americayoudongsung.netlify.app/">
+    <link rel="alternate" hreflang="en" href="https://americayoudongsung.netlify.app/">
+    <link rel="alternate" hreflang="x-default" href="https://americayoudongsung.netlify.app/">
+
     <title>원뎅이의 미국 통화 유동성 현황</title>
     <meta name="title" content="원뎅이의 미국 통화 유동성 현황">
     <meta name="subject" content="실시간 지표 데이터를 통해, 현재 미국 시장의 통화 유동성 흐름을 한눈에 파악해보세요!">
@@ -694,7 +698,7 @@
         <div id="liquidityFlow" class="page">
             <h1 class="page-title" data-lang-key="pageTitle">원뎅이의 미국 통화 유동성 현황</h1>
             
-            <div class="source-credit-main" data-lang-key="sourceCredit">자료 출처: FRED, Office of Financial Research (OFR)</div>
+            
             
             <div style="margin-top: 80px;">
                 <div class="lang-selector">
@@ -783,7 +787,7 @@
                 </div>
             </div>
 
-            
+            <div class="source-credit-main" data-lang-key="sourceCredit">자료 출처: FRED, Office of Financial Research (OFR)</div>
 
             <div class="info-box">
                 <h3 data-lang-key="interpretTitle">데이터는 어떻게 해석해야 하나요?</h3>
@@ -808,7 +812,7 @@
         <div id="interestRateFlow" class="page" style="display:none;">
             <div class="page-title" data-lang-key="pageTitle">원뎅이의 미국 통화 유동성 현황</div>
             
-            <div class="source-credit-main" data-lang-key="sourceCreditInterest">자료 출처: FRED</div>
+            
 
             <div style="margin-top: 80px;">
                 <div class="lang-selector">
@@ -906,7 +910,7 @@
                 </div>
             </div>
 
-            
+            <div class="source-credit-main" data-lang-key="sourceCreditInterest">자료 출처: FRED</div>
 
             <div class="info-box">
                 <h3 data-lang-key="interestRatesTitle">주요 금리 지표 안내</h3>
@@ -1221,6 +1225,7 @@
             },
             en: {
                 pageTitle: `Wondeng's U.S. Monetary Liquidity Status`,
+                metaDescription: 'Visualizes the liquidity flow between the U.S. FED, Government, MMF, and Market with at-a-glance animations.',
                 sourceCredit: 'Source: FRED, Office of Financial Research (OFR)',
                 sourceCreditInterest: 'Source: FRED',
                 welcomeTitle: 'Grasp U.S. Monetary Liquidity at a Glance!',
@@ -1508,8 +1513,33 @@
             }
         }
         
+        function updateMetaTagsForLanguage(lang) {
+            const langData = translations[lang];
+            if (!langData) return;
+
+            // <title> 태그 업데이트
+            document.title = langData.pageTitle;
+
+            // <meta name="description"> 태그 업데이트
+            const descriptionTag = document.querySelector('meta[name="description"]');
+            if (descriptionTag) {
+                descriptionTag.setAttribute('content', langData.metaDescription || translations['ko'].description); // 영어 설명이 없으면 한국어 기본값 사용
+            }
+
+            // Open Graph(og) 태그 업데이트 (소셜 공유용)
+            const ogTitleTag = document.querySelector('meta[property="og:title"]');
+            if (ogTitleTag) {
+                ogTitleTag.setAttribute('content', langData.pageTitle);
+            }
+            const ogDescriptionTag = document.querySelector('meta[property="og:description"]');
+            if (ogDescriptionTag) {
+                ogDescriptionTag.setAttribute('content', langData.metaDescription || translations['ko'].description);
+            }
+        }
+
         function setLanguage(lang) {
             currentLanguage = lang;
+            updateMetaTagsForLanguage(lang);
             document.documentElement.lang = lang;
 
             document.querySelectorAll('[data-lang-key]').forEach(el => {
