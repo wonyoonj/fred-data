@@ -1230,7 +1230,7 @@
         
         async function loadFinancialAnalysis() {
             try {
-                const response = await fetch('csvfile/financial_analysis.json');
+                const response = await fetch('../csvfile/financial_analysis.json');
                 if (!response.ok) {
                     throw new Error('Network response was not ok.');
                 }
@@ -1847,7 +1847,7 @@
 
         function createAndAnimateDollar(animationClass, size, duration) {
             const dollar = document.createElement('img');
-            dollar.src = "./icon/dollar.jpg"; dollar.alt = "Dollar"; dollar.className = 'dollar-animated-object';
+            dollar.src = "../icon/dollar.jpg"; dollar.alt = "Dollar"; dollar.className = 'dollar-animated-object';
             dollar.style.width = `${size}px`; dollar.style.height = `${size}px`;
             dollar.style.setProperty('--animation-duration', `${duration / 1000}s`);
             dollar.classList.add(animationClass);
