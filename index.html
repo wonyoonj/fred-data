@@ -19,9 +19,10 @@
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
     <meta name="naver-site-verification" content="3c5e34898f2cef35432619edafb1d9362ab55063" />
     <meta name="google-site-verification" content="_jcjvlFGv3HiGbo85WZ6IU_dfDIQx2j2JH0k5uMHq7U" />
-    <link rel="alternate" hreflang="ko" href="https://americayoudongsung.netlify.app/">
-    <link rel="alternate" hreflang="en" href="https://americayoudongsung.netlify.app/">
-    <link rel="alternate" hreflang="x-default" href="https://americayoudongsung.netlify.app/">
+    
+    <link rel="alternate" hreflang="ko" href="https://americayoudongsung.netlify.app/" />
+    <link rel="alternate" hreflang="en" href="https://americayoudongsung.netlify.app/en/" />
+    <link rel="alternate" hreflang="x-default" href="https://americayoudongsung.netlify.app/" />
 
     <title>원뎅이의 미국 통화 유동성 현황</title>
     <meta name="title" content="원뎅이의 미국 통화 유동성 현황">
@@ -55,6 +56,7 @@
     <base target="_top">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        /* CSS 스타일 코드는 기존과 동일하게 유지됩니다. */
         body { font-family: 'Arial', sans-serif; margin: 0; padding: 0; background: #f4f4f4; color: #333; }
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; min-height: 100vh; }
         .header { text-align: center; padding: 10px; background: #007bff; color: white; }
@@ -697,37 +699,33 @@
     <div class="container">
         
         <div id="liquidityFlow" class="page">
-            <h1 class="page-title" data-lang-key="pageTitle">원뎅이의 미국 통화 유동성 현황</h1>
-            
-            
+            <h1 class="page-title">원뎅이의 미국 통화 유동성 현황</h1>
             
             <div style="margin-top: 80px;">
                 <div class="lang-selector">
-                    <button class="lang-btn active" onclick="setLanguage('ko')">한국어</button>
-                    <button class="lang-btn" onclick="setLanguage('en')">English</button>
+                    <button class="lang-btn active">한국어</button>
+                    <button class="lang-btn" onclick="window.location.href='/en/'">English</button>
                 </div>
             </div>
 
-            
-
             <div class="info-box">
-                <h2 data-lang-key="welcomeTitle">미국 통화 유동성을 한눈에 파악하세요!</h2>
-                <p data-lang-key="welcomeP1">
+                <h2>미국 통화 유동성을 한눈에 파악하세요!</h2>
+                <p>
                     '원뎅이의 미국 통화 유동성 현황'에 오신 것을 환영합니다. 본 웹사이트는 투자자와 경제에 관심 있는 모든 분들을 위해 미국 시장의 복잡한 통화 유동성 흐름을 실시간 데이터 기반의 애니메이션으로 시각화하여 제공합니다.
                 </p>
-                <p data-lang-key="welcomeP2">
+                <p>
                     미국 연방준비제도(FED), 정부(TGA), 머니마켓펀드(MMF), 그리고 시장 사이에서 돈이 어떻게 흐르는지 직관적으로 이해함으로써, 금리 변동, 양적완화 및 긴축 정책의 영향을 보다 쉽게 파악하고 현명한 투자 결정을 내리는 데 도움을 드리고자 합니다.
                 </p>
-                <h3 data-lang-key="featuresTitle">주요 기능 안내</h3>
+                <h3>주요 기능 안내</h3>
                 <ul>
-                    <li data-lang-key="feature1"><strong>실시간 유동성 흐름:</strong> 각 경제 주체(정부, 중앙은행, MMF, 시장) 간의 월별 자금 이동 규모를 애니메이션으로 시각화하여 돈의 흐름을 쉽게 추적할 수 있습니다.</li>
-                    <li data-lang-key="feature2"><strong>핵심 금리 현황:</strong> SOFR, EFFR, 국채 금리 등 시장의 중요한 금리 지표들을 실시간으로 확인하고 그 의미를 파악할 수 있습니다.</li>
-                    <li data-lang-key="feature3"><strong>상세 데이터 그래프:</strong> TGA 잔고, M2 통화량, S&P500 지수 등 30여 개의 주요 경제 지표를 기간별 상세 그래프로 직접 분석할 수 있습니다. 각 지표에 대한 설명(Info)도 제공합니다.</li>
+                    <li><strong>실시간 유동성 흐름:</strong> 각 경제 주체(정부, 중앙은행, MMF, 시장) 간의 월별 자금 이동 규모를 애니메이션으로 시각화하여 돈의 흐름을 쉽게 추적할 수 있습니다.</li>
+                    <li><strong>핵심 금리 현황:</strong> SOFR, EFFR, 국채 금리 등 시장의 중요한 금리 지표들을 실시간으로 확인하고 그 의미를 파악할 수 있습니다.</li>
+                    <li><strong>상세 데이터 그래프:</strong> TGA 잔고, M2 통화량, S&P500 지수 등 30여 개의 주요 경제 지표를 기간별 상세 그래프로 직접 분석할 수 있습니다. 각 지표에 대한 설명(Info)도 제공합니다.</li>
                 </ul>
-                <p style="margin-top: 20px; text-align: center; font-weight: bold;" data-lang-key="explorePrompt">
+                <p style="margin-top: 20px; text-align: center; font-weight: bold;">
                     이제 아래의 시각화 자료를 통해 복잡한 경제의 흐름을 쉽게 탐색해 보세요.
                 </p>
-                <p style="text-align: center;" data-lang-key="hoverPrompt">
+                <p style="text-align: center;">
                     (마우스를 갖다대면, 지표 설명이 보여요!)
                 </p>
             </div>
@@ -742,7 +740,7 @@
                 <a class="share-button facebook" onclick="shareOn('facebook')">Facebook</a>
                 <a class="share-button kakao" onclick="shareOn('kakao')">Kakao</a>
                 <a class="share-button line" onclick="shareOn('line')">LINE</a>
-                <a class="share-button copy-link" onclick="copyLink()" data-lang-key="copyLink">링크 복사</a>
+                <a class="share-button copy-link" onclick="copyLink()">링크 복사</a>
             </div>
             <div class="animation-container">
                 <div class="tga-popup-container popup-container liquidity-tga-popup">
@@ -770,72 +768,68 @@
                 </div>
                 
                 <div class="icon-container FED-container">
-                    <span class="icon-label" data-lang-key="fedLabel">중앙은행 FED</span>
+                    <span class="icon-label">중앙은행 FED</span>
                     <img src="./icon/fed.jpg" alt="FED" class="icon">
                 </div>
                 <div class="icon-container Government-container">
                     <img src="./icon/government.JPG" alt="Government TGA" class="icon">
-                    <span class="icon-label" data-lang-key="govLabel">미국 정부</span>
+                    <span class="icon-label">미국 정부</span>
                 </div>
                 <div class="icon-container Market-container">
                     <img src="./icon/Market.jpg" alt="Market" class="icon">
-                    <span class="icon-label" data-lang-key="marketLabel">미국 시장(Market)</span>
+                    <span class="icon-label">미국 시장(Market)</span>
                     <div id="netMarketFlowDisplay"></div>
                     </div>
                 <div class="icon-container MMF-container">
                     <img src="./icon/MMF.jpg" alt="MMF" class="icon">
-                    <span class="icon-label" data-lang-key="mmfLabel">MMF<br>(Money Market Fund)</span>
+                    <span class="icon-label">MMF<br>(Money Market Fund)</span>
                 </div>
             </div>
 
-            <div class="source-credit-main" data-lang-key="sourceCredit">자료 출처: FRED, Office of Financial Research (OFR)</div>
+            <div class="source-credit-main">자료 출처: FRED, Office of Financial Research (OFR)</div>
 
             <div class="info-box">
-                <h3 data-lang-key="interpretTitle">데이터는 어떻게 해석해야 하나요?</h3>
-                <p data-lang-key="interpretP1">메인 페이지의 애니메이션은 각 주체 간의 '최근 한 달간 자금 흐름 변화량'을 나타냅니다. 숫자의 의미는 다음과 같습니다.</p>
+                <h3>데이터는 어떻게 해석해야 하나요?</h3>
+                <p>메인 페이지의 애니메이션은 각 주체 간의 '최근 한 달간 자금 흐름 변화량'을 나타냅니다. 숫자의 의미는 다음과 같습니다.</p>
                 <ul>
-                    <li data-lang-key="interpretTGA1"><span class="internal-link" onclick="showGraph('WTREGEN')"><strong>(정부의) TGA 잔고</strong></span> (<span class="negative">- 음수</span>): 정부가 국채 발행 감소나 재정 지출 확대를 통해 시장에 돈을 풀고 있다는 의미입니다. (유동성 공급)</li>
-                    <li data-lang-key="interpretTGA2"><span class="internal-link" onclick="showGraph('WTREGEN')"><strong>(정부의) TGA 잔고</strong></span> (<span class="positive">+ 양수</span>): 정부가 세금을 많이 걷거나 국채 발행을 늘려 시장의 돈을 흡수하고 있다는 의미입니다. (유동성 흡수)</li>
+                    <li><span class="internal-link" onclick="showGraph('WTREGEN')"><strong>(정부의) TGA 잔고</strong></span> (<span class="negative">- 음수</span>): 정부가 국채 발행 감소나 재정 지출 확대를 통해 시장에 돈을 풀고 있다는 의미입니다. (유동성 공급)</li>
+                    <li><span class="internal-link" onclick="showGraph('WTREGEN')"><strong>(정부의) TGA 잔고</strong></span> (<span class="positive">+ 양수</span>): 정부가 세금을 많이 걷거나 국채 발행을 늘려 시장의 돈을 흡수하고 있다는 의미입니다. (유동성 흡수)</li>
                     <br>
-                    <li data-lang-key="interpretFED1"><span class="internal-link" onclick="showGraph('WALCL')"><strong>연준(FED) 유동성</strong></span> (<span class="negative">- 음수</span>): 연준이 양적긴축(자산 매각) 등을 통해 시장의 돈을 거둬들이고 있다는 의미입니다. 혹은 금융기관들이 연준에 역레포 자금을 맡기면서 유동성의 흡수를 의미합니다. (유동성 흡수)</li>
-                    <li data-lang-key="interpretFED2"><span class="internal-link" onclick="showGraph('WALCL')"><strong>연준(FED) 유동성</strong></span> (<span class="positive">+ 양수</span>): 연준이 양적완화(자산 매입) 등을 통해 시장에 돈을 공급하고 있다는 의미입니다. 혹은 금융기관들이 연준에 맡겨뒀던 역레포 자금을 시장으로 돌리고 있다는 의미입니다. (유동성 공급)</li>
+                    <li><span class="internal-link" onclick="showGraph('WALCL')"><strong>연준(FED) 유동성</strong></span> (<span class="negative">- 음수</span>): 연준이 양적긴축(자산 매각) 등을 통해 시장의 돈을 거둬들이고 있다는 의미입니다. 혹은 금융기관들이 연준에 역레포 자금을 맡기면서 유동성의 흡수를 의미합니다. (유동성 흡수)</li>
+                    <li><span class="internal-link" onclick="showGraph('WALCL')"><strong>연준(FED) 유동성</strong></span> (<span class="positive">+ 양수</span>): 연준이 양적완화(자산 매입) 등을 통해 시장에 돈을 공급하고 있다는 의미입니다. 혹은 금융기관들이 연준에 맡겨뒀던 역레포 자금을 시장으로 돌리고 있다는 의미입니다. (유동성 공급)</li>
                     <br>
-                    <li data-lang-key="interpretMMFFED1"><span class="internal-link" onclick="showGraph('RRPONTSYD')"><strong>MMF → FED</strong></span> (<span class="positive">+ 양수</span>): MMF가 연준의 역레포(RRP)를 통해 자금을 예치하여 시중 유동성이 흡수됨을 의미합니다.</li>
-                    <li data-lang-key="interpretMMFFED2"><span class="internal-link" onclick="showGraph('RRPONTSYD')"><strong>MMF → FED</strong></span> (<span class="negative">- 음수</span>): MMF가 연준에 예치했던 역레포 자금을 회수하여 시중 유동성이 공급됨을 의미합니다.</li>
+                    <li><span class="internal-link" onclick="showGraph('RRPONTSYD')"><strong>MMF → FED</strong></span> (<span class="positive">+ 양수</span>): MMF가 연준의 역레포(RRP)를 통해 자금을 예치하여 시중 유동성이 흡수됨을 의미합니다.</li>
+                    <li><span class="internal-link" onclick="showGraph('RRPONTSYD')"><strong>MMF → FED</strong></span> (<span class="negative">- 음수</span>): MMF가 연준에 예치했던 역레포 자금을 회수하여 시중 유동성이 공급됨을 의미합니다.</li>
                     <br>
-                    <li data-lang-key="interpretMMFMarket1"><span class="internal-link" onclick="showGraph('MMMFFAQ027S')"><strong>MMF → 시장</strong></span> (<span class="positive">+ 양수</span>): MMF가 국채, 회사채 등 시장의 자산을 매입하여 시장에 유동성을 공급하고 있음을 의미합니다.</li>
-                    <li data-lang-key="interpretMMFMarket2"><span class="internal-link" onclick="showGraph('MMMFFAQ027S')"><strong>MMF → 시장</strong></span> (<span class="negative">- 음수</span>): 시장 참여자들이 MMF 펀드에 투자하여 시중 유동성이 MMF로 흡수되고 있음을 의미합니다.</li>
+                    <li><span class="internal-link" onclick="showGraph('MMMFFAQ027S')"><strong>MMF → 시장</strong></span> (<span class="positive">+ 양수</span>): MMF가 국채, 회사채 등 시장의 자산을 매입하여 시장에 유동성을 공급하고 있음을 의미합니다.</li>
+                    <li><span class="internal-link" onclick="showGraph('MMMFFAQ027S')"><strong>MMF → 시장</strong></span> (<span class="negative">- 음수</span>): 시장 참여자들이 MMF 펀드에 투자하여 시중 유동성이 MMF로 흡수되고 있음을 의미합니다.</li>
                     </ul>
-                <p data-lang-key="interpretConclusion">결론적으로, <span style="font-weight: bold;">'시장(Market)'으로 들어오는 돈의 총합(Net Market Flow)</span>이 <span class="negative">파란색 음수(-)</span>이면 <span style="font-weight: bold;">시장 유동성이 줄어드는 것</span>으로, <span class="positive">빨간색 양수(+)</span>이면 <span style="font-weight: bold;">유동성이 풍부해지는 것</span>으로 해석할 수 있습니다.</p>
+                <p>결론적으로, <span style="font-weight: bold;">'시장(Market)'으로 들어오는 돈의 총합(Net Market Flow)</span>이 <span class="negative">파란색 음수(-)</span>이면 <span style="font-weight: bold;">시장 유동성이 줄어드는 것</span>으로, <span class="positive">빨간색 양수(+)</span>이면 <span style="font-weight: bold;">유동성이 풍부해지는 것</span>으로 해석할 수 있습니다.</p>
             </div>
             </div>
 
         <div id="interestRateFlow" class="page" style="display:none;">
-            <div class="page-title" data-lang-key="pageTitle">원뎅이의 미국 통화 유동성 현황</div>
+            <div class="page-title">원뎅이의 미국 통화 유동성 현황</div>
             
-            
-
             <div style="margin-top: 80px;">
                 <div class="lang-selector">
-                    <button class="lang-btn active" onclick="setLanguage('ko')">한국어</button>
-                    <button class="lang-btn" onclick="setLanguage('en')">English</button>
+                    <button class="lang-btn active">한국어</button>
+                    <button class="lang-btn" onclick="window.location.href='/en/'">English</button>
                 </div>
             </div>
 
-            
-
             <div class="info-box">
-                <h2 data-lang-key="welcomeTitle">미국 통화 유동성을 한눈에 파악하세요!</h2>
-                <h3 data-lang-key="featuresTitle">주요 기능 안내</h3>
+                <h2>미국 통화 유동성을 한눈에 파악하세요!</h2>
+                <h3>주요 기능 안내</h3>
                 <ul>
-                    <li data-lang-key="feature1"><strong>실시간 유동성 흐름:</strong> 각 경제 주체(정부, 중앙은행, MMF, 시장) 간의 월별 자금 이동 규모를 애니메이션으로 시각화하여 돈의 흐름을 쉽게 추적할 수 있습니다.</li>
-                    <li data-lang-key="feature2"><strong>핵심 금리 현황:</strong> SOFR, EFFR, 국채 금리 등 시장의 중요한 금리 지표들을 실시간으로 확인하고 그 의미를 파악할 수 있습니다.</li>
-                    <li data-lang-key="feature3"><strong>상세 데이터 그래프:</strong> TGA 잔고, M2 통화량, S&P500 지수 등 30여 개의 주요 경제 지표를 기간별 상세 그래프로 직접 분석할 수 있습니다. 각 지표에 대한 설명(Info)도 제공합니다.</li>
+                    <li><strong>실시간 유동성 흐름:</strong> 각 경제 주체(정부, 중앙은행, MMF, 시장) 간의 월별 자금 이동 규모를 애니메이션으로 시각화하여 돈의 흐름을 쉽게 추적할 수 있습니다.</li>
+                    <li><strong>핵심 금리 현황:</strong> SOFR, EFFR, 국채 금리 등 시장의 중요한 금리 지표들을 실시간으로 확인하고 그 의미를 파악할 수 있습니다.</li>
+                    <li><strong>상세 데이터 그래프:</strong> TGA 잔고, M2 통화량, S&P500 지수 등 30여 개의 주요 경제 지표를 기간별 상세 그래프로 직접 분석할 수 있습니다. 각 지표에 대한 설명(Info)도 제공합니다.</li>
                 </ul>
-                <p style="margin-top: 20px; text-align: center; font-weight: bold;" data-lang-key="explorePrompt">
+                <p style="margin-top: 20px; text-align: center; font-weight: bold;">
                     이제 아래의 시각화 자료를 통해 복잡한 경제의 흐름을 쉽게 탐색해 보세요.
                 </p>
-                <p style="text-align: center;" data-lang-key="hoverPrompt">
+                <p style="text-align: center;">
                     (마우스를 갖다대면, 지표 설명이 보여요!)
                 </p>
             </div>
@@ -850,7 +844,7 @@
                 <a class="share-button facebook" onclick="shareOn('facebook')">Facebook</a>
                 <a class="share-button kakao" onclick="shareOn('kakao')">Kakao</a>
                 <a class="share-button line" onclick="shareOn('line')">LINE</a>
-                <a class="share-button copy-link" onclick="copyLink()" data-lang-key="copyLink">링크 복사</a>
+                <a class="share-button copy-link" onclick="copyLink()">링크 복사</a>
             </div>
             <div class="animation-container">
                 <div class="tga-popup-container popup-container interest-tb3ms-popup">
@@ -893,96 +887,96 @@
                     <div class="tooltip-container" id="sofr-effr-spread-tooltip-content_interest"></div>
                 </div>
                 <div class="icon-container FED-container">
-                    <span class="icon-label" data-lang-key="fedLabel">중앙은행 FED</span>
-                    <img src="./icon/fed.jpg" alt="FED" class="icon">
+                    <span class="icon-label">중앙은행 FED</span>
+                    <img src="../icon/fed.jpg" alt="FED" class="icon">
                 </div>
                 <div class="icon-container Government-container">
-                    <img src="./icon/government.JPG" alt="Government TGA" class="icon">
-                    <span class="icon-label" data-lang-key="govLabel">미국 정부</span>
+                    <img src="../icon/government.JPG" alt="Government TGA" class="icon">
+                    <span class="icon-label">미국 정부</span>
                 </div>
                 <div class="icon-container Market-container">
-                    <img src="./icon/Market.jpg" alt="Market" class="icon">
-                    <span class="icon-label" data-lang-key="marketLabel">미국 시장(Market)</span>
+                    <img src="../icon/Market.jpg" alt="Market" class="icon">
+                    <span class="icon-label">미국 시장(Market)</span>
                     <div id="netMarketFlowDisplay_interest"></div>
                     </div>
                 <div class="icon-container MMF-container">
-                    <img src="./icon/MMF.jpg" alt="MMF" class="icon">
-                    <span class="icon-label" data-lang-key="bankLabel">시중은행(Bank)</span>
+                    <img src="../icon/MMF.jpg" alt="MMF" class="icon">
+                    <span class="icon-label">시중은행(Bank)</span>
                 </div>
             </div>
 
-            <div class="source-credit-main" data-lang-key="sourceCreditInterest">자료 출처: FRED</div>
+            <div class="source-credit-main">자료 출처: FRED</div>
 
             <div class="info-box">
-                <h3 data-lang-key="interestRatesTitle">주요 금리 지표 안내</h3>
+                <h3>주요 금리 지표 안내</h3>
                 <ul>
-                    <li data-lang-key="rateRRP"><span class="internal-link" onclick="showGraph('RRPONTSYAWARD')"><strong>역레포 금리</strong></span>: 연준이 금융기관으로부터 자금을 빌릴 때 지급하는 금리로, 시중 유동성을 흡수하는 기준이 됩니다.</li>
-                    <li data-lang-key="rateDiscount"><span class="internal-link" onclick="showGraph('DPCREDIT')"><strong>연준 할인율</strong></span>: 연준이 상업 은행에 대출해 줄 때 적용하는 이자율로, 금융기관의 자금 조달 비용을 결정합니다.</li>
-                    <li data-lang-key="rateEFFR"><span class="internal-link" onclick="showGraph('FEDFUNDS')"><strong>EFFR 금리</strong></span>: 은행 간에 자금을 빌릴 때 적용되는 실제 금리로, 연준의 통화 정책 방향성을 보여줍니다.</li>
-                    <li data-lang-key="rateSOFR"><span class="internal-link" onclick="showGraph('SOFR')"><strong>SOFR 금리</strong></span>: 국채를 담보로 한 초단기 대출 금리로, 단기 자금 시장의 유동성 상황을 직접적으로 반영합니다.</li>
-                    <li data-lang-key="rate3M"><span class="internal-link" onclick="showGraph('DGS3MO')"><strong>3개월 미 국채금리</strong></span>: 3개월 만기 국채 수익률로, 단기 시장 금리와 인플레이션 기대치를 나타냅니다.</li>
-                    <li data-lang-key="rate2Y"><span class="internal-link" onclick="showGraph('DGS2')"><strong>2년물 미 국채금리</strong></span>: 2년 만기 국채 수익률로, 중단기 경제 전망을 반영합니다.</li>
-                    <li data-lang-key="rate10Y"><span class="internal-link" onclick="showGraph('DGS10')"><strong>10년물 미 국채금리</strong></span>: 10년 만기 국채 수익률로, 장기 경제 성장과 인플레이션에 대한 시장의 기대를 보여주는 핵심 지표입니다.</li>
-                    <li data-lang-key="rateSpread1"><span class="internal-link" onclick="showGraph('SOFR_FEDFUNDS_SPREAD')"><strong>SOFR EFFR 스프레드</strong></span>: 담보(SOFR)와 무담보(EFFR) 단기 대출 금리 차이로, 시장의 유동성 및 신용 위험 상태를 나타냅니다. 스프레드 확대는 유동성 긴축 신호일 수 있습니다.</li>
-                    <li data-lang-key="rateSpread2"><span class="internal-link" onclick="showGraph('YIELD_SPREAD')"><strong>미국 장단기 금리차</strong></span>: 경기 침체의 선행 지표로, 장기 금리가 단기 금리보다 낮아지는 역전 현상이 발생하면 향후 경기 둔화 가능성을 시사합니다.</li>
+                    <li><span class="internal-link" onclick="showGraph('RRPONTSYAWARD')"><strong>역레포 금리</strong></span>: 연준이 금융기관으로부터 자금을 빌릴 때 지급하는 금리로, 시중 유동성을 흡수하는 기준이 됩니다.</li>
+                    <li><span class="internal-link" onclick="showGraph('DPCREDIT')"><strong>연준 할인율</strong></span>: 연준이 상업 은행에 대출해 줄 때 적용하는 이자율로, 금융기관의 자금 조달 비용을 결정합니다.</li>
+                    <li><span class="internal-link" onclick="showGraph('FEDFUNDS')"><strong>EFFR 금리</strong></span>: 은행 간에 자금을 빌릴 때 적용되는 실제 금리로, 연준의 통화 정책 방향성을 보여줍니다.</li>
+                    <li><span class="internal-link" onclick="showGraph('SOFR')"><strong>SOFR 금리</strong></span>: 국채를 담보로 한 초단기 대출 금리로, 단기 자금 시장의 유동성 상황을 직접적으로 반영합니다.</li>
+                    <li><span class="internal-link" onclick="showGraph('DGS3MO')"><strong>3개월 미 국채금리</strong></span>: 3개월 만기 국채 수익률로, 단기 시장 금리와 인플레이션 기대치를 나타냅니다.</li>
+                    <li><span class="internal-link" onclick="showGraph('DGS2')"><strong>2년물 미 국채금리</strong></span>: 2년 만기 국채 수익률로, 중단기 경제 전망을 반영합니다.</li>
+                    <li><span class="internal-link" onclick="showGraph('DGS10')"><strong>10년물 미 국채금리</strong></span>: 10년 만기 국채 수익률로, 장기 경제 성장과 인플레이션에 대한 시장의 기대를 보여주는 핵심 지표입니다.</li>
+                    <li><span class="internal-link" onclick="showGraph('SOFR_FEDFUNDS_SPREAD')"><strong>SOFR EFFR 스프레드</strong></span>: 담보(SOFR)와 무담보(EFFR) 단기 대출 금리 차이로, 시장의 유동성 및 신용 위험 상태를 나타냅니다. 스프레드 확대는 유동성 긴축 신호일 수 있습니다.</li>
+                    <li><span class="internal-link" onclick="showGraph('YIELD_SPREAD')"><strong>미국 장단기 금리차</strong></span>: 경기 침체의 선행 지표로, 장기 금리가 단기 금리보다 낮아지는 역전 현상이 발생하면 향후 경기 둔화 가능성을 시사합니다.</li>
                     </ul>
             </div>
             </div>
 
         <div id="graphIndicators" class="page" style="display:none;">
             <div class="indicator-section">
-                <h3 data-lang-key="indicatorsFundTitle">미국 자금 현황</h3>
-                <p data-lang-key="indicatorsFundDesc">미국 정부, 은행, 시장에 현재 얼마나 많은 돈이 있는지 보여주는 핵심 지표들입니다.</p>
+                <h3>미국 자금 현황</h3>
+                <p>미국 정부, 은행, 시장에 현재 얼마나 많은 돈이 있는지 보여주는 핵심 지표들입니다.</p>
                 <div class="indicator-buttons">
-                    <button class="button" onclick="showGraph('WTREGEN')" data-lang-key="btnTGA">미 정부 TGA 잔고</button>
-                    <button class="button" onclick="showGraph('WRESBAL')" data-lang-key="btnReserves">미 은행 지급준비금</button>
-                    <button class="button" onclick="showGraph('RRPONTSYD')" data-lang-key="btnRRP">연준 역레포 자금</button>
-                    <button class="button" onclick="showGraph('MMMFFAQ027S')" data-lang-key="btnMMF">MMF 잔고</button>
-                    <button class="button" onclick="showGraph('WALCL')" data-lang-key="btnWALCL">연준 전체 자산 + 부채</button>
+                    <button class="button" onclick="showGraph('WTREGEN')">미 정부 TGA 잔고</button>
+                    <button class="button" onclick="showGraph('WRESBAL')">미 은행 지급준비금</button>
+                    <button class="button" onclick="showGraph('RRPONTSYD')">연준 역레포 자금</button>
+                    <button class="button" onclick="showGraph('MMMFFAQ027S')">MMF 잔고</button>
+                    <button class="button" onclick="showGraph('WALCL')">연준 전체 자산 + 부채</button>
                 </div>
             </div>
             <div class="indicator-section">
-                <h3 data-lang-key="indicatorsRateTitle">금리</h3>
-                <p data-lang-key="indicatorsRateDesc">시중 자금의 비용을 나타내는 금리 지표들로, 경제의 건전성과 향후 방향을 예측하는 데 사용됩니다.</p>
+                <h3>금리</h3>
+                <p>시중 자금의 비용을 나타내는 금리 지표들로, 경제의 건전성과 향후 방향을 예측하는 데 사용됩니다.</p>
                 <div class="indicator-buttons">
-                    <button class="button" onclick="showGraph('DGS3MO')" data-lang-key="btnDGS3MO">3개월 미 국채금리</button>
-                    <button class="button" onclick="showGraph('DGS2')" data-lang-key="btnDGS2">2년물 미 국채금리</button>
-                    <button class="button" onclick="showGraph('DGS10')" data-lang-key="btnDGS10">10년물 미 국채금리</button>
-                    <button class="button" onclick="showGraph('YIELD_SPREAD')" data-lang-key="btnYieldSpread">미국 장단기 금리차</button>
-                    <button class="button" onclick="showGraph('SOFR')" data-lang-key="btnSOFR">SOFR 금리</button>
-                    <button class="button" onclick="showGraph('FEDFUNDS')" data-lang-key="btnEFFR">EFFR 금리</button>
-                    <button class="button" onclick="showGraph('IORB')" data-lang-key="btnIORB">IORB 금리</button>
-                    <button class="button" onclick="showGraph('RRPONTSYAWARD')" data-lang-key="btnRRPRate">역레포 금리</button>
-                    <button class="button" onclick="showGraph('DPCREDIT')" data-lang-key="btnDiscountRate">연준 할인율</button>
-                    <button class="button" onclick="showGraph('DRBLACBS')" data-lang-key="btnDelinquency">미 은행 연체율(전체)</button>
-                    <button class="button" onclick="showGraph('SOFR_FEDFUNDS_SPREAD')" data-lang-key="btnSOFREFFR">SOFR, EFFR 스프레드</button>
-                    <button class="button" onclick="showGraph('SOFR_IORB_SPREAD')" data-lang-key="btnSOFRIORB">SOFR, IORB 스프레드</button>
+                    <button class="button" onclick="showGraph('DGS3MO')">3개월 미 국채금리</button>
+                    <button class="button" onclick="showGraph('DGS2')">2년물 미 국채금리</button>
+                    <button class="button" onclick="showGraph('DGS10')">10년물 미 국채금리</button>
+                    <button class="button" onclick="showGraph('YIELD_SPREAD')">미국 장단기 금리차</button>
+                    <button class="button" onclick="showGraph('SOFR')">SOFR 금리</button>
+                    <button class="button" onclick="showGraph('FEDFUNDS')">EFFR 금리</button>
+                    <button class="button" onclick="showGraph('IORB')">IORB 금리</button>
+                    <button class="button" onclick="showGraph('RRPONTSYAWARD')">역레포 금리</button>
+                    <button class="button" onclick="showGraph('DPCREDIT')">연준 할인율</button>
+                    <button class="button" onclick="showGraph('DRBLACBS')">미 은행 연체율(전체)</button>
+                    <button class="button" onclick="showGraph('SOFR_FEDFUNDS_SPREAD')">SOFR, EFFR 스프레드</button>
+                    <button class="button" onclick="showGraph('SOFR_IORB_SPREAD')">SOFR, IORB 스프레드</button>
                 </div>
             </div>
             <div class="indicator-section">
-                <h3 data-lang-key="indicatorsLiquidityTitle">유동성</h3>
-                <p data-lang-key="indicatorsLiquidityDesc">시중에 풀려있는 전체 통화량을 측정하는 지표로, 인플레이션과 경제 활동 수준을 가늠할 수 있습니다.</p>
+                <h3>유동성</h3>
+                <p>시중에 풀려있는 전체 통화량을 측정하는 지표로, 인플레이션과 경제 활동 수준을 가늠할 수 있습니다.</p>
                 <div class="indicator-buttons">
-                    <button class="button" onclick="showGraph('M2SL')" data-lang-key="btnM2">M2</button>
-                    <button class="button" onclick="showGraph('M1SL')" data-lang-key="btnM1">M1</button>
+                    <button class="button" onclick="showGraph('M2SL')">M2</button>
+                    <button class="button" onclick="showGraph('M1SL')">M1</button>
                 </div>
             </div>
             <div class="indicator-section">
-                <h3 data-lang-key="indicatorsAssetTitle">자산 가격</h3>
-                <p data-lang-key="indicatorsAssetDesc">주식 시장의 대표적인 지수들로, 경제 전반의 건전성과 투자자 심리를 반영합니다.</p>
+                <h3>자산 가격</h3>
+                <p>주식 시장의 대표적인 지수들로, 경제 전반의 건전성과 투자자 심리를 반영합니다.</p>
                 <div class="indicator-buttons">
-                    <button class="button" onclick="showGraph('NASDAQ100')" data-lang-key="btnNASDAQ">나스닥100 지수</button>
-                    <button class="button" onclick="showGraph('SP500')" data-lang-key="btnSP500">S&P500 지수</button>
-                    <button class="button" onclick="showGraph('SP500_MCAP')" data-lang-key="btnSP500MCAP">S&P500 시가총액</button>
+                    <button class="button" onclick="showGraph('NASDAQ100')">나스닥100 지수</button>
+                    <button class="button" onclick="showGraph('SP500')">S&P500 지수</button>
+                    <button class="button" onclick="showGraph('SP500_MCAP')">S&P500 시가총액</button>
                 </div>
             </div>
             <div class="indicator-section">
-                <h3 data-lang-key="indicatorsLeadingTitle">선행지표</h3>
-                <p data-lang-key="indicatorsLeadingDesc">미래의 경제 활동 방향을 예측하는 데 도움을 주는 지표들로, 소비와 산업 활동의 바로미터입니다.</p>
+                <h3>선행지표</h3>
+                <p>미래의 경제 활동 방향을 예측하는 데 도움을 주는 지표들로, 소비와 산업 활동의 바로미터입니다.</p>
                 <div class="indicator-buttons">
-                    <button class="button" onclick="showGraph('ALTSALES')" data-lang-key="btnCarSales">자동차, 트럭 판매량</button>
-                    <button class="button" onclick="showGraph('HOUST')" data-lang-key="btnHousing">주택 착공 허가 건수</button>
-                    <button class="button" onclick="showGraph('DCOILBRENTEU')" data-lang-key="btnOil">국제 유가</button>
+                    <button class="button" onclick="showGraph('ALTSALES')">자동차, 트럭 판매량</button>
+                    <button class="button" onclick="showGraph('HOUST')">주택 착공 허가 건수</button>
+                    <button class="button" onclick="showGraph('DCOILBRENTEU')">국제 유가</button>
                 </div>
             </div>
             </div>
@@ -1012,49 +1006,49 @@
         </div>
         <div id="aboutPage" class="page" style="display:none;">
             <div class="info-box" style="margin-top: 20px;">
-                <h2 data-lang-key="aboutTitle">사이트 안내</h2>
-                <p data-lang-key="aboutP1">'원뎅이의 미국 통화 유동성 현황'은 복잡한 경제 지표와 데이터 속에서 길을 잃지 않도록 돕는 나침반이 되고자 합니다. 실시간으로 업데이트되는 데이터를 통해, 지금 시장의 돈이 어디로 흐르고 있는지 직관적으로 파악해 보세요.</p>
+                <h2>사이트 안내</h2>
+                <p>'원뎅이의 미국 통화 유동성 현황'은 복잡한 경제 지표와 데이터 속에서 길을 잃지 않도록 돕는 나침반이 되고자 합니다. 실시간으로 업데이트되는 데이터를 통해, 지금 시장의 돈이 어디로 흐르고 있는지 직관적으로 파악해 보세요.</p>
                 
-                <h3 data-lang-key="aboutTitle2">달러 유동성이 결국 주가를 결정합니다.</h3>
-                <p data-lang-key="aboutP2">2022년 미국 연준 역레포 잔고 증가에 따라 S&P500 주식이 감소하며 폭락장을 맞이했습니다. 현재 <strong style="color: red;">미국 주식장은 통화의 방향과 속도</strong>가 더욱 중요해지고 있습니다. 따라서 <strong style="color: blue;">"원뎅이 미국 통화 유동성 현황"</strong>을 통해 유동성의 흐름을 손쉽게 예측하여 주식시장의 방향을 예측하고 수익을 극대화 하는데 도움이 되고자 합니다.</p>
+                <h3>달러 유동성이 결국 주가를 결정합니다.</h3>
+                <p>2022년 미국 연준 역레포 잔고 증가에 따라 S&P500 주식이 감소하며 폭락장을 맞이했습니다. 현재 <strong style="color: red;">미국 주식장은 통화의 방향과 속도</strong>가 더욱 중요해지고 있습니다. 따라서 <strong style="color: blue;">"원뎅이 미국 통화 유동성 현황"</strong>을 통해 유동성의 흐름을 손쉽게 예측하여 주식시장의 방향을 예측하고 수익을 극대화 하는데 도움이 되고자 합니다.</p>
                 <img src="./icon/repo_sp500_plot.JPG" alt="역레포와 S&P500 관계" style="width: 100%; max-width: 600px; margin: 20px auto; display: block; border-radius: 8px;">
 
-                <h3 data-lang-key="featuresTitle">주요 기능 안내</h3>
+                <h3>주요 기능 안내</h3>
                 <ul>
-                    <li data-lang-key="feature1"><strong>실시간 유동성 흐름:</strong> 각 경제 주체(정부, 중앙은행, MMF, 시장) 간의 월별 자금 이동 규모를 애니메이션으로 시각화하여 돈의 흐름을 쉽게 추적할 수 있습니다.</li>
-                    <li data-lang-key="feature2"><strong>핵심 금리 현황:</strong> SOFR, EFFR, 국채 금리 등 시장의 중요한 금리 지표들을 실시간으로 확인하고 그 의미를 파악할 수 있습니다.</li>
-                    <li data-lang-key="feature3"><strong>상세 데이터 그래프:</strong> TGA 잔고, M2 통화량, S&P500 지수 등 30여 개의 주요 경제 지표를 기간별 상세 그래프로 직접 분석할 수 있습니다. 각 지표에 대한 설명(Info)도 제공합니다.</li>
+                    <li><strong>실시간 유동성 흐름:</strong> 각 경제 주체(정부, 중앙은행, MMF, 시장) 간의 월별 자금 이동 규모를 애니메이션으로 시각화하여 돈의 흐름을 쉽게 추적할 수 있습니다.</li>
+                    <li><strong>핵심 금리 현황:</strong> SOFR, EFFR, 국채 금리 등 시장의 중요한 금리 지표들을 실시간으로 확인하고 그 의미를 파악할 수 있습니다.</li>
+                    <li><strong>상세 데이터 그래프:</strong> TGA 잔고, M2 통화량, S&P500 지수 등 30여 개의 주요 경제 지표를 기간별 상세 그래프로 직접 분석할 수 있습니다. 각 지표에 대한 설명(Info)도 제공합니다.</li>
                 </ul>
 
-                <h3 data-lang-key="interpretTitle">데이터는 어떻게 해석해야 하나요?</h3>
-                <p data-lang-key="interpretP1">메인 페이지의 애니메이션은 각 주체 간의 '최근 한 달간 자금 흐름 변화량'을 나타냅니다. 숫자의 의미는 다음과 같습니다.</p>
+                <h3>데이터는 어떻게 해석해야 하나요?</h3>
+                <p>메인 페이지의 애니메이션은 각 주체 간의 '최근 한 달간 자금 흐름 변화량'을 나타냅니다. 숫자의 의미는 다음과 같습니다.</p>
                 <ul>
-                    <li data-lang-key="aboutTGA1"><strong>(정부의) TGA 잔고 (<span class="negative">- 음수</span>):</strong> 정부가 국채 발행 감소나 재정 지출 확대를 통해 시장에 돈을 풀고 있다는 의미입니다. (유동성 공급)</li>
-                    <li data-lang-key="aboutTGA2"><strong>(정부의) TGA 잔고 (<span class="positive">+ 양수</span>):</strong> 정부가 세금을 많이 걷거나 국채 발행을 늘려 시장의 돈을 흡수하고 있다는 의미입니다. (유동성 흡수)</li>
+                    <li><strong>(정부의) TGA 잔고 (<span class="negative">- 음수</span>):</strong> 정부가 국채 발행 감소나 재정 지출 확대를 통해 시장에 돈을 풀고 있다는 의미입니다. (유동성 공급)</li>
+                    <li><strong>(정부의) TGA 잔고 (<span class="positive">+ 양수</span>):</strong> 정부가 세금을 많이 걷거나 국채 발행을 늘려 시장의 돈을 흡수하고 있다는 의미입니다. (유동성 흡수)</li>
                     <br>
-                    <li data-lang-key="aboutFED1"><strong>연준(FED) 유동성 (<span class="negative">- 음수</span>):</strong> 연준이 양적긴축(자산 매각) 등을 통해 시장의 돈을 거둬들이고 있다는 의미입니다. (유동성 흡수)</li>
-                    <li data-lang-key="aboutFED2"><strong>연준(FED) 유동성 (<span class="positive">+ 양수</span>):</strong> 연준이 양적완화(자산 매입) 등을 통해 시장에 돈을 공급하고 있다는 의미입니다. (유동성 공급)</li>
+                    <li><strong>연준(FED) 유동성 (<span class="negative">- 음수</span>):</strong> 연준이 양적긴축(자산 매각) 등을 통해 시장의 돈을 거둬들이고 있다는 의미입니다. (유동성 흡수)</li>
+                    <li><strong>연준(FED) 유동성 (<span class="positive">+ 양수</span>):</strong> 연준이 양적완화(자산 매입) 등을 통해 시장에 돈을 공급하고 있다는 의미입니다. (유동성 공급)</li>
                 </ul>
-                <p data-lang-key="interpretConclusion">결론적으로, <span style="font-weight: bold;">'시장(Market)'으로 들어오는 돈의 총합(Net Market Flow)</span>이 <span class="negative">파란색 음수(-)</span>이면 <span style="font-weight: bold;">시장 유동성이 줄어드는 것</span>으로, <span class="positive">빨간색 양수(+)</span>이면 <span style="font-weight: bold;">유동성이 풍부해지는 것</span>으로 해석할 수 있습니다.</p>
+                <p>결론적으로, <span style="font-weight: bold;">'시장(Market)'으로 들어오는 돈의 총합(Net Market Flow)</span>이 <span class="negative">파란색 음수(-)</span>이면 <span style="font-weight: bold;">시장 유동성이 줄어드는 것</span>으로, <span class="positive">빨간색 양수(+)</span>이면 <span style="font-weight: bold;">유동성이 풍부해지는 것</span>으로 해석할 수 있습니다.</p>
 
-                <h3 data-lang-key="dataSourceTitle">데이터 출처 및 업데이트 주기</h3>
-                <p data-lang-key="dataSourceDesc">본 사이트의 대부분 데이터는 미국 연방준비제도 경제 데이터(<strong>FRED</strong>)와 재무부 금융 연구소(<strong>OFR</strong>)에서 제공하는 공식 데이터를 기반으로 합니다. 데이터는 각 지표의 발표 주기에 따라 매일 또는 매주 자동으로 업데이트됩니다.</p>
-                <h3 data-lang-key="aboutAppTitle">웹사이트와 어플로도 출시하였어요!!</h3>
-                <p data-lang-key="aboutAppP1">검색창에 <strong style="color: red;">"원뎅이 미국 통화 유동성 현황"</strong>을 검색하세요.</p>
-                <p data-lang-key="aboutAppP2">구글 플레이 스토어에 <strong style="color: red;">"원뎅이 미국 통화 유동성 현황"</strong>을 검색하세요.</p>
+                <h3>데이터 출처 및 업데이트 주기</h3>
+                <p>본 사이트의 대부분 데이터는 미국 연방준비제도 경제 데이터(<strong>FRED</strong>)와 재무부 금융 연구소(<strong>OFR</strong>)에서 제공하는 공식 데이터를 기반으로 합니다. 데이터는 각 지표의 발표 주기에 따라 매일 또는 매주 자동으로 업데이트됩니다.</p>
+                <h3>웹사이트와 어플로도 출시하였어요!!</h3>
+                <p>검색창에 <strong style="color: red;">"원뎅이 미국 통화 유동성 현황"</strong>을 검색하세요.</p>
+                <p>구글 플레이 스토어에 <strong style="color: red;">"원뎅이 미국 통화 유동성 현황"</strong>을 검색하세요.</p>
             </div>
         </div>
         <div class="nav-bar">
-            <button class="button" onclick="showLiquidityFlow()" data-lang-key="navLiquidity">유동성<br>현황</button>
-            <button class="button" onclick="showInterestRateFlow()" data-lang-key="navInterest">금리<br>현황</button>
-            <button class="button" onclick="showGraphIndicators()" data-lang-key="navGraph">그래프<br>지표</button>
-            <button class="button" onclick="showAboutPage()" data-lang-key="navAbout">사이트<br>안내</button>
+            <button class="button" onclick="showLiquidityFlow()">유동성<br>현황</button>
+            <button class="button" onclick="showInterestRateFlow()">금리<br>현황</button>
+            <button class="button" onclick="showGraphIndicators()">그래프<br>지표</button>
+            <button class="button" onclick="showAboutPage()">사이트<br>안내</button>
         </div>
         </div>
     
     <footer style="text-align: center; padding: 20px 20px 80px 20px; background-color: #f8f9fa; border-top: 1px solid #dee2e6; color: #6c757d; font-size: 12px;">
-        <p data-lang-key="footerRights">&copy; 2025 원뎅이의 미국 통화 유동성 현황. All Rights Reserved.</p>
-        <p data-lang-key="footerDisclaimer">본 사이트에서 제공하는 정보는 투자 참고용이며, 투자에 대한 모든 책임은 본인에게 있습니다.</p>
+        <p>&copy; 2025 원뎅이의 미국 통화 유동성 현황. All Rights Reserved.</p>
+        <p>본 사이트에서 제공하는 정보는 투자 참고용이며, 투자에 대한 모든 책임은 본인에게 있습니다.</p>
     </footer>
 
     <script>
@@ -1065,8 +1059,8 @@
         let currentIndicator = null;
         let currentGraphData = [];
         let dollarAnimationIntervals = [];
-        let currentLanguage = 'ko';
-        let analysisData = null; // AI 분석 데이터를 저장할 전역 변수
+        const currentLanguage = 'ko'; // 이 페이지는 한국어 버전이므로 'ko'로 고정
+        let analysisData = null;
         
         const BASE_ANIMATION_DURATION = 3000;
         const BASE_DOLLAR_SIZE = 37.5; 
@@ -1075,79 +1069,11 @@
         const FUNCTION_BASE_URL = '/.netlify/functions/get-csv-data';
         
         const dataCache = new Map();
-        const CACHE_TTL = 3600 * 1000; // 1 hour in milliseconds
+        const CACHE_TTL = 3600 * 1000;
 
-        // ▼▼▼ 번역 텍스트 모음 ▼▼▼
+        // ▼▼▼ 번역 텍스트 모음 (한국어 버전이므로 한글만 필요) ▼▼▼
         const translations = {
             ko: {
-                pageTitle: '원뎅이의 미국 통화 유동성 현황',
-                sourceCredit: '자료 출처: FRED, Office of Financial Research (OFR)',
-                sourceCreditInterest: '자료 출처: FRED',
-                welcomeTitle: '미국 통화 유동성을 한눈에 파악하세요!',
-                welcomeP1: `'원뎅이의 미국 통화 유동성 현황'에 오신 것을 환영합니다. 본 웹사이트는 투자자와 경제에 관심 있는 모든 분들을 위해 미국 시장의 복잡한 통화 유동성 흐름을 실시간 데이터 기반의 애니메이션으로 시각화하여 제공합니다.`,
-                welcomeP2: '미국 연방준비제도(FED), 정부(TGA), 머니마켓펀드(MMF), 그리고 시장 사이에서 돈이 어떻게 흐르는지 직관적으로 이해함으로써, 금리 변동, 양적완화 및 긴축 정책의 영향을 보다 쉽게 파악하고 현명한 투자 결정을 내리는 데 도움을 드리고자 합니다.',
-                featuresTitle: '주요 기능 안내',
-                feature1: '<strong>실시간 유동성 흐름:</strong> 각 경제 주체(정부, 중앙은행, MMF, 시장) 간의 월별 자금 이동 규모를 애니메이션으로 시각화하여 돈의 흐름을 쉽게 추적할 수 있습니다.',
-                feature2: '<strong>핵심 금리 현황:</strong> SOFR, EFFR, 국채 금리 등 시장의 중요한 금리 지표들을 실시간으로 확인하고 그 의미를 파악할 수 있습니다.',
-                feature3: '<strong>상세 데이터 그래프:</strong> TGA 잔고, M2 통화량, S&P500 지수 등 30여 개의 주요 경제 지표를 기간별 상세 그래프로 직접 분석할 수 있습니다. 각 지표에 대한 설명(Info)도 제공합니다.',
-                explorePrompt: '이제 아래의 시각화 자료를 통해 복잡한 경제의 흐름을 쉽게 탐색해 보세요.',
-                hoverPrompt: '(마우스를 갖다대면, 지표 설명이 보여요!)',
-                copyLink: '링크 복사',
-                fedLabel: '중앙은행 FED',
-                govLabel: '미국 정부',
-                marketLabel: '미국 시장(Market)',
-                mmfLabel: 'MMF<br>(Money Market Fund)',
-                bankLabel: '시중은행(Bank)',
-                interpretTitle: '데이터는 어떻게 해석해야 하나요?',
-                interpretP1: `메인 페이지의 애니메이션은 각 주체 간의 '최근 한 달간 자금 흐름 변화량'을 나타냅니다. 숫자의 의미는 다음과 같습니다.`,
-                interpretTGA1: `<span class="internal-link" onclick="showGraph('WTREGEN')"><strong>(정부의) TGA 잔고</strong></span> (<span class="negative">- 음수</span>): 정부가 국채 발행 감소나 재정 지출 확대를 통해 시장에 돈을 풀고 있다는 의미입니다. (유동성 공급)`,
-                interpretTGA2: `<span class="internal-link" onclick="showGraph('WTREGEN')"><strong>(정부의) TGA 잔고</strong></span> (<span class="positive">+ 양수</span>): 정부가 세금을 많이 걷거나 국채 발행을 늘려 시장의 돈을 흡수하고 있다는 의미입니다. (유동성 흡수)`,
-                interpretFED1: `<span class="internal-link" onclick="showGraph('WALCL')"><strong>연준(FED) 유동성</strong></span> (<span class="negative">- 음수</span>): 연준이 양적긴축(자산 매각) 등을 통해 시장의 돈을 거둬들이고 있다는 의미입니다. 혹은 금융기관들이 연준에 역레포 자금을 맡기면서 유동성의 흡수를 의미합니다. (유동성 흡수)`,
-                interpretFED2: `<span class="internal-link" onclick="showGraph('WALCL')"><strong>연준(FED) 유동성</strong></span> (<span class="positive">+ 양수</span>): 연준이 양적완화(자산 매입) 등을 통해 시장에 돈을 공급하고 있다는 의미입니다. 혹은 금융기관들이 연준에 맡겨뒀던 역레포 자금을 시장으로 돌리고 있다는 의미입니다. (유동성 공급)`,
-                interpretMMFFED1: `<span class="internal-link" onclick="showGraph('RRPONTSYD')"><strong>MMF → FED</strong></span> (<span class="positive">+ 양수</span>): MMF가 연준의 역레포(RRP)를 통해 자금을 예치하여 시중 유동성이 흡수됨을 의미합니다.`,
-                interpretMMFFED2: `<span class="internal-link" onclick="showGraph('RRPONTSYD')"><strong>MMF → FED</strong></span> (<span class="negative">- 음수</span>): MMF가 연준에 예치했던 역레포 자금을 회수하여 시중 유동성이 공급됨을 의미합니다.`,
-                interpretMMFMarket1: `<span class="internal-link" onclick="showGraph('MMMFFAQ027S')"><strong>MMF → 시장</strong></span> (<span class="positive">+ 양수</span>): MMF가 국채, 회사채 등 시장의 자산을 매입하여 시장에 유동성을 공급하고 있음을 의미합니다.`,
-                interpretMMFMarket2: `<span class="internal-link" onclick="showGraph('MMMFFAQ027S')"><strong>MMF → 시장</strong></span> (<span class="negative">- 음수</span>): 시장 참여자들이 MMF 펀드에 투자하여 시중 유동성이 MMF로 흡수되고 있음을 의미합니다.`,
-                interpretConclusion: `결론적으로, <span style="font-weight: bold;">'시장(Market)'으로 들어오는 돈의 총합(Net Market Flow)</span>이 <span class="negative">파란색 음수(-)</span>이면 <span style="font-weight: bold;">시장 유동성이 줄어드는 것</span>으로, <span class="positive">빨간색 양수(+)</span>이면 <span style="font-weight: bold;">유동성이 풍부해지는 것</span>으로 해석할 수 있습니다.`,
-                interestRatesTitle: '주요 금리 지표 안내',
-                rateRRP: `<span class="internal-link" onclick="showGraph('RRPONTSYAWARD')"><strong>역레포 금리</strong></span>: 연준이 금융기관으로부터 자금을 빌릴 때 지급하는 금리로, 시중 유동성을 흡수하는 기준이 됩니다.`,
-                rateDiscount: `<span class="internal-link" onclick="showGraph('DPCREDIT')"><strong>연준 할인율</strong></span>: 연준이 상업 은행에 대출해 줄 때 적용하는 이자율로, 금융기관의 자금 조달 비용을 결정합니다.`,
-                rateEFFR: `<span class="internal-link" onclick="showGraph('FEDFUNDS')"><strong>EFFR 금리</strong></span>: 은행 간에 자금을 빌릴 때 적용되는 실제 금리로, 연준의 통화 정책 방향성을 보여줍니다.`,
-                rateSOFR: `<span class="internal-link" onclick="showGraph('SOFR')"><strong>SOFR 금리</strong></span>: 국채를 담보로 한 초단기 대출 금리로, 단기 자금 시장의 유동성 상황을 직접적으로 반영합니다.`,
-                rate3M: `<span class="internal-link" onclick="showGraph('DGS3MO')"><strong>3개월 미 국채금리</strong></span>: 3개월 만기 국채 수익률로, 단기 시장 금리와 인플레이션 기대치를 나타냅니다.`,
-                rate2Y: `<span class="internal-link" onclick="showGraph('DGS2')"><strong>2년물 미 국채금리</strong></span>: 2년 만기 국채 수익률로, 중단기 경제 전망을 반영합니다.`,
-                rate10Y: `<span class="internal-link" onclick="showGraph('DGS10')"><strong>10년물 미 국채금리</strong></span>: 10년 만기 국채 수익률로, 장기 경제 성장과 인플레이션에 대한 시장의 기대를 보여주는 핵심 지표입니다.`,
-                rateSpread1: `<span class="internal-link" onclick="showGraph('SOFR_FEDFUNDS_SPREAD')"><strong>SOFR EFFR 스프레드</strong></span>: 담보(SOFR)와 무담보(EFFR) 단기 대출 금리 차이로, 시장의 유동성 및 신용 위험 상태를 나타냅니다. 스프레드 확대는 유동성 긴축 신호일 수 있습니다.`,
-                rateSpread2: `<span class="internal-link" onclick="showGraph('YIELD_SPREAD')"><strong>미국 장단기 금리차</strong></span>: 경기 침체의 선행 지표로, 장기 금리가 단기 금리보다 낮아지는 역전 현상이 발생하면 향후 경기 둔화 가능성을 시사합니다.`,
-                indicatorsFundTitle: '미국 자금 현황',
-                indicatorsFundDesc: '미국 정부, 은행, 시장에 현재 얼마나 많은 돈이 있는지 보여주는 핵심 지표들입니다.',
-                indicatorsRateTitle: '금리',
-                indicatorsRateDesc: '시중 자금의 비용을 나타내는 금리 지표들로, 경제의 건전성과 향후 방향을 예측하는 데 사용됩니다.',
-                indicatorsLiquidityTitle: '유동성',
-                indicatorsLiquidityDesc: '시중에 풀려있는 전체 통화량을 측정하는 지표로, 인플레이션과 경제 활동 수준을 가늠할 수 있습니다.',
-                indicatorsAssetTitle: '자산 가격',
-                indicatorsAssetDesc: '주식 시장의 대표적인 지수들로, 경제 전반의 건전성과 투자자 심리를 반영합니다.',
-                indicatorsLeadingTitle: '선행지표',
-                indicatorsLeadingDesc: '미래의 경제 활동 방향을 예측하는 데 도움을 주는 지표들로, 소비와 산업 활동의 바로미터입니다.',
-                btnTGA: '미 정부 TGA 잔고', btnReserves: '미 은행 지급준비금', btnRRP: '연준 역레포 자금', btnMMF: 'MMF 잔고', btnWALCL: '연준 전체 자산 + 부채',
-                btnDGS3MO: '3개월 미 국채금리', btnDGS2: '2년물 미 국채금리', btnDGS10: '10년물 미 국채금리', btnYieldSpread: '미국 장단기 금리차', btnSOFR: 'SOFR 금리', btnEFFR: 'EFFR 금리', btnIORB: 'IORB 금리', btnRRPRate: '역레포 금리', btnDiscountRate: '연준 할인율', btnDelinquency: '미 은행 연체율(전체)', btnSOFREFFR: 'SOFR, EFFR 스프레드', btnSOFRIORB: 'SOFR, IORB 스프레드',
-                btnM2: 'M2', btnM1: 'M1',
-                btnNASDAQ: '나스닥100 지수', btnSP500: 'S&P500 지수', btnSP500MCAP: 'S&P500 시가총액',
-                btnCarSales: '자동차, 트럭 판매량', btnHousing: '주택 착공 허가 건수', btnOil: '국제 유가',
-                aboutTitle: '사이트 안내',
-                aboutP1: `'원뎅이의 미국 통화 유동성 현황'은 복잡한 경제 지표와 데이터 속에서 길을 잃지 않도록 돕는 나침반이 되고자 합니다. 실시간으로 업데이트되는 데이터를 통해, 지금 시장의 돈이 어디로 흐르고 있는지 직관적으로 파악해 보세요.`,
-                aboutTGA1: `<strong>(정부의) TGA 잔고 (<span class="negative">- 음수</span>):</strong> 정부가 국채 발행 감소나 재정 지출 확대를 통해 시장에 돈을 풀고 있다는 의미입니다. (유동성 공급)`,
-                aboutTGA2: `<strong>(정부의) TGA 잔고 (<span class="positive">+ 양수</span>):</strong> 정부가 세금을 많이 걷거나 국채 발행을 늘려 시장의 돈을 흡수하고 있다는 의미입니다. (유동성 흡수)`,
-                aboutFED1: `<strong>연준(FED) 유동성 (<span class="negative">- 음수</span>):</strong> 연준이 양적긴축(자산 매각) 등을 통해 시장의 돈을 거둬들이고 있다는 의미입니다. (유동성 흡수)`,
-                aboutFED2: `<strong>연준(FED) 유동성 (<span class="positive">+ 양수</span>):</strong> 연준이 양적완화(자산 매입) 등을 통해 시장에 돈을 공급하고 있다는 의미입니다. (유동성 공급)`,
-                dataSourceTitle: '데이터 출처 및 업데이트 주기',
-                dataSourceDesc: '본 사이트의 대부분 데이터는 미국 연방준비제도 경제 데이터(<strong>FRED</strong>)와 재무부 금융 연구소(<strong>OFR</strong>)에서 제공하는 공식 데이터를 기반으로 합니다. 데이터는 각 지표의 발표 주기에 따라 매일 또는 매주 자동으로 업데이트됩니다.',
-                navLiquidity: '유동성<br>현황',
-                navInterest: '금리<br>현황',
-                navGraph: '그래프<br>지표',
-                navAbout: '사이트<br>안내',
-                footerRights: '&copy; 2025 원뎅이의 미국 통화 유동성 현황. All Rights Reserved.',
-                footerDisclaimer: '본 사이트에서 제공하는 정보는 투자 참고용이며, 투자에 대한 모든 책임은 본인에게 있습니다.',
                 aiAnalysisTitle: 'Ai 인공지능 Daily 분석',
                 graphBtn: '그래프',
                 infoBtnText: 'Info',
@@ -1223,160 +1149,11 @@
                     'HOUST': {'title': '주택 착공 허가 건수', 'content': {'경제적 의미': '주택 착공은 특정 달에 시작된 새로운 주거 건설 프로젝트의 수를 의미합니다. 주택 착공 추정치에는 기존 기반 위에 완전히 재건되는 건물의 단위도 포함됩니다. 이 지수가 높다면, 강한 경제를 나타냅니다.', '왜 필요한 지표인가': '미국 시장의 주요한 경제 **선행지표** 중 하나입니다.'}},
                     'DCOILBRENTEU': {'title': '국제 유가', 'content': {'경제적 의미': '유럽과 전 세계 유가의 기준이 되는 지표를 의미합니다.', '왜 필요한 지표인가': '역사적으로 유가가 감소하면, 경제 부흥이 일어나고, 유가가 상승하면 경기 침체 및 하락 국면을 보이기도 합니다. 따라서 중요하게 모니터링할 지표입니다.'}}
                 }
-            },
-            en: {
-                pageTitle: `Wondeng's U.S. Monetary Liquidity Status`,
-                metaDescription: 'Visualizes the liquidity flow between the U.S. FED, Government, MMF, and Market with at-a-glance animations.',
-                sourceCredit: 'Source: FRED, Office of Financial Research (OFR)',
-                sourceCreditInterest: 'Source: FRED',
-                welcomeTitle: 'Grasp U.S. Monetary Liquidity at a Glance!',
-                welcomeP1: `Welcome to 'Wondeng's U.S. Monetary Liquidity Status.' This website provides visualizations of the complex monetary liquidity flows in the U.S. market through real-time, data-driven animations for investors and anyone interested in the economy.`,
-                welcomeP2: 'By intuitively understanding how money flows between the U.S. Federal Reserve (FED), the government (TGA), Money Market Funds (MMF), and the market, we aim to help you more easily grasp the effects of interest rate changes, quantitative easing, and tightening policies to make wise investment decisions.',
-                featuresTitle: 'Key Features',
-                feature1: '<strong>Real-time Liquidity Flow:</strong> Easily track the flow of money by visualizing the monthly fund movement between each economic entity (government, central bank, MMF, market) with animations.',
-                feature2: '<strong>Key Interest Rate Status:</strong> Check important market interest rate indicators like SOFR, EFFR, and Treasury yields in real-time and understand their significance.',
-                feature3: '<strong>Detailed Data Graphs:</strong> Analyze over 30 key economic indicators, such as TGA balance, M2 money supply, and the S&P 500 index, with detailed graphs by period. Descriptions (Info) for each indicator are also provided.',
-                explorePrompt: 'Now, explore the complex flow of the economy easily through the visualizations below.',
-                hoverPrompt: '(Hover over indicators for descriptions!)',
-                copyLink: 'Copy Link',
-                fedLabel: 'Central Bank FED',
-                govLabel: 'U.S. Government',
-                marketLabel: 'U.S. Market',
-                mmfLabel: 'MMF<br>(Money Market Fund)',
-                bankLabel: 'Commercial Banks',
-                interpretTitle: 'How to Interpret the Data',
-                interpretP1: `The animation on the main page represents the 'change in fund flow over the last month' between each entity. The meaning of the numbers is as follows:`,
-                interpretTGA1: `<span class="internal-link" onclick="showGraph('WTREGEN')"><strong>(Government's) TGA Balance</strong></span> (<span class="negative">- Negative</span>): Means the government is injecting money into the market through reduced Treasury issuance or increased fiscal spending. (Liquidity Supply)`,
-                interpretTGA2: `<span class="internal-link" onclick="showGraph('WTREGEN')"><strong>(Government's) TGA Balance</strong></span> (<span class="positive">+ Positive</span>): Means the government is absorbing money from the market by collecting more taxes or increasing Treasury issuance. (Liquidity Absorption)`,
-                interpretFED1: `<span class="internal-link" onclick="showGraph('WALCL')"><strong>Fed (FED) Liquidity</strong></span> (<span class="negative">- Negative</span>): Means the Fed is withdrawing money from the market through quantitative tightening (asset sales), etc. It also signifies liquidity absorption as financial institutions deposit funds in the Fed's reverse repo facility. (Liquidity Absorption)`,
-                interpretFED2: `<span class="internal-link" onclick="showGraph('WALCL')"><strong>Fed (FED) Liquidity</strong></span> (<span class="positive">+ Positive</span>): Means the Fed is supplying money to the market through quantitative easing (asset purchases), etc. It also signifies liquidity supply as financial institutions move funds from the Fed's reverse repo back into the market. (Liquidity Supply)`,
-                interpretMMFFED1: `<span class="internal-link" onclick="showGraph('RRPONTSYD')"><strong>MMF → FED</strong></span> (<span class="positive">+ Positive</span>): MMFs are depositing funds into the Fed's Reverse Repo (RRP), leading to the absorption of market liquidity.`,
-                interpretMMFFED2: `<span class="internal-link" onclick="showGraph('RRPONTSYD')"><strong>MMF → FED</strong></span> (<span class="negative">- Negative</span>): MMFs are withdrawing funds previously deposited in the Fed's RRP, supplying liquidity to the market.`,
-                interpretMMFMarket1: `<span class="internal-link" onclick="showGraph('MMMFFAQ027S')"><strong>MMF → Market</strong></span> (<span class="positive">+ Positive</span>): MMFs are purchasing market assets like Treasuries and corporate bonds, thus supplying liquidity to the market.`,
-                interpretMMFMarket2: `<span class="internal-link" onclick="showGraph('MMMFFAQ027S')"><strong>MMF → Market</strong></span> (<span class="negative">- Negative</span>): Market participants are investing in MMF funds, causing market liquidity to be absorbed into MMFs.`,
-                interpretConclusion: `In conclusion, if the <span style="font-weight: bold;">total sum of money flowing into the 'Market' (Net Market Flow)</span> is <span class="negative">blue and negative (-)</span>, it can be interpreted as <span style="font-weight: bold;">decreasing market liquidity</span>, and if it is <span class="positive">red and positive (+)</span>, it means <span style="font-weight: bold;">liquidity is becoming abundant</span>.`,
-                interestRatesTitle: 'Guide to Key Interest Rate Indicators',
-                rateRRP: `<span class="internal-link" onclick="showGraph('RRPONTSYAWARD')"><strong>Reverse Repo Rate</strong></span>: The rate the Fed pays when borrowing funds from financial institutions, serving as a benchmark for absorbing market liquidity.`,
-                rateDiscount: `<span class="internal-link" onclick="showGraph('DPCREDIT')"><strong>Fed Discount Rate</strong></span>: The interest rate the Fed charges commercial banks for loans, determining the funding cost for financial institutions.`,
-                rateEFFR: `<span class="internal-link" onclick="showGraph('FEDFUNDS')"><strong>EFFR Rate</strong></span>: The effective interest rate at which banks lend funds to each other, indicating the direction of the Fed's monetary policy.`,
-                rateSOFR: `<span class="internal-link" onclick="showGraph('SOFR')"><strong>SOFR Rate</strong></span>: The rate for overnight loans collateralized by Treasuries, directly reflecting the liquidity situation in the short-term funding market.`,
-                rate3M: `<span class="internal-link" onclick="showGraph('DGS3MO')"><strong>3-Month Treasury Bill Rate</strong></span>: The yield on 3-month Treasury bills, indicating short-term market interest rates and inflation expectations.`,
-                rate2Y: `<span class="internal-link" onclick="showGraph('DGS2')"><strong>2-Year Treasury Note Rate</strong></span>: The yield on 2-year Treasury notes, reflecting the medium-term economic outlook.`,
-                rate10Y: `<span class="internal-link" onclick="showGraph('DGS10')"><strong>10-Year Treasury Note Rate</strong></span>: The yield on 10-year Treasury notes, a key indicator showing market expectations for long-term economic growth and inflation.`,
-                rateSpread1: `<span class="internal-link" onclick="showGraph('SOFR_FEDFUNDS_SPREAD')"><strong>SOFR-EFFR Spread</strong></span>: The difference between secured (SOFR) and unsecured (EFFR) short-term lending rates, indicating market liquidity and credit risk status. A widening spread can signal liquidity tightening.`,
-                rateSpread2: `<span class="internal-link" onclick="showGraph('YIELD_SPREAD')"><strong>U.S. Yield Curve Spread</strong></span>: A leading indicator of economic recession. An inversion, where long-term rates fall below short-term rates, suggests a potential future economic slowdown.`,
-                indicatorsFundTitle: 'U.S. Fund Status',
-                indicatorsFundDesc: 'Key indicators showing how much money is currently held by the U.S. government, banks, and the market.',
-                indicatorsRateTitle: 'Interest Rates',
-                indicatorsRateDesc: 'Interest rate indicators that represent the cost of funds in the market, used to predict the health and future direction of the economy.',
-                indicatorsLiquidityTitle: 'Liquidity',
-                indicatorsLiquidityDesc: 'Indicators that measure the total amount of money circulating in the market, allowing for an assessment of inflation and economic activity levels.',
-                indicatorsAssetTitle: 'Asset Prices',
-                indicatorsAssetDesc: 'Representative stock market indices that reflect the overall health of the economy and investor sentiment.',
-                indicatorsLeadingTitle: 'Leading Indicators',
-                indicatorsLeadingDesc: 'Indicators that help predict the future direction of economic activity, serving as a barometer for consumption and industrial activity.',
-                btnTGA: 'U.S. Gov. TGA Balance', btnReserves: 'U.S. Bank Reserves', btnRRP: 'Fed Reverse Repo Funds', btnMMF: 'MMF Balance', btnWALCL: 'Fed Total Assets + Liabilities',
-                btnDGS3MO: '3-Month Treasury Bill', btnDGS2: '2-Year Treasury Note', btnDGS10: '10-Year Treasury Note', btnYieldSpread: 'U.S. Yield Curve Spread', btnSOFR: 'SOFR Rate', btnEFFR: 'EFFR Rate', btnIORB: 'IORB Rate', btnRRPRate: 'Reverse Repo Rate', btnDiscountRate: 'Fed Discount Rate', btnDelinquency: 'U.S. Bank Delinquency Rate', btnSOFREFFR: 'SOFR, EFFR Spread', btnSOFRIORB: 'SOFR, IORB Spread',
-                btnM2: 'M2', btnM1: 'M1',
-                btnNASDAQ: 'NASDAQ 100 Index', btnSP500: 'S&P 500 Index', btnSP500MCAP: 'S&P 500 Market Cap',
-                btnCarSales: 'Car & Truck Sales', btnHousing: 'Housing Starts', btnOil: 'Crude Oil Price',
-                aboutTitle: 'About Site',
-                aboutP1: `'Wondeng's U.S. Monetary Liquidity Status' aims to be a compass that helps you not get lost in the complex world of economic indicators and data. Through real-time updated data, intuitively grasp where the market's money is flowing right now.`,
-                aboutTGA1: `<strong>(Government's) TGA Balance (<span class="negative">- Negative</span>):</strong> The government is injecting money into the market through reduced Treasury issuance or increased fiscal spending. (Liquidity Supply)`,
-                aboutTGA2: `<strong>(Government's) TGA Balance (<span class="positive">+ Positive</span>):</strong> The government is absorbing money from the market by collecting more taxes or increasing Treasury issuance. (Liquidity Absorption)`,
-                aboutFED1: `<strong>Fed (FED) Liquidity (<span class="negative">- Negative</span>):</strong> The Fed is withdrawing money from the market through quantitative tightening (asset sales), etc. (Liquidity Absorption)`,
-                aboutFED2: `<strong>Fed (FED) Liquidity (<span class="positive">+ Positive</span>):</strong> The Fed is supplying money to the market through quantitative easing (asset purchases), etc. (Liquidity Supply)`,
-                dataSourceTitle: 'Data Source & Update Cycle',
-                dataSourceDesc: 'Most of the data on this site is based on official data provided by the Federal Reserve Economic Data (<strong>FRED</strong>) and the Office of Financial Research (<strong>OFR</strong>). The data is automatically updated daily or weekly according to the release schedule of each indicator.',
-                navLiquidity: 'Liquidity<br>Status',
-                navInterest: 'Interest Rate<br>Status',
-                navGraph: 'Graph<br>Indicators',
-                navAbout: 'About<br>Site',
-                footerRights: `&copy; 2025 Wondeng's U.S. Monetary Liquidity Status. All Rights Reserved.`,
-                footerDisclaimer: 'The information provided on this site is for investment reference only. All investment responsibilities lie with the individual.',
-                aboutTitle2: 'Dollar Liquidity Ultimately Determines Stock Prices.',
-                aboutP2: `In 2022, as the U.S. Federal Reserve's reverse repo balance increased, the S&P 500 stocks declined, leading to a market crash. Currently, the <strong style="color: red;">direction and speed of currency in the U.S. stock market</strong> are becoming even more critical. Therefore, <strong style="color: blue;">"Wondeng's U.S. Monetary Liquidity Status"</strong> aims to help you easily predict the flow of liquidity to forecast the stock market's direction and maximize profits.`,
-                aboutAppTitle: 'Now Available as a Website and App!!',
-                aboutAppP1: `Search for <strong style="color: red;">"Wondeng's U.S. Monetary Liquidity Status"</strong> in your search engine.`,
-                aboutAppP2: `Search for <strong style="color: red;">"Wondeng's U.S. Monetary Liquidity Status"</strong> on the Google Play Store.`,
-                aiAnalysisTitle: 'AI Daily Analysis',
-                graphBtn: 'Graph',
-                infoBtnText: 'Info',
-                backBtnText: '◄',
-                netMarketFlowLabel: '<b>Total Market Liquidity Supply<br> = ',
-                tooltip: {
-                    tga: {
-                        label: 'TGA Balance:',
-                        desc: `<p>Shows the change in the U.S. Treasury's cash balance over the last month.</p><p><b>+Positive:</b> Dollar liquidity absorbed from the market into the Treasury.<br><b>-Negative:</b> The U.S. Treasury supplied dollar liquidity to the market.</p>`
-                    },
-                    fed: {
-                        label: 'Fed Liquidity:',
-                        desc: `<p>Shows the change in the Fed's net assets (Treasuries, MBS, etc.) and liabilities over the last month.</p>
-                               <p><b>+Positive:</b> Supplying dollars to the market by purchasing assets like bonds, or releasing reverse repo funds to the market.<br><b>-Negative:</b> Withdrawing dollars from circulation by selling assets, or absorbing funds from the market via reverse repos (tightening).</p><hr>`,
-                        part1: 'Fed Asset Change =',
-                        part2: 'Fed Liability Change (RRP & Reserves) ='
-                    },
-                    mmf_fed: {
-                        label: 'MMF -> FED:',
-                        desc: `<p>Shows the change in the amount of funds MMFs have placed with the Fed over the last month.</p><p><b>+Positive:</b> MMFs lend funds to the Fed via reverse repos.<br><b>-Negative:</b> MMFs withdraw reverse repo funds previously lent to the Fed.</p>`
-                    },
-                    mmf_market: {
-                        label: 'MMF -> Market:',
-                        desc: `<p>Shows the change in the amount of funds MMFs have supplied to the market over the last month.<br>This is the net result of liquidity supplied by MMFs to the market minus the amount the market invested in MMFs.</p>
-                               <p><b>+Positive:</b> MMFs are supplying more liquidity to the market.<br><b>-Negative:</b> The market is investing more funds into MMFs.</p><hr>`,
-                        part1: 'Liquidity Supplied by MMF to Market =',
-                        part2: 'Investment by Market in MMF ='
-                    },
-                    sofr: { label: 'SOFR Rate:', desc: `<p>The SOFR rate represents the cost for financial institutions to borrow money overnight from other institutions, secured by collateral (e.g., Treasuries).</p><p><b>Why is it important?:</b> SOFR reflects the liquidity and supply-demand conditions in the short-term funding market. For instance, if funds are scarce, SOFR rises; if abundant, it falls.</p>` },
-                    effr: { label: 'EFFR Rate:', desc: `<p>The EFFR rate is the effective rate at which banks lend their reserves held at the Fed to each other.</p><p><b>Why is it important?:</b> A higher EFFR can increase the burden of interbank lending, potentially reducing the amount of money borrowed and circulated, leading to a tightening effect.</p>` },
-                    rrp_rate: { label: 'Reverse Repo Rate:', desc: `<p>The rate the Fed pays to borrow from financial institutions, serving as a floor to absorb excess liquidity from the market.</p><p><b>Why is it important?:</b> A higher reverse repo rate incentivizes absorbing liquidity from the market.</p>` },
-                    tb3ms: { label: '3-Month T-Bill Rate:', desc: `<p>The yield on 3-month U.S. Treasury bills, reflecting short-term market interest rates and inflation expectations.</p><p><b>Why is it important?:</b> A rise in the 3-month rate could indirectly mean the U.S. government wants to issue more debt to fund its spending, or it could signal lower demand for U.S. debt.</p>` },
-                    tb1yr: { label: '2-Year T-Note Rate:', desc: `<p>The yield on 2-year U.S. Treasury notes, reflecting medium-term interest rates and economic outlook.</p><p><b>Why is it important?:</b> A rise in the 2-year rate could also imply increased government debt issuance or lower demand.</p>` },
-                    tb10yr: { label: '10-Year T-Note Rate:', desc: `<p>The yield on 10-year U.S. Treasury notes is a key indicator reflecting market expectations for long-term economic growth and inflation.</p><p><b>Why is it important?:</b> It acts as a barometer for the economy's current state and future prospects, incorporating both fiscal policy and market investment sentiment.</p>` },
-                    discount: { label: 'Fed Discount Rate:', desc: `<p>The interest rate the Fed charges commercial banks for loans, influencing their funding costs.</p><p><b>Why is it important?:</b> A lower discount rate can signal the Fed's intention to release more money to commercial banks.</p>` },
-                    sofr_effr_spread: {
-                        label: 'SOFR EFFR Spread:',
-                        label_mobile: 'SOFR EFFR<br>Spread:',
-                        desc: `<p>If SOFR spikes or the spread with EFFR widens, it implies a surge in dollar demand from banks in the market.</p><p>Conversely, a narrowing or negative spread may signal abundant market liquidity or an improved environment for unsecured lending.</p>`
-                    }
-                },
-                 indicatorTitles: {
-                    'WTREGEN': 'U.S. Gov. TGA Balance', 'WRESBAL': 'U.S. Bank Reserves', 'RRPONTSYD': 'Fed Reverse Repo Funds', 'MMMFFAQ027S': 'MMF Balance', 'WALCL': 'Fed Total Assets + Liabilities',
-                    'SOFR': 'SOFR Rate', 'FEDFUNDS': 'EFFR Rate', 'IORB': 'IORB Rate', 'DGS3MO': '3-Month Treasury Bill', 'DGS2': '2-Year Treasury Note', 'DGS10': '10-Year Treasury Note', 'DPCREDIT': 'Fed Discount Rate',
-                    'DRBLACBS': 'U.S. Bank Delinquency Rate', 'M2SL': 'M2', 'M1SL': 'M1', 'NASDAQ100': 'NASDAQ 100 Index', 'SP500': 'S&P 500 Index', 'SP500_MCAP': 'S&P 500 Market Cap',
-                    'RRPONTSYAWARD': 'Reverse Repo Rate', 'ALTSALES': 'Car & Truck Sales', 'HOUST': 'Housing Starts', 'DCOILBRENTEU': 'Crude Oil Price',
-                    'SOFR_FEDFUNDS_SPREAD': 'SOFR, EFFR Spread', 'SOFR_IORB_SPREAD': 'SOFR, IORB Spread', 'YIELD_SPREAD': 'U.S. Yield Curve Spread'
-                },
-                infoData: {
-                    'WTREGEN': {'title': 'U.S. Gov. TGA Balance', 'content': {'Economic Meaning': 'The Treasury General Account (TGA) is the U.S. government\'s cash balance. An increase in this balance means the government has absorbed market liquidity, while a decrease may indicate the Treasury is supplying liquidity to the market through its policies.', 'Why is this indicator necessary?': 'The TGA balance directly affects liquidity (the amount of money circulating in the market). Sharp fluctuations in the balance can impact short-term interest rates and financial market stability, making it important to monitor.'}},
-                    'WRESBAL': {'title': 'U.S. Bank Reserves', 'content': {'Economic Meaning': 'These are mandatory deposits that U.S. banks hold at the Federal Reserve (FRB), used to regulate the liquidity of the banking system. A high level might suggest banks are likely to reduce lending, while a low level could lead to increased lending. Conversely, high reserves can also mean the banking system is flush with liquidity.', 'Why is this indicator necessary?': 'Reserves influence the money supply and credit creation and are a key indicator for evaluating the effectiveness of the Fed\'s monetary policy (e.g., quantitative easing or tightening). It is monitored to prevent economic overheating or recession.'}},
-                    'M2SL': {'title': 'M2', 'content': {'Economic Meaning': 'M2 represents the money supply generated by traditional banking activities, including cash, demand deposits, savings deposits, and small-denomination time deposits. While recent funding activities of Money Market Funds (MMFs) might indirectly affect M2, sharp fluctuations in MMF liquidity may not be immediately reflected. Liquidity from Stablecoins is also not directly included in M2.', 'Why is this indicator necessary?': 'M2 is used to predict traditional inflation, economic growth, and consumption trends. A sharp increase or decrease can be interpreted as a signal for monetary policy adjustments (e.g., interest rate hikes/cuts), making it important.'}},
-                    'M1SL': {'title': 'M1', 'content': {'Economic Meaning': 'M1 is a narrow definition of the money supply, including only the most liquid assets like cash and demand deposits. Like M2, its sensitivity to MMFs and Stablecoins is limited.', 'Why is this indicator necessary?': 'M1 reflects short-term spending capacity and liquidity levels, providing early signals of economic activity. It is particularly useful for analyzing the real-time impact of monetary policy.'}},
-                    'SOFR': {'title': 'SOFR Rate', 'content': {'Economic Meaning': 'SOFR (Secured Overnight Financing Rate) is a benchmark interest rate based on the average rate of overnight loans collateralized by U.S. Treasury securities. In essence, SOFR represents the cost for financial institutions (e.g., securities firms, hedge funds) to borrow funds from other institutions by providing collateral.', 'Why is this indicator necessary?': 'SOFR reflects the liquidity and supply-demand situation in the short-term funding market. For instance, if funds are scarce, SOFR rises; if abundant, it falls. It is a crucial benchmark for financial institutions when they raise or invest funds overnight and can indicate whether the market is flush with cash.'}},
-                    'FEDFUNDS': {'title': 'EFFR Rate', 'content': {'Economic Meaning': 'The EFFR (Effective Federal Funds Rate) is the actual interest rate at which banks lend their reserves held at the Fed to each other. It is closely linked to the Fed\'s target federal funds rate.', 'Why is this indicator necessary?': 'The EFFR shows the direction of the Fed\'s monetary policy and influences economic growth, inflation, and employment. For example, a high EFFR can increase the burden of interbank lending, potentially reducing the volume of money borrowed in the market, thus creating a tightening effect.'}},
-                    'IORB': {'title': 'IORB Rate', 'content': {'Economic Meaning': 'IORB (Interest on Reserve Balances) is the interest rate the Fed pays on excess reserves that banks hold at the Fed.', 'Why is this indicator necessary?': 'The Fed adjusts this rate to influence banks\' decisions on holding excess reserves and supplying liquidity. IORB acts as the lower bound of the Fed\'s policy rate (federal funds rate) target range and is a key tool for managing incentives for banks to either lend out funds or hold them as reserves.'}},
-                    'SOFR_FEDFUNDS_SPREAD': {'title': 'SOFR, EFFR Spread', 'content': {'Economic Meaning': 'If SOFR spikes or the spread with EFFR widens, it implies a surge in demand for dollars from banks in the market. Such a situation can signal liquidity tightening or market instability. Conversely, a narrowing spread may indicate abundant market liquidity or an improved environment for unsecured lending.', 'Why is this indicator necessary?': 'This spread helps in assessing and preemptively understanding the market\'s liquidity situation.'}},
-                    'SOFR_IORB_SPREAD': {'title': 'SOFR, IORB Spread', 'content': {'Economic Meaning': 'When SOFR remains below IORB, it indicates abundant market liquidity and smooth interbank funding (= a signal of excess liquidity). Conversely, if SOFR rises above IORB, it means borrowing from the market is more costly for banks than earning interest on excess reserves at the Fed. This could suggest increased interbank demand for funds, signaling a liquidity shortage.', 'Why is this indicator necessary?': 'This spread helps in assessing and preemptively understanding the market\'s liquidity situation.'}},
-                    'DGS3MO': {'title': '3-Month Treasury Bill Rate', 'content': {'Economic Meaning': 'The yield on 3-month U.S. Treasury securities, reflecting short-term market interest rates and inflation expectations.', 'Why is this indicator necessary?': 'It is useful for gauging short-term interest rate trends and analyzing signals of economic recovery or recession. A rising 3-month Treasury rate could indirectly mean the U.S. government is issuing more debt to fund spending, or it could reflect lower demand for U.S. debt.'}},
-                    'DGS2': {'title': '2-Year Treasury Note Rate', 'content': {'Economic Meaning': 'The yield on 2-year U.S. Treasury securities, reflecting medium-term interest rates and the economic outlook.', 'Why is this indicator necessary?': 'The relationship between short- and long-term rates helps gauge expectations for economic growth and inflation concerns, making it important for investors and policymakers. A rising rate could also imply increased government debt issuance or lower demand.'}},
-                    'DGS10': {'title': '10-Year Treasury Note Rate', 'content': {'Economic Meaning': 'The yield on 10-year U.S. Treasury securities represents medium- to long-term interest rates and is a key indicator reflecting market expectations for economic growth and inflation. The rate tends to rise with a positive future outlook and fall with a pessimistic one.', 'Why is this indicator necessary?': 'The 10-year Treasury rate serves as a barometer for the economy\'s current state and future prospects, incorporating a mix of government fiscal policy and market investment sentiment.'}},
-                    'YIELD_SPREAD': {'title': 'U.S. Yield Curve Spread', 'content': {'Economic Meaning': '1. Investor Anxiety: When a recession is anticipated, funds flow into safe long-term Treasuries, causing their yields to fall. <br>2. Tight Monetary Policy: The Fed raises its benchmark rate to curb inflation, causing short-term rates to rise. <br>3. Lending and Investment Slowdown: High interest rates make it difficult for businesses and households to borrow, leading to reduced consumption and investment. <br>In this process, a yield curve inversion reflects market uncertainty and the potential for a future economic slowdown.', 'Why is this indicator necessary?': 'When the yield curve inverts, it\'s because investors, anticipating a recession, buy long-term bonds, pushing their yields down, while the Fed is simultaneously raising short-term rates to control inflation. Historically, a recession tends to occur 12-18 months after an inversion.', 'Conclusion': 'While the yield curve inversion is a reliable leading indicator of a recession, it should not be taken as an absolute certainty. When an inversion occurs, investors and policymakers should prepare for a slowdown, but it must be analyzed in conjunction with other economic indicators (e.g., unemployment rate, consumer spending).'}},
-                    'RRPONTSYD': {'title': 'Fed Reverse Repo Funds', 'content': {'Economic Meaning': 'A Reverse Repurchase Agreement (RRP) is a tool the Fed uses to absorb liquidity from the market by selling securities to financial institutions. The amount reflects the "locked-up" money or excess funds in the market.', 'Why is this indicator necessary?': 'It is used when the Fed wants to control interest rates or adjust liquidity and is necessary to manage excess market liquidity (e.g., inflation risk). An increase in reverse repo funds means money from circulation is being tied up at the central bank, which can tighten liquidity and potentially lead to a decrease in stock prices.'}},
-                    'MMMFFAQ027S': {'title': 'MMF Balance', 'content': {'Economic Meaning': 'The total asset balance of Money Market Funds (MMFs), showing how much capital investors are placing in safe assets. Funds tend to flow into MMFs when benchmark interest rates are high (offering better returns) or when the market (stocks) is perceived as unstable.', 'Why is this indicator necessary?': 'The MMF balance reflects investor sentiment and risk aversion, tending to increase during times of financial market uncertainty, making it useful for assessing economic stability.'}},
-                    'SP500': {'title': 'S&P 500 Index', 'content': {'Economic Meaning': 'An index representing the stock performance of 500 large U.S. companies, indicating the overall health of the stock market.', 'Why is this indicator necessary?': 'It reflects economic growth, corporate earnings, and investor confidence, and is linked to consumer spending, making it essential for macroeconomic analysis.'}},
-                    'DPCREDIT': {'title': 'Fed Discount Rate', 'content': {'Economic Meaning': 'The interest rate at which the Fed lends to commercial banks, determining their funding costs. A lower discount rate may signal the Fed\'s intention to release more money to commercial banks.', 'Why is this indicator necessary?': 'It is used to provide liquidity support to banks and prevent credit crunches, making it important for evaluating the Fed\'s emergency monetary policies.'}},
-                    'DRBLACBS': {'title': 'U.S. Bank Delinquency Rate (All)', 'content': {'Economic Meaning': 'The percentage of bank loans that are past due, indicating borrowers\' ability to repay and credit risk.', 'Why is this indicator necessary?': 'It serves as a signal for economic recession or the health of the financial system and is used as a basis for lending policies and regulatory reinforcement.'}},
-                    'NASDAQ100': {'title': 'NASDAQ 100 Index', 'content': {'Economic Meaning': 'An index reflecting the stock prices of 100 of the largest non-financial companies listed on the Nasdaq stock market, showing the performance of the tech sector.', 'Why is this indicator necessary?': 'It reflects the growth and innovation of the technology industry and has become an important benchmark as the global economy\'s dependence on technology increases.'}},
-                    'WALCL': {'title': 'Fed Total Assets + Liabilities', 'content': {'Economic Meaning': 'The sum of the Fed\'s total assets (e.g., bond holdings) and liabilities (e.g., reverse repos and reserves), representing the Fed\'s financial position.', 'Why is this indicator necessary?': 'It shows the scale of quantitative easing or tightening policies and is essential for analyzing the impact of the Fed\'s monetary policy on market liquidity.'}},
-                    'SP500_MCAP': {'title': 'S&P 500 Market Cap', 'content': {'Economic Meaning': 'The total market capitalization of the companies included in the S&P 500 index. This represents the overall size and value of the U.S. stock market and reflects the general health of the economy and investor sentiment.', 'Why is this indicator necessary?': 'It is an important indicator for judging whether the stock market is over- or under-valued. An increase in market cap suggests economic growth and improved corporate profitability, while a decrease may signal a slowdown or increased uncertainty.'}},
-                    'RRPONTSYAWARD': {'title': 'Reverse Repo Rate', 'content': {'Economic Meaning': 'The interest rate the Fed pays when it borrows from financial institutions, used as a benchmark to absorb excess liquidity from the market. A higher rate helps absorb more liquidity.', 'Why is this indicator necessary?': 'It prevents interest rates from falling below the Fed\'s target when market liquidity is overly abundant. Because the reverse repo rate acts as a minimum guaranteed return for financial institutions parking cash at the Fed, they are unwilling to lend elsewhere at a lower rate, thus preventing short-term rates from dropping below the Fed\'s target level.'}},
-                    'ALTSALES': {'title': 'Car & Truck Sales', 'content': {'Economic Meaning': 'A report from the U.S. Bureau of Economic Analysis on the sales of automobiles and all passenger cars. A high value for this indicator suggests a strong economy.', 'Why is this indicator necessary?': 'It is one of the key **leading economic indicators** for the U.S. market.'}},
-                    'HOUST': {'title': 'Housing Starts', 'content': {'Economic Meaning': 'Housing starts refer to the number of new residential construction projects started in a given month. The estimate also includes units in buildings that are completely rebuilt on an existing foundation. A high value for this indicator suggests a strong economy.', 'Why is this indicator necessary?': 'It is one of the key **leading economic indicators** for the U.S. market.'}},
-                    'DCOILBRENTEU': {'title': 'Crude Oil Price', 'content': {'Economic Meaning': 'Represents the benchmark price for European and global crude oil.', 'Why is this indicator necessary?': 'Historically, a decrease in oil prices has been associated with economic booms, while an increase has often preceded recessions or downturns. Therefore, it is a crucial indicator to monitor.'}}
-                }
             }
         };
 
+        // 이하 기능 관련 JavaScript 코드는 기존과 동일하게 유지됩니다.
+        // setLanguage, translations 변수 등 불필요한 부분만 제거되었습니다.
 
         async function fetchAndCacheData(indicator) {
             if (dataCache.has(indicator)) {

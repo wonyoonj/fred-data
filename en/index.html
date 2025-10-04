@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss.xml">
+    <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/atom.xml">
+
+    <script>
+        // 웹 브라우저 환경(http:, https:)에서만 광고 스크립트를 동적으로 추가합니다.
+        if (window.location.protocol.startsWith('http')) {
+            const adsScript = document.createElement('script');
+            adsScript.async = true;
+            adsScript.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3939948593689554";
+            adsScript.crossOrigin = "anonymous";
+            document.head.appendChild(adsScript);
+        }
+    </script>
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
+    <meta name="naver-site-verification" content="3c5e34898f2cef35432619edafb1d9362ab55063" />
+    <meta name="google-site-verification" content="_jcjvlFGv3HiGbo85WZ6IU_dfDIQx2j2JH0k5uMHq7U" />
+
+    <link rel="alternate" hreflang="ko" href="https://americayoudongsung.netlify.app/" />
+    <link rel="alternate" hreflang="en" href="https://americayoudongsung.netlify.app/en/" />
+    <link rel="alternate" hreflang="x-default" href="https://americayoudongsung.netlify.app/" />
+
+    <title>Wondeng's U.S. Monetary Liquidity Status</title>
+    <meta name="title" content="Wondeng's U.S. Monetary Liquidity Status">
+    <meta name="subject" content="Get a clear picture of the current U.S. market's monetary liquidity flow with real-time indicator data!">
+    <meta name="description" content="Visualizes the liquidity flow between the U.S. FED, Government, MMF, and Market with at-a-glance animations.">
+    <meta name="keywords" content="USA, FED, Federal Reserve, Government, MMF, Market, Tariffs, Liquidity, Reverse Repo, Interest Rate, Tightening, Quantitative Easing, TGA Balance, SOFR, EFFR, Treasury Yield, Nasdaq, S&P500, M2, M1, Reserves, Real-time, Trump, Powell">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Wondeng's U.S. Monetary Liquidity Status">
+    <meta property="og:description" content="Visualizes the liquidity flow between the U.S. FED, Government, MMF, and Market with at-a-glance animations.">
+    <meta property="og:image" content="https://americayoudongsung.netlify.app/icon/government.JPG">
+    <meta property="og:url" content="https://americayoudongsung.netlify.app/en/">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "Dataset",
+      "name": "Wondeng's U.S. Monetary Liquidity Data",
+      "description": "A data website that visualizes the real-time liquidity flow between the U.S. Federal Reserve (FED), Treasury (TGA), Money Market Funds (MMF), and the market. Analyze key economic indicators like the TGA balance, reverse repo, and Treasury yields with graphs.",
+      "url": "https://americayoudongsung.netlify.app/en/",
+      "keywords": ["US Liquidity", "TGA", "FED", "MMF", "Reverse Repo", "Quantitative Easing", "Quantitative Tightening", "US Economic Indicators"],
+      "creator": {
+        "@type": "Person",
+        "name": "Wondeng"
+      },
+      "license": "https://creativecommons.org/licenses/by/4.0/"
+    }
+    </script>
+    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.1/kakao.min.js"
+    integrity="sha384-kDljxUXHaJ9xAb2AzRd59KxjrFjzHa5TAoFQ6GbYTCAG0bjM55XohjjDT7tDDC01" crossorigin="anonymous" defer></script>
+    <base target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* CSS 스타일 코드는 기존과 동일하게 유지됩니다. */
+        body { font-family: 'Arial', sans-serif; margin: 0; padding: 0; background: #f4f4f4; color: #333; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; min-height: 100vh; }
+        .header { text-align: center; padding: 10px; background: #007bff; color: white; }
+        .back-btn { position: absolute; top: 10px; left: 10px; background: none; border: none; cursor: pointer; font-size: 24px; font-weight: bold; color: black; width: 30px; text-align: center; }
+        .back-btn::before { content: "◄"; font-size: 36px; }
+        .info-btn { position: absolute; top: 10px; right: 10px; background: none; border: none; cursor: pointer; font-size: 20px; }
+        .button { padding: 10px 20px; background: #0056b3; color: white; border: none; cursor: pointer; } /* ACCESSIBILITY: Increased contrast */
+        .button:hover { background: #004494; }
+
+        .page-title {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            font-size: 35px;
+            font-weight: bold;
+            color: black;
+        }
+        
+        .source-credit-main {
+            position: absolute;
+            /*top: 45px;*/
+            right: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        /* ▼▼▼ 언어 선택 버튼 스타일 ▼▼▼ */
+        .lang-selector {
+            display: flex;
+            justify-content: center;
+            margin: 10px auto;
+            background-color: #e9ecef;
+            border-radius: 20px;
+            padding: 4px;
+            width: fit-content;
+        }
+        .lang-btn {
+            padding: 8px 20px;
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+            border-radius: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .lang-btn.active {
+            background-color: #007bff;
+            color: white;
+        }
+        /* ▲▲▲ 언어 선택 버튼 스타일 ▲▲▲ */
+        
+        /* 소개 및 안내 페이지 스타일 */
+        .info-box {
+            padding: 20px; 
+            text-align: left; 
+            max-width: 800px; 
+            margin: 20px auto; 
+            background-color: #ffffff; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            line-height: 1.6;
+        }
+        .info-box h2 {
+            text-align: center;
+            color: #0056b3;
+        }
+        .info-box h3 {
+            margin-top: 30px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 5px;
+            color: #0056b3;
+        }
+        .info-box ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        .info-box li {
+            margin-bottom: 10px;
+        }
+        .info-box strong {
+            color: #007bff;
+        }
+        .info-box .positive { color: rgb(222, 3, 3); font-weight: bold; }
+        .info-box .negative { color: #729fff; font-weight: bold; }
+
+        .internal-link {
+            cursor: pointer;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .internal-link:hover {
+            text-decoration: underline;
+            color: #0056b3;
+        }
+
+        /* --- Animation Wrapper --- */
+        .animation-container {
+            position: relative;
+            width: 100%;
+            height: 800px;
+            overflow: hidden;
+        }
+
+        #liquidityFlow, #interestRateFlow {
+            text-align: center;
+            padding: 20px;
+        }
+        #liquidityFlow .icon-container, #interestRateFlow .icon-container {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transform: translate(-50%, -50%);
+        }
+        #liquidityFlow .icon, #interestRateFlow .icon {
+            width: 80px;
+            height: 80px;
+            display: block;
+            object-fit: contain;
+        }
+        #liquidityFlow .icon-label, #interestRateFlow .icon-label {
+            font-weight: bold;
+            color: black;
+            font-size: 14px;
+            white-space: nowrap;
+            margin-top: 5px;
+        }
+
+        .FED-container .icon-label {
+            order: -1;
+            margin-bottom: 5px;
+            margin-top: 0;
+        }
+
+        .FED-container { top: 20%; left: 50%; }
+        .Government-container { top: 57%; left: 20%; }
+        .Market-container { top: 90%; left: 50%; }
+        .MMF-container { top: 57%; left: 80%; }
+
+        #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay,
+        #tb3msRateDisplay_interest, #rrpRateDisplay_interest, #effrRateDisplay_interest, #sofrRateDisplay_interest,
+        #tb1yrRateDisplay_interest, #discountRateDisplay_interest, #tb10yrRateDisplay_interest,
+        #sofrEffrSpreadDisplay_interest {
+            position: absolute;
+            transform: translateX(-50%);
+            font-size: 0.85em; 
+            font-weight: bold;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 3px 6px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        
+        #netMarketFlowDisplay, #netMarketFlowDisplay_interest {
+            display: inline-block;
+            top: -40%;
+            left: 50%;
+            background: none;
+            border: none;
+            font-size: 0.9em;
+            min-width: 200px;
+        }
+
+        .popup-container {
+            position: absolute;
+            z-index: 20;
+        }
+
+        .popup-container:hover {
+            z-index: 30;
+        }
+        
+        .tga-popup-container { top: calc(60% + 40px + 5px); left: 30%; transform: translateX(-50%); }
+        .tga-popup-container-1yr { top: calc(60% + 40px + 5px + 50px); left: 30%; transform: translateX(-50%); }
+        .tga-popup-container-10yr { top: calc(60% + 40px + 5px + 100px); left: 30%; transform: translateX(-50%); }
+        .fed-popup-container { top: calc(38% - 40px - 10px); left: 45%; transform: translateX(-50%); }
+        .fed-popup-container-discount { top: calc(38% - 40px - 10px); left: 70%; transform: translateX(-50%); }
+        .mmf-fed-popup-container { top: calc(50% - 40px - 10px); left: 80%; transform: translateX(-50%); }
+        .mmf-market-popup-container { top: calc(63% + 40px); left: 80%; transform: translateX(-50%); }
+        
+        .sofr-effr-popup-container { top: 57%; left: 70%; transform: translateX(-50%); }
+
+        .tooltip-container {
+            visibility: hidden;
+            background-color: #555;
+            color: #fff;
+            text-align: left;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 9999;
+            bottom: 100%;
+            left: 50%;
+            margin-left: -100px;
+            width: 180px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            line-height: 1.5;
+            white-space: normal;
+        }
+        
+        .fed-popup-container .tooltip-container,
+        .fed-popup-container-discount .tooltip-container,
+        .mmf-fed-popup-container .tooltip-container {
+            bottom: auto;
+            top: 100%;
+            margin-top: 10px;
+        }
+
+        .tooltip-container p {
+            margin-top: 0;
+            margin-bottom: 5px;
+            font-size: 13px;
+            font-weight: normal;
+        }
+
+        .tooltip-container .graph-btn {
+            background: #009688;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .tooltip-container .update-date {
+            font-size: 10px;
+            color: #ccc;
+            text-align: right;
+            margin-top: 10px;
+            display: block;
+        }
+        
+        .tooltip-container::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+        
+        .fed-popup-container .tooltip-container::after,
+        .fed-popup-container-discount .tooltip-container::after,
+        .mmf-fed-popup-container .tooltip-container::after {
+            top: auto;
+            bottom: 100%;
+            border-color: transparent transparent #555 transparent;
+        }
+
+        .liquidity-tga-popup:hover .tooltip-container { margin-left: -150px; }
+        .liquidity-fed-popup:hover .tooltip-container { margin-left: -150px; top: 25px; width: 250px; }
+        .liquidity-mmf-fed-popup:hover .tooltip-container { margin-left: -220px; top: 25px; width: 250px; }
+        .liquidity-mmf-market-popup:hover .tooltip-container { margin-left: -220px; width: 280px; }
+        .interest-tb3ms-popup:hover .tooltip-container { margin-left: -150px; }
+        .interest-tb1yr-popup:hover .tooltip-container { margin-left: -150px; }
+        .interest-tb10yr-popup:hover .tooltip-container { margin-left: -150px; }
+        .interest-rrp-rate-popup:hover .tooltip-container { margin-left: -200px; top: 25px; width: 250px; }
+        .interest-discount-rate-popup:hover .tooltip-container { margin-left: -200px; top: 25px; width: 250px; }
+        .interest-effr-rate-popup:hover .tooltip-container { margin-left: -200px; top: 25px; width: 250px; }
+        .interest-sofr-rate-popup:hover .tooltip-container { margin-left: -200px; width: 280px; }
+        .sofr-effr-popup-container:hover .tooltip-container { margin-left: -220px; width: 280px; }
+        
+        .popup-container:hover .tooltip-container {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay,
+        #tb3msRateDisplay_interest, #rrpRateDisplay_interest, #effrRateDisplay_interest, #sofrRateDisplay_interest,
+        #tb1yrRateDisplay_interest, #discountRateDisplay_interest, #tb10yrRateDisplay_interest,
+        #sofrEffrSpreadDisplay_interest {
+            position: relative;
+            z-index: 10;
+            cursor: help;
+        }
+        
+        .slope-positive { color: rgb(222, 3, 3); }
+        .slope-negative { color: #729fff; }
+
+        .dollar-animated-object {
+            position: absolute;
+            object-fit: contain;
+            opacity: 0;
+            z-index: 5;
+        }
+        .update-date-span {
+            font-size: 66%;
+            font-weight: normal;
+            color: #555;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        .share-buttons-container {
+            display: flex;
+            justify-content: flex-end; /* PC: 오른쪽 정렬 */
+            align-items: center;
+            gap: 10px;
+            padding: 15px 0;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .share-button {
+            display: inline-block;
+            padding: 6px 9px; /* 8px 12px -> 6px 9px */
+            border-radius: 5px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 11px; /* 14px -> 11px */
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .share-button:hover {
+            opacity: 0.8;
+        }
+        .share-button.twitter { background-color: #1DA1F2; }
+        .share-button.facebook { background-color: #1877F2; }
+        .share-button.kakao { background-color: #FEE500; color: #191919; }
+        .share-button.line { background-color: #00C300; }
+        .share-button.copy-link { background-color: #6c757d; }
+
+
+        @keyframes dollarFlowToMarket {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 20%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 20%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 90%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 90%; }
+        }
+        @keyframes dollarFlowToFED {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 90%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 90%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 20%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 20%; }
+        }
+        @keyframes dollarFlowToGovernment {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 90%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 90%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 20%; top: 57%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 20%; top: 57%; }
+        }
+        @keyframes dollarFlowFromGovernment {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 20%; top: 57%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 20%; top: 57%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 90%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 90%; }
+        }
+        @keyframes dollarFlowFromMmfToFed {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 57%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 57%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 20%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 20%; }
+        }
+        @keyframes dollarFlowFromFedToMmf {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 20%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 20%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 57%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 57%; }
+        }
+        @keyframes dollarFlowFromMmfToMarket_parabolic {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 57%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 57%; }
+            50% { transform: translate(-50%, -50%) scale(1) translateY(50px); opacity: 1; left: 65%; top: 75%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 90%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 90%; }
+        }
+        @keyframes dollarFlowFromMarketToMmf_parabolic {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 90%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 90%; }
+            50% { transform: translate(-50%, -50%) scale(1) translateY(50px); opacity: 1; left: 65%; top: 75%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 57%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 57%; }
+        }
+        @keyframes dollarFlowFromMmfToGovernment {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 57%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 57%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 20%; top: 57%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 20%; top: 57%; }
+        }
+        @keyframes dollarFlowFromGovernmentToMmf {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 20%; top: 57%; }
+            20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 20%; top: 57%; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 57%; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 57%; }
+        }
+
+        .animated-dollar-to-market { animation: dollarFlowToMarket var(--animation-duration) linear forwards; }
+        .animated-dollar-to-fed { animation: dollarFlowToFED var(--animation-duration) linear forwards; }
+        .animated-dollar-to-government { animation: dollarFlowToGovernment var(--animation-duration) linear forwards; }
+        .animated-dollar-from-government { animation: dollarFlowFromGovernment var(--animation-duration) linear forwards; }
+        .animated-dollar-from-mmf-to-fed { animation: dollarFlowFromMmfToFed var(--animation-duration) linear forwards; }
+        .animated-dollar-from-fed-to-mmf { animation: dollarFlowFromFedToMmf var(--animation-duration) linear forwards; }
+        .animated-dollar-from-mmf-to-market_parabolic { animation: dollarFlowFromMmfToMarket_parabolic var(--animation-duration) linear forwards; }
+        .animated-dollar-from-market-to-mmf_parabolic { animation: dollarFlowFromMarketToMmf_parabolic var(--animation-duration) linear forwards; }
+
+        #graphIndicators { padding: 20px; text-align: center; }
+        .indicator-section { margin-bottom: 20px; background-color: #ffffff; padding: 15px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .indicator-section h3 { font-size: 18px; margin-top: 0; margin-bottom: 10px; color: #007bff; }
+        .indicator-section p { font-size: 14px; color: #666; margin-top: 0; margin-bottom: 15px; }
+        .indicator-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        #graphPage {
+            text-align: center;
+            padding: 20px;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+        #graphPage canvas {
+            max-width: 100%;
+            width: 100%;
+            height: 400px;
+            cursor: grab;
+            flex-grow: 1;
+        }
+
+        #graphDataSource {
+            position: absolute;
+            top: 70px;
+            right: 25px;
+            font-size: 12px;
+            color: #666;
+            background-color: rgba(240, 240, 240, 0.8);
+            padding: 2px 5px;
+            border-radius: 3px;
+            z-index: 10;
+        }
+
+        #infoPage { padding: 20px; text-align: left; }
+        #infoContent h3 {
+            color: #007bff;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 8px;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        #infoContent p {
+            line-height: 1.7;
+            text-align: justify;
+        }
+
+        .time-buttons { margin: 10px 0; display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; }
+        .time-btn { padding: 5px 10px; background: #e9ecef; border: 1px solid #ced4da; border-radius: 5px; cursor: pointer; font-size: 0.9em; transition: background-color 0.2s; }
+        .time-btn:hover { background-color: #dee2e6; }
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0056b3; padding: 10px; display: flex; justify-content: space-around; z-index: 1000; }
+
+        @media (max-width: 600px) {
+            .container { padding: 10px 5px; } 
+            .back-btn { top: 5px; left: 5px; }
+            .info-btn { top: 5px; right: 5px; }
+            .page-title {
+                font-size: 24px;
+                top: 5px;
+                left: 10px;
+            }
+            .source-credit-main {
+                /*top: 55px;*/
+                right: 10px;
+                font-size: 10px;
+            }
+            .animation-container {
+                height: 550px;
+            }
+
+            #liquidityFlow .icon, #interestRateFlow .icon { width: 60px; height: 60px; }
+            #liquidityFlow .icon-label, #interestRateFlow .icon-label { font-size: 12px; }
+
+            .FED-container { top: 15%; left: 50%; }
+            .Government-container { top: 47%; left: 15%; }
+            .Market-container { top: 80%; left: 50%; }
+            .MMF-container { top: 47%; left: 83%; }
+
+            #netMarketFlowDisplay, #netMarketFlowDisplay_interest {
+                top: -45%;
+                min-width: 150px;
+            }
+            
+            #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay,
+            #tb3msRateDisplay_interest, #rrpRateDisplay_interest, #effrRateDisplay_interest, #sofrRateDisplay_interest,
+            #tb1yrRateDisplay_interest, #discountRateDisplay_interest, #tb10yrRateDisplay_interest,
+            #sofrEffrSpreadDisplay_interest {
+                font-size: 0.7em;
+                padding: 2px 4px;
+                white-space: normal;
+            }
+            
+            #mmfToRrpDisplay, #mmfToMarketDisplay,
+            #effrRateDisplay_interest, #sofrRateDisplay_interest,
+            #sofrEffrSpreadDisplay_interest {
+                width: 90px;
+            }
+            
+            .tga-popup-container { top: calc(47% + 30px + 12px); left: 35%; }
+            .tga-popup-container-1yr { top: calc(47% + 30px + 12px + 45px); left: 35%; }
+            .tga-popup-container-10yr { top: calc(47% + 30px + 12px + 90px); left: 35%; }
+            .fed-popup-container { top: calc(28% - 30px - 5px); left: 42%; }
+            .fed-popup-container-discount { top: calc(28% - 30px - 5px); left: 65%; }
+            .mmf-fed-popup-container { top: calc(32%); left: 83%; }
+            .mmf-market-popup-container { top: calc(55%); left: 83%; }
+
+            .sofr-effr-popup-container { top: 45%; left: 70%; }
+
+            .tooltip-container { margin-left: -100px; width: 200px; }
+            .liquidity-tga-popup:hover .tooltip-container { width: 200px; left: 30%; margin-left: -70px; }
+            .liquidity-fed-popup:hover .tooltip-container { width: 250px; }
+            .liquidity-mmf-fed-popup:hover .tooltip-container { width: 200px; }
+            .liquidity-mmf-market-popup:hover .tooltip-container { width: 300px; margin-left: -270px;}
+            .interest-tb3ms-popup:hover .tooltip-container { width: 200px; left: 30%; margin-left: -70px; }
+            .interest-tb1yr-popup:hover .tooltip-container { width: 200px; left: 30%; margin-left: -70px; }
+            .interest-tb10yr-popup:hover .tooltip-container { width: 200px; left: 30%; margin-left: -70px; }
+            .interest-rrp-rate-popup:hover .tooltip-container { width: 200px; left: 30%; margin-left: -100px; }
+            .interest-discount-rate-popup:hover .tooltip-container { width: 250px; }
+            .interest-effr-rate-popup:hover .tooltip-container { width: 200px; }
+            .interest-sofr-rate-popup:hover .tooltip-container { width: 200px; }
+            .sofr-effr-popup-container:hover .tooltip-container { width: 250px; margin-left: -200px; }
+            
+            .dollar-animated-object { width: 22.5px; height: 22.5px; }
+            .share-buttons-container {
+                justify-content: center; /* 모바일: 가운데 정렬 */
+            }
+            @keyframes dollarFlowToMarket {
+                0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 15%; }
+                20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 15%; }
+                80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
+                100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
+            }
+            @keyframes dollarFlowToFED {
+                0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
+                20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
+                80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 15%; }
+                100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 15%; }
+            }
+            @keyframes dollarFlowToGovernment {
+                0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
+                20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
+                80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 15%; top: 47%; }
+                100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 15%; top: 47%; }
+            }
+            @keyframes dollarFlowFromGovernment {
+                0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 15%; top: 47%; }
+                20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 15%; top: 47%; }
+                80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
+                100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
+            }
+            @keyframes dollarFlowFromMmfToFed {
+                0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 83%; top: 47%; }
+                20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 83%; top: 47%; }
+                80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 15%; }
+                100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 15%; }
+            }
+            @keyframes dollarFlowFromFedToMmf {
+                0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 15%; }
+                20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 15%; }
+                80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 83%; top: 47%; }
+                100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 83%; top: 47%; }
+            }
+            @keyframes dollarFlowFromMmfToMarket_parabolic {
+                0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 83%; top: 47%; }
+                20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 83%; top: 47%; }
+                50% { transform: translate(-50%, -50%) scale(1) translateY(25px); opacity: 1; left: 66.5%; top: 68%; }
+                80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
+                100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
+            }
+            @keyframes dollarFlowFromMarketToMmf_parabolic {
+                0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 80%; }
+                20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 80%; }
+                50% { transform: translate(-50%, -50%) scale(1) translateY(25px); opacity: 1; left: 66.5%; top: 68%; }
+                80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 83%; top: 47%; }
+                100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 83%; top: 47%; }
+            }
+            @keyframes dollarFlowFromMmfToGovernment {
+                0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 83%; top: 47%; }
+                20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 83%; top: 47%; }
+                80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 15%; top: 47%; }
+                100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 15%; top: 47%; }
+            }
+            @keyframes dollarFlowFromGovernmentToMmf {
+                0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 15%; top: 47%; }
+                20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 15%; top: 47%; }
+                80% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 80%; top: 57%; }
+                100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 80%; top: 57%; }
+            }
+
+            .indicator-buttons {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 5px;
+                max-width: 100%;
+            }
+            .indicator-buttons .button {
+                border: 1px solid black;
+                width: 95%;
+                margin: 5px auto;
+            }
+
+            .button { margin: 5px 0; }
+            .time-buttons { justify-content: space-around; }
+            .time-btn {
+                padding: 5px 8px;
+                font-size: 0.85em;
+                margin: 2px;
+                flex-basis: auto;
+                width: auto;
+            }
+            #graphPage canvas {
+                width: 100%;
+                height: 300px;
+            }
+            #graphDataSource {
+                top: 65px;
+                right: 15px;
+                font-size: 10px;
+            }
+            .nav-bar { padding: 5px; }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns" defer></script>
+</head>
+<body>
+    <div class="container">
+        
+        <div id="liquidityFlow" class="page">
+            <h1 class="page-title">Wondeng's U.S. Monetary Liquidity Status</h1>
+            
+            <div style="margin-top: 80px;">
+                <div class="lang-selector">
+                    <button class="lang-btn" onclick="window.location.href='/'">한국어</button>
+                    <button class="lang-btn active">English</button>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h2>Grasp U.S. Monetary Liquidity at a Glance!</h2>
+                <p>
+                    Welcome to 'Wondeng's U.S. Monetary Liquidity Status.' This website provides visualizations of the complex monetary liquidity flows in the U.S. market through real-time, data-driven animations for investors and anyone interested in the economy.
+                </p>
+                <p>
+                    By intuitively understanding how money flows between the U.S. Federal Reserve (FED), the government (TGA), Money Market Funds (MMF), and the market, we aim to help you more easily grasp the effects of interest rate changes, quantitative easing, and tightening policies to make wise investment decisions.
+                </p>
+                <h3>Key Features</h3>
+                <ul>
+                    <li><strong>Real-time Liquidity Flow:</strong> Easily track the flow of money by visualizing the monthly fund movement between each economic entity (government, central bank, MMF, market) with animations.</li>
+                    <li><strong>Key Interest Rate Status:</strong> Check important market interest rate indicators like SOFR, EFFR, and Treasury yields in real-time and understand their significance.</li>
+                    <li><strong>Detailed Data Graphs:</strong> Analyze over 30 key economic indicators, such as TGA balance, M2 money supply, and the S&P 500 index, with detailed graphs by period. Descriptions (Info) for each indicator are also provided.</li>
+                </ul>
+                <p style="margin-top: 20px; text-align: center; font-weight: bold;">
+                    Now, explore the complex flow of the economy easily through the visualizations below.
+                </p>
+                <p style="text-align: center;">
+                    (Hover over indicators for descriptions!)
+                </p>
+            </div>
+
+            <h3 id="ai-analysis-title-liquidity" style="text-align: center; color: black;"></h3>
+            
+            <div id="liquidity-analysis-container" class="info-box" style="text-align: left; font-weight: bold; border: 2px solid #007bff; padding: 15px; margin-top: 0;">
+                </div>
+            
+            <div class="share-buttons-container">
+                <a class="share-button twitter" onclick="shareOn('twitter')">Twitter</a>
+                <a class="share-button facebook" onclick="shareOn('facebook')">Facebook</a>
+                <a class="share-button kakao" onclick="shareOn('kakao')">Kakao</a>
+                <a class="share-button line" onclick="shareOn('line')">LINE</a>
+                <a class="share-button copy-link" onclick="copyLink()">Copy Link</a>
+            </div>
+            <div class="animation-container">
+                <div class="tga-popup-container popup-container liquidity-tga-popup">
+                    <div id="tgaSlopeDisplay"></div>
+                    <div class="tooltip-container" id="tga-tooltip-content">
+                    </div>
+                </div>
+                
+                <div class="fed-popup-container popup-container liquidity-fed-popup">
+                    <div id="fedLiquidityDisplay"></div>
+                    <div class="tooltip-container" id="fed-tooltip-content">
+                    </div>
+                </div>
+
+                <div class="mmf-fed-popup-container popup-container liquidity-mmf-fed-popup">
+                    <div id="mmfToRrpDisplay"></div>
+                    <div class="tooltip-container" id="mmf-fed-tooltip-content">
+                    </div>
+                </div>
+
+                <div class="mmf-market-popup-container popup-container liquidity-mmf-market-popup">
+                    <div id="mmfToMarketDisplay"></div>
+                    <div class="tooltip-container" id="mmf-market-tooltip-content">
+                    </div>
+                </div>
+                
+                <div class="icon-container FED-container">
+                    <span class="icon-label">Central Bank FED</span>
+                    <img src="../icon/fed.jpg" alt="FED" class="icon">
+                </div>
+                <div class="icon-container Government-container">
+                    <img src="../icon/government.JPG" alt="Government TGA" class="icon">
+                    <span class="icon-label">U.S. Government</span>
+                </div>
+                <div class="icon-container Market-container">
+                    <img src="../icon/Market.jpg" alt="Market" class="icon">
+                    <span class="icon-label">U.S. Market</span>
+                    <div id="netMarketFlowDisplay"></div>
+                    </div>
+                <div class="icon-container MMF-container">
+                    <img src="../icon/MMF.jpg" alt="MMF" class="icon">
+                    <span class="icon-label">MMF<br>(Money Market Fund)</span>
+                </div>
+            </div>
+
+            <div class="source-credit-main">Source: FRED, Office of Financial Research (OFR)</div>
+
+            <div class="info-box">
+                <h3>How to Interpret the Data</h3>
+                <p>The animation on the main page represents the 'change in fund flow over the last month' between each entity. The meaning of the numbers is as follows:</p>
+                <ul>
+                    <li><span class="internal-link" onclick="showGraph('WTREGEN')"><strong>(Government's) TGA Balance</strong></span> (<span class="negative">- Negative</span>): Means the government is injecting money into the market through reduced Treasury issuance or increased fiscal spending. (Liquidity Supply)</li>
+                    <li><span class="internal-link" onclick="showGraph('WTREGEN')"><strong>(Government's) TGA Balance</strong></span> (<span class="positive">+ Positive</span>): Means the government is absorbing money from the market by collecting more taxes or increasing Treasury issuance. (Liquidity Absorption)</li>
+                    <br>
+                    <li><span class="internal-link" onclick="showGraph('WALCL')"><strong>Fed (FED) Liquidity</strong></span> (<span class="negative">- Negative</span>): Means the Fed is withdrawing money from the market through quantitative tightening (asset sales), etc. It also signifies liquidity absorption as financial institutions deposit funds in the Fed's reverse repo facility. (Liquidity Absorption)</li>
+                    <li><span class="internal-link" onclick="showGraph('WALCL')"><strong>Fed (FED) Liquidity</strong></span> (<span class="positive">+ Positive</span>): Means the Fed is supplying money to the market through quantitative easing (asset purchases), etc. It also signifies liquidity supply as financial institutions move funds from the Fed's reverse repo back into the market. (Liquidity Supply)</li>
+                    <br>
+                    <li><span class="internal-link" onclick="showGraph('RRPONTSYD')"><strong>MMF → FED</strong></span> (<span class="positive">+ Positive</span>): MMFs are depositing funds into the Fed's Reverse Repo (RRP), leading to the absorption of market liquidity.</li>
+                    <li><span class="internal-link" onclick="showGraph('RRPONTSYD')"><strong>MMF → FED</strong></span> (<span class="negative">- Negative</span>): MMFs are withdrawing funds previously deposited in the Fed's RRP, supplying liquidity to the market.</li>
+                    <br>
+                    <li><span class="internal-link" onclick="showGraph('MMMFFAQ027S')"><strong>MMF → Market</strong></span> (<span class="positive">+ Positive</span>): MMFs are purchasing market assets like Treasuries and corporate bonds, thus supplying liquidity to the market.</li>
+                    <li><span class="internal-link" onclick="showGraph('MMMFFAQ027S')"><strong>MMF → Market</strong></span> (<span class="negative">- Negative</span>): Market participants are investing in MMF funds, causing market liquidity to be absorbed into MMFs.</li>
+                    </ul>
+                <p>In conclusion, if the <span style="font-weight: bold;">total sum of money flowing into the 'Market' (Net Market Flow)</span> is <span class="negative">blue and negative (-)</span>, it can be interpreted as <span style="font-weight: bold;">decreasing market liquidity</span>, and if it is <span class="positive">red and positive (+)</span>, it means <span style="font-weight: bold;">liquidity is becoming abundant</span>.</p>
+            </div>
+            </div>
+
+        <div id="interestRateFlow" class="page" style="display:none;">
+            <div class="page-title">Wondeng's U.S. Monetary Liquidity Status</div>
+            
+            <div style="margin-top: 80px;">
+                <div class="lang-selector">
+                    <button class="lang-btn" onclick="window.location.href='/'">한국어</button>
+                    <button class="lang-btn active">English</button>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h2>Grasp U.S. Monetary Liquidity at a Glance!</h2>
+                <h3>Key Features</h3>
+                <ul>
+                    <li><strong>Real-time Liquidity Flow:</strong> Easily track the flow of money by visualizing the monthly fund movement between each economic entity (government, central bank, MMF, market) with animations.</li>
+                    <li><strong>Key Interest Rate Status:</strong> Check important market interest rate indicators like SOFR, EFFR, and Treasury yields in real-time and understand their significance.</li>
+                    <li><strong>Detailed Data Graphs:</strong> Analyze over 30 key economic indicators, such as TGA balance, M2 money supply, and the S&P 500 index, with detailed graphs by period. Descriptions (Info) for each indicator are also provided.</li>
+                </ul>
+                <p style="margin-top: 20px; text-align: center; font-weight: bold;">
+                    Now, explore the complex flow of the economy easily through the visualizations below.
+                </p>
+                <p style="text-align: center;">
+                    (Hover over indicators for descriptions!)
+                </p>
+            </div>
+
+            <h3 id="ai-analysis-title-interest" style="text-align: center; color: black;"></h3>
+
+            <div id="interest-rate-analysis-container" class="info-box" style="text-align: left; font-weight: bold; border: 2px solid #007bff; padding: 15px; margin-top: 0;">
+                </div>
+            
+            <div class="share-buttons-container">
+                <a class="share-button twitter" onclick="shareOn('twitter')">Twitter</a>
+                <a class="share-button facebook" onclick="shareOn('facebook')">Facebook</a>
+                <a class="share-button kakao" onclick="shareOn('kakao')">Kakao</a>
+                <a class="share-button line" onclick="shareOn('line')">LINE</a>
+                <a class="share-button copy-link" onclick="copyLink()">Copy Link</a>
+            </div>
+            <div class="animation-container">
+                <div class="tga-popup-container popup-container interest-tb3ms-popup">
+                    <div id="tb3msRateDisplay_interest"></div>
+                    <div class="tooltip-container" id="tb3ms-tooltip-content_interest"></div>
+                </div>
+                
+                <div class="tga-popup-container-1yr popup-container interest-tb1yr-popup">
+                    <div id="tb1yrRateDisplay_interest"></div>
+                    <div class="tooltip-container" id="tb1yr-tooltip-content_interest"></div>
+                </div>
+
+                <div class="tga-popup-container-10yr popup-container interest-tb10yr-popup">
+                    <div id="tb10yrRateDisplay_interest"></div>
+                    <div class="tooltip-container" id="tb10yr-tooltip-content_interest"></div>
+                </div>
+                
+                <div class="fed-popup-container popup-container interest-rrp-rate-popup">
+                    <div id="rrpRateDisplay_interest"></div>
+                    <div class="tooltip-container" id="rrp-rate-tooltip-content_interest"></div>
+                </div>
+
+                <div class="fed-popup-container-discount popup-container interest-discount-rate-popup">
+                    <div id="discountRateDisplay_interest"></div>
+                    <div class="tooltip-container" id="discount-rate-tooltip-content_interest"></div>
+                </div>
+
+                <div class="mmf-fed-popup-container popup-container interest-effr-rate-popup">
+                    <div id="effrRateDisplay_interest"></div>
+                    <div class="tooltip-container" id="effr-rate-tooltip-content_interest"></div>
+                </div>
+
+                <div class="mmf-market-popup-container popup-container interest-sofr-rate-popup">
+                    <div id="sofrRateDisplay_interest"></div>
+                    <div class="tooltip-container" id="sofr-rate-tooltip-content_interest"></div>
+                </div>
+
+                <div class="sofr-effr-popup-container popup-container">
+                    <div id="sofrEffrSpreadDisplay_interest"></div>
+                    <div class="tooltip-container" id="sofr-effr-spread-tooltip-content_interest"></div>
+                </div>
+                <div class="icon-container FED-container">
+                    <span class="icon-label">Central Bank FED</span>
+                    <img src="../icon/fed.jpg" alt="FED" class="icon">
+                </div>
+                <div class="icon-container Government-container">
+                    <img src="../icon/government.JPG" alt="Government TGA" class="icon">
+                    <span class="icon-label">U.S. Government</span>
+                </div>
+                <div class="icon-container Market-container">
+                    <img src="../icon/Market.jpg" alt="Market" class="icon">
+                    <span class="icon-label">U.S. Market</span>
+                    <div id="netMarketFlowDisplay_interest"></div>
+                    </div>
+                <div class="icon-container MMF-container">
+                    <img src="../icon/MMF.jpg" alt="MMF" class="icon">
+                    <span class="icon-label">Commercial Banks</span>
+                </div>
+            </div>
+
+            <div class="source-credit-main">Source: FRED</div>
+
+            <div class="info-box">
+                <h3>Guide to Key Interest Rate Indicators</h3>
+                <ul>
+                    <li><span class="internal-link" onclick="showGraph('RRPONTSYAWARD')"><strong>Reverse Repo Rate</strong></span>: The rate the Fed pays when borrowing funds from financial institutions, serving as a benchmark for absorbing market liquidity.</li>
+                    <li><span class="internal-link" onclick="showGraph('DPCREDIT')"><strong>Fed Discount Rate</strong></span>: The interest rate the Fed charges commercial banks for loans, determining the funding cost for financial institutions.</li>
+                    <li><span class="internal-link" onclick="showGraph('FEDFUNDS')"><strong>EFFR Rate</strong></span>: The effective interest rate at which banks lend funds to each other, indicating the direction of the Fed's monetary policy.</li>
+                    <li><span class="internal-link" onclick="showGraph('SOFR')"><strong>SOFR Rate</strong></span>: The rate for overnight loans collateralized by Treasuries, directly reflecting the liquidity situation in the short-term funding market.</li>
+                    <li><span class="internal-link" onclick="showGraph('DGS3MO')"><strong>3-Month Treasury Bill Rate</strong></span>: The yield on 3-month Treasury bills, indicating short-term market interest rates and inflation expectations.</li>
+                    <li><span class="internal-link" onclick="showGraph('DGS2')"><strong>2-Year Treasury Note Rate</strong></span>: The yield on 2-year Treasury notes, reflecting the medium-term economic outlook.</li>
+                    <li><span class="internal-link" onclick="showGraph('DGS10')"><strong>10-Year Treasury Note Rate</strong></span>: The yield on 10-year Treasury notes, a key indicator showing market expectations for long-term economic growth and inflation.</li>
+                    <li><span class="internal-link" onclick="showGraph('SOFR_FEDFUNDS_SPREAD')"><strong>SOFR-EFFR Spread</strong></span>: The difference between secured (SOFR) and unsecured (EFFR) short-term lending rates, indicating market liquidity and credit risk status. A widening spread can signal liquidity tightening.</li>
+                    <li><span class="internal-link" onclick="showGraph('YIELD_SPREAD')"><strong>U.S. Yield Curve Spread</strong></span>: A leading indicator of economic recession. An inversion, where long-term rates fall below short-term rates, suggests a potential future economic slowdown.</li>
+                    </ul>
+            </div>
+            </div>
+
+        <div id="graphIndicators" class="page" style="display:none;">
+            <div class="indicator-section">
+                <h3>U.S. Fund Status</h3>
+                <p>Key indicators showing how much money is currently held by the U.S. government, banks, and the market.</p>
+                <div class="indicator-buttons">
+                    <button class="button" onclick="showGraph('WTREGEN')">U.S. Gov. TGA Balance</button>
+                    <button class="button" onclick="showGraph('WRESBAL')">U.S. Bank Reserves</button>
+                    <button class="button" onclick="showGraph('RRPONTSYD')">Fed Reverse Repo Funds</button>
+                    <button class="button" onclick="showGraph('MMMFFAQ027S')">MMF Balance</button>
+                    <button class="button" onclick="showGraph('WALCL')">Fed Total Assets + Liabilities</button>
+                </div>
+            </div>
+            <div class="indicator-section">
+                <h3>Interest Rates</h3>
+                <p>Interest rate indicators that represent the cost of funds in the market, used to predict the health and future direction of the economy.</p>
+                <div class="indicator-buttons">
+                    <button class="button" onclick="showGraph('DGS3MO')">3-Month Treasury Bill</button>
+                    <button class="button" onclick="showGraph('DGS2')">2-Year Treasury Note</button>
+                    <button class="button" onclick="showGraph('DGS10')">10-Year Treasury Note</button>
+                    <button class="button" onclick="showGraph('YIELD_SPREAD')">U.S. Yield Curve Spread</button>
+                    <button class="button" onclick="showGraph('SOFR')">SOFR Rate</button>
+                    <button class="button" onclick="showGraph('FEDFUNDS')">EFFR Rate</button>
+                    <button class="button" onclick="showGraph('IORB')">IORB Rate</button>
+                    <button class="button" onclick="showGraph('RRPONTSYAWARD')">Reverse Repo Rate</button>
+                    <button class="button" onclick="showGraph('DPCREDIT')">Fed Discount Rate</button>
+                    <button class="button" onclick="showGraph('DRBLACBS')">U.S. Bank Delinquency Rate</button>
+                    <button class="button" onclick="showGraph('SOFR_FEDFUNDS_SPREAD')">SOFR, EFFR Spread</button>
+                    <button class="button" onclick="showGraph('SOFR_IORB_SPREAD')">SOFR, IORB Spread</button>
+                </div>
+            </div>
+            <div class="indicator-section">
+                <h3>Liquidity</h3>
+                <p>Indicators that measure the total amount of money circulating in the market, allowing for an assessment of inflation and economic activity levels.</p>
+                <div class="indicator-buttons">
+                    <button class="button" onclick="showGraph('M2SL')">M2</button>
+                    <button class="button" onclick="showGraph('M1SL')">M1</button>
+                </div>
+            </div>
+            <div class="indicator-section">
+                <h3>Asset Prices</h3>
+                <p>Representative stock market indices that reflect the overall health of the economy and investor sentiment.</p>
+                <div class="indicator-buttons">
+                    <button class="button" onclick="showGraph('NASDAQ100')">NASDAQ 100 Index</button>
+                    <button class="button" onclick="showGraph('SP500')">S&P 500 Index</button>
+                    <button class="button" onclick="showGraph('SP500_MCAP')">S&P 500 Market Cap</button>
+                </div>
+            </div>
+            <div class="indicator-section">
+                <h3>Leading Indicators</h3>
+                <p>Indicators that help predict the future direction of economic activity, serving as a barometer for consumption and industrial activity.</p>
+                <div class="indicator-buttons">
+                    <button class="button" onclick="showGraph('ALTSALES')">Car & Truck Sales</button>
+                    <button class="button" onclick="showGraph('HOUST')">Housing Starts</button>
+                    <button class="button" onclick="showGraph('DCOILBRENTEU')">Crude Oil Price</button>
+                </div>
+            </div>
+            </div>
+
+        <div id="graphPage" class="page" style="display:none;">
+            <button class="back-btn" onclick="showGraphIndicators()">◄</button>
+            <button class="info-btn" onclick="showInfo()">Info</button>
+            <h2 id="graphTitle"></h2>
+            <div id="graphDataSource"></div>
+            <canvas id="myChart"></canvas>
+            <div class="time-buttons">
+                <button class="time-btn" onclick="updateChart('1M')">1M</button>
+                <button class="time-btn" onclick="updateChart('6M')">6M</button>
+                <button class="time-btn" onclick="updateChart('1Y')">1Y</button>
+                <button class="time-btn" onclick="updateChart('5Y')">5Y</button>
+                <button class="time-btn" onclick="updateChart('10Y')">10Y</button>
+                <button class="time-btn" onclick="updateChart('All')">All</button>
+            </div>
+        </div>
+        
+        <div id="infoPage" class="page" style="display:none;">
+            <button class="back-btn" onclick="goBackToGraph()">◄</button>
+            <div class="info-box" style="margin-top: 20px;">
+                <h2 id="infoTitle"></h2>
+                <div id="infoContent"></div>
+            </div>
+        </div>
+        <div id="aboutPage" class="page" style="display:none;">
+            <div class="info-box" style="margin-top: 20px;">
+                <h2>About Site</h2>
+                <p>'Wondeng's U.S. Monetary Liquidity Status' aims to be a compass that helps you not get lost in the complex world of economic indicators and data. Through real-time updated data, intuitively grasp where the market's money is flowing right now.</p>
+                
+                <h3>Dollar Liquidity Ultimately Determines Stock Prices.</h3>
+                <p>In 2022, as the U.S. Federal Reserve's reverse repo balance increased, the S&P 500 stocks declined, leading to a market crash. Currently, the <strong style="color: red;">direction and speed of currency in the U.S. stock market</strong> are becoming even more critical. Therefore, <strong style="color: blue;">"Wondeng's U.S. Monetary Liquidity Status"</strong> aims to help you easily predict the flow of liquidity to forecast the stock market's direction and maximize profits.</p>
+                <img src="../icon/repo_sp500_plot.JPG" alt="Relationship between Reverse Repo and S&P500" style="width: 100%; max-width: 600px; margin: 20px auto; display: block; border-radius: 8px;">
+
+                <h3>Key Features</h3>
+                <ul>
+                    <li><strong>Real-time Liquidity Flow:</strong> Easily track the flow of money by visualizing the monthly fund movement between each economic entity (government, central bank, MMF, market) with animations.</li>
+                    <li><strong>Key Interest Rate Status:</strong> Check important market interest rate indicators like SOFR, EFFR, and Treasury yields in real-time and understand their significance.</li>
+                    <li><strong>Detailed Data Graphs:</strong> Analyze over 30 key economic indicators, such as TGA balance, M2 money supply, and the S&P 500 index, with detailed graphs by period. Descriptions (Info) for each indicator are also provided.</li>
+                </ul>
+
+                <h3>How to Interpret the Data</h3>
+                <p>The animation on the main page represents the 'change in fund flow over the last month' between each entity. The meaning of the numbers is as follows:</p>
+                <ul>
+                    <li><strong>(Government's) TGA Balance (<span class="negative">- Negative</span>):</strong> The government is injecting money into the market through reduced Treasury issuance or increased fiscal spending. (Liquidity Supply)</li>
+                    <li><strong>(Government's) TGA Balance (<span class="positive">+ Positive</span>):</strong> The government is absorbing money from the market by collecting more taxes or increasing Treasury issuance. (Liquidity Absorption)</li>
+                    <br>
+                    <li><strong>Fed (FED) Liquidity (<span class="negative">- Negative</span>):</strong> The Fed is withdrawing money from the market through quantitative tightening (asset sales), etc. (Liquidity Absorption)</li>
+                    <li><strong>Fed (FED) Liquidity (<span class="positive">+ Positive</span>):</strong> The Fed is supplying money to the market through quantitative easing (asset purchases), etc. (Liquidity Supply)</li>
+                </ul>
+                <p>In conclusion, if the <span style="font-weight: bold;">total sum of money flowing into the 'Market' (Net Market Flow)</span> is <span class="negative">blue and negative (-)</span>, it can be interpreted as <span style="font-weight: bold;">decreasing market liquidity</span>, and if it is <span class="positive">red and positive (+)</span>, it means <span style="font-weight: bold;">liquidity is becoming abundant</span>.</p>
+
+                <h3>Data Source & Update Cycle</h3>
+                <p>Most of the data on this site is based on official data provided by the Federal Reserve Economic Data (<strong>FRED</strong>) and the Office of Financial Research (<strong>OFR</strong>). The data is automatically updated daily or weekly according to the release schedule of each indicator.</p>
+                <h3>Now Available as a Website and App!!</h3>
+                <p>Search for <strong style="color: red;">"Wondeng's U.S. Monetary Liquidity Status"</strong> in your search engine.</p>
+                <p>Search for <strong style="color: red;">"Wondeng's U.S. Monetary Liquidity Status"</strong> on the Google Play Store.</p>
+            </div>
+        </div>
+        <div class="nav-bar">
+            <button class="button" onclick="showLiquidityFlow()">Liquidity<br>Status</button>
+            <button class="button" onclick="showInterestRateFlow()">Interest Rate<br>Status</button>
+            <button class="button" onclick="showGraphIndicators()">Graph<br>Indicators</button>
+            <button class="button" onclick="showAboutPage()">About<br>Site</button>
+        </div>
+        </div>
+    
+    <footer style="text-align: center; padding: 20px 20px 80px 20px; background-color: #f8f9fa; border-top: 1px solid #dee2e6; color: #6c757d; font-size: 12px;">
+        <p>&copy; 2025 Wondeng's U.S. Monetary Liquidity Status. All Rights Reserved.</p>
+        <p>The information provided on this site is for investment reference only. All investment responsibilities lie with the individual.</p>
+    </footer>
+
+    <script>
+        let myChart = null;
+        let isDragging = false;
+        let startX;
+        let startScrollX;
+        let currentIndicator = null;
+        let currentGraphData = [];
+        let dollarAnimationIntervals = [];
+        const currentLanguage = 'en'; // 이 페이지는 영어 버전이므로 'en'으로 고정
+        let analysisData = null;
+        
+        const BASE_ANIMATION_DURATION = 3000;
+        const BASE_DOLLAR_SIZE = 37.5; 
+        const NUM_DOLLAR_ANIMATIONS = 3;
+
+        const FUNCTION_BASE_URL = '/.netlify/functions/get-csv-data';
+        
+        const dataCache = new Map();
+        const CACHE_TTL = 3600 * 1000;
+
+        // ▼▼▼ 번역 텍스트 모음 (영어 버전이므로 영어만 필요) ▼▼▼
+        const translations = {
+            en: {
+                aiAnalysisTitle: 'AI Daily Analysis',
+                graphBtn: 'Graph',
+                infoBtnText: 'Info',
+                backBtnText: '◄',
+                netMarketFlowLabel: '<b>Total Market Liquidity Supply<br> = ',
+                tooltip: {
+                    tga: {
+                        label: 'TGA Balance:',
+                        desc: `<p>Shows the change in the U.S. Treasury's cash balance over the last month.</p><p><b>+Positive:</b> Dollar liquidity absorbed from the market into the Treasury.<br><b>-Negative:</b> The U.S. Treasury supplied dollar liquidity to the market.</p>`
+                    },
+                    fed: {
+                        label: 'Fed Liquidity:',
+                        desc: `<p>Shows the change in the Fed's net assets (Treasuries, MBS, etc.) and liabilities over the last month.</p>
+                               <p><b>+Positive:</b> Supplying dollars to the market by purchasing assets like bonds, or releasing reverse repo funds to the market.<br><b>-Negative:</b> Withdrawing dollars from circulation by selling assets, or absorbing funds from the market via reverse repos (tightening).</p><hr>`,
+                        part1: 'Fed Asset Change =',
+                        part2: 'Fed Liability Change (RRP & Reserves) ='
+                    },
+                    mmf_fed: {
+                        label: 'MMF -> FED:',
+                        desc: `<p>Shows the change in the amount of funds MMFs have placed with the Fed over the last month.</p><p><b>+Positive:</b> MMFs lend funds to the Fed via reverse repos.<br><b>-Negative:</b> MMFs withdraw reverse repo funds previously lent to the Fed.</p>`
+                    },
+                    mmf_market: {
+                        label: 'MMF -> Market:',
+                        desc: `<p>Shows the change in the amount of funds MMFs have supplied to the market over the last month.<br>This is the net result of liquidity supplied by MMFs to the market minus the amount the market invested in MMFs.</p>
+                               <p><b>+Positive:</b> MMFs are supplying more liquidity to the market.<br><b>-Negative:</b> The market is investing more funds into MMFs.</p><hr>`,
+                        part1: 'Liquidity Supplied by MMF to Market =',
+                        part2: 'Investment by Market in MMF ='
+                    },
+                    sofr: { label: 'SOFR Rate:', desc: `<p>The SOFR rate represents the cost for financial institutions to borrow money overnight from other institutions, secured by collateral (e.g., Treasuries).</p><p><b>Why is it important?:</b> SOFR reflects the liquidity and supply-demand conditions in the short-term funding market. For instance, if funds are scarce, SOFR rises; if abundant, it falls.</p>` },
+                    effr: { label: 'EFFR Rate:', desc: `<p>The EFFR rate is the effective rate at which banks lend their reserves held at the Fed to each other.</p><p><b>Why is it important?:</b> A higher EFFR can increase the burden of interbank lending, potentially reducing the amount of money borrowed and circulated, leading to a tightening effect.</p>` },
+                    rrp_rate: { label: 'Reverse Repo Rate:', desc: `<p>The rate the Fed pays to borrow from financial institutions, serving as a floor to absorb excess liquidity from the market.</p><p><b>Why is it important?:</b> A higher reverse repo rate incentivizes absorbing liquidity from the market.</p>` },
+                    tb3ms: { label: '3-Month T-Bill Rate:', desc: `<p>The yield on 3-month U.S. Treasury bills, reflecting short-term market interest rates and inflation expectations.</p><p><b>Why is it important?:</b> A rise in the 3-month rate could indirectly mean the U.S. government wants to issue more debt to fund its spending, or it could signal lower demand for U.S. debt.</p>` },
+                    tb1yr: { label: '2-Year T-Note Rate:', desc: `<p>The yield on 2-year U.S. Treasury notes, reflecting medium-term interest rates and economic outlook.</p><p><b>Why is it important?:</b> A rise in the 2-year rate could also imply increased government debt issuance or lower demand.</p>` },
+                    tb10yr: { label: '10-Year T-Note Rate:', desc: `<p>The yield on 10-year U.S. Treasury notes is a key indicator reflecting market expectations for long-term economic growth and inflation.</p><p><b>Why is it important?:</b> It acts as a barometer for the economy's current state and future prospects, incorporating both fiscal policy and market investment sentiment.</p>` },
+                    discount: { label: 'Fed Discount Rate:', desc: `<p>The interest rate the Fed charges commercial banks for loans, influencing their funding costs.</p><p><b>Why is it important?:</b> A lower discount rate can signal the Fed's intention to release more money to commercial banks.</p>` },
+                    sofr_effr_spread: {
+                        label: 'SOFR EFFR Spread:',
+                        label_mobile: 'SOFR EFFR<br>Spread:',
+                        desc: `<p>If SOFR spikes or the spread with EFFR widens, it implies a surge in dollar demand from banks in the market.</p><p>Conversely, a narrowing or negative spread may signal abundant market liquidity or an improved environment for unsecured lending.</p>`
+                    }
+                },
+                 indicatorTitles: {
+                    'WTREGEN': 'U.S. Gov. TGA Balance', 'WRESBAL': 'U.S. Bank Reserves', 'RRPONTSYD': 'Fed Reverse Repo Funds', 'MMMFFAQ027S': 'MMF Balance', 'WALCL': 'Fed Total Assets + Liabilities',
+                    'SOFR': 'SOFR Rate', 'FEDFUNDS': 'EFFR Rate', 'IORB': 'IORB Rate', 'DGS3MO': '3-Month Treasury Bill', 'DGS2': '2-Year Treasury Note', 'DGS10': '10-Year Treasury Note', 'DPCREDIT': 'Fed Discount Rate',
+                    'DRBLACBS': 'U.S. Bank Delinquency Rate', 'M2SL': 'M2', 'M1SL': 'M1', 'NASDAQ100': 'NASDAQ 100 Index', 'SP500': 'S&P 500 Index', 'SP500_MCAP': 'S&P 500 Market Cap',
+                    'RRPONTSYAWARD': 'Reverse Repo Rate', 'ALTSALES': 'Car & Truck Sales', 'HOUST': 'Housing Starts', 'DCOILBRENTEU': 'Crude Oil Price',
+                    'SOFR_FEDFUNDS_SPREAD': 'SOFR, EFFR Spread', 'SOFR_IORB_SPREAD': 'SOFR, IORB Spread', 'YIELD_SPREAD': 'U.S. Yield Curve Spread'
+                },
+                infoData: {
+                    'WTREGEN': {'title': 'U.S. Gov. TGA Balance', 'content': {'Economic Meaning': 'The Treasury General Account (TGA) is the U.S. government\'s cash balance. An increase in this balance means the government has absorbed market liquidity, while a decrease may indicate the Treasury is supplying liquidity to the market through its policies.', 'Why is this indicator necessary?': 'The TGA balance directly affects liquidity (the amount of money circulating in the market). Sharp fluctuations in the balance can impact short-term interest rates and financial market stability, making it important to monitor.'}},
+                    'WRESBAL': {'title': 'U.S. Bank Reserves', 'content': {'Economic Meaning': 'These are mandatory deposits that U.S. banks hold at the Federal Reserve (FRB), used to regulate the liquidity of the banking system. A high level might suggest banks are likely to reduce lending, while a low level could lead to increased lending. Conversely, high reserves can also mean the banking system is flush with liquidity.', 'Why is this indicator necessary?': 'Reserves influence the money supply and credit creation and are a key indicator for evaluating the effectiveness of the Fed\'s monetary policy (e.g., quantitative easing or tightening). It is monitored to prevent economic overheating or recession.'}},
+                    'M2SL': {'title': 'M2', 'content': {'Economic Meaning': 'M2 represents the money supply generated by traditional banking activities, including cash, demand deposits, savings deposits, and small-denomination time deposits. While recent funding activities of Money Market Funds (MMFs) might indirectly affect M2, sharp fluctuations in MMF liquidity may not be immediately reflected. Liquidity from Stablecoins is also not directly included in M2.', 'Why is this indicator necessary?': 'M2 is used to predict traditional inflation, economic growth, and consumption trends. A sharp increase or decrease can be interpreted as a signal for monetary policy adjustments (e.g., interest rate hikes/cuts), making it important.'}},
+                    'M1SL': {'title': 'M1', 'content': {'Economic Meaning': 'M1 is a narrow definition of the money supply, including only the most liquid assets like cash and demand deposits. Like M2, its sensitivity to MMFs and Stablecoins is limited.', 'Why is this indicator necessary?': 'M1 reflects short-term spending capacity and liquidity levels, providing early signals of economic activity. It is particularly useful for analyzing the real-time impact of monetary policy.'}},
+                    'SOFR': {'title': 'SOFR Rate', 'content': {'Economic Meaning': 'SOFR (Secured Overnight Financing Rate) is a benchmark interest rate based on the average rate of overnight loans collateralized by U.S. Treasury securities. In essence, SOFR represents the cost for financial institutions (e.g., securities firms, hedge funds) to borrow funds from other institutions by providing collateral.', 'Why is this indicator necessary?': 'SOFR reflects the liquidity and supply-demand situation in the short-term funding market. For instance, if funds are scarce, SOFR rises; if abundant, it falls. It is a crucial benchmark for financial institutions when they raise or invest funds overnight and can indicate whether the market is flush with cash.'}},
+                    'FEDFUNDS': {'title': 'EFFR Rate', 'content': {'Economic Meaning': 'The EFFR (Effective Federal Funds Rate) is the actual interest rate at which banks lend their reserves held at the Fed to each other. It is closely linked to the Fed\'s target federal funds rate.', 'Why is this indicator necessary?': 'The EFFR shows the direction of the Fed\'s monetary policy and influences economic growth, inflation, and employment. For example, a high EFFR can increase the burden of interbank lending, potentially reducing the volume of money borrowed in the market, thus creating a tightening effect.'}},
+                    'IORB': {'title': 'IORB Rate', 'content': {'Economic Meaning': 'IORB (Interest on Reserve Balances) is the interest rate the Fed pays on excess reserves that banks hold at the Fed.', 'Why is this indicator necessary?': 'The Fed adjusts this rate to influence banks\' decisions on holding excess reserves and supplying liquidity. IORB acts as the lower bound of the Fed\'s policy rate (federal funds rate) target range and is a key tool for managing incentives for banks to either lend out funds or hold them as reserves.'}},
+                    'SOFR_FEDFUNDS_SPREAD': {'title': 'SOFR, EFFR Spread', 'content': {'Economic Meaning': 'If SOFR spikes or the spread with EFFR widens, it implies a surge in demand for dollars from banks in the market. Such a situation can signal liquidity tightening or market instability. Conversely, a narrowing spread may indicate abundant market liquidity or an improved environment for unsecured lending.', 'Why is this indicator necessary?': 'This spread helps in assessing and preemptively understanding the market\'s liquidity situation.'}},
+                    'SOFR_IORB_SPREAD': {'title': 'SOFR, IORB Spread', 'content': {'Economic Meaning': 'When SOFR remains below IORB, it indicates abundant market liquidity and smooth interbank funding (= a signal of excess liquidity). Conversely, if SOFR rises above IORB, it means borrowing from the market is more costly for banks than earning interest on excess reserves at the Fed. This could suggest increased interbank demand for funds, signaling a liquidity shortage.', 'Why is this indicator necessary?': 'This spread helps in assessing and preemptively understanding the market\'s liquidity situation.'}},
+                    'DGS3MO': {'title': '3-Month Treasury Bill Rate', 'content': {'Economic Meaning': 'The yield on 3-month U.S. Treasury securities, reflecting short-term market interest rates and inflation expectations.', 'Why is this indicator necessary?': 'It is useful for gauging short-term interest rate trends and analyzing signals of economic recovery or recession. A rising 3-month Treasury rate could indirectly mean the U.S. government is issuing more debt to fund spending, or it could reflect lower demand for U.S. debt.'}},
+                    'DGS2': {'title': '2-Year Treasury Note Rate', 'content': {'Economic Meaning': 'The yield on 2-year U.S. Treasury securities, reflecting medium-term interest rates and the economic outlook.', 'Why is this indicator necessary?': 'The relationship between short- and long-term rates helps gauge expectations for economic growth and inflation concerns, making it important for investors and policymakers. A rising rate could also imply increased government debt issuance or lower demand.'}},
+                    'DGS10': {'title': '10-Year Treasury Note Rate', 'content': {'Economic Meaning': 'The yield on 10-year U.S. Treasury securities represents medium- to long-term interest rates and is a key indicator reflecting market expectations for economic growth and inflation. The rate tends to rise with a positive future outlook and fall with a pessimistic one.', 'Why is this indicator necessary?': 'The 10-year Treasury rate serves as a barometer for the economy\'s current state and future prospects, incorporating a mix of government fiscal policy and market investment sentiment.'}},
+                    'YIELD_SPREAD': {'title': 'U.S. Yield Curve Spread', 'content': {'Economic Meaning': '1. Investor Anxiety: When a recession is anticipated, funds flow into safe long-term Treasuries, causing their yields to fall. <br>2. Tight Monetary Policy: The Fed raises its benchmark rate to curb inflation, causing short-term rates to rise. <br>3. Lending and Investment Slowdown: High interest rates make it difficult for businesses and households to borrow, leading to reduced consumption and investment. <br>In this process, a yield curve inversion reflects market uncertainty and the potential for a future economic slowdown.', 'Why is this indicator necessary?': 'When the yield curve inverts, it\'s because investors, anticipating a recession, buy long-term bonds, pushing their yields down, while the Fed is simultaneously raising short-term rates to control inflation. Historically, a recession tends to occur 12-18 months after an inversion.', 'Conclusion': 'While the yield curve inversion is a reliable leading indicator of a recession, it should not be taken as an absolute certainty. When an inversion occurs, investors and policymakers should prepare for a slowdown, but it must be analyzed in conjunction with other economic indicators (e.g., unemployment rate, consumer spending).'}},
+                    'RRPONTSYD': {'title': 'Fed Reverse Repo Funds', 'content': {'Economic Meaning': 'A Reverse Repurchase Agreement (RRP) is a tool the Fed uses to absorb liquidity from the market by selling securities to financial institutions. The amount reflects the "locked-up" money or excess funds in the market.', 'Why is this indicator necessary?': 'It is used when the Fed wants to control interest rates or adjust liquidity and is necessary to manage excess market liquidity (e.g., inflation risk). An increase in reverse repo funds means money from circulation is being tied up at the central bank, which can tighten liquidity and potentially lead to a decrease in stock prices.'}},
+                    'MMMFFAQ027S': {'title': 'MMF Balance', 'content': {'Economic Meaning': 'The total asset balance of Money Market Funds (MMFs), showing how much capital investors are placing in safe assets. Funds tend to flow into MMFs when benchmark interest rates are high (offering better returns) or when the market (stocks) is perceived as unstable.', 'Why is this indicator necessary?': 'The MMF balance reflects investor sentiment and risk aversion, tending to increase during times of financial market uncertainty, making it useful for assessing economic stability.'}},
+                    'SP500': {'title': 'S&P 500 Index', 'content': {'Economic Meaning': 'An index representing the stock performance of 500 large U.S. companies, indicating the overall health of the stock market.', 'Why is this indicator necessary?': 'It reflects economic growth, corporate earnings, and investor confidence, and is linked to consumer spending, making it essential for macroeconomic analysis.'}},
+                    'DPCREDIT': {'title': 'Fed Discount Rate', 'content': {'Economic Meaning': 'The interest rate at which the Fed lends to commercial banks, determining their funding costs. A lower discount rate may signal the Fed\'s intention to release more money to commercial banks.', 'Why is this indicator necessary?': 'It is used to provide liquidity support to banks and prevent credit crunches, making it important for evaluating the Fed\'s emergency monetary policies.'}},
+                    'DRBLACBS': {'title': 'U.S. Bank Delinquency Rate (All)', 'content': {'Economic Meaning': 'The percentage of bank loans that are past due, indicating borrowers\' ability to repay and credit risk.', 'Why is this indicator necessary?': 'It serves as a signal for economic recession or the health of the financial system and is used as a basis for lending policies and regulatory reinforcement.'}},
+                    'NASDAQ100': {'title': 'NASDAQ 100 Index', 'content': {'Economic Meaning': 'An index reflecting the stock prices of 100 of the largest non-financial companies listed on the Nasdaq stock market, showing the performance of the tech sector.', 'Why is this indicator necessary?': 'It reflects the growth and innovation of the technology industry and has become an important benchmark as the global economy\'s dependence on technology increases.'}},
+                    'WALCL': {'title': 'Fed Total Assets + Liabilities', 'content': {'Economic Meaning': 'The sum of the Fed\'s total assets (e.g., bond holdings) and liabilities (e.g., reverse repos and reserves), representing the Fed\'s financial position.', 'Why is this indicator necessary?': 'It shows the scale of quantitative easing or tightening policies and is essential for analyzing the impact of the Fed\'s monetary policy on market liquidity.'}},
+                    'SP500_MCAP': {'title': 'S&P 500 Market Cap', 'content': {'Economic Meaning': 'The total market capitalization of the companies included in the S&P 500 index. This represents the overall size and value of the U.S. stock market and reflects the general health of the economy and investor sentiment.', 'Why is this indicator necessary?': 'It is an important indicator for judging whether the stock market is over- or under-valued. An increase in market cap suggests economic growth and improved corporate profitability, while a decrease may signal a slowdown or increased uncertainty.'}},
+                    'RRPONTSYAWARD': {'title': 'Reverse Repo Rate', 'content': {'Economic Meaning': 'The interest rate the Fed pays when it borrows from financial institutions, used as a benchmark to absorb excess liquidity from the market. A higher rate helps absorb more liquidity.', 'Why is this indicator necessary?': 'It prevents interest rates from falling below the Fed\'s target when market liquidity is overly abundant. Because the reverse repo rate acts as a minimum guaranteed return for financial institutions parking cash at the Fed, they are unwilling to lend elsewhere at a lower rate, thus preventing short-term rates from dropping below the Fed\'s target level.'}},
+                    'ALTSALES': {'title': 'Car & Truck Sales', 'content': {'Economic Meaning': 'A report from the U.S. Bureau of Economic Analysis on the sales of automobiles and all passenger cars. A high value for this indicator suggests a strong economy.', 'Why is this indicator necessary?': 'It is one of the key **leading economic indicators** for the U.S. market.'}},
+                    'HOUST': {'title': 'Housing Starts', 'content': {'Economic Meaning': 'Housing starts refer to the number of new residential construction projects started in a given month. The estimate also includes units in buildings that are completely rebuilt on an existing foundation. A high value for this indicator suggests a strong economy.', 'Why is this indicator necessary?': 'It is one of the key **leading economic indicators** for the U.S. market.'}},
+                    'DCOILBRENTEU': {'title': 'Crude Oil Price', 'content': {'Economic Meaning': 'Represents the benchmark price for European and global crude oil.', 'Why is this indicator necessary?': 'Historically, a decrease in oil prices has been associated with economic booms, while an increase has often preceded recessions or downturns. Therefore, it is a crucial indicator to monitor.'}}
+                }
+            }
+        };
+
+        // 이하 기능 관련 JavaScript 코드는 기존과 동일하게 유지됩니다.
+        // setLanguage, translations 변수 등 불필요한 부분만 제거되었습니다.
+
+        async function fetchAndCacheData(indicator) {
+            if (dataCache.has(indicator)) {
+                const { data, timestamp } = dataCache.get(indicator);
+                if (Date.now() - timestamp < CACHE_TTL) {
+                    return Promise.resolve(data);
+                }
+            }
+            const functionUrl = `${FUNCTION_BASE_URL}?indicator=${indicator}`;
+            try {
+                const response = await fetch(functionUrl);
+                if (!response.ok) {
+                    const errorBody = await response.json();
+                    const errorMsg = currentLanguage === 'ko' 
+                        ? `'${translations[currentLanguage].indicatorTitles[indicator] || indicator}' 데이터를 찾을 수 없거나 불러오지 못했어요! (${response.status}: ${errorBody.error || response.statusText})`
+                        : `Could not find or load data for '${translations[currentLanguage].indicatorTitles[indicator] || indicator}'! (${response.status}: ${errorBody.error || response.statusText})`;
+                    throw new Error(errorMsg);
+                }
+                const text = await response.text();
+                const parsedData = await parseCSV(text);
+                if (parsedData.length > 0) {
+                    parsedData.sort((a, b) => new Date(a.date) - new Date(b.date));
+                    dataCache.set(indicator, { data: parsedData, timestamp: Date.now() });
+                }
+                return parsedData;
+            } catch (error) {
+                 console.error(`Failed to fetch ${indicator}:`, error);
+                 throw error;
+            }
+        }
+
+        const indicatorUnits = {
+            'WTREGEN': 'Billions of U.S. Dollars', 'WRESBAL': 'Billions of Dollars', 'RRPONTSYD': 'Billions of Dollars', 'MMMFFAQ027S': 'Billions of Dollars', 'WALCL': 'Billions of Dollars',
+            'M2SL': 'Billions of Dollars', 'M1SL': 'Billions of Dollars', 'SP500_MCAP': 'Billions of Dollars', 'SOFR': 'Percent (%)', 'FEDFUNDS': 'Percent (%)', 'IORB': 'Percent (%)', 'DGS3MO': 'Percent (%)',
+            'DGS2': 'Percent (%)', 'DGS10': 'Percent (%)', 'DPCREDIT': 'Percent (%)', 'DRBLACBS': 'Percent (%)', 'NASDAQ100': 'Index', 'SP500': 'Index',
+            'RRPONTSYAWARD': 'Percent (%)', 'ALTSALES': 'Millions of Units', 'HOUST': 'Thousands of Units', 'DCOILBRENTEU': 'Dollars per Barrel',
+            'SOFR_FEDFUNDS_SPREAD': 'Percent (%)', 'SOFR_IORB_SPREAD': 'Percent (%)', 'YIELD_SPREAD': 'Percent (%)'
+        };
+        
+        const spreadConfigs = {
+            'SOFR_FEDFUNDS_SPREAD': [
+                { code: 'SOFR', label: 'SOFR', color: '#007bff' },
+                { code: 'FEDFUNDS', label: 'EFFR', color: 'red' }
+            ],
+            'SOFR_IORB_SPREAD': [
+                { code: 'SOFR', label: 'SOFR', color: '#007bff' },
+                { code: 'IORB', label: 'IORB', color: 'red' }
+            ]
+        };
+
+        async function parseCSV(text) {
+            const lines = text.trim().split('\n');
+            if (lines.length <= 1) return [];
+            const headers = lines[0].split(',').map(h => h.trim());
+            let dateColIndex = headers.findIndex(h => h.toLowerCase() === 'date' || h.toLowerCase() === 'data');
+            const valueColName = headers.find((h, i) => i !== dateColIndex);
+            const valueColIdx = headers.indexOf(valueColName);
+            if (dateColIndex === -1 || valueColIdx === -1) return [];
+            const parsedData = [];
+            for (let i = 1; i < lines.length; i++) {
+                const columns = lines[i].split(',');
+                if (columns.length > Math.max(dateColIndex, valueColIdx)) {
+                    const dateStr = columns[dateColIndex].trim();
+                    const valueStr = columns[valueColIdx].trim();
+                    const dateObj = new Date(dateStr);
+                    const valueNum = parseFloat(valueStr);
+                    if (!isNaN(dateObj.getTime()) && !isNaN(valueNum) && valueStr !== '.') {
+                        parsedData.push({ date: dateStr, value: valueNum });
+                    }
+                }
+            }
+            return parsedData;
+        }
+        
+        async function loadFinancialAnalysis() {
+            try {
+                const response = await fetch('csvfile/financial_analysis.json');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok.');
+                }
+                analysisData = await response.json(); // Fetch and store in global variable
+                displayFinancialAnalysis(); // Display for the default language
+
+            } catch (error) {
+                console.error('Failed to load analysis data:', error);
+                const errorMsg = currentLanguage === 'ko' ? '분석 데이터를 불러오는 데 실패했습니다.' : 'Failed to load analysis data.';
+                const liquidityContainer = document.getElementById('liquidity-analysis-container');
+                if(liquidityContainer) liquidityContainer.textContent = errorMsg;
+                const interestRateContainer = document.getElementById('interest-rate-analysis-container');
+                if(interestRateContainer) interestRateContainer.textContent = errorMsg;
+                setAiAnalysisTitles(null);
+            }
+        }
+
+        function displayFinancialAnalysis() {
+            if (!analysisData) return; // Exit if data hasn't been loaded
+
+            const liquidityContainer = document.getElementById('liquidity-analysis-container');
+            const interestRateContainer = document.getElementById('interest-rate-analysis-container');
+
+            // Select the correct analysis text based on the current language
+            const liquidityKey = currentLanguage === 'en' ? 'liquidity_analysis_en' : 'liquidity_analysis';
+            const interestKey = currentLanguage === 'en' ? 'interest_rate_analysis_en' : 'interest_rate_analysis';
+
+            if (liquidityContainer && analysisData[liquidityKey]) {
+                liquidityContainer.innerHTML = analysisData[liquidityKey];
+            }
+
+            if (interestRateContainer && analysisData[interestKey]) {
+                interestRateContainer.innerHTML = analysisData[interestKey];
+            }
+            
+            // Set titles with the date from the JSON file
+            if (analysisData.date) {
+                setAiAnalysisTitles(analysisData.date);
+            } else {
+                setAiAnalysisTitles(null);
+            }
+        }
+        
+        function setAiAnalysisTitles(analysisDate) {
+            const titleText = translations[currentLanguage].aiAnalysisTitle;
+            const fullTitle = analysisDate 
+                ? `${titleText}<span class="update-date-span" style="font-weight: bold;">(Update Date: ${analysisDate})</span>`
+                : titleText;
+
+            const liquidityTitleEl = document.getElementById('ai-analysis-title-liquidity');
+            const interestTitleEl = document.getElementById('ai-analysis-title-interest');
+
+            if (liquidityTitleEl) {
+                liquidityTitleEl.innerHTML = fullTitle;
+            }
+            if (interestTitleEl) {
+                interestTitleEl.innerHTML = fullTitle;
+            }
+        }
+        
+        function updateMetaTagsForLanguage(lang) {
+            const langData = translations[lang];
+            if (!langData) return;
+
+            // <title> 태그 업데이트
+            document.title = langData.pageTitle;
+
+            // <meta name="description"> 태그 업데이트
+            const descriptionTag = document.querySelector('meta[name="description"]');
+            if (descriptionTag) {
+                descriptionTag.setAttribute('content', langData.metaDescription || translations['ko'].description); // 영어 설명이 없으면 한국어 기본값 사용
+            }
+
+            // Open Graph(og) 태그 업데이트 (소셜 공유용)
+            const ogTitleTag = document.querySelector('meta[property="og:title"]');
+            if (ogTitleTag) {
+                ogTitleTag.setAttribute('content', langData.pageTitle);
+            }
+            const ogDescriptionTag = document.querySelector('meta[property="og:description"]');
+            if (ogDescriptionTag) {
+                ogDescriptionTag.setAttribute('content', langData.metaDescription || translations['ko'].description);
+            }
+        }
+
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            updateMetaTagsForLanguage(lang);
+            document.documentElement.lang = lang;
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                if (translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
+                }
+            });
+
+            document.querySelectorAll('.lang-selector').forEach(selector => {
+                selector.querySelector('.lang-btn.active').classList.remove('active');
+                selector.querySelector(`.lang-btn[onclick="setLanguage('${lang}')"]`).classList.add('active');
+            });
+            
+            const activePage = document.querySelector('.page[style*="block"]').id;
+            if (activePage === 'liquidityFlow') {
+                updateLiquidityFlowAnimation();
+            } else if (activePage === 'interestRateFlow') {
+                updateInterestRateFlowData();
+            } else if (activePage === 'graphPage') {
+                showGraph(currentIndicator); 
+            } else if (activePage === 'infoPage') {
+                showInfo(); 
+            }
+            
+            displayFinancialAnalysis(); // Refresh AI analysis text on language change
+        }
+
+
+        window.addEventListener('load', () => {
+            showPage('liquidityFlow');
+            loadFinancialAnalysis();
+            try {
+                if (window.Kakao && !Kakao.isInitialized()) {
+                    Kakao.init('4ae404e0f6a8321cf2e7533ad956ddcc');
+                }
+            } catch (e) {
+                console.error("Kakao SDK init failed:", e);
+            }
+            setLanguage('ko'); 
+        });
+
+        const pages = ['liquidityFlow', 'interestRateFlow', 'graphIndicators', 'graphPage', 'infoPage', 'aboutPage'];
+        function showPage(pageId) {
+            pages.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.style.display = id === pageId ? 'block' : 'none';
+                }
+            });
+            if (pageId === 'liquidityFlow') { updateLiquidityFlowAnimation(); } 
+            else if (pageId === 'interestRateFlow') { updateInterestRateFlowData(); stopLiquidityFlowAnimation(); }
+            else { stopLiquidityFlowAnimation(); }
+        }
+
+        function showLiquidityFlow() { showPage('liquidityFlow'); }
+        function showInterestRateFlow() { showPage('interestRateFlow'); }
+        function showGraphIndicators() { showPage('graphIndicators'); }
+        function showAboutPage() { showPage('aboutPage'); }
+
+        function shareOn(platform) {
+            const pageUrl = encodeURIComponent(window.location.href);
+            const pageTitle = encodeURIComponent(document.title);
+            let shareUrl;
+
+            switch (platform) {
+                case 'twitter':
+                    shareUrl = `https://twitter.com/intent/tweet?url=${pageUrl}&text=${pageTitle}`;
+                    window.open(shareUrl, '_blank', 'width=600,height=400');
+                    break;
+                case 'facebook':
+                    shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`;
+                    window.open(shareUrl, '_blank', 'width=600,height=400');
+                    break;
+                case 'line':
+                    shareUrl = `https://social-plugins.line.me/lineit/share?url=${pageUrl}`;
+                    window.open(shareUrl, '_blank', 'width=600,height=400');
+                    break;
+                case 'kakao':
+                    if (window.Kakao && Kakao.isInitialized()) {
+                        Kakao.Share.sendDefault({
+                            objectType: 'feed',
+                            content: {
+                                title: document.title,
+                                description: document.querySelector('meta[name="description"]').content,
+                                imageUrl: document.querySelector('meta[property="og:image"]').content,
+                                link: {
+                                    mobileWebUrl: window.location.href,
+                                    webUrl: window.location.href,
+                                },
+                            },
+                            buttons: [
+                                {
+                                    title: currentLanguage === 'ko' ? '웹으로 보기' : 'View on Web',
+                                    link: {
+                                        mobileWebUrl: window.location.href,
+                                        webUrl: window.location.href,
+                                    },
+                                },
+                            ],
+                        });
+                    } else {
+                        alert(currentLanguage === 'ko' ? '카카오 공유 기능이 준비되지 않았습니다.' : 'Kakao Share is not ready.');
+                    }
+                    break;
+            }
+        }
+        
+        function copyLink() {
+            const urlToCopy = 'https://americayoudongsung.netlify.app/';
+            navigator.clipboard.writeText(urlToCopy).then(() => {
+                alert(currentLanguage === 'ko' ? '링크가 복사되었습니다!' : 'Link copied!');
+            }).catch(err => {
+                console.error('Failed to copy link:', err);
+                alert(currentLanguage === 'ko' ? '링크 복사에 실패했습니다.' : 'Failed to copy link.');
+            });
+        }
+
+
+        async function showGraph(indicator) {
+            currentIndicator = indicator;
+            showPage('graphPage');
+            const langDict = translations[currentLanguage];
+            document.getElementById('graphTitle').textContent = langDict.indicatorTitles[indicator] || indicator;
+            
+            document.querySelector('#graphPage .back-btn').textContent = langDict.backBtnText;
+            document.querySelector('#graphPage .info-btn').textContent = langDict.infoBtnText;
+            
+            const dataSourceText = (indicator === 'SP500_MCAP') ? 'Source: https://ycharts.com' : 'Source: FRED';
+            document.getElementById('graphDataSource').textContent = currentLanguage === 'ko' ? dataSourceText.replace('Source', '자료 출처') : dataSourceText;
+            
+            try {
+                renderErrorMessage(currentLanguage === 'ko' ? "데이터를 불러오는 중..." : "Loading data...");
+                
+                if (indicator === 'YIELD_SPREAD') {
+                    const [dgs10Data, dgs3moData, dgs2Data] = await Promise.all([
+                        fetchAndCacheData('DGS10'),
+                        fetchAndCacheData('DGS3MO'),
+                        fetchAndCacheData('DGS2')
+                    ]);
+
+                    const dgs3moMap = new Map(dgs3moData.map(item => [item.date, item.value]));
+                    const dgs2Map = new Map(dgs2Data.map(item => [item.date, item.value]));
+
+                    const spread10y3m = [];
+                    const spread10y2y = [];
+
+                    dgs10Data.forEach(item10y => {
+                        const date = item10y.date;
+                        if (dgs3moMap.has(date)) {
+                            spread10y3m.push({
+                                x: date,
+                                y: item10y.value - dgs3moMap.get(date)
+                            });
+                        }
+                        if (dgs2Map.has(date)) {
+                            spread10y2y.push({
+                                x: date,
+                                y: item10y.value - dgs2Map.get(date)
+                            });
+                        }
+                    });
+                    
+                    const spread10y3mLabel = currentLanguage === 'ko' ? '10년물 - 3개월 채권 장단기 금리차' : '10-Year - 3-Month Yield Spread';
+                    const spread10y2yLabel = currentLanguage === 'ko' ? '10년물 - 2년물 채권 장단기 금리차' : '10-Year - 2-Year Yield Spread';
+
+                    currentGraphData = [
+                        {
+                            label: spread10y3mLabel,
+                            data: spread10y3m,
+                            borderColor: 'blue',
+                            fill: false, tension: 0.1, pointRadius: 0
+                        },
+                        {
+                            label: spread10y2yLabel,
+                            data: spread10y2y,
+                            borderColor: 'red',
+                            fill: false, tension: 0.1, pointRadius: 0
+                        }
+                    ];
+                } else if (spreadConfigs.hasOwnProperty(indicator)) {
+                    const configs = spreadConfigs[indicator];
+                    const dataPromises = configs.map(config => fetchAndCacheData(config.code));
+                    const datasetsRaw = await Promise.all(dataPromises);
+
+                    currentGraphData = datasetsRaw.map((data, index) => {
+                        const config = configs[index];
+                        return {
+                            label: config.label,
+                            borderColor: config.color,
+                            data: data.map(item => ({ x: item.date, y: item.value })),
+                            fill: false, tension: 0.1, pointRadius: 0
+                        };
+                    });
+                } else {
+                    let data = await fetchAndCacheData(indicator);
+                    if (data.length === 0) {
+                        const errorMsg = currentLanguage === 'ko' ? `'${langDict.indicatorTitles[indicator]}' 지표의 유효한 데이터가 없어요.` : `No valid data for '${langDict.indicatorTitles[indicator]}' indicator.`;
+                        renderErrorMessage(errorMsg);
+                        return;
+                    }
+                    let processedData = data.map(item => {
+                        let value = item.value;
+                        if (indicator === 'WALCL') value /= 1000;
+                        else if (indicator === 'MMMFFAQ027S' || indicator === 'SP500_MCAP') value /= 1000000000;
+                        return { x: item.date, y: value };
+                    });
+
+                    currentGraphData = [{
+                        label: langDict.indicatorTitles[indicator] || indicator,
+                        data: processedData,
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                        fill: false, tension: 0.1, pointRadius: 0
+                    }];
+                }
+                
+                updateChart('All');
+
+            } catch (error) {
+                 const errorMsg = currentLanguage === 'ko' ? `'${langDict.indicatorTitles[indicator]}' 그래프를 그릴 수 없어요! 오류: ${error.message}` : `Cannot draw graph for '${langDict.indicatorTitles[indicator]}'! Error: ${error.message}`;
+                renderErrorMessage(errorMsg);
+            }
+        }
+        
+        function renderChart(indicator, datasets) {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            if (myChart) {
+                myChart.destroy();
+                myChart = null; 
+            }
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: {
+                        x: { type: 'time', time: { unit: 'month', tooltipFormat: 'yyyy-MM-dd', displayFormats: { day: 'yyyy-MM-dd', month: 'yyyy-MM', year: 'yyyy' }}, title: { display: true, text: 'Date' }},
+                        y: { title: { display: true, text: indicatorUnits[indicator] || 'Value', font: { weight: 'bold' }}, ticks: { callback: value => {
+                            if (Math.abs(value) >= 1e12) return (value / 1e12) + 'T'; if (Math.abs(value) >= 1e9) return (value / 1e9) + 'B';
+                            if (Math.abs(value) >= 1e6) return (value / 1e6) + 'M'; if (Math.abs(value) >= 1e3) return (value / 1e3) + 'K';
+                            return value;
+                        }}}
+                    },
+                    plugins: { legend: { display: true }, tooltip: { mode: 'index', intersect: false } },
+                    onHover: (event, chartElement) => { event.native.target.style.cursor = chartElement.length ? 'grab' : 'default'; }
+                }
+            });
+            const canvas = document.getElementById('myChart');
+            canvas.onmousedown = startDragging; canvas.onmousemove = drag; canvas.onmouseup = stopDragging;
+            canvas.onmouseleave = stopDragging; canvas.onwheel = zoomChart;
+        }
+
+        function updateChart(range) {
+            if (!currentGraphData || currentGraphData.length === 0) return;
+            
+            let datasetsToShow = JSON.parse(JSON.stringify(currentGraphData)); 
+            let hasData = false;
+
+            if (range !== 'All') {
+                const lastDate = new Date(Math.max(...datasetsToShow.flatMap(ds => ds.data.map(d => new Date(d.x).getTime()))));
+                if (!isNaN(lastDate.getTime())) {
+                    const cutoff = new Date(lastDate);
+                    if (range === '1M') cutoff.setMonth(lastDate.getMonth() - 1);
+                    else if (range === '6M') cutoff.setMonth(lastDate.getMonth() - 6);
+                    else cutoff.setFullYear(lastDate.getFullYear() - { '1Y': 1, '5Y': 5, '10Y': 10 }[range]);
+                    
+                    datasetsToShow.forEach(ds => {
+                        ds.data = ds.data.filter(item => new Date(item.x) >= cutoff);
+                    });
+                }
+            }
+
+            hasData = datasetsToShow.some(ds => ds.data.length > 0);
+
+            if (hasData) {
+                renderChart(currentIndicator, datasetsToShow);
+            } else {
+                const errorMsg = currentLanguage === 'ko' ? '해당 기간의 데이터가 없어요!' : 'No data available for this period!';
+                renderErrorMessage(errorMsg);
+            }
+        }
+
+
+        function renderErrorMessage(message) {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            if (myChart) {
+                myChart.destroy();
+                myChart = null;
+            }
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            ctx.fillStyle = '#666'; ctx.font = '16px Arial'; ctx.textAlign = 'center';
+            ctx.fillText(message, ctx.canvas.width / 2, ctx.canvas.height / 2);
+        }
+        
+        function showInfo() {
+            showPage('infoPage');
+            const langDict = translations[currentLanguage];
+            const indicator = currentIndicator;
+            const info = langDict.infoData[indicator] || { title: indicator, content: { 'Economic Meaning': 'No information available' } };
+            
+            document.querySelector('#infoPage .back-btn').textContent = langDict.backBtnText;
+            document.getElementById('infoTitle').textContent = info.title || 'Unknown';
+            document.getElementById('infoContent').innerHTML = Object.entries(info.content)
+                .map(([key, value]) => {
+                    let translatedKey = key;
+                    if (currentLanguage === 'en') {
+                       if (key === '경제적 의미') translatedKey = 'Economic Meaning';
+                       else if (key === '왜 필요한 지표인가') translatedKey = 'Why is this indicator necessary?';
+                       else if (key === '결론') translatedKey = 'Conclusion';
+                    }
+                    return `<h3>${translatedKey}</h3><p>${value}</p>`
+                }).join('');
+        }
+        
+        const getClosestData = (data, targetDate) => {
+            if (!data || data.length === 0) return null;
+            let closest = data[data.length - 1];
+            let minDiff = Math.abs(new Date(closest.date) - targetDate);
+            for (let i = data.length - 2; i >= 0; i--) {
+                const currentData = data[i];
+                const diff = Math.abs(new Date(currentData.date) - targetDate);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    closest = currentData;
+                } else { break; }
+            }
+            return closest;
+        };
+
+        async function updateLiquidityFlowAnimation() {
+            stopLiquidityFlowAnimation();
+            const langDict = translations[currentLanguage];
+            const tooltipDict = langDict.tooltip;
+            const displays = {
+                tga: document.getElementById('tgaSlopeDisplay'), fed: document.getElementById('fedLiquidityDisplay'),
+                mmf_fed: document.getElementById('mmfToRrpDisplay'), mmf_market: document.getElementById('mmfToMarketDisplay'),
+                net_market_flow: document.getElementById('netMarketFlowDisplay')
+            };
+            const loadingText = currentLanguage === 'ko' ? "계산 중..." : "Calculating...";
+            Object.values(displays).forEach(el => {
+                if (el) { el.innerHTML = el.id !== 'netMarketFlowDisplay' ? loadingText : ""; el.style.color = "black"; }
+            });
+            const tooltips = {
+                tga: document.getElementById('tga-tooltip-content'), fed: document.getElementById('fed-tooltip-content'),
+                mmf_fed: document.getElementById('mmf-fed-tooltip-content'), mmf_market: document.getElementById('mmf-market-tooltip-content')
+            };
+            const indicators = ['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL', 'MMMFFAQ027S', 'MMF2RRP', 'MMF2MARKET', 'MMF2GOVERNMENT'];
+            const dataStore = {};
+            try {
+                const results = await Promise.all(indicators.map(indicator => fetchAndCacheData(indicator).catch(e => {
+                    console.error(`Error fetching ${indicator}:`, e); return [];
+                })));
+                indicators.forEach((indicator, index) => { dataStore[indicator] = results[index]; });
+            } catch (error) {
+                console.error("Failed to load initial data for liquidity flow", error);
+                const errorText = currentLanguage === 'ko' ? "데이터 오류" : "Data Error";
+                Object.values(displays).forEach(el => { if (el) el.textContent = errorText; }); return;
+            }
+            let tgaDiff = null, fedLiquidityDiff = null, mmfToFedDiff = null, finalMmfToMarketDiff = null;
+            let tgaLatestDate = null, fedLatestDate = null, mmfFedLatestDate = null, mmfMarketLatestDate = null;
+            let mmfToMarketCombined = null, mmfAssetChange = null;
+            const thirtyDaysAgo = (date) => { const newDate = new Date(date); newDate.setDate(newDate.getDate() - 30); return newDate; };
+
+            if (['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL'].every(i => dataStore[i] && dataStore[i].length > 0)) {
+                const lastDates = ['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL'].map(i => new Date(dataStore[i][dataStore[i].length - 1].date));
+                const commonLatest = new Date(Math.min(...lastDates));
+                tgaLatestDate = fedLatestDate = commonLatest.toISOString().split('T')[0];
+                const pastDate = thirtyDaysAgo(commonLatest);
+                const latest = {
+                    tga: getClosestData(dataStore.WTREGEN, commonLatest)?.value, walcl: getClosestData(dataStore.WALCL, commonLatest)?.value,
+                    rrp: getClosestData(dataStore.RRPONTSYD, commonLatest)?.value, resbal: getClosestData(dataStore.WRESBAL, commonLatest)?.value
+                };
+                const past = {
+                    tga: getClosestData(dataStore.WTREGEN, pastDate)?.value, walcl: getClosestData(dataStore.WALCL, pastDate)?.value,
+                    rrp: getClosestData(dataStore.RRPONTSYD, pastDate)?.value, resbal: getClosestData(dataStore.WRESBAL, pastDate)?.value
+                };
+                if (Object.values(latest).every(v => v != null) && Object.values(past).every(v => v != null)) {
+                    tgaDiff = latest.tga - past.tga;
+                    const walclDiff = (latest.walcl / 1000) - (past.walcl / 1000);
+                    const rrpDiff = latest.rrp - past.rrp;
+                    const resbalDiff = latest.resbal - past.resbal;
+                    
+                    fedLiquidityDiff = walclDiff - (tgaDiff + 2 * rrpDiff + 2 * resbalDiff);
+                    
+                    const fedAssetChange = walclDiff - tgaDiff - rrpDiff - resbalDiff;
+                    const fedLiabilityChange = rrpDiff + resbalDiff;
+                    const formatValue = (value) => `<span class="${value > 0 ? 'slope-positive' : 'slope-negative'}">${value > 0 ? '+' : ''}${value.toFixed(2)} B $/Month</span>`;
+                    tooltips.fed.innerHTML = `${tooltipDict.fed.desc}
+                        <p>${tooltipDict.fed.part1} ${formatValue(fedAssetChange)}</p><p>${tooltipDict.fed.part2} ${formatValue(fedLiabilityChange)}</p>
+                        <button class="graph-btn" onclick="showGraph('WALCL')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${fedLatestDate}</span>`;
+                }
+            }
+            if (dataStore.MMF2RRP?.length > 0) {
+                const latestDate = new Date(dataStore.MMF2RRP[dataStore.MMF2RRP.length - 1].date);
+                mmfFedLatestDate = latestDate.toISOString().split('T')[0];
+                const pastDate = thirtyDaysAgo(latestDate);
+                const latestVal = getClosestData(dataStore.MMF2RRP, latestDate)?.value;
+                const pastVal = getClosestData(dataStore.MMF2RRP, pastDate)?.value;
+                if (latestVal != null && pastVal != null) { mmfToFedDiff = (latestVal - pastVal) / 1e9; }
+            }
+            if (dataStore.MMF2MARKET?.length > 0 && dataStore.MMF2GOVERNMENT?.length > 0) {
+                 const latestDateM = new Date(dataStore.MMF2MARKET[dataStore.MMF2MARKET.length - 1].date); const pastDateM = thirtyDaysAgo(latestDateM);
+                 const latestM = getClosestData(dataStore.MMF2MARKET, latestDateM)?.value; const pastM = getClosestData(dataStore.MMF2MARKET, pastDateM)?.value;
+                 const latestDateG = new Date(dataStore.MMF2GOVERNMENT[dataStore.MMF2GOVERNMENT.length - 1].date); const pastDateG = thirtyDaysAgo(latestDateG);
+                 const latestG = getClosestData(dataStore.MMF2GOVERNMENT, latestDateG)?.value; const pastG = getClosestData(dataStore.MMF2GOVERNMENT, pastDateG)?.value;
+                 mmfMarketLatestDate = latestDateM.toISOString().split('T')[0];
+                 if(latestM != null && pastM != null && latestG != null && pastG != null) { mmfToMarketCombined = ((latestM - pastM) + (latestG - pastG)) / 1e9; }
+            }
+            if (dataStore.MMMFFAQ027S?.length > 0) {
+                const latestDate = new Date(dataStore.MMMFFAQ027S[dataStore.MMMFFAQ027S.length-1].date);
+                const pastDate = thirtyDaysAgo(latestDate);
+                const latestVal = getClosestData(dataStore.MMMFFAQ027S, latestDate)?.value; const pastVal = getClosestData(dataStore.MMMFFAQ027S, pastDate)?.value;
+                if(latestVal != null && pastVal != null){ mmfAssetChange = (latestVal - pastVal) / 1e9; }
+            }
+            if (mmfToMarketCombined != null && mmfAssetChange != null) { finalMmfToMarketDiff = mmfToMarketCombined - mmfAssetChange; }
+            
+            if (tgaDiff != null) { const sign = tgaDiff > 0 ? '+' : ''; displays.tga.innerHTML = `${tooltipDict.tga.label}<br><span class="${tgaDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${tgaDiff.toFixed(2)} B $/Month</span>`;
+                tooltips.tga.innerHTML = `${tooltipDict.tga.desc}
+                <button class="graph-btn" onclick="showGraph('WTREGEN')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${tgaLatestDate}</span>`;
+            } else { displays.tga.textContent = langDict.errorText; }
+            if (fedLiquidityDiff != null) { const sign = fedLiquidityDiff > 0 ? '+' : ''; displays.fed.innerHTML = `${tooltipDict.fed.label}<br><span class="${fedLiquidityDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${fedLiquidityDiff.toFixed(2)} B $/Month</span>`;
+            } else { displays.fed.textContent = langDict.errorText; }
+            if (mmfToFedDiff != null) { const sign = mmfToFedDiff > 0 ? '+' : ''; displays.mmf_fed.innerHTML = `${tooltipDict.mmf_fed.label}<br><span class="${mmfToFedDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${mmfToFedDiff.toFixed(2)} B $/Month</span>`;
+                tooltips.mmf_fed.innerHTML = `${tooltipDict.mmf_fed.desc}
+                <button class="graph-btn" onclick="showGraph('RRPONTSYD')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${mmfFedLatestDate}</span>`;
+            } else { displays.mmf_fed.textContent = langDict.errorText; }
+            if (finalMmfToMarketDiff != null) { const sign = finalMmfToMarketDiff > 0 ? '+' : ''; displays.mmf_market.innerHTML = `${tooltipDict.mmf_market.label}<br><span class="${finalMmfToMarketDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${finalMmfToMarketDiff.toFixed(2)} B $/Month</span>`;
+                const sign1 = mmfToMarketCombined > 0 ? '+' : ''; const sign2 = mmfAssetChange > 0 ? '+' : '';
+                tooltips.mmf_market.innerHTML = `${tooltipDict.mmf_market.desc}
+                <p>${tooltipDict.mmf_market.part1} <span class="${mmfToMarketCombined > 0 ? 'slope-positive' : 'slope-negative'}">${sign1}${mmfToMarketCombined.toFixed(2)} B $/Month</span></p>
+                <p>${tooltipDict.mmf_market.part2} <span class="${mmfAssetChange > 0 ? 'slope-positive' : 'slope-negative'}">${sign2}${mmfAssetChange.toFixed(2)} B $/Month</span></p>
+                <button class="graph-btn" onclick="showGraph('MMMFFAQ027S')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${mmfMarketLatestDate}</span>`;
+            } else { displays.mmf_market.textContent = langDict.errorText; }
+            if (fedLiquidityDiff != null && tgaDiff != null && finalMmfToMarketDiff != null) {
+                const netMarketFlow = fedLiquidityDiff - tgaDiff + finalMmfToMarketDiff;
+                const sign = netMarketFlow > 0 ? '+' : '';
+                displays.net_market_flow.innerHTML = `${langDict.netMarketFlowLabel}<span class="${netMarketFlow > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${netMarketFlow.toFixed(2)} B $/Month</span></b>`;
+            } else { displays.net_market_flow.textContent = ''; }
+            
+            const calculatedValues = [];
+            if (tgaDiff != null) calculatedValues.push({ value: tgaDiff, animationClass: tgaDiff < 0 ? 'animated-dollar-from-government' : 'animated-dollar-to-government' });
+            if (fedLiquidityDiff != null) calculatedValues.push({ value: fedLiquidityDiff, animationClass: fedLiquidityDiff < 0 ? 'animated-dollar-to-fed' : 'animated-dollar-to-market' });
+            if (mmfToFedDiff != null) calculatedValues.push({ value: mmfToFedDiff, animationClass: mmfToFedDiff >= 0 ? 'animated-dollar-from-mmf-to-fed' : 'animated-dollar-from-fed-to-mmf' });
+            if (finalMmfToMarketDiff != null) calculatedValues.push({ value: finalMmfToMarketDiff, animationClass: finalMmfToMarketDiff > 0 ? 'animated-dollar-from-mmf-to-market_parabolic' : 'animated-dollar-from-market-to-mmf_parabolic' });
+            const rankedAnimations = calculatedValues.sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
+            const startAnimations = () => {
+                rankedAnimations.forEach((task, index) => {
+                    const factor = (4 - index) / 4.0; if (factor <= 0) return;
+                    const size = BASE_DOLLAR_SIZE * factor; const duration = BASE_ANIMATION_DURATION / factor;
+                    const spawnInterval = duration / NUM_DOLLAR_ANIMATIONS;
+                    for (let i = 0; i < NUM_DOLLAR_ANIMATIONS; i++) {
+                        const timeoutId = setTimeout(() => createAndAnimateDollar(task.animationClass, size, duration), i * spawnInterval);
+                        dollarAnimationIntervals.push(timeoutId);
+                    }
+                });
+            };
+            if (rankedAnimations.length > 0) { startAnimations(); const resetIntervalId = setInterval(startAnimations, BASE_ANIMATION_DURATION); dollarAnimationIntervals.push(resetIntervalId); }
+        }
+        
+        async function updateInterestRateFlowData() {
+            const langDict = translations[currentLanguage];
+            const tooltipDict = langDict.tooltip;
+            const loadingText = currentLanguage === 'ko' ? "계산 중..." : "Calculating...";
+            const errorText = currentLanguage === 'ko' ? "데이터 오류" : "Data Error";
+
+            const indicatorConfigs = {
+                sofr: { code: 'SOFR', displayEl: document.getElementById('sofrRateDisplay_interest'), tooltipEl: document.getElementById('sofr-rate-tooltip-content_interest') },
+                effr: { code: 'FEDFUNDS', displayEl: document.getElementById('effrRateDisplay_interest'), tooltipEl: document.getElementById('effr-rate-tooltip-content_interest') },
+                rrp_rate: { code: 'RRPONTSYAWARD', displayEl: document.getElementById('rrpRateDisplay_interest'), tooltipEl: document.getElementById('rrp-rate-tooltip-content_interest') },
+                tb3ms: { code: 'DGS3MO', displayEl: document.getElementById('tb3msRateDisplay_interest'), tooltipEl: document.getElementById('tb3ms-tooltip-content_interest') },
+                tb1yr: { code: 'DGS2', displayEl: document.getElementById('tb1yrRateDisplay_interest'), tooltipEl: document.getElementById('tb1yr-tooltip-content_interest') },
+                tb10yr: { code: 'DGS10', displayEl: document.getElementById('tb10yrRateDisplay_interest'), tooltipEl: document.getElementById('tb10yr-tooltip-content_interest') },
+                discount: { code: 'DPCREDIT', displayEl: document.getElementById('discountRateDisplay_interest'), tooltipEl: document.getElementById('discount-rate-tooltip-content_interest') }
+            };
+            const spreadDisplayEl = document.getElementById('sofrEffrSpreadDisplay_interest');
+            const spreadTooltipEl = document.getElementById('sofr-effr-spread-tooltip-content_interest');
+
+            Object.values(indicatorConfigs).forEach(({ displayEl }) => { if(displayEl) displayEl.textContent = loadingText; });
+            if(spreadDisplayEl) spreadDisplayEl.textContent = loadingText;
+            if(document.getElementById('netMarketFlowDisplay_interest')) document.getElementById('netMarketFlowDisplay_interest').textContent = '';
+
+            const updateIndicator = async (key) => {
+                const config = indicatorConfigs[key];
+                try {
+                    const data = await fetchAndCacheData(config.code);
+                    if (data && data.length > 0) {
+                        const { value, date } = data[data.length - 1];
+                        config.displayEl.innerHTML = `${tooltipDict[key].label}<br><span style="color: black;">${value.toFixed(2)} %</span>`;
+                        config.tooltipEl.innerHTML = `${tooltipDict[key].desc}<button class="graph-btn" onclick="showGraph('${config.code}')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${date}</span>`;
+                    } else { throw new Error("No data available"); }
+                } catch (error) { console.error(`${config.code} data load failed:`, error.message); config.displayEl.textContent = errorText; }
+            };
+
+            await Promise.all(Object.keys(indicatorConfigs).map(key => updateIndicator(key)));
+
+            try {
+                const sofrData = dataCache.get('SOFR')?.data;
+                const effrData = dataCache.get('FEDFUNDS')?.data;
+
+                if (sofrData && sofrData.length > 0 && effrData && effrData.length > 0) {
+                    const sofrLatest = sofrData[sofrData.length - 1];
+                    const effrLatest = effrData[effrData.length - 1];
+                    const spread = sofrLatest.value - effrLatest.value;
+                    const latestDate = new Date(sofrLatest.date) > new Date(effrLatest.date) ? sofrLatest.date : effrLatest.date;
+                    
+                    const sign = spread > 0 ? '+' : '';
+                    const colorClass = spread > 0 ? 'slope-positive' : 'slope-negative';
+
+                    const labelText = window.innerWidth <= 600 ? tooltipDict.sofr_effr_spread.label_mobile : tooltipDict.sofr_effr_spread.label;
+                    spreadDisplayEl.innerHTML = `${labelText}<br><span class="${colorClass}">${sign}${spread.toFixed(2)} %</span>`;
+                    
+                    spreadTooltipEl.innerHTML = `
+                        ${tooltipDict.sofr_effr_spread.desc}
+                        <button class="graph-btn" onclick="showGraph('SOFR_FEDFUNDS_SPREAD')">${langDict.graphBtn}</button>
+                        <span class="update-date">Update Date: ${latestDate}</span>`;
+                } else {
+                    throw new Error("SOFR or EFFR data not in cache");
+                }
+            } catch (error) {
+                console.error('SOFR EFFR spread calculation failed:', error);
+                if(spreadDisplayEl) spreadDisplayEl.textContent = errorText;
+            }
+        }
+
+        function createAndAnimateDollar(animationClass, size, duration) {
+            const dollar = document.createElement('img');
+            dollar.src = "./icon/dollar.jpg"; dollar.alt = "Dollar"; dollar.className = 'dollar-animated-object';
+            dollar.style.width = `${size}px`; dollar.style.height = `${size}px`;
+            dollar.style.setProperty('--animation-duration', `${duration / 1000}s`);
+            dollar.classList.add(animationClass);
+            
+            const animationContainer = document.querySelector('#liquidityFlow .animation-container');
+            if (animationContainer) {
+                animationContainer.appendChild(dollar);
+            }
+            
+            dollar.addEventListener('animationend', () => dollar.remove());
+        }
+
+        function stopLiquidityFlowAnimation() {
+            dollarAnimationIntervals.forEach(id => { clearTimeout(id); clearInterval(id); });
+            dollarAnimationIntervals = [];
+            document.querySelectorAll('.dollar-animated-object').forEach(el => el.remove());
+        }
+
+        function startDragging(e) { if(myChart) { isDragging = true; startX = e.pageX - e.target.getBoundingClientRect().left; startScrollX = myChart.options.scales.x.min; e.target.style.cursor = 'grabbing'; }}
+        function drag(e) {
+            if (!isDragging || !myChart) return;
+            e.preventDefault();
+            const { x } = myChart.scales; const dataRange = x.max - x.min; const pixelRange = myChart.chartArea.right - myChart.chartArea.left;
+            if (pixelRange <= 0) return;
+            const dataOffset = ((e.pageX - e.target.getBoundingClientRect().left - startX) * 0.6 / pixelRange) * dataRange;
+            let newMin = startScrollX - dataOffset; let newMax = newMin + dataRange;
+            
+            const allDates = currentGraphData.flatMap(ds => ds.data.map(d => new Date(d.x).getTime()));
+            const minAllowed = Math.min(...allDates); 
+            const maxAllowed = Math.max(...allDates);
+
+            if (newMin < minAllowed) { newMin = minAllowed; newMax = newMin + dataRange; }
+            if (newMax > maxAllowed) { newMax = maxAllowed; newMin = newMax - dataRange; }
+            myChart.options.scales.x.min = newMin; myChart.options.scales.x.max = newMax; myChart.update('none');
+        }
+        function stopDragging(e) { if(isDragging) { isDragging = false; e.target.style.cursor = 'grab'; }}
+        function zoomChart(e) {
+            if (!myChart) return;
+            e.preventDefault();
+            const { x } = myChart.scales; const { min, max } = x; const range = max - min;
+            const zoomFactor = e.deltaY < 0 ? 0.9 : 1.1; const mouseX = e.offsetX; const center = x.getValueForPixel(mouseX);
+            const newMin = center - (center - min) * zoomFactor; const newMax = center + (max - center) * zoomFactor;
+            
+            const allDates = currentGraphData.flatMap(ds => ds.data.map(d => new Date(d.x).getTime()));
+            const minAllowed = Math.min(...allDates); 
+            const maxAllowed = Math.max(...allDates);
+            
+            if (newMin >= minAllowed && newMax <= maxAllowed) { myChart.options.scales.x.min = newMin; myChart.options.scales.x.max = newMax; myChart.update('none'); }
+        }
+        function goBackToGraph() { if (currentIndicator) { showPage('graphPage'); } }
+
+    </script>
+</body>
+</html>
