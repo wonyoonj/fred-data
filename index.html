@@ -506,16 +506,16 @@
             z-index: 10;
         }
         
-        /* ▼▼▼ 투자 시뮬레이터 페이지 스타일 ▼▼▼ */
+        /* ▼▼▼ 가상 투자 페이지 스타일 ▼▼▼ */
         #simulatorPage { padding: 20px; text-align: center; }
         .simulator-container { max-width: 900px; margin: 60px auto 0 auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .simulator-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; text-align: left; }
         .control-group { border: 1px solid #ddd; padding: 15px; border-radius: 5px; }
         .control-group h3 { margin-top: 0; color: #0056b3; }
-        .date-selector select, .investment-inputs input { width: calc(33.33% - 10px); padding: 8px; margin-right: 5px; border: 1px solid #ccc; border-radius: 4px; }
+        .date-selector input[type="date"] { padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: auto; }
         .investment-inputs div { margin-bottom: 10px; display: flex; align-items: center; }
         .investment-inputs label { font-weight: bold; min-width: 180px; }
-        .investment-inputs input[type="number"] { flex-grow: 1; margin-right: 5px;}
+        .investment-inputs input[type="number"] { flex-grow: 1; margin-right: 5px; padding: 8px; border: 1px solid #ccc; border-radius: 4px;}
         #runSimulatorBtn { padding: 12px 25px; font-size: 16px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px; }
         #runSimulatorBtn:hover { background-color: #218838; }
         #simulatorResultContainer { margin-top: 20px; }
@@ -523,8 +523,8 @@
         #data-availability-notice { font-size: 12px; color: #dc3545; font-weight: bold; margin-top: 15px; }
         .overlay-controls { margin-top: 20px; }
         .overlay-controls label { font-weight: bold; margin-right: 10px; }
-        .overlay-controls select { padding: 8px; border-radius: 4px; }
-        /* ▲▲▲ 투자 시뮬레이터 페이지 스타일 ▲▲▲ */
+        .overlay-controls select { padding: 8px; border-radius: 4px; border: 1px solid #ccc; }
+        /* ▲▲▲ 가상 투자 페이지 스타일 ▲▲▲ */
 
         #infoPage { padding: 20px; text-align: left; }
         #infoContent h3 {
@@ -949,22 +949,18 @@
             </div>
             
         <div id="simulatorPage" class="page" style="display:none;">
-            <h1 class="page-title">미국 투자 시뮬레이터</h1>
+            <h1 class="page-title">미국 가상 투자</h1>
             <div class="simulator-container">
                 <div class="simulator-controls">
-                    <div class="control-group date-selectors">
+                    <div class="control-group date-selector">
                         <h3>투자기간 설정</h3>
                         <div>
                             <strong>시작 시점:</strong>
-                            <select id="startYear"></select>
-                            <select id="startMonth"></select>
-                            <select id="startDay"></select>
+                            <input type="date" id="startDate">
                         </div>
                         <div style="margin-top: 10px;">
                             <strong>종료 시점:</strong>
-                            <select id="endYear"></select>
-                            <select id="endMonth"></select>
-                            <select id="endDay"></select>
+                            <input type="date" id="endDate">
                         </div>
                     </div>
                     <div class="control-group investment-inputs">
@@ -1132,7 +1128,7 @@
         <div class="nav-bar">
             <button class="button" onclick="showLiquidityFlow()">유동성<br>현황</button>
             <button class="button" onclick="showInterestRateFlow()">금리<br>현황</button>
-            <button class="button" onclick="showSimulatorPage()">투자<br>시뮬레이터</button>
+            <button class="button" onclick="showSimulatorPage()">가상<br>투자</button>
             <button class="button" onclick="showGraphIndicators()">그래프<br>지표</button>
             <button class="button" onclick="showAboutPage()">사이트<br>안내</button>
         </div>
@@ -1940,47 +1936,35 @@
             }
         }
         
-        // ▼▼▼ 투자 시뮬레이터 관련 함수 ▼▼▼
+        // ▼▼▼ 가상 투자 관련 함수 ▼▼▼
         
         // 날짜 포맷 함수 (YYYY-MM-DD)
         function formatDate(date) {
             return date.toISOString().split('T')[0];
         }
         
-        // 시뮬레이터 페이지 초기화
+        // 가상 투자 페이지 초기화
         async function initSimulatorPage() {
-            const startYear = document.getElementById('startYear');
-            const startMonth = document.getElementById('startMonth');
-            const startDay = document.getElementById('startDay');
-            const endYear = document.getElementById('endYear');
-            const endMonth = document.getElementById('endMonth');
-            const endDay = document.getElementById('endDay');
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
             const overlayIndicator = document.getElementById('overlayIndicator');
 
-            // 년/월/일 드롭다운 채우기
-            const currentYear = new Date().getFullYear();
-            for (let y = currentYear; y >= 1980; y--) {
-                startYear.add(new Option(y, y));
-                endYear.add(new Option(y, y));
-            }
-            for (let m = 1; m <= 12; m++) {
-                startMonth.add(new Option(m, m));
-                endMonth.add(new Option(m, m));
-            }
-            for (let d = 1; d <= 31; d++) {
-                startDay.add(new Option(d, d));
-                endDay.add(new Option(d, d));
-            }
-            
             // 오버레이 지표 드롭다운 채우기
             for (const key in translations.ko.indicatorTitles) {
                 overlayIndicator.add(new Option(translations.ko.indicatorTitles[key], key));
             }
+            
+            // 기본 날짜 설정 (오늘 & 1년 전)
+            const today = new Date();
+            const oneYearAgo = new Date();
+            oneYearAgo.setFullYear(today.getFullYear() - 1);
+            
+            startDateInput.value = formatDate(oneYearAgo);
+            endDateInput.value = formatDate(today);
 
             // 날짜 유효성 검사 이벤트 리스너
-            [startYear, startMonth, startDay, endYear, endMonth, endDay].forEach(el => {
-                el.addEventListener('change', validateDates);
-            });
+            startDateInput.addEventListener('change', validateDates);
+            endDateInput.addEventListener('change', validateDates);
             
             // 투자 결과 확인 버튼 이벤트 리스너
             document.getElementById('runSimulatorBtn').addEventListener('click', runSimulator);
@@ -1997,7 +1981,13 @@
                 const allData = await Promise.all(dataPromises);
                 const lastDates = allData.map(data => new Date(data[data.length - 1].date));
                 const earliestLastDate = new Date(Math.min.apply(null, lastDates));
-                noticeEl.textContent = `* 시뮬레이션은 모든 자산 데이터가 존재하는 ${formatDate(earliestLastDate)}까지만 가능합니다.`;
+                
+                // 최종 날짜를 date input의 max 속성으로 설정
+                const maxDateStr = formatDate(earliestLastDate);
+                startDateInput.max = maxDateStr;
+                endDateInput.max = maxDateStr;
+
+                noticeEl.textContent = `* 시뮬레이션은 모든 자산 데이터가 존재하는 ${maxDateStr}까지만 가능합니다.`;
             } catch (e) {
                 noticeEl.textContent = `* 데이터 가용 날짜를 확인하는 데 실패했습니다.`;
             }
@@ -2005,14 +1995,14 @@
         
         // 날짜 유효성 검사 함수
         function validateDates() {
-            const startDate = new Date(document.getElementById('startYear').value, document.getElementById('startMonth').value - 1, document.getElementById('startDay').value);
-            const endDate = new Date(document.getElementById('endYear').value, document.getElementById('endMonth').value - 1, document.getElementById('endDay').value);
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+            const startDate = new Date(startDateInput.value);
+            const endDate = new Date(endDateInput.value);
             
             if (startDate > endDate) {
-                alert('시작일은 종료일보다 늦을 수 없습니다. 날짜를 다시 설정합니다.');
-                document.getElementById('endYear').value = document.getElementById('startYear').value;
-                document.getElementById('endMonth').value = document.getElementById('startMonth').value;
-                document.getElementById('endDay').value = document.getElementById('startDay').value;
+                alert('시작일은 종료일보다 늦을 수 없습니다. 종료일을 시작일과 동일하게 조정합니다.');
+                endDateInput.value = startDateInput.value;
             }
         }
         
@@ -2024,8 +2014,13 @@
             
             try {
                 // 입력값 가져오기
-                const startDateStr = `${document.getElementById('startYear').value}-${String(document.getElementById('startMonth').value).padStart(2, '0')}-${String(document.getElementById('startDay').value).padStart(2, '0')}`;
-                const endDateStr = `${document.getElementById('endYear').value}-${String(document.getElementById('endMonth').value).padStart(2, '0')}-${String(document.getElementById('endDay').value).padStart(2, '0')}`;
+                const startDateStr = document.getElementById('startDate').value;
+                const endDateStr = document.getElementById('endDate').value;
+                
+                if (!startDateStr || !endDateStr) {
+                    alert('시작일과 종료일을 모두 입력해주세요.');
+                    return;
+                }
                 
                 const investments = {
                     'NASDAQ100': parseFloat(document.getElementById('nasdaq100_input').value) || 0,
@@ -2038,7 +2033,7 @@
                 
                 const totalInvestment = Object.values(investments).reduce((sum, val) => sum + val, 0);
                 if (totalInvestment <= 0) {
-                    alert('투자 금액을 입력해주세요.');
+                    alert('투자 금액을 1 이상 입력해주세요.');
                     return;
                 }
 
@@ -2069,7 +2064,7 @@
                     }
                 }
                 if (!firstDate) {
-                    alert('선택한 기간에 유효한 데이터가 없습니다.');
+                    alert('선택한 기간에 유효한 데이터가 없습니다. 다른 기간을 선택해주세요.');
                     return;
                 }
                 currentDate = firstDate;
@@ -2206,7 +2201,7 @@
             }
         }
         
-        // ▲▲▲ 투자 시뮬레이터 관련 함수 끝 ▲▲▲
+        // ▲▲▲ 가상 투자 관련 함수 끝 ▲▲▲
 
 
         function createAndAnimateDollar(animationClass, size, duration) {
