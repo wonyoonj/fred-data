@@ -69,12 +69,10 @@
         .page-title {
             position: absolute;
             top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 20px;
             font-size: 35px;
             font-weight: bold;
             color: black;
-            white-space: nowrap;
         }
         
         .source-credit-main {
@@ -505,26 +503,6 @@
             border-radius: 3px;
             z-index: 10;
         }
-        
-        /* ▼▼▼ 투자 시뮬레이터 페이지 스타일 ▼▼▼ */
-        #simulatorPage { padding: 20px; text-align: center; }
-        .simulator-container { max-width: 900px; margin: 60px auto 0 auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .simulator-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; text-align: left; }
-        .control-group { border: 1px solid #ddd; padding: 15px; border-radius: 5px; }
-        .control-group h3 { margin-top: 0; color: #0056b3; }
-        .date-selector select { width: calc(33.33% - 10px); padding: 8px; margin-right: 5px; border: 1px solid #ccc; border-radius: 4px; }
-        .investment-inputs div { margin-bottom: 10px; display: flex; align-items: center; }
-        .investment-inputs label { font-weight: bold; min-width: 180px; }
-        .investment-inputs input[type="number"] { flex-grow: 1; margin-right: 5px; padding: 8px; border: 1px solid #ccc; border-radius: 4px;}
-        #runSimulatorBtn { padding: 12px 25px; font-size: 16px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px; }
-        #runSimulatorBtn:hover { background-color: #218838; }
-        #simulatorResultContainer { margin-top: 20px; }
-        #simulatorChart { width: 100% !important; height: 400px !important; }
-        #data-availability-notice { font-size: 12px; color: #dc3545; font-weight: bold; margin-top: 15px; }
-        .overlay-controls { margin-top: 20px; }
-        .overlay-controls label { font-weight: bold; margin-right: 10px; }
-        .overlay-controls select { padding: 8px; border-radius: 4px; border: 1px solid #ccc; }
-        /* ▲▲▲ 투자 시뮬레이터 페이지 스타일 ▲▲▲ */
 
         #infoPage { padding: 20px; text-align: left; }
         #infoContent h3 {
@@ -550,9 +528,9 @@
             .back-btn { top: 5px; left: 5px; }
             .info-btn { top: 5px; right: 5px; }
             .page-title {
-                font-size: 20px;
-                top: 15px;
-                width: 100%;
+                font-size: 24px;
+                top: 5px;
+                left: 10px;
             }
             .source-credit-main {
                 /*top: 55px;*/
@@ -619,9 +597,6 @@
             .share-buttons-container {
                 justify-content: center; /* 모바일: 가운데 정렬 */
             }
-            .simulator-controls { grid-template-columns: 1fr; }
-            .investment-inputs label { min-width: 120px; font-size: 14px;}
-            
             @keyframes dollarFlowToMarket {
                 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 15%; }
                 20% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: 50%; top: 15%; }
@@ -724,7 +699,7 @@
     <div class="container">
         
         <div id="liquidityFlow" class="page">
-            <h1 class="page-title" style="left: 20px; transform: none;">원뎅이의 미국 통화 유동성 현황</h1>
+            <h1 class="page-title">원뎅이의 미국 통화 유동성 현황</h1>
             
             <div style="margin-top: 80px;">
                 <div class="lang-selector">
@@ -834,7 +809,7 @@
             </div>
 
         <div id="interestRateFlow" class="page" style="display:none;">
-            <h1 class="page-title" style="left: 20px; transform: none;">원뎅이의 미국 통화 유동성 현황</h1>
+            <div class="page-title">원뎅이의 미국 통화 유동성 현황</div>
             
             <div style="margin-top: 80px;">
                 <div class="lang-selector">
@@ -947,73 +922,7 @@
                     </ul>
             </div>
             </div>
-            
-        <div id="simulatorPage" class="page" style="display:none;">
-            <h1 class="page-title">미국 투자 시뮬레이터</h1>
-            <div class="simulator-container">
-                <div class="simulator-controls">
-                    <div class="control-group date-selector">
-                        <h3>투자기간 설정</h3>
-                        <div>
-                            <strong>시작 시점:</strong>
-                            <select id="startYear"></select>
-                            <select id="startMonth"></select>
-                            <select id="startDay"></select>
-                        </div>
-                        <div style="margin-top: 10px;">
-                            <strong>종료 시점:</strong>
-                            <select id="endYear"></select>
-                            <select id="endMonth"></select>
-                            <select id="endDay"></select>
-                        </div>
-                    </div>
-                    <div class="control-group investment-inputs">
-                        <h3>투자금액 설정 (단위: 만원)</h3>
-                        <div>
-                            <label for="nasdaq100_input">나스닥100 (NASDAQ100):</label>
-                            <input type="number" id="nasdaq100_input" value="0" min="0">
-                            <span>만원</span>
-                        </div>
-                        <div>
-                            <label for="sp500_input">S&P500 (SP500):</label>
-                            <input type="number" id="sp500_input" value="0" min="0">
-                            <span>만원</span>
-                        </div>
-                        <div>
-                            <label for="dgs3mo_input">3개월 미 국채 (DGS3MO):</label>
-                            <input type="number" id="dgs3mo_input" value="0" min="0">
-                            <span>만원</span>
-                        </div>
-                        <div>
-                            <label for="dgs2_input">2년물 미 국채 (DGS2):</label>
-                            <input type="number" id="dgs2_input" value="0" min="0">
-                            <span>만원</span>
-                        </div>
-                         <div>
-                            <label for="dgs10_input">10년물 미 국채 (DGS10):</label>
-                            <input type="number" id="dgs10_input" value="0" min="0">
-                            <span>만원</span>
-                        </div>
-                        <div>
-                            <label for="cash_input">현금 (Cash):</label>
-                            <input type="number" id="cash_input" value="0" min="0">
-                            <span>만원</span>
-                        </div>
-                    </div>
-                </div>
-                <p id="data-availability-notice"></p>
-                <button id="runSimulatorBtn">투자 결과 확인</button>
-                <div id="simulatorResultContainer">
-                    <canvas id="simulatorChart"></canvas>
-                    <div class="overlay-controls" style="display: none;">
-                        <label for="overlayIndicator">지표 오버레이:</label>
-                        <select id="overlayIndicator">
-                            <option value="">-- 지표 선택 --</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
+
         <div id="graphIndicators" class="page" style="display:none;">
             <div class="indicator-section">
                 <h3>미국 자금 현황</h3>
@@ -1132,7 +1041,6 @@
         <div class="nav-bar">
             <button class="button" onclick="showLiquidityFlow()">유동성<br>현황</button>
             <button class="button" onclick="showInterestRateFlow()">금리<br>현황</button>
-            <button class="button" onclick="showSimulatorPage()">가상<br>투자</button>
             <button class="button" onclick="showGraphIndicators()">그래프<br>지표</button>
             <button class="button" onclick="showAboutPage()">사이트<br>안내</button>
         </div>
@@ -1145,7 +1053,6 @@
 
     <script>
         let myChart = null;
-        let simulatorChart = null; // 시뮬레이터 차트 인스턴스
         let isDragging = false;
         let startX;
         let startScrollX;
@@ -1451,10 +1358,9 @@
                 console.error("Kakao SDK init failed:", e);
             }
             setLanguage('ko'); 
-            initSimulatorPage();
         });
 
-        const pages = ['liquidityFlow', 'interestRateFlow', 'simulatorPage', 'graphIndicators', 'graphPage', 'infoPage', 'aboutPage'];
+        const pages = ['liquidityFlow', 'interestRateFlow', 'graphIndicators', 'graphPage', 'infoPage', 'aboutPage'];
         function showPage(pageId) {
             pages.forEach(id => {
                 const el = document.getElementById(id);
@@ -1469,7 +1375,6 @@
 
         function showLiquidityFlow() { showPage('liquidityFlow'); }
         function showInterestRateFlow() { showPage('interestRateFlow'); }
-        function showSimulatorPage() { showPage('simulatorPage'); }
         function showGraphIndicators() { showPage('graphIndicators'); }
         function showAboutPage() { showPage('aboutPage'); }
 
@@ -1939,334 +1844,6 @@
                 if(spreadDisplayEl) spreadDisplayEl.textContent = errorText;
             }
         }
-        
-        // ▼▼▼ 투자 시뮬레이터 관련 함수 ▼▼▼
-        
-        // 날짜 포맷 함수 (YYYY-MM-DD)
-        function formatDate(date) {
-            // UTC 기준의 날짜를 YYYY-MM-DD 형식으로 변환
-            const year = date.getUTCFullYear();
-            const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-            const day = String(date.getUTCDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-        
-        // 특정 연도와 월의 일 수를 반환하는 함수
-        function getDaysInMonth(year, month) {
-            return new Date(year, month, 0).getDate();
-        }
-
-        // 일(day) 드롭다운을 업데이트하는 함수
-        function updateDays(yearSelect, monthSelect, daySelect) {
-            const year = parseInt(yearSelect.value);
-            const month = parseInt(monthSelect.value);
-            const days = getDaysInMonth(year, month);
-            const currentDay = parseInt(daySelect.value);
-
-            daySelect.innerHTML = ''; // 기존 옵션 삭제
-            for (let d = 1; d <= days; d++) {
-                daySelect.add(new Option(d, d));
-            }
-            
-            // 현재 선택된 일이 유효하지 않으면 마지막 날로 설정
-            if (currentDay > days) {
-                daySelect.value = days;
-            } else {
-                daySelect.value = currentDay;
-            }
-        }
-
-        // 투자 시뮬레이터 페이지 초기화
-        async function initSimulatorPage() {
-            const startYear = document.getElementById('startYear');
-            const startMonth = document.getElementById('startMonth');
-            const startDay = document.getElementById('startDay');
-            const endYear = document.getElementById('endYear');
-            const endMonth = document.getElementById('endMonth');
-            const endDay = document.getElementById('endDay');
-            const overlayIndicator = document.getElementById('overlayIndicator');
-
-            const today = new Date();
-            const currentYear = today.getFullYear();
-            const currentMonth = today.getMonth() + 1;
-            const currentDay = today.getDate();
-
-            // 년/월/일 드롭다운 채우기
-            for (let y = currentYear; y >= 1980; y--) {
-                startYear.add(new Option(y, y));
-                endYear.add(new Option(y, y));
-            }
-            for (let m = 1; m <= 12; m++) {
-                startMonth.add(new Option(m, m));
-                endMonth.add(new Option(m, m));
-            }
-            
-            // 기본값 설정 (시작: 1년 전, 종료: 오늘)
-            startYear.value = currentYear -1;
-            endYear.value = currentYear;
-            startMonth.value = currentMonth;
-            endMonth.value = currentMonth;
-            
-            // 각 날짜 선택기에 대한 일자 업데이트
-            updateDays(startYear, startMonth, startDay);
-            updateDays(endYear, endMonth, endDay);
-            
-            startDay.value = currentDay;
-            endDay.value = currentDay;
-
-            // 오버레이 지표 드롭다운 채우기
-            for (const key in translations.ko.indicatorTitles) {
-                overlayIndicator.add(new Option(translations.ko.indicatorTitles[key], key));
-            }
-
-            // 날짜 유효성 검사 및 일자 업데이트 이벤트 리스너
-            [startYear, startMonth].forEach(el => el.addEventListener('change', () => updateDays(startYear, startMonth, startDay)));
-            [endYear, endMonth].forEach(el => el.addEventListener('change', () => updateDays(endYear, endMonth, endDay)));
-            [startYear, startMonth, startDay, endYear, endMonth, endDay].forEach(el => el.addEventListener('change', validateDates));
-            
-            // 투자 결과 확인 버튼 이벤트 리스너
-            document.getElementById('runSimulatorBtn').addEventListener('click', runSimulator);
-            
-            // 오버레이 지표 선택 이벤트 리스너
-            overlayIndicator.addEventListener('change', updateOverlayIndicator);
-
-            // 데이터 가용성 공지 업데이트
-            const noticeEl = document.getElementById('data-availability-notice');
-            noticeEl.textContent = '데이터 가용 가능 최신 날짜를 확인하는 중...';
-            const simIndicators = ['NASDAQ100', 'SP500', 'DGS3MO', 'DGS2', 'DGS10'];
-            try {
-                const dataPromises = simIndicators.map(code => fetchAndCacheData(code));
-                const allData = await Promise.all(dataPromises);
-                const lastDates = allData.map(data => new Date(data[data.length - 1].date));
-                const earliestLastDate = new Date(Math.min.apply(null, lastDates));
-                const maxDateStr = earliestLastDate.toISOString().split('T')[0];
-                noticeEl.textContent = `* 시뮬레이션은 모든 자산 데이터가 존재하는 ${maxDateStr}까지만 가능합니다.`;
-            } catch (e) {
-                noticeEl.textContent = `* 데이터 가용 날짜를 확인하는 데 실패했습니다.`;
-            }
-        }
-        
-        // 날짜 유효성 검사 함수
-        function validateDates() {
-            const startY = parseInt(document.getElementById('startYear').value);
-            const startM = parseInt(document.getElementById('startMonth').value);
-            const startD = parseInt(document.getElementById('startDay').value);
-            const endY = parseInt(document.getElementById('endYear').value);
-            const endM = parseInt(document.getElementById('endMonth').value);
-            const endD = parseInt(document.getElementById('endDay').value);
-
-            const startDate = new Date(Date.UTC(startY, startM - 1, startD));
-            const endDate = new Date(Date.UTC(endY, endM - 1, endD));
-            
-            if (startDate > endDate) {
-                alert('시작일은 종료일보다 늦을 수 없습니다. 종료일을 시작일과 동일하게 조정합니다.');
-                document.getElementById('endYear').value = startY;
-                document.getElementById('endMonth').value = startM;
-                updateDays(document.getElementById('endYear'), document.getElementById('endMonth'), document.getElementById('endDay'));
-                document.getElementById('endDay').value = startD;
-            }
-        }
-        
-        // 시뮬레이터 실행 함수
-        async function runSimulator() {
-            const btn = document.getElementById('runSimulatorBtn');
-            btn.disabled = true;
-            btn.textContent = '계산 중...';
-            
-            try {
-                // 입력값 가져오기
-                const startY = document.getElementById('startYear').value;
-                const startM = String(document.getElementById('startMonth').value).padStart(2, '0');
-                const startD = String(document.getElementById('startDay').value).padStart(2, '0');
-                const endY = document.getElementById('endYear').value;
-                const endM = String(document.getElementById('endMonth').value).padStart(2, '0');
-                const endD = String(document.getElementById('endDay').value).padStart(2, '0');
-
-                const startDateStr = `${startY}-${startM}-${startD}`;
-                const endDateStr = `${endY}-${endM}-${endD}`;
-                
-                const investments = {
-                    'NASDAQ100': parseFloat(document.getElementById('nasdaq100_input').value) || 0,
-                    'SP500': parseFloat(document.getElementById('sp500_input').value) || 0,
-                    'DGS3MO': parseFloat(document.getElementById('dgs3mo_input').value) || 0,
-                    'DGS2': parseFloat(document.getElementById('dgs2_input').value) || 0,
-                    'DGS10': parseFloat(document.getElementById('dgs10_input').value) || 0,
-                    'CASH': parseFloat(document.getElementById('cash_input').value) || 0
-                };
-                
-                const totalInvestment = Object.values(investments).reduce((sum, val) => sum + val, 0);
-                if (totalInvestment <= 0) {
-                    alert('투자 금액을 1 이상 입력해주세요.');
-                    return;
-                }
-
-                // 필요한 데이터 가져오기
-                const indicatorCodes = ['NASDAQ100', 'SP500', 'DGS3MO', 'DGS2', 'DGS10'];
-                const dataPromises = indicatorCodes.map(code => fetchAndCacheData(code));
-                const allDataArrays = await Promise.all(dataPromises);
-                
-                const dataMaps = {};
-                indicatorCodes.forEach((code, i) => {
-                    dataMaps[code] = new Map(allDataArrays[i].map(item => [item.date, item.value]));
-                });
-                
-                // 시뮬레이션 계산
-                const results = [];
-                const startDate = new Date(Date.UTC(startY, startM - 1, startD));
-                const endDate = new Date(Date.UTC(endY, endM - 1, endD));
-                
-                let portfolio = { ...investments };
-
-                // 데이터가 있는 첫 날짜 찾기
-                let currentDate = null;
-                for (let d = new Date(startDate); d <= endDate; d.setUTCDate(d.getUTCDate() + 1)) {
-                    const dateStr = formatDate(d);
-                    if (indicatorCodes.every(code => dataMaps[code].has(dateStr))) {
-                        currentDate = d;
-                        break;
-                    }
-                }
-
-                if (!currentDate) {
-                    alert('선택한 기간에 유효한 데이터가 없습니다. 다른 기간을 선택해주세요.');
-                    return;
-                }
-
-                let lastValues = {};
-                indicatorCodes.forEach(code => {
-                    lastValues[code] = dataMaps[code].get(formatDate(currentDate));
-                });
-                
-                // 첫 날의 포트폴리오 가치 기록
-                results.push({ x: formatDate(currentDate), y: totalInvestment });
-
-                // 다음 날부터 루프 시작
-                currentDate.setUTCDate(currentDate.getUTCDate() + 1);
-
-                while(currentDate <= endDate) {
-                    const dateStr = formatDate(currentDate);
-                    let currentDayValues = {};
-                    let isDataValid = true;
-
-                    indicatorCodes.forEach(code => {
-                        currentDayValues[code] = dataMaps[code].has(dateStr) ? dataMaps[code].get(dateStr) : lastValues[code];
-                        if (currentDayValues[code] === undefined) isDataValid = false;
-                    });
-                    
-                    if(isDataValid) {
-                        // 주식 가치 계산
-                        if (lastValues['NASDAQ100'] > 0) portfolio['NASDAQ100'] *= (currentDayValues['NASDAQ100'] / lastValues['NASDAQ100']);
-                        if (lastValues['SP500'] > 0) portfolio['SP500'] *= (currentDayValues['SP500'] / lastValues['SP500']);
-                        
-                        // 채권 가치 계산 (연이율을 일일 복리로)
-                        portfolio['DGS3MO'] *= (1 + (lastValues['DGS3MO'] / 100) / 365);
-                        portfolio['DGS2'] *= (1 + (lastValues['DGS2'] / 100) / 365);
-                        portfolio['DGS10'] *= (1 + (lastValues['DGS10'] / 100) / 365);
-
-                        const totalValue = Object.values(portfolio).reduce((s, v) => s + v, 0);
-                        results.push({ x: dateStr, y: totalValue });
-                        
-                        lastValues = currentDayValues;
-                    }
-                    
-                    currentDate.setUTCDate(currentDate.getUTCDate() + 1);
-                }
-                
-                renderSimulatorChart(results);
-                
-            } catch (error) {
-                console.error('Simulator error:', error);
-                alert('시뮬레이션 중 오류가 발생했습니다: ' + error.message);
-            } finally {
-                btn.disabled = false;
-                btn.textContent = '투자 결과 확인';
-            }
-        }
-        
-        // 시뮬레이터 차트 렌더링
-        function renderSimulatorChart(results) {
-            const ctx = document.getElementById('simulatorChart').getContext('2d');
-            if (simulatorChart) {
-                simulatorChart.destroy();
-            }
-            
-            document.querySelector('.overlay-controls').style.display = 'block';
-            document.getElementById('overlayIndicator').value = '';
-
-            simulatorChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    datasets: [{
-                        label: '총 자산 (만원)',
-                        data: results,
-                        borderColor: '#007bff',
-                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                        fill: true,
-                        yAxisID: 'y'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: { type: 'time', time: { unit: 'month' } },
-                        y: { 
-                            position: 'left',
-                            title: { display: true, text: '총 자산 (만원)'}
-                        },
-                        y1: {
-                            position: 'right',
-                            title: { display: false, text: ''},
-                            grid: { drawOnChartArea: false } // 보조 축 그리드 숨김
-                        }
-                    },
-                    plugins: { tooltip: { mode: 'index', intersect: false } }
-                }
-            });
-        }
-        
-        // 오버레이 지표 업데이트
-        async function updateOverlayIndicator() {
-             if (!simulatorChart) return;
-
-            const indicatorCode = document.getElementById('overlayIndicator').value;
-            
-            // 기존 오버레이 데이터셋 제거
-            const overlayIndex = simulatorChart.data.datasets.findIndex(ds => ds.yAxisID === 'y1');
-            if (overlayIndex > -1) {
-                simulatorChart.data.datasets.splice(overlayIndex, 1);
-            }
-            
-            if (!indicatorCode) {
-                simulatorChart.options.scales.y1.title.display = false;
-                simulatorChart.update();
-                return;
-            }
-            
-            try {
-                const data = await fetchAndCacheData(indicatorCode);
-                const chartData = data.map(item => ({x: item.date, y: item.value}));
-                
-                simulatorChart.data.datasets.push({
-                    label: translations.ko.indicatorTitles[indicatorCode],
-                    data: chartData,
-                    borderColor: '#dc3545',
-                    fill: false,
-                    yAxisID: 'y1',
-                    pointRadius: 0
-                });
-
-                simulatorChart.options.scales.y1.title.display = true;
-                simulatorChart.options.scales.y1.title.text = translations.ko.indicatorTitles[indicatorCode];
-                simulatorChart.update();
-            } catch(error) {
-                alert(`'${translations.ko.indicatorTitles[indicatorCode]}' 지표를 불러오는 데 실패했습니다.`);
-                console.error("Overlay indicator error:", error);
-            }
-        }
-        
-        // ▲▲▲ 투자 시뮬레이터 관련 함수 끝 ▲▲▲
-
 
         function createAndAnimateDollar(animationClass, size, duration) {
             const dollar = document.createElement('img');
