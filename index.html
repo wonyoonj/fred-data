@@ -2153,6 +2153,22 @@
                         const maturityDate = new Date(startDate);
                         maturityDate.setFullYear(maturityDate.getFullYear() + Math.floor(totalMaturityInYears));
                         maturityDate.setMonth(maturityDate.getMonth() + (totalMaturityInYears * 12) % 12);
+                        
+                        // ----------------------------------------------------
+                        // [현실 보정 추가] 쿠폰 현금흐름 누적 모델
+                        // ----------------------------------------------------
+                        const faceValue = 100;
+                        const paymentsPerYear = 2; 
+                        // 액면가 100 기준, 기간별 쿠폰 지급액
+                        const periodicCouponPayment = (couponRate / 100 * faceValue) / paymentsPerYear; 
+                        
+                        // 시뮬레이션 시작일 이후의 누적 쿠폰 현금 흐름
+                        let accumulatedCouponCash = 0; 
+                        
+                        // 다음 쿠폰 지급 예정일 (매수일 기준 6개월 후로 시작 가정)
+                        let nextCouponPaymentDate = new Date(startDate);
+                        nextCouponPaymentDate.setMonth(nextCouponPaymentDate.getMonth() + 12 / paymentsPerYear);
+                        // ----------------------------------------------------
 
                         dateArray.forEach((currentDate, i) => {
                             // 현재 날짜의 시장 수익률(YTM) 찾기
@@ -2163,11 +2179,25 @@
                             let yearsRemaining = (maturityDate - currentDate) / (1000 * 60 * 60 * 24 * 365.25);
                             if (yearsRemaining < 0) yearsRemaining = 0;
 
-                            // 남은 기간과 현재 수익률로 채권 가격 계산
+                            // 남은 기간과 현재 수익률로 채권 가격 계산 (자본 이득/손실)
                             const currentBondPrice = calculateBondPrice(currentYield, yearsRemaining, couponRate);
                             
-                            // (채권 수량 * 현재 채권 가격)으로 포트폴리오 가치 계산
-                            totalPortfolioValue[i] += numberOfBonds * currentBondPrice;
+                            // ----------------------------------------------------
+                            // [현실 보정 추가] 쿠폰 지급 확인 및 누적 로직
+                            // ----------------------------------------------------
+                            if (periodicCouponPayment > 0 && currentDate >= nextCouponPaymentDate) {
+                                // 쿠폰 지급액을 누적 현금 흐름에 추가 (받은 이자)
+                                accumulatedCouponCash += numberOfBonds * periodicCouponPayment;
+                                
+                                // 다음 쿠폰 지급일로 업데이트
+                                nextCouponPaymentDate.setMonth(nextCouponPaymentDate.getMonth() + 12 / paymentsPerYear);
+                                // 이자 지급이 여러 번 동시에 발생할 수 있으므로, 루프를 한 번 더 돌림 (가장 정확한 방법)
+                                // 단, 현재 코드가 일별로 순차적으로 루프를 돌기 때문에 이 로직으로 충분합니다.
+                            }
+                            // ----------------------------------------------------
+                            
+                            // (채권 수량 * 현재 채권 가격) + 누적 쿠폰 현금 흐름
+                            totalPortfolioValue[i] += (numberOfBonds * currentBondPrice) + accumulatedCouponCash;
                         });
                     }
                 }
