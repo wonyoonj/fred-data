@@ -936,6 +936,22 @@
                     <span class="icon-label">MMF<br>(Money Market Fund)</span>
                 </div>
             </div>
+
+            <div class="source-credit-main">자료 출처: FRED, Office of Financial Research (OFR)</div>
+
+            <div class="comment-section">
+                <h3>오늘의 유동성 흐름에 대한 당신의 생각은?</h3>
+                <div class="comment-form">
+                    <div class="nickname-wrapper">
+                        <input type="text" id="liquidityNickname" placeholder="닉네임 (최대 10자)">
+                        <button onclick="saveComment('liquidityComments', 'liquidityNickname', 'liquidityComment', 'liquidity-comment-list')">작성</button>
+                    </div>
+                    <textarea id="liquidityComment" placeholder="의견을 자유롭게 남겨주세요. (최대 300자)"></textarea>
+                </div>
+                <div class="comment-list" id="liquidity-comment-list">
+                    </div>
+            </div>
+            
             
             <div class="info-box">
                 <h3>데이터는 어떻게 해석해야 하나요?</h3>
@@ -956,19 +972,7 @@
                 <p>결론적으로, <span style="font-weight: bold;">'시장(Market)'으로 들어오는 돈의 총합(Net Market Flow)</span>이 <span class="negative">파란색 음수(-)</span>이면 <span style="font-weight: bold;">시장 유동성이 줄어드는 것</span>으로, <span class="positive">빨간색 양수(+)</span>이면 <span style="font-weight: bold;">유동성이 풍부해지는 것</span>으로 해석할 수 있습니다.</p>
             </div>
             
-            <div class="comment-section">
-                <h3>오늘의 유동성 흐름에 대한 당신의 생각은?</h3>
-                <div class="comment-form">
-                    <div class="nickname-wrapper">
-                        <input type="text" id="liquidityNickname" placeholder="닉네임 (최대 10자)">
-                        <button onclick="saveComment('liquidityComments', 'liquidityNickname', 'liquidityComment', 'liquidity-comment-list')">작성</button>
-                    </div>
-                    <textarea id="liquidityComment" placeholder="의견을 자유롭게 남겨주세요. (최대 300자)"></textarea>
-                </div>
-                <div class="comment-list" id="liquidity-comment-list">
-                    </div>
-            </div>
-            <div class="source-credit-main">자료 출처: FRED, Office of Financial Research (OFR)</div>
+            
         </div>
 
         <div id="interestRateFlow" class="page" style="display:none;">
@@ -1067,6 +1071,22 @@
                     <span class="icon-label">시중은행(Bank)</span>
                 </div>
             </div>
+
+            <div class="source-credit-main">자료 출처: FRED</div>
+
+            <div class="comment-section">
+                <h3>오늘의 금리에 대한 당신의 생각은?</h3>
+                <div class="comment-form">
+                    <div class="nickname-wrapper">
+                        <input type="text" id="interestRateNickname" placeholder="닉네임 (최대 10자)">
+                        <button onclick="saveComment('interestRateComments', 'interestRateNickname', 'interestRateComment', 'interest-rate-comment-list')">작성</button>
+                    </div>
+                    <textarea id="interestRateComment" placeholder="의견을 자유롭게 남겨주세요. (최대 300자)"></textarea>
+                </div>
+                <div class="comment-list" id="interest-rate-comment-list">
+                    </div>
+            </div>
+            
             
             <div class="info-box">
                 <h3>주요 금리 지표 안내</h3>
@@ -1083,21 +1103,9 @@
                     </ul>
             </div>
             
-            <div class="comment-section">
-                <h3>오늘의 금리에 대한 당신의 생각은?</h3>
-                <div class="comment-form">
-                    <div class="nickname-wrapper">
-                        <input type="text" id="interestRateNickname" placeholder="닉네임 (최대 10자)">
-                        <button onclick="saveComment('interestRateComments', 'interestRateNickname', 'interestRateComment', 'interest-rate-comment-list')">작성</button>
-                    </div>
-                    <textarea id="interestRateComment" placeholder="의견을 자유롭게 남겨주세요. (최대 300자)"></textarea>
-                </div>
-                <div class="comment-list" id="interest-rate-comment-list">
-                    </div>
-            </div>
-            <div class="source-credit-main">자료 출처: FRED</div>
+            
         </div>
-        
+
         <div id="graphIndicators" class="page" style="display:none;">
             <div class="indicator-section">
                 <h3>미국 자금 현황</h3>
@@ -1222,9 +1230,13 @@
                 </p>
                 <h4>참고: 과거 미국의 주요 경제 침체기</h4>
                 <ul>
+                    <li><b>대공황:</b> 1929년 9월 ~ 1932년 6월</li>
+                    <li><b>오일 쇼크 및 스태그플레이션:</b> 1973년 1월 ~ 1973년 1월</li>
+                    <li><b>블랙 먼데이:</b> 1987년 8월 ~ 1987년 12월</li>
                     <li><b>닷컴 버블 붕괴:</b> 2000년 3월 ~ 2001년 11월</li>
                     <li><b>글로벌 금융 위기:</b> 2007년 12월 ~ 2009년 6월</li>
                     <li><b>COVID-19 팬데믹:</b> 2020년 2월 ~ 2020년 4월</li>
+                    <li><b>인플레이션 및 금리 인상:</b> 2022년 1월 ~ 2022년 10월</li>
                 </ul>
             </div>
             <div class="investment-form">
