@@ -76,6 +76,17 @@
             color: black;
         }
         
+        /* ▼▼▼ [수정됨] 유동성/금리 현황 페이지 제목 중앙 정렬 ▼▼▼ */
+        #liquidityFlow > .page-title,
+        #interestRateFlow > .page-title {
+            width: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            position: absolute;
+        }
+        /* ▲▲▲ [수정됨] 유동성/금리 현황 페이지 제목 중앙 정렬 ▲▲▲ */
+        
         .source-credit-main {
             position: absolute;
             /*top: 45px;*/
@@ -711,6 +722,28 @@
         /* 가상 투자 페이지 스타일 */
         #investmentPage { text-align: center; padding: 20px; }
         .investment-title { font-size: 28px; font-weight: bold; color: black; margin-top: 50px; margin-bottom: 30px; }
+        /* ▼▼▼ [신규] 가상 투자 페이지 설명 스타일 ▼▼▼ */
+        .investment-description {
+            max-width: 800px;
+            margin: -20px auto 30px auto;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .investment-description h4 {
+            margin-top: 15px;
+            margin-bottom: 5px;
+            color: #0056b3;
+        }
+        .investment-description ul {
+            padding-left: 20px;
+            margin: 0;
+            list-style-type: '– ';
+        }
+        /* ▲▲▲ [신규] 가상 투자 페이지 설명 스타일 ▲▲▲ */
         .investment-form { max-width: 800px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .form-group { margin-bottom: 15px; text-align: left; }
         .form-group label { display: block; font-weight: bold; margin-bottom: 5px; }
@@ -725,6 +758,90 @@
             position: relative; /* <-- 차트 위치 계산의 안정성을 위해 추가하는 것이 좋습니다. */
         }
         #comparison-section { margin-top: 20px; max-width: 800px; margin-left: auto; margin-right: auto; }
+        
+        /* ▼▼▼ [신규] 댓글(커뮤니티) 기능 관련 스타일 ▼▼▼ */
+        .comment-section {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: left;
+        }
+        .comment-section h3 {
+            text-align: center;
+            color: #0056b3;
+            margin-top: 0;
+        }
+        .comment-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .comment-form .nickname-wrapper {
+            display: flex;
+            flex-grow: 1;
+            gap: 10px;
+        }
+        .comment-form input[type="text"] {
+            flex-grow: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .comment-form button {
+            padding: 8px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .comment-form button:hover {
+            background-color: #0056b3;
+        }
+        .comment-form textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+            min-height: 60px;
+        }
+        .comment-list {
+            max-height: 250px; /* 5개 정도의 댓글 높이 */
+            overflow-y: auto;
+            border: 1px solid #eee;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .comment-item {
+            border-bottom: 1px solid #f0f0f0;
+            padding: 10px 0;
+        }
+        .comment-item:last-child {
+            border-bottom: none;
+        }
+        .comment-item strong {
+            color: #007bff;
+            margin-right: 10px;
+        }
+        .comment-item p {
+            margin: 5px 0 0;
+            display: inline;
+            color: #333;
+            word-wrap: break-word;
+        }
+        .comment-item .timestamp {
+            display: block;
+            font-size: 11px;
+            color: #999;
+            margin-top: 5px;
+            text-align: right;
+        }
+        /* ▲▲▲ [신규] 댓글(커뮤니티) 기능 관련 스타일 ▲▲▲ */
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns" defer></script>
@@ -819,9 +936,7 @@
                     <span class="icon-label">MMF<br>(Money Market Fund)</span>
                 </div>
             </div>
-
-            <div class="source-credit-main">자료 출처: FRED, Office of Financial Research (OFR)</div>
-
+            
             <div class="info-box">
                 <h3>데이터는 어떻게 해석해야 하나요?</h3>
                 <p>메인 페이지의 애니메이션은 각 주체 간의 '최근 한 달간 자금 흐름 변화량'을 나타냅니다. 숫자의 의미는 다음과 같습니다.</p>
@@ -840,7 +955,21 @@
                     </ul>
                 <p>결론적으로, <span style="font-weight: bold;">'시장(Market)'으로 들어오는 돈의 총합(Net Market Flow)</span>이 <span class="negative">파란색 음수(-)</span>이면 <span style="font-weight: bold;">시장 유동성이 줄어드는 것</span>으로, <span class="positive">빨간색 양수(+)</span>이면 <span style="font-weight: bold;">유동성이 풍부해지는 것</span>으로 해석할 수 있습니다.</p>
             </div>
+            
+            <div class="comment-section">
+                <h3>오늘의 유동성 흐름에 대한 당신의 생각은?</h3>
+                <div class="comment-form">
+                    <div class="nickname-wrapper">
+                        <input type="text" id="liquidityNickname" placeholder="닉네임 (최대 10자)">
+                        <button onclick="saveComment('liquidityComments', 'liquidityNickname', 'liquidityComment', 'liquidity-comment-list')">작성</button>
+                    </div>
+                    <textarea id="liquidityComment" placeholder="의견을 자유롭게 남겨주세요. (최대 300자)"></textarea>
+                </div>
+                <div class="comment-list" id="liquidity-comment-list">
+                    </div>
             </div>
+            <div class="source-credit-main">자료 출처: FRED, Office of Financial Research (OFR)</div>
+        </div>
 
         <div id="interestRateFlow" class="page" style="display:none;">
             <div class="page-title">원뎅이의 미국 통화 유동성 현황</div>
@@ -938,9 +1067,7 @@
                     <span class="icon-label">시중은행(Bank)</span>
                 </div>
             </div>
-
-            <div class="source-credit-main">자료 출처: FRED</div>
-
+            
             <div class="info-box">
                 <h3>주요 금리 지표 안내</h3>
                 <ul>
@@ -955,8 +1082,22 @@
                     <li><span class="internal-link" onclick="showGraph('YIELD_SPREAD')"><strong>미국 장단기 금리차</strong></span>: 경기 침체의 선행 지표로, 장기 금리가 단기 금리보다 낮아지는 역전 현상이 발생하면 향후 경기 둔화 가능성을 시사합니다.</li>
                     </ul>
             </div>
+            
+            <div class="comment-section">
+                <h3>오늘의 금리에 대한 당신의 생각은?</h3>
+                <div class="comment-form">
+                    <div class="nickname-wrapper">
+                        <input type="text" id="interestRateNickname" placeholder="닉네임 (최대 10자)">
+                        <button onclick="saveComment('interestRateComments', 'interestRateNickname', 'interestRateComment', 'interest-rate-comment-list')">작성</button>
+                    </div>
+                    <textarea id="interestRateComment" placeholder="의견을 자유롭게 남겨주세요. (최대 300자)"></textarea>
+                </div>
+                <div class="comment-list" id="interest-rate-comment-list">
+                    </div>
             </div>
-
+            <div class="source-credit-main">자료 출처: FRED</div>
+        </div>
+        
         <div id="graphIndicators" class="page" style="display:none;">
             <div class="indicator-section">
                 <h3>미국 자금 현황</h3>
@@ -1075,6 +1216,17 @@
 
         <div id="investmentPage" class="page" style="display:none;">
             <h1 class="investment-title">미국 주식 <br>가상 투자 시뮬레이터</h1>
+            <div class="investment-description">
+                <p>
+                    과거 특정 시점에 자산을 투자했을 때의 결과를 그래프로 확인하고, 주요 경제 지표와 비교하며 투자 성과와 경제의 연관성을 분석해볼 수 있습니다. 이를 통해 과거 데이터를 기반으로 한 투자 전략을 테스트해 보세요.
+                </p>
+                <h4>참고: 과거 미국의 주요 경제 침체기</h4>
+                <ul>
+                    <li><b>닷컴 버블 붕괴:</b> 2000년 3월 ~ 2001년 11월</li>
+                    <li><b>글로벌 금융 위기:</b> 2007년 12월 ~ 2009년 6월</li>
+                    <li><b>COVID-19 팬데믹:</b> 2020년 2월 ~ 2020년 4월</li>
+                </ul>
+            </div>
             <div class="investment-form">
                 <div class="form-group date-group">
                     <div>
@@ -1162,6 +1314,9 @@
         
         const dataCache = new Map();
         const CACHE_TTL = 3600 * 1000;
+
+        // ▼▼▼ [신규] 욕설 필터링을 위한 단어 목록 ▼▼▼
+        const profanityList = ["씨발", "개새끼", "죽을래", "죽인다", "시발", "병신", "존나", "애미", "느금마", "꺼져"];
 
         // ▼▼▼ 번역 텍스트 모음 (한국어 버전이므로 한글만 필요) ▼▼▼
         const translations = {
@@ -1458,6 +1613,10 @@
             document.getElementById('endDate').addEventListener('change', validateDateRange);
             // 가상 투자 페이지 데이터 유효 날짜 표시
             setDataAvailabilityWarning();
+
+            // ▼▼▼ [신규] 페이지 로드 시 댓글 불러오기 ▼▼▼
+            loadComments('liquidityComments', 'liquidity-comment-list');
+            loadComments('interestRateComments', 'interest-rate-comment-list');
         });
 
         const pages = ['liquidityFlow', 'interestRateFlow', 'graphIndicators', 'graphPage', 'infoPage', 'aboutPage', 'investmentPage'];
@@ -2007,6 +2166,98 @@
             if (newMin >= minAllowed && newMax <= maxAllowed) { myChart.options.scales.x.min = newMin; myChart.options.scales.x.max = newMax; myChart.update('none'); }
         }
         function goBackToGraph() { if (currentIndicator) { showPage('graphPage'); } }
+        
+        // --- [신규] 댓글(커뮤니티) 관련 함수 ---
+
+        function loadComments(storageKey, listId) {
+            const commentList = document.getElementById(listId);
+            const comments = JSON.parse(localStorage.getItem(storageKey)) || [];
+            commentList.innerHTML = '';
+
+            if (comments.length === 0) {
+                commentList.innerHTML = '<p style="text-align: center; color: #999;">아직 등록된 의견이 없습니다. 첫 의견을 남겨보세요!</p>';
+                return;
+            }
+
+            comments.forEach(comment => {
+                const item = document.createElement('div');
+                item.className = 'comment-item';
+                
+                // 텍스트의 줄바꿈(\n)을 <br> 태그로 변환
+                const commentText = comment.text.replace(/\n/g, '<br>');
+
+                const formattedDate = new Date(comment.timestamp).toLocaleString('ko-KR', {
+                    year: 'numeric', month: '2-digit', day: '2-digit',
+                    hour: '2-digit', minute: '2-digit', hour12: false
+                });
+
+                item.innerHTML = `
+                    <div>
+                        <strong>${comment.nickname}</strong>
+                        <p>${commentText}</p>
+                    </div>
+                    <span class="timestamp">${formattedDate}</span>
+                `;
+                commentList.appendChild(item);
+            });
+        }
+
+        function saveComment(storageKey, nicknameId, commentId, listId) {
+            const nicknameInput = document.getElementById(nicknameId);
+            const commentInput = document.getElementById(commentId);
+            
+            let nickname = nicknameInput.value.trim();
+            let commentText = commentInput.value.trim();
+
+            if (!nickname) {
+                nickname = "익명";
+            }
+            if (!commentText) {
+                alert("내용을 입력해주세요.");
+                return;
+            }
+            
+            // 글자 수 제한
+            if (nickname.length > 10) {
+                alert("닉네임은 최대 10자까지 가능합니다.");
+                return;
+            }
+            if (commentText.length > 300) {
+                alert("댓글은 최대 300자까지 가능합니다.");
+                return;
+            }
+
+            // 욕설 필터링
+            for (const word of profanityList) {
+                if (commentText.includes(word)) {
+                    alert("부적절한 단어가 포함되어 있어 댓글을 등록할 수 없습니다.");
+                    return;
+                }
+            }
+
+            let comments = JSON.parse(localStorage.getItem(storageKey)) || [];
+
+            const newComment = {
+                nickname: nickname,
+                text: commentText,
+                timestamp: new Date().toISOString()
+            };
+
+            // 새 댓글을 배열 맨 앞에 추가
+            comments.unshift(newComment);
+
+            // 댓글이 30개를 초과하면 가장 오래된 댓글 삭제
+            if (comments.length > 30) {
+                comments = comments.slice(0, 30);
+            }
+
+            localStorage.setItem(storageKey, JSON.stringify(comments));
+
+            nicknameInput.value = '';
+            commentInput.value = '';
+
+            loadComments(storageKey, listId);
+        }
 
         // --- 가상 투자 관련 함수 ---
 
