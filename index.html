@@ -1074,7 +1074,7 @@
         </div>
 
         <div id="investmentPage" class="page" style="display:none;">
-            <h1 class="investment-title">미국 주식 가상 투자 시뮬레이터</h1>
+            <h1 class="investment-title">미국 주식 <br>가상 투자 시뮬레이터</h1>
             <div class="investment-form">
                 <div class="form-group date-group">
                     <div>
@@ -1091,23 +1091,23 @@
                 <hr>
                 <div class="form-group investment-inputs">
                     <div>
-                        <label for="nasdaqAmount">나스닥 100 지수 (만원)</label>
+                        <label for="nasdaqAmount">나스닥 100 지수 ($)</label>
                         <input type="number" id="nasdaqAmount" value="0" min="0">
                     </div>
                     <div>
-                        <label for="sp500Amount">S&P500 지수 (만원)</label>
+                        <label for="sp500Amount">S&P500 지수 ($)</label>
                         <input type="number" id="sp500Amount" value="0" min="0">
                     </div>
                     <div>
-                        <label for="dgs3moAmount">3개월 미 국채 (만원)</label>
+                        <label for="dgs3moAmount">3개월 미 국채 ($)</label>
                         <input type="number" id="dgs3moAmount" value="0" min="0">
                     </div>
                     <div>
-                        <label for="dgs2Amount">2년물 미 국채 (만원)</label>
+                        <label for="dgs2Amount">2년물 미 국채 ($)</label>
                         <input type="number" id="dgs2Amount" value="0" min="0">
                     </div>
                     <div>
-                        <label for="dgs10Amount">10년물 미 국채 (만원)</label>
+                        <label for="dgs10Amount">10년물 미 국채 ($)</label>
                         <input type="number" id="dgs10Amount" value="0" min="0">
                     </div>
                 </div>
@@ -1137,7 +1137,7 @@
         </div>
         </div>
     
-    <footer style="text-align: center; padding: 20px 20px 80px 20px; background-color: #f8f9fa; border-top: 1px solid #dee2e6; color: #6c757d; font-size: 12px;">
+    <footer style="margin-top: 50px; text-align: center;  padding: 20px 20px 80px 20px; background-color: #f8f9fa; border-top: 1px solid #dee2e6; color: #6c757d; font-size: 12px;">
         <p>&copy; 2025 원뎅이의 미국 통화 유동성 현황. All Rights Reserved.</p>
         <p>본 사이트에서 제공하는 정보는 투자 참고용이며, 투자에 대한 모든 책임은 본인에게 있습니다.</p>
     </footer>
@@ -2222,7 +2222,7 @@
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: '총 투자 결과 (만원)',
+                        label: '총 투자 결과 ($)',
                         data: data.map(v => v / 10000),
                         borderColor: '#007bff',
                         yAxisID: 'y',
@@ -2241,7 +2241,7 @@
                         },
                         y: {
                             position: 'left',
-                            title: { display: true, text: '투자 결과 금액 (만원)' },
+                            title: { display: true, text: '투자 결과 금액 ($)' },
                             ticks: {
                                 callback: function(value) { return value.toLocaleString(); }
                             }
