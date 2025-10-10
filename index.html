@@ -528,6 +528,74 @@
         .time-btn:hover { background-color: #dee2e6; }
         .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0056b3; padding: 10px; display: flex; justify-content: space-around; z-index: 1000; }
 
+        /* 토론장(댓글) 기능 관련 스타일 */
+        .discussion-section {
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .discussion-section h3 {
+            text-align: center;
+            color: #0056b3;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        .comment-form .nickname-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .comment-form input[type="text"] {
+            flex-grow: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .comment-form button {
+            padding: 8px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .comment-form button:hover {
+            background-color: #0056b3;
+        }
+        .comment-form textarea {
+            width: 100%;
+            height: 60px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+        .comment-list {
+            margin-top: 20px;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            max-height: 250px; /* 5개 정도 보이도록 높이 제한 */
+            overflow-y: auto; /* 내용이 많아지면 스크롤 생성 */
+            padding: 10px;
+        }
+        .comment-item {
+            padding: 10px;
+            border-bottom: 1px solid #f1f1f1;
+            word-wrap: break-word;
+        }
+        .comment-item:last-child {
+            border-bottom: none;
+        }
+        .comment-item strong {
+            color: #007bff;
+        }
+
         @media (max-width: 600px) {
             .container { padding: 10px 5px; } 
             .back-btn { top: 5px; left: 5px; }
@@ -820,8 +888,18 @@
                 </div>
             </div>
 
-            <div class="source-credit-main">자료 출처: FRED, Office of Financial Research (OFR)</div>
-
+            <div class="discussion-section">
+                <h3>오늘의 유동성 흐름에 대한 당신의 생각은?</h3>
+                <div class="comment-form">
+                    <div class="nickname-group">
+                        <input type="text" id="liquidityNickname" placeholder="닉네임">
+                        <button id="submitLiquidityComment">작성</button>
+                    </div>
+                    <textarea id="liquidityCommentText" placeholder="의견을 자유롭게 남겨주세요."></textarea>
+                </div>
+                <div class="comment-list" id="liquidityCommentList">
+                    </div>
+            </div>
             <div class="info-box">
                 <h3>데이터는 어떻게 해석해야 하나요?</h3>
                 <p>메인 페이지의 애니메이션은 각 주체 간의 '최근 한 달간 자금 흐름 변화량'을 나타냅니다. 숫자의 의미는 다음과 같습니다.</p>
@@ -840,7 +918,7 @@
                     </ul>
                 <p>결론적으로, <span style="font-weight: bold;">'시장(Market)'으로 들어오는 돈의 총합(Net Market Flow)</span>이 <span class="negative">파란색 음수(-)</span>이면 <span style="font-weight: bold;">시장 유동성이 줄어드는 것</span>으로, <span class="positive">빨간색 양수(+)</span>이면 <span style="font-weight: bold;">유동성이 풍부해지는 것</span>으로 해석할 수 있습니다.</p>
             </div>
-            </div>
+        </div>
 
         <div id="interestRateFlow" class="page" style="display:none;">
             <div class="page-title">원뎅이의 미국 통화 유동성 현황</div>
@@ -938,9 +1016,19 @@
                     <span class="icon-label">시중은행(Bank)</span>
                 </div>
             </div>
-
-            <div class="source-credit-main">자료 출처: FRED</div>
-
+            
+            <div class="discussion-section">
+                <h3>오늘의 금리에 대한 당신의 생각은?</h3>
+                <div class="comment-form">
+                    <div class="nickname-group">
+                        <input type="text" id="interestRateNickname" placeholder="닉네임">
+                        <button id="submitInterestRateComment">작성</button>
+                    </div>
+                    <textarea id="interestRateCommentText" placeholder="의견을 자유롭게 남겨주세요."></textarea>
+                </div>
+                <div class="comment-list" id="interestRateCommentList">
+                    </div>
+            </div>
             <div class="info-box">
                 <h3>주요 금리 지표 안내</h3>
                 <ul>
@@ -1247,6 +1335,85 @@
         // 이하 기능 관련 JavaScript 코드는 기존과 동일하게 유지됩니다.
         // setLanguage, translations 변수 등 불필요한 부분만 제거되었습니다.
 
+        // --- 토론장(댓글) 기능 관련 스크립트 ---
+        const MAX_COMMENTS = 30;
+
+        /**
+         * localStorage에서 댓글을 불러와 화면에 표시하는 함수
+         * @param {string} storageKey - localStorage에 사용될 키
+         * @param {string} listElementId - 댓글이 표시될 div의 ID
+         */
+        function loadComments(storageKey, listElementId) {
+            const commentList = document.getElementById(listElementId);
+            const comments = JSON.parse(localStorage.getItem(storageKey)) || [];
+            
+            commentList.innerHTML = ''; // 기존 목록 비우기
+            
+            // 최신순으로 표시하기 위해 배열을 뒤집어서 순회
+            comments.slice().reverse().forEach(comment => {
+                const commentItem = document.createElement('div');
+                commentItem.className = 'comment-item';
+                
+                // 텍스트의 줄바꿈(\n)을 <br> 태그로 변환
+                const commentText = comment.text.replace(/\n/g, '<br>');
+
+                commentItem.innerHTML = `<strong>${comment.nickname}:</strong> ${commentText}`;
+                commentList.appendChild(commentItem);
+            });
+        }
+
+        /**
+         * 새 댓글을 localStorage에 저장하는 함수
+         * @param {string} storageKey - localStorage에 사용될 키
+         * @param {string} nickname - 작성자 닉네임
+         * @param {string} text - 댓글 내용
+         */
+        function saveComment(storageKey, nickname, text) {
+            let comments = JSON.parse(localStorage.getItem(storageKey)) || [];
+            
+            const newComment = {
+                nickname: nickname,
+                text: text,
+                timestamp: new Date().toISOString()
+            };
+
+            comments.push(newComment);
+
+            // 댓글이 30개를 초과하면 가장 오래된 댓글을 제거
+            if (comments.length > MAX_COMMENTS) {
+                comments = comments.slice(comments.length - MAX_COMMENTS);
+            }
+
+            localStorage.setItem(storageKey, JSON.stringify(comments));
+        }
+
+        /**
+         * 댓글 작성 버튼 클릭 이벤트를 처리하는 핸들러
+         */
+        function handleCommentSubmit(nicknameInputId, textInputId, storageKey, listElementId) {
+            const nicknameInput = document.getElementById(nicknameInputId);
+            const commentTextInput = document.getElementById(textInputId);
+            
+            let nickname = nicknameInput.value.trim();
+            const text = commentTextInput.value.trim();
+
+            if (!text) {
+                alert('내용을 입력해주세요.');
+                return;
+            }
+
+            if (!nickname) {
+                nickname = '익명'; // 닉네임이 없으면 '익명'으로 처리
+            }
+
+            saveComment(storageKey, nickname, text);
+            loadComments(storageKey, listElementId);
+
+            // 입력창 초기화
+            commentTextInput.value = '';
+        }
+
+        // --- 기존 스크립트 ---
         async function fetchAndCacheData(indicator) {
             if (dataCache.has(indicator)) {
                 const { data, timestamp } = dataCache.get(indicator);
@@ -1458,6 +1625,18 @@
             document.getElementById('endDate').addEventListener('change', validateDateRange);
             // 가상 투자 페이지 데이터 유효 날짜 표시
             setDataAvailabilityWarning();
+
+            // 토론장 기능 초기화
+            document.getElementById('submitLiquidityComment').addEventListener('click', () => {
+                handleCommentSubmit('liquidityNickname', 'liquidityCommentText', 'liquidityComments', 'liquidityCommentList');
+            });
+            document.getElementById('submitInterestRateComment').addEventListener('click', () => {
+                handleCommentSubmit('interestRateNickname', 'interestRateCommentText', 'interestRateComments', 'interestRateCommentList');
+            });
+
+            // 페이지 로드 시 기존 댓글 불러오기
+            loadComments('liquidityComments', 'liquidityCommentList');
+            loadComments('interestRateComments', 'interestRateCommentList');
         });
 
         const pages = ['liquidityFlow', 'interestRateFlow', 'graphIndicators', 'graphPage', 'infoPage', 'aboutPage', 'investmentPage'];
@@ -1468,10 +1647,15 @@
                     el.style.display = id === pageId ? 'block' : 'none';
                 }
             });
+            // 페이지 전환 시 애니메이션/데이터 로드
             if (pageId === 'liquidityFlow') { updateLiquidityFlowAnimation(); } 
             else if (pageId === 'interestRateFlow') { updateInterestRateFlowData(); stopLiquidityFlowAnimation(); }
             else if (pageId === 'investmentPage') { stopLiquidityFlowAnimation(); populateComparisonIndicatorDropdown(); }
             else { stopLiquidityFlowAnimation(); }
+
+            // 페이지 전환 시 해당 토론장의 댓글을 다시 로드할 수 있습니다. (선택사항, 현재는 load 시 한번만 함)
+            if(pageId === 'liquidityFlow') loadComments('liquidityComments', 'liquidityCommentList');
+            if(pageId === 'interestRateFlow') loadComments('interestRateComments', 'interestRateCommentList');
         }
 
         function showLiquidityFlow() { showPage('liquidityFlow'); }
