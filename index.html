@@ -15,6 +15,7 @@
             adsScript.crossOrigin = "anonymous";
             document.head.appendChild(adsScript);
         }
+        
     </script>
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
     <meta name="naver-site-verification" content="3c5e34898f2cef35432619edafb1d9362ab55063" />
@@ -720,7 +721,7 @@
         .investment-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         #investmentResultContainer {
             margin-top: 30px;
-            height: 400px; /* <-- 이 줄을 추가하여 높이를 400px로 고정합니다. */
+            height: 450px; /* <-- 이 줄을 추가하여 높이를 400px로 고정합니다. */
             position: relative; /* <-- 차트 위치 계산의 안정성을 위해 추가하는 것이 좋습니다. */
         }
         #comparison-section { margin-top: 20px; max-width: 800px; margin-left: auto; margin-right: auto; }
@@ -2044,6 +2045,36 @@
             }
         }
 
+        /**
+         * 채권 가격을 계산하는 헬퍼 함수
+         * @param {number} currentYield - 현재 시장 수익률 (%)
+         * @param {number} yearsToMaturity - 만기까지 남은 기간 (년)
+         * @param {number} couponRate - 채권의 표면금리 (%)
+         * @returns {number} 채권의 현재 가격
+         */
+        function calculateBondPrice(currentYield, yearsToMaturity, couponRate) {
+            // --- 필수 가정 적용 ---
+            const faceValue = 100; // 액면가 $100
+            const paymentsPerYear = 2; // 이자 지급 횟수 (반기)
+            // ---------------------
+
+            const r = (currentYield / 100) / paymentsPerYear; // 기간별 할인가 (시장 수익률)
+            const n = yearsToMaturity * paymentsPerYear;     // 총 남은 이자 지급 횟수
+            const couponPayment = (couponRate / 100 * faceValue) / paymentsPerYear; // 기간별 이자 지급액
+
+            if (r <= 0) { // 시장 금리가 0 이하일 경우 예외 처리
+                return faceValue + (couponPayment * n);
+            }
+
+            // 현재가치(PV) 공식 적용
+            const couponPV = couponPayment * ((1 - Math.pow(1 + r, -n)) / r);
+            const faceValuePV = faceValue / Math.pow(1 + r, n);
+            
+            const bondPrice = couponPV + faceValuePV;
+
+            return bondPrice;
+        }
+
         async function runInvestmentSimulation() {
             const startDateStr = document.getElementById('startDate').value;
             const endDateStr = document.getElementById('endDate').value;
@@ -2108,16 +2139,35 @@
                             const performance = closestData.value / startValue;
                             totalPortfolioValue[i] += amount * performance;
                         });
-                    } else {
-                        // 채권 수익 계산 (일일 이자 복리)
-                        let currentBondValue = amount;
-                         dateArray.forEach((date, i) => {
-                            if (i > 0) {
-                                let closestData = data.filter(d => new Date(d.date) <= date).pop() || startData;
-                                const dailyRate = closestData.value / 100 / 365;
-                                currentBondValue *= (1 + dailyRate);
-                            }
-                            totalPortfolioValue[i] += currentBondValue;
+                    } else { // 채권 (DGS3MO, DGS2, DGS10) 수익 계산
+                        // --- 새로 교체할 코드 시작 ---
+                        const initialYield = startData.value;
+                        const couponRate = initialYield; // 매수 시점의 수익률을 표면금리로 가정 (즉, 액면가 100에 매수)
+                        const numberOfBonds = amount / 100; // 초기 투자금으로 매수한 채권 수량
+
+                        let totalMaturityInYears;
+                        if (indicator === 'DGS3MO') totalMaturityInYears = 0.25; // 3개월
+                        else if (indicator === 'DGS2') totalMaturityInYears = 2;   // 2년
+                        else if (indicator === 'DGS10') totalMaturityInYears = 10; // 10년
+
+                        const maturityDate = new Date(startDate);
+                        maturityDate.setFullYear(maturityDate.getFullYear() + Math.floor(totalMaturityInYears));
+                        maturityDate.setMonth(maturityDate.getMonth() + (totalMaturityInYears * 12) % 12);
+
+                        dateArray.forEach((currentDate, i) => {
+                            // 현재 날짜의 시장 수익률(YTM) 찾기
+                            let closestData = data.filter(d => new Date(d.date) <= currentDate).pop() || startData;
+                            const currentYield = closestData.value;
+
+                            // 만기까지 남은 기간 계산 (년 단위)
+                            let yearsRemaining = (maturityDate - currentDate) / (1000 * 60 * 60 * 24 * 365.25);
+                            if (yearsRemaining < 0) yearsRemaining = 0;
+
+                            // 남은 기간과 현재 수익률로 채권 가격 계산
+                            const currentBondPrice = calculateBondPrice(currentYield, yearsRemaining, couponRate);
+                            
+                            // (채권 수량 * 현재 채권 가격)으로 포트폴리오 가치 계산
+                            totalPortfolioValue[i] += numberOfBonds * currentBondPrice;
                         });
                     }
                 }
