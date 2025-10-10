@@ -557,6 +557,10 @@
                 top: -45%;
                 min-width: 150px;
             }
+
+            #investmentResultContainer {
+                height: 300px; /* <-- 이 코드를 추가하여 모바일 높이를 300px로 지정합니다. */
+            }
             
             #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay,
             #tb3msRateDisplay_interest, #rrpRateDisplay_interest, #effrRateDisplay_interest, #sofrRateDisplay_interest,
@@ -714,7 +718,11 @@
         .date-group > div { flex: 1; }
         .warning-text { color: red; font-size: 12px; margin-top: 5px; }
         .investment-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        #investmentResultContainer { margin-top: 30px; }
+        #investmentResultContainer {
+            margin-top: 30px;
+            height: 400px; /* <-- 이 줄을 추가하여 높이를 400px로 고정합니다. */
+            position: relative; /* <-- 차트 위치 계산의 안정성을 위해 추가하는 것이 좋습니다. */
+        }
         #comparison-section { margin-top: 20px; max-width: 800px; margin-left: auto; margin-right: auto; }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" defer></script>
