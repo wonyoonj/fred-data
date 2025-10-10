@@ -492,6 +492,10 @@
             flex-grow: 1;
         }
 
+        #investmentResultChart {
+            height: 400px; /* PC/태블릿 뷰에서 늘어짐 방지 */
+        }
+
         #graphDataSource {
             position: absolute;
             top: 70px;
@@ -684,6 +688,13 @@
                 width: 100%;
                 height: 300px;
             }
+
+
+            #investmentResultChart {
+            height: 300px !important; /* 모바일에서 높이 강제 적용 */
+            }
+
+
             #graphDataSource {
                 top: 65px;
                 right: 15px;
