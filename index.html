@@ -945,7 +945,7 @@
                 <div class="comment-form">
                     <div class="nickname-wrapper">
                         <input type="text" id="liquidityNickname" placeholder="닉네임 (최대 10자)">
-                        <button onclick="saveComment('liquidityComments', 'liquidityNickname', 'liquidityComment', 'liquidity-comment-list')">작성</button>
+                        <button onclick="saveComment('liquidityComments', 'liquidityNickname', 'liquidityComment', 'liquidity-comment-list')" ontouchend="saveComment('liquidityComments', 'liquidityNickname', 'liquidityComment', 'liquidity-comment-list')">작성</button>
                     </div>
                     <textarea id="liquidityComment" placeholder="의견을 자유롭게 남겨주세요. (최대 300자)"></textarea>
                 </div>
@@ -1080,7 +1080,7 @@
                 <div class="comment-form">
                     <div class="nickname-wrapper">
                         <input type="text" id="interestRateNickname" placeholder="닉네임 (최대 10자)">
-                        <button onclick="saveComment('interestRateComments', 'interestRateNickname', 'interestRateComment', 'interest-rate-comment-list')">작성</button>
+                        <button onclick="saveComment('liquidityComments', 'liquidityNickname', 'liquidityComment', 'liquidity-comment-list')" ontouchend="saveComment('liquidityComments', 'liquidityNickname', 'liquidityComment', 'liquidity-comment-list')">작성</button>
                     </div>
                     <textarea id="interestRateComment" placeholder="의견을 자유롭게 남겨주세요. (최대 300자)"></textarea>
                 </div>
@@ -2223,6 +2223,7 @@
         }
 
         function saveComment(storageKey, nicknameId, commentId, listId) {
+            
             const nicknameInput = document.getElementById(nicknameId);
             const commentInput = document.getElementById(commentId);
             
@@ -2603,6 +2604,12 @@
                 alert(`비교 지표(${indicator}) 데이터를 불러오는 데 실패했습니다.`);
             }
         }
+
+        window.addEventListener('load', () => {
+            loadComments('liquidityComments', 'liquidity-comment-list');
+            // 금리 현황 페이지 댓글도 동일하게 로드 (금리 페이지가 별도로 있다면 추가, 하지만 코드상 유동성 페이지 중심이므로 일단 이걸로)
+            // 만약 금리 페이지 댓글 ID가 다르다면, 예: loadComments('interestComments', 'interest-comment-list'); 추가
+        });
 
     </script>
 </body>
