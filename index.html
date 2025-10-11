@@ -53,7 +53,7 @@
     }
     </script>
     <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.1/kakao.min.js"
-    integrity="sha384-kDljxUXHaJ9xAb2AzRd59KxjrFjzHa5TAoFQ6GbYTCAG0bjM55XohjjDT7tDDC01" crossorigin="anonymous" defer></script>
+    xintegrity="sha384-kDljxUXHaJ9xAb2AzRd59KxjrFjzHa5TAoFQ6GbYTCAG0bjM55XohjjDT7tDDC01" crossorigin="anonymous" defer></script>
     <base target="_top">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -76,7 +76,6 @@
             color: black;
         }
         
-        /* ▼▼▼ [수정됨] 유동성/금리 현황 페이지 제목 중앙 정렬 ▼▼▼ */
         #liquidityFlow > .page-title,
         #interestRateFlow > .page-title {
             width: 100%;
@@ -85,18 +84,15 @@
             text-align: center;
             position: absolute;
         }
-        /* ▲▲▲ [수정됨] 유동성/금리 현황 페이지 제목 중앙 정렬 ▲▲▲ */
         
         .source-credit-main {
             position: absolute;
-            /*top: 45px;*/
             right: 15px;
             font-size: 12px;
             font-weight: bold;
             color: #555;
         }
 
-        /* ▼▼▼ 언어 선택 버튼 스타일 ▼▼▼ */
         .lang-selector {
             display: flex;
             justify-content: center;
@@ -119,9 +115,7 @@
             background-color: #007bff;
             color: white;
         }
-        /* ▲▲▲ 언어 선택 버튼 스타일 ▲▲▲ */
         
-        /* 소개 및 안내 페이지 스타일 */
         .info-box {
             padding: 20px; 
             text-align: left; 
@@ -165,7 +159,6 @@
             color: #0056b3;
         }
 
-        /* --- Animation Wrapper --- */
         .animation-container {
             position: relative;
             width: 100%;
@@ -549,7 +542,6 @@
                 left: 10px;
             }
             .source-credit-main {
-                /*top: 55px;*/
                 right: 10px;
                 font-size: 10px;
             }
@@ -705,11 +697,9 @@
                 height: 300px;
             }
 
-
             #investmentResultChart {
-            height: 300px !important; /* 모바일에서 높이 강제 적용 */
+                height: 300px !important; /* 모바일에서 높이 강제 적용 */
             }
-
 
             #graphDataSource {
                 top: 65px;
@@ -722,7 +712,6 @@
         /* 가상 투자 페이지 스타일 */
         #investmentPage { text-align: center; padding: 20px; }
         .investment-title { font-size: 28px; font-weight: bold; color: black; margin-top: 50px; margin-bottom: 30px; }
-        /* ▼▼▼ [신규] 가상 투자 페이지 설명 스타일 ▼▼▼ */
         .investment-description {
             max-width: 800px;
             margin: -20px auto 30px auto;
@@ -743,7 +732,6 @@
             margin: 0;
             list-style-type: '– ';
         }
-        /* ▲▲▲ [신규] 가상 투자 페이지 설명 스타일 ▲▲▲ */
         .investment-form { max-width: 800px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .form-group { margin-bottom: 15px; text-align: left; }
         .form-group label { display: block; font-weight: bold; margin-bottom: 5px; }
@@ -754,12 +742,12 @@
         .investment-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         #investmentResultContainer {
             margin-top: 30px;
-            height: 450px; /* <-- 이 줄을 추가하여 높이를 400px로 고정합니다. */
-            position: relative; /* <-- 차트 위치 계산의 안정성을 위해 추가하는 것이 좋습니다. */
+            height: 450px; 
+            position: relative; 
         }
         #comparison-section { margin-top: 20px; max-width: 800px; margin-left: auto; margin-right: auto; }
         
-        /* ▼▼▼ [신규] 댓글(커뮤니티) 기능 관련 스타일 ▼▼▼ */
+        /* 댓글(커뮤니티) 기능 관련 스타일 */
         .comment-section {
             max-width: 800px;
             margin: 40px auto;
@@ -812,7 +800,7 @@
             min-height: 60px;
         }
         .comment-list {
-            max-height: 250px; /* 5개 정도의 댓글 높이 */
+            max-height: 250px;
             overflow-y: auto;
             border: 1px solid #eee;
             padding: 10px;
@@ -842,7 +830,6 @@
             margin-top: 5px;
             text-align: right;
         }
-        /* ▲▲▲ [신규] 댓글(커뮤니티) 기능 관련 스타일 ▲▲▲ */
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns" defer></script>
@@ -945,7 +932,8 @@
                 <div class="comment-form">
                     <div class="nickname-wrapper">
                         <input type="text" id="liquidityNickname" placeholder="닉네임 (최대 10자)">
-                        <button onclick="saveComment('liquidityComments', 'liquidityNickname', 'liquidityComment', 'liquidity-comment-list')">작성</button>
+                        <!-- ▼▼▼ [수정됨] onclick 속성 제거 및 ID 추가 ▼▼▼ -->
+                        <button id="submitLiquidityComment">작성</button>
                     </div>
                     <textarea id="liquidityComment" placeholder="의견을 자유롭게 남겨주세요. (최대 300자)"></textarea>
                 </div>
@@ -1056,19 +1044,19 @@
                 </div>
                 <div class="icon-container FED-container">
                     <span class="icon-label">중앙은행 FED</span>
-                    <img src="../icon/fed.jpg" alt="FED" class="icon">
+                    <img src="./icon/fed.jpg" alt="FED" class="icon">
                 </div>
                 <div class="icon-container Government-container">
-                    <img src="../icon/government.JPG" alt="Government TGA" class="icon">
+                    <img src="./icon/government.JPG" alt="Government TGA" class="icon">
                     <span class="icon-label">미국 정부</span>
                 </div>
                 <div class="icon-container Market-container">
-                    <img src="../icon/Market.jpg" alt="Market" class="icon">
+                    <img src="./icon/Market.jpg" alt="Market" class="icon">
                     <span class="icon-label">미국 시장(Market)</span>
                     <div id="netMarketFlowDisplay_interest"></div>
                     </div>
                 <div class="icon-container MMF-container">
-                    <img src="../icon/MMF.jpg" alt="MMF" class="icon">
+                    <img src="./icon/MMF.jpg" alt="MMF" class="icon">
                     <span class="icon-label">시중은행(Bank)</span>
                 </div>
             </div>
@@ -1080,7 +1068,8 @@
                 <div class="comment-form">
                     <div class="nickname-wrapper">
                         <input type="text" id="interestRateNickname" placeholder="닉네임 (최대 10자)">
-                        <button onclick="saveComment('interestRateComments', 'interestRateNickname', 'interestRateComment', 'interest-rate-comment-list')">작성</button>
+                        <!-- ▼▼▼ [수정됨] onclick 속성 제거 및 ID 추가 ▼▼▼ -->
+                        <button id="submitInterestRateComment">작성</button>
                     </div>
                     <textarea id="interestRateComment" placeholder="의견을 자유롭게 남겨주세요. (최대 300자)"></textarea>
                 </div>
@@ -1328,10 +1317,8 @@
         const dataCache = new Map();
         const CACHE_TTL = 3600 * 1000;
 
-        // ▼▼▼ [신규] 욕설 필터링을 위한 단어 목록 ▼▼▼
         const profanityList = ["씨발", "개새끼", "죽을래", "죽인다", "시발", "병신", "존나", "애미", "느금마", "꺼져"];
 
-        // ▼▼▼ 번역 텍스트 모음 (한국어 버전이므로 한글만 필요) ▼▼▼
         const translations = {
             ko: {
                 aiAnalysisTitle: 'Ai 인공지능 Daily 분석',
@@ -1412,204 +1399,10 @@
             }
         };
 
-        // 이하 기능 관련 JavaScript 코드는 기존과 동일하게 유지됩니다.
-        // setLanguage, translations 변수 등 불필요한 부분만 제거되었습니다.
-
-        async function fetchAndCacheData(indicator) {
-            if (dataCache.has(indicator)) {
-                const { data, timestamp } = dataCache.get(indicator);
-                if (Date.now() - timestamp < CACHE_TTL) {
-                    return Promise.resolve(data);
-                }
-            }
-            const functionUrl = `${FUNCTION_BASE_URL}?indicator=${indicator}`;
-            try {
-                const response = await fetch(functionUrl);
-                if (!response.ok) {
-                    const errorBody = await response.json();
-                    const errorMsg = currentLanguage === 'ko' 
-                        ? `'${translations[currentLanguage].indicatorTitles[indicator] || indicator}' 데이터를 찾을 수 없거나 불러오지 못했어요! (${response.status}: ${errorBody.error || response.statusText})`
-                        : `Could not find or load data for '${translations[currentLanguage].indicatorTitles[indicator] || indicator}'! (${response.status}: ${errorBody.error || response.statusText})`;
-                    throw new Error(errorMsg);
-                }
-                const text = await response.text();
-                const parsedData = await parseCSV(text);
-                if (parsedData.length > 0) {
-                    parsedData.sort((a, b) => new Date(a.date) - new Date(b.date));
-                    dataCache.set(indicator, { data: parsedData, timestamp: Date.now() });
-                }
-                return parsedData;
-            } catch (error) {
-                 console.error(`Failed to fetch ${indicator}:`, error);
-                 throw error;
-            }
-        }
-
-        const indicatorUnits = {
-            'WTREGEN': 'Billions of U.S. Dollars', 'WRESBAL': 'Billions of Dollars', 'RRPONTSYD': 'Billions of Dollars', 'MMMFFAQ027S': 'Billions of Dollars', 'WALCL': 'Billions of Dollars',
-            'M2SL': 'Billions of Dollars', 'M1SL': 'Billions of Dollars', 'SP500_MCAP': 'Billions of Dollars', 'SOFR': 'Percent (%)', 'FEDFUNDS': 'Percent (%)', 'IORB': 'Percent (%)', 'DGS3MO': 'Percent (%)',
-            'DGS2': 'Percent (%)', 'DGS10': 'Percent (%)', 'DPCREDIT': 'Percent (%)', 'DRBLACBS': 'Percent (%)', 'NASDAQ100': 'Index', 'SP500': 'Index',
-            'RRPONTSYAWARD': 'Percent (%)', 'ALTSALES': 'Millions of Units', 'HOUST': 'Thousands of Units', 'DCOILBRENTEU': 'Dollars per Barrel',
-            'SOFR_FEDFUNDS_SPREAD': 'Percent (%)', 'SOFR_IORB_SPREAD': 'Percent (%)', 'YIELD_SPREAD': 'Percent (%)'
-        };
-        
-        const spreadConfigs = {
-            'SOFR_FEDFUNDS_SPREAD': [
-                { code: 'SOFR', label: 'SOFR', color: '#007bff' },
-                { code: 'FEDFUNDS', label: 'EFFR', color: 'red' }
-            ],
-            'SOFR_IORB_SPREAD': [
-                { code: 'SOFR', label: 'SOFR', color: '#007bff' },
-                { code: 'IORB', label: 'IORB', color: 'red' }
-            ]
-        };
-
-        async function parseCSV(text) {
-            const lines = text.trim().split('\n');
-            if (lines.length <= 1) return [];
-            const headers = lines[0].split(',').map(h => h.trim());
-            let dateColIndex = headers.findIndex(h => h.toLowerCase() === 'date' || h.toLowerCase() === 'data');
-            const valueColName = headers.find((h, i) => i !== dateColIndex);
-            const valueColIdx = headers.indexOf(valueColName);
-            if (dateColIndex === -1 || valueColIdx === -1) return [];
-            const parsedData = [];
-            for (let i = 1; i < lines.length; i++) {
-                const columns = lines[i].split(',');
-                if (columns.length > Math.max(dateColIndex, valueColIdx)) {
-                    const dateStr = columns[dateColIndex].trim();
-                    const valueStr = columns[valueColIdx].trim();
-                    const dateObj = new Date(dateStr);
-                    const valueNum = parseFloat(valueStr);
-                    if (!isNaN(dateObj.getTime()) && !isNaN(valueNum) && valueStr !== '.') {
-                        parsedData.push({ date: dateStr, value: valueNum });
-                    }
-                }
-            }
-            return parsedData;
-        }
-        
-        async function loadFinancialAnalysis() {
-            try {
-                const response = await fetch('csvfile/financial_analysis.json');
-                if (!response.ok) {
-                    throw new Error('Network response was not ok.');
-                }
-                analysisData = await response.json(); // Fetch and store in global variable
-                displayFinancialAnalysis(); // Display for the default language
-
-            } catch (error) {
-                console.error('Failed to load analysis data:', error);
-                const errorMsg = currentLanguage === 'ko' ? '분석 데이터를 불러오는 데 실패했습니다.' : 'Failed to load analysis data.';
-                const liquidityContainer = document.getElementById('liquidity-analysis-container');
-                if(liquidityContainer) liquidityContainer.textContent = errorMsg;
-                const interestRateContainer = document.getElementById('interest-rate-analysis-container');
-                if(interestRateContainer) interestRateContainer.textContent = errorMsg;
-                setAiAnalysisTitles(null);
-            }
-        }
-
-        function displayFinancialAnalysis() {
-            if (!analysisData) return; // Exit if data hasn't been loaded
-
-            const liquidityContainer = document.getElementById('liquidity-analysis-container');
-            const interestRateContainer = document.getElementById('interest-rate-analysis-container');
-
-            // Select the correct analysis text based on the current language
-            const liquidityKey = currentLanguage === 'en' ? 'liquidity_analysis_en' : 'liquidity_analysis';
-            const interestKey = currentLanguage === 'en' ? 'interest_rate_analysis_en' : 'interest_rate_analysis';
-
-            if (liquidityContainer && analysisData[liquidityKey]) {
-                liquidityContainer.innerHTML = analysisData[liquidityKey];
-            }
-
-            if (interestRateContainer && analysisData[interestKey]) {
-                interestRateContainer.innerHTML = analysisData[interestKey];
-            }
-            
-            // Set titles with the date from the JSON file
-            if (analysisData.date) {
-                setAiAnalysisTitles(analysisData.date);
-            } else {
-                setAiAnalysisTitles(null);
-            }
-        }
-        
-        function setAiAnalysisTitles(analysisDate) {
-            const titleText = translations[currentLanguage].aiAnalysisTitle;
-            const fullTitle = analysisDate 
-                ? `${titleText}<span class="update-date-span" style="font-weight: bold;">(Update Date: ${analysisDate})</span>`
-                : titleText;
-
-            const liquidityTitleEl = document.getElementById('ai-analysis-title-liquidity');
-            const interestTitleEl = document.getElementById('ai-analysis-title-interest');
-
-            if (liquidityTitleEl) {
-                liquidityTitleEl.innerHTML = fullTitle;
-            }
-            if (interestTitleEl) {
-                interestTitleEl.innerHTML = fullTitle;
-            }
-        }
-        
-        function updateMetaTagsForLanguage(lang) {
-            const langData = translations[lang];
-            if (!langData) return;
-
-            // <title> 태그 업데이트
-            document.title = langData.pageTitle;
-
-            // <meta name="description"> 태그 업데이트
-            const descriptionTag = document.querySelector('meta[name="description"]');
-            if (descriptionTag) {
-                descriptionTag.setAttribute('content', langData.metaDescription || translations['ko'].description); // 영어 설명이 없으면 한국어 기본값 사용
-            }
-
-            // Open Graph(og) 태그 업데이트 (소셜 공유용)
-            const ogTitleTag = document.querySelector('meta[property="og:title"]');
-            if (ogTitleTag) {
-                ogTitleTag.setAttribute('content', langData.pageTitle);
-            }
-            const ogDescriptionTag = document.querySelector('meta[property="og:description"]');
-            if (ogDescriptionTag) {
-                ogDescriptionTag.setAttribute('content', langData.metaDescription || translations['ko'].description);
-            }
-        }
-
-        function setLanguage(lang) {
-            currentLanguage = lang;
-            updateMetaTagsForLanguage(lang);
-            document.documentElement.lang = lang;
-
-            document.querySelectorAll('[data-lang-key]').forEach(el => {
-                const key = el.getAttribute('data-lang-key');
-                if (translations[lang][key]) {
-                    el.innerHTML = translations[lang][key];
-                }
-            });
-
-            document.querySelectorAll('.lang-selector').forEach(selector => {
-                selector.querySelector('.lang-btn.active').classList.remove('active');
-                selector.querySelector(`.lang-btn[onclick="setLanguage('${lang}')"]`).classList.add('active');
-            });
-            
-            const activePage = document.querySelector('.page[style*="block"]').id;
-            if (activePage === 'liquidityFlow') {
-                updateLiquidityFlowAnimation();
-            } else if (activePage === 'interestRateFlow') {
-                updateInterestRateFlowData();
-            } else if (activePage === 'graphPage') {
-                showGraph(currentIndicator); 
-            } else if (activePage === 'infoPage') {
-                showInfo(); 
-            } else if(activePage === 'investmentPage'){
-                populateComparisonIndicatorDropdown();
-            }
-            
-            displayFinancialAnalysis(); // Refresh AI analysis text on language change
-        }
-
-
-        window.addEventListener('load', () => {
+        // ▼▼▼ [수정됨] 페이지 로딩 로직 변경 ▼▼▼
+        // 기존 window.addEventListener('load', ...)를 아래의 DOMContentLoaded 이벤트 리스너로 대체하여
+        // 페이지 구조가 준비되는 즉시 스크립트가 실행되도록 하여 댓글 로딩 문제를 해결합니다.
+        document.addEventListener('DOMContentLoaded', () => {
             showPage('liquidityFlow');
             loadFinancialAnalysis();
             try {
@@ -1621,15 +1414,21 @@
             }
             setLanguage('ko'); 
 
-            // 가상 투자 페이지 날짜 입력 이벤트 리스너 추가
             document.getElementById('startDate').addEventListener('change', validateDateRange);
             document.getElementById('endDate').addEventListener('change', validateDateRange);
-            // 가상 투자 페이지 데이터 유효 날짜 표시
             setDataAvailabilityWarning();
 
-            // ▼▼▼ [신규] 페이지 로드 시 댓글 불러오기 ▼▼▼
+            // 페이지 로드 시 댓글을 즉시 불러옵니다.
             loadComments('liquidityComments', 'liquidity-comment-list');
             loadComments('interestRateComments', 'interest-rate-comment-list');
+
+            // 모바일 호환성을 위해 버튼에 클릭 이벤트 리스너를 직접 추가하여 '작성' 버튼 문제를 해결합니다.
+            document.getElementById('submitLiquidityComment').addEventListener('click', () => {
+                saveComment('liquidityComments', 'liquidityNickname', 'liquidityComment', 'liquidity-comment-list');
+            });
+            document.getElementById('submitInterestRateComment').addEventListener('click', () => {
+                saveComment('interestRateComments', 'interestRateNickname', 'interestRateComment', 'interest-rate-comment-list');
+            });
         });
 
         const pages = ['liquidityFlow', 'interestRateFlow', 'graphIndicators', 'graphPage', 'infoPage', 'aboutPage', 'investmentPage'];
@@ -1710,6 +1509,193 @@
             });
         }
 
+        async function fetchAndCacheData(indicator) {
+            if (dataCache.has(indicator)) {
+                const { data, timestamp } = dataCache.get(indicator);
+                if (Date.now() - timestamp < CACHE_TTL) {
+                    return Promise.resolve(data);
+                }
+            }
+            const functionUrl = `${FUNCTION_BASE_URL}?indicator=${indicator}`;
+            try {
+                const response = await fetch(functionUrl);
+                if (!response.ok) {
+                    const errorBody = await response.json();
+                    const errorMsg = currentLanguage === 'ko' 
+                        ? `'${translations[currentLanguage].indicatorTitles[indicator] || indicator}' 데이터를 찾을 수 없거나 불러오지 못했어요! (${response.status}: ${errorBody.error || response.statusText})`
+                        : `Could not find or load data for '${translations[currentLanguage].indicatorTitles[indicator] || indicator}'! (${response.status}: ${errorBody.error || response.statusText})`;
+                    throw new Error(errorMsg);
+                }
+                const text = await response.text();
+                const parsedData = await parseCSV(text);
+                if (parsedData.length > 0) {
+                    parsedData.sort((a, b) => new Date(a.date) - new Date(b.date));
+                    dataCache.set(indicator, { data: parsedData, timestamp: Date.now() });
+                }
+                return parsedData;
+            } catch (error) {
+                 console.error(`Failed to fetch ${indicator}:`, error);
+                 throw error;
+            }
+        }
+
+        const indicatorUnits = {
+            'WTREGEN': 'Billions of U.S. Dollars', 'WRESBAL': 'Billions of Dollars', 'RRPONTSYD': 'Billions of Dollars', 'MMMFFAQ027S': 'Billions of Dollars', 'WALCL': 'Billions of Dollars',
+            'M2SL': 'Billions of Dollars', 'M1SL': 'Billions of Dollars', 'SP500_MCAP': 'Billions of Dollars', 'SOFR': 'Percent (%)', 'FEDFUNDS': 'Percent (%)', 'IORB': 'Percent (%)', 'DGS3MO': 'Percent (%)',
+            'DGS2': 'Percent (%)', 'DGS10': 'Percent (%)', 'DPCREDIT': 'Percent (%)', 'DRBLACBS': 'Percent (%)', 'NASDAQ100': 'Index', 'SP500': 'Index',
+            'RRPONTSYAWARD': 'Percent (%)', 'ALTSALES': 'Millions of Units', 'HOUST': 'Thousands of Units', 'DCOILBRENTEU': 'Dollars per Barrel',
+            'SOFR_FEDFUNDS_SPREAD': 'Percent (%)', 'SOFR_IORB_SPREAD': 'Percent (%)', 'YIELD_SPREAD': 'Percent (%)'
+        };
+        
+        const spreadConfigs = {
+            'SOFR_FEDFUNDS_SPREAD': [
+                { code: 'SOFR', label: 'SOFR', color: '#007bff' },
+                { code: 'FEDFUNDS', label: 'EFFR', color: 'red' }
+            ],
+            'SOFR_IORB_SPREAD': [
+                { code: 'SOFR', label: 'SOFR', color: '#007bff' },
+                { code: 'IORB', label: 'IORB', color: 'red' }
+            ]
+        };
+
+        async function parseCSV(text) {
+            const lines = text.trim().split('\n');
+            if (lines.length <= 1) return [];
+            const headers = lines[0].split(',').map(h => h.trim());
+            let dateColIndex = headers.findIndex(h => h.toLowerCase() === 'date' || h.toLowerCase() === 'data');
+            const valueColName = headers.find((h, i) => i !== dateColIndex);
+            const valueColIdx = headers.indexOf(valueColName);
+            if (dateColIndex === -1 || valueColIdx === -1) return [];
+            const parsedData = [];
+            for (let i = 1; i < lines.length; i++) {
+                const columns = lines[i].split(',');
+                if (columns.length > Math.max(dateColIndex, valueColIdx)) {
+                    const dateStr = columns[dateColIndex].trim();
+                    const valueStr = columns[valueColIdx].trim();
+                    const dateObj = new Date(dateStr);
+                    const valueNum = parseFloat(valueStr);
+                    if (!isNaN(dateObj.getTime()) && !isNaN(valueNum) && valueStr !== '.') {
+                        parsedData.push({ date: dateStr, value: valueNum });
+                    }
+                }
+            }
+            return parsedData;
+        }
+        
+        async function loadFinancialAnalysis() {
+            try {
+                const response = await fetch('csvfile/financial_analysis.json');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok.');
+                }
+                analysisData = await response.json(); 
+                displayFinancialAnalysis(); 
+
+            } catch (error) {
+                console.error('Failed to load analysis data:', error);
+                const errorMsg = currentLanguage === 'ko' ? '분석 데이터를 불러오는 데 실패했습니다.' : 'Failed to load analysis data.';
+                const liquidityContainer = document.getElementById('liquidity-analysis-container');
+                if(liquidityContainer) liquidityContainer.textContent = errorMsg;
+                const interestRateContainer = document.getElementById('interest-rate-analysis-container');
+                if(interestRateContainer) interestRateContainer.textContent = errorMsg;
+                setAiAnalysisTitles(null);
+            }
+        }
+
+        function displayFinancialAnalysis() {
+            if (!analysisData) return; 
+
+            const liquidityContainer = document.getElementById('liquidity-analysis-container');
+            const interestRateContainer = document.getElementById('interest-rate-analysis-container');
+
+            const liquidityKey = currentLanguage === 'en' ? 'liquidity_analysis_en' : 'liquidity_analysis';
+            const interestKey = currentLanguage === 'en' ? 'interest_rate_analysis_en' : 'interest_rate_analysis';
+
+            if (liquidityContainer && analysisData[liquidityKey]) {
+                liquidityContainer.innerHTML = analysisData[liquidityKey];
+            }
+
+            if (interestRateContainer && analysisData[interestKey]) {
+                interestRateContainer.innerHTML = analysisData[interestKey];
+            }
+            
+            if (analysisData.date) {
+                setAiAnalysisTitles(analysisData.date);
+            } else {
+                setAiAnalysisTitles(null);
+            }
+        }
+        
+        function setAiAnalysisTitles(analysisDate) {
+            const titleText = translations[currentLanguage].aiAnalysisTitle;
+            const fullTitle = analysisDate 
+                ? `${titleText}<span class="update-date-span" style="font-weight: bold;">(Update Date: ${analysisDate})</span>`
+                : titleText;
+
+            const liquidityTitleEl = document.getElementById('ai-analysis-title-liquidity');
+            const interestTitleEl = document.getElementById('ai-analysis-title-interest');
+
+            if (liquidityTitleEl) {
+                liquidityTitleEl.innerHTML = fullTitle;
+            }
+            if (interestTitleEl) {
+                interestTitleEl.innerHTML = fullTitle;
+            }
+        }
+        
+        function updateMetaTagsForLanguage(lang) {
+            const langData = translations[lang];
+            if (!langData) return;
+
+            document.title = langData.pageTitle;
+
+            const descriptionTag = document.querySelector('meta[name="description"]');
+            if (descriptionTag) {
+                descriptionTag.setAttribute('content', langData.metaDescription || translations['ko'].description);
+            }
+
+            const ogTitleTag = document.querySelector('meta[property="og:title"]');
+            if (ogTitleTag) {
+                ogTitleTag.setAttribute('content', langData.pageTitle);
+            }
+            const ogDescriptionTag = document.querySelector('meta[property="og:description"]');
+            if (ogDescriptionTag) {
+                ogDescriptionTag.setAttribute('content', langData.metaDescription || translations['ko'].description);
+            }
+        }
+
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            updateMetaTagsForLanguage(lang);
+            document.documentElement.lang = lang;
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                if (translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
+                }
+            });
+
+            document.querySelectorAll('.lang-selector').forEach(selector => {
+                selector.querySelector('.lang-btn.active').classList.remove('active');
+                selector.querySelector(`.lang-btn[onclick="setLanguage('${lang}')"]`).classList.add('active');
+            });
+            
+            const activePage = document.querySelector('.page[style*="block"]').id;
+            if (activePage === 'liquidityFlow') {
+                updateLiquidityFlowAnimation();
+            } else if (activePage === 'interestRateFlow') {
+                updateInterestRateFlowData();
+            } else if (activePage === 'graphPage') {
+                showGraph(currentIndicator); 
+            } else if (activePage === 'infoPage') {
+                showInfo(); 
+            } else if(activePage === 'investmentPage'){
+                populateComparisonIndicatorDropdown();
+            }
+            
+            displayFinancialAnalysis(); 
+        }
 
         async function showGraph(indicator) {
             currentIndicator = indicator;
@@ -1876,7 +1862,6 @@
                 renderErrorMessage(errorMsg);
             }
         }
-
 
         function renderErrorMessage(message, canvasId = 'myChart') {
             const canvas = document.getElementById(canvasId);
@@ -2180,10 +2165,10 @@
         }
         function goBackToGraph() { if (currentIndicator) { showPage('graphPage'); } }
         
-        // --- [신규] 댓글(커뮤니티) 관련 함수 ---
-
+        // --- 댓글(커뮤니티) 관련 함수 ---
         function loadComments(storageKey, listId) {
             const commentList = document.getElementById(listId);
+            if (!commentList) return; // defensive check
             const comments = JSON.parse(localStorage.getItem(storageKey)) || [];
             commentList.innerHTML = '';
 
@@ -2196,7 +2181,6 @@
                 const item = document.createElement('div');
                 item.className = 'comment-item';
                 
-                // 텍스트의 줄바꿈(\n)을 <br> 태그로 변환
                 const commentText = comment.text.replace(/\n/g, '<br>');
 
                 const formattedDate = new Date(comment.timestamp).toLocaleString('ko-KR', {
@@ -2230,7 +2214,6 @@
                 return;
             }
             
-            // 글자 수 제한
             if (nickname.length > 10) {
                 alert("닉네임은 최대 10자까지 가능합니다.");
                 return;
@@ -2243,13 +2226,11 @@
                 }
             }
 
-
             if (commentText.length > 300) {
                 alert("댓글은 최대 300자까지 가능합니다.");
                 return;
             }
 
-            // 욕설 필터링
             for (const word of profanityList) {
                 if (commentText.includes(word)) {
                     alert("부적절한 단어가 포함되어 있어 댓글을 등록할 수 없습니다.");
@@ -2265,10 +2246,8 @@
                 timestamp: new Date().toISOString()
             };
 
-            // 새 댓글을 배열 맨 앞에 추가
             comments.unshift(newComment);
 
-            // 댓글이 30개를 초과하면 가장 오래된 댓글 삭제
             if (comments.length > 30) {
                 comments = comments.slice(0, 30);
             }
@@ -2282,7 +2261,6 @@
         }
 
         // --- 가상 투자 관련 함수 ---
-
         function validateDateRange() {
             const startDate = document.getElementById('startDate').value;
             const endDate = document.getElementById('endDate').value;
@@ -2318,28 +2296,18 @@
             }
         }
 
-        /**
-         * 채권 가격을 계산하는 헬퍼 함수
-         * @param {number} currentYield - 현재 시장 수익률 (%)
-         * @param {number} yearsToMaturity - 만기까지 남은 기간 (년)
-         * @param {number} couponRate - 채권의 표면금리 (%)
-         * @returns {number} 채권의 현재 가격
-         */
         function calculateBondPrice(currentYield, yearsToMaturity, couponRate) {
-            // --- 필수 가정 적용 ---
-            const faceValue = 100; // 액면가 $100
-            const paymentsPerYear = 2; // 이자 지급 횟수 (반기)
-            // ---------------------
+            const faceValue = 100; 
+            const paymentsPerYear = 2; 
 
-            const r = (currentYield / 100) / paymentsPerYear; // 기간별 할인가 (시장 수익률)
-            const n = yearsToMaturity * paymentsPerYear;     // 총 남은 이자 지급 횟수
-            const couponPayment = (couponRate / 100 * faceValue) / paymentsPerYear; // 기간별 이자 지급액
+            const r = (currentYield / 100) / paymentsPerYear;
+            const n = yearsToMaturity * paymentsPerYear;
+            const couponPayment = (couponRate / 100 * faceValue) / paymentsPerYear;
 
-            if (r <= 0) { // 시장 금리가 0 이하일 경우 예외 처리
+            if (r <= 0) { 
                 return faceValue + (couponPayment * n);
             }
 
-            // 현재가치(PV) 공식 적용
             const couponPV = couponPayment * ((1 - Math.pow(1 + r, -n)) / r);
             const faceValuePV = faceValue / Math.pow(1 + r, n);
             
@@ -2387,7 +2355,6 @@
                 const startDate = new Date(startDateStr);
                 const endDate = new Date(endDateStr);
                 
-                // 날짜 배열 생성
                 const dateArray = [];
                 for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
                     dateArray.push(new Date(d));
@@ -2395,81 +2362,57 @@
 
                 const totalPortfolioValue = new Array(dateArray.length).fill(0);
 
-                // 각 자산별 수익 계산
                 for (const indicator of indicatorsToFetch) {
                     const data = dataMap[indicator];
                     const amount = amounts[indicator];
                     if (data.length === 0) continue;
 
-                    // 시작일 데이터 찾기
                     let startData = data.find(d => new Date(d.date) >= startDate) || data[data.length - 1];
                     const startValue = startData.value;
                     
                     if (indicator === 'NASDAQ100' || indicator === 'SP500') {
-                        // 주식 수익 계산
                          dateArray.forEach((date, i) => {
                             let closestData = data.filter(d => new Date(d.date) <= date).pop() || startData;
                             const performance = closestData.value / startValue;
                             totalPortfolioValue[i] += amount * performance;
                         });
-                    } else { // 채권 (DGS3MO, DGS2, DGS10) 수익 계산
-                        // --- 새로 교체할 코드 시작 ---
+                    } else { 
                         const initialYield = startData.value;
-                        const couponRate = initialYield; // 매수 시점의 수익률을 표면금리로 가정 (즉, 액면가 100에 매수)
-                        const numberOfBonds = amount / 100; // 초기 투자금으로 매수한 채권 수량
+                        const couponRate = initialYield; 
+                        const numberOfBonds = amount / 100; 
 
                         let totalMaturityInYears;
-                        if (indicator === 'DGS3MO') totalMaturityInYears = 0.25; // 3개월
-                        else if (indicator === 'DGS2') totalMaturityInYears = 2;   // 2년
-                        else if (indicator === 'DGS10') totalMaturityInYears = 10; // 10년
+                        if (indicator === 'DGS3MO') totalMaturityInYears = 0.25; 
+                        else if (indicator === 'DGS2') totalMaturityInYears = 2;   
+                        else if (indicator === 'DGS10') totalMaturityInYears = 10; 
 
                         const maturityDate = new Date(startDate);
                         maturityDate.setFullYear(maturityDate.getFullYear() + Math.floor(totalMaturityInYears));
                         maturityDate.setMonth(maturityDate.getMonth() + (totalMaturityInYears * 12) % 12);
                         
-                        // ----------------------------------------------------
-                        // [현실 보정 추가] 쿠폰 현금흐름 누적 모델
-                        // ----------------------------------------------------
                         const faceValue = 100;
                         const paymentsPerYear = 2; 
-                        // 액면가 100 기준, 기간별 쿠폰 지급액
                         const periodicCouponPayment = (couponRate / 100 * faceValue) / paymentsPerYear; 
                         
-                        // 시뮬레이션 시작일 이후의 누적 쿠폰 현금 흐름
                         let accumulatedCouponCash = 0; 
                         
-                        // 다음 쿠폰 지급 예정일 (매수일 기준 6개월 후로 시작 가정)
                         let nextCouponPaymentDate = new Date(startDate);
                         nextCouponPaymentDate.setMonth(nextCouponPaymentDate.getMonth() + 12 / paymentsPerYear);
-                        // ----------------------------------------------------
 
                         dateArray.forEach((currentDate, i) => {
-                            // 현재 날짜의 시장 수익률(YTM) 찾기
                             let closestData = data.filter(d => new Date(d.date) <= currentDate).pop() || startData;
                             const currentYield = closestData.value;
 
-                            // 만기까지 남은 기간 계산 (년 단위)
                             let yearsRemaining = (maturityDate - currentDate) / (1000 * 60 * 60 * 24 * 365.25);
                             if (yearsRemaining < 0) yearsRemaining = 0;
 
-                            // 남은 기간과 현재 수익률로 채권 가격 계산 (자본 이득/손실)
                             const currentBondPrice = calculateBondPrice(currentYield, yearsRemaining, couponRate);
                             
-                            // ----------------------------------------------------
-                            // [현실 보정 추가] 쿠폰 지급 확인 및 누적 로직
-                            // ----------------------------------------------------
                             if (periodicCouponPayment > 0 && currentDate >= nextCouponPaymentDate) {
-                                // 쿠폰 지급액을 누적 현금 흐름에 추가 (받은 이자)
                                 accumulatedCouponCash += numberOfBonds * periodicCouponPayment;
-                                
-                                // 다음 쿠폰 지급일로 업데이트
                                 nextCouponPaymentDate.setMonth(nextCouponPaymentDate.getMonth() + 12 / paymentsPerYear);
-                                // 이자 지급이 여러 번 동시에 발생할 수 있으므로, 루프를 한 번 더 돌림 (가장 정확한 방법)
-                                // 단, 현재 코드가 일별로 순차적으로 루프를 돌기 때문에 이 로직으로 충분합니다.
                             }
-                            // ----------------------------------------------------
                             
-                            // (채권 수량 * 현재 채권 가격) + 누적 쿠폰 현금 흐름
                             totalPortfolioValue[i] += (numberOfBonds * currentBondPrice) + accumulatedCouponCash;
                         });
                     }
@@ -2519,11 +2462,11 @@
                                 callback: function(value) { return value.toLocaleString(); }
                             }
                         },
-                        y1: { // 보조 Y축
+                        y1: { 
                             type: 'linear',
-                            display: false, // 처음에는 숨김
+                            display: false, 
                             position: 'right',
-                            grid: { drawOnChartArea: false }, // 메인 그리드와 겹치지 않게 함
+                            grid: { drawOnChartArea: false }, 
                             title: { display: true, text: '비교 지표' }
                         }
                     },
@@ -2537,7 +2480,7 @@
 
         function populateComparisonIndicatorDropdown() {
             const select = document.getElementById('comparisonIndicator');
-            select.innerHTML = '<option value="">지표를 선택하세요</option>'; // 초기화
+            select.innerHTML = '<option value="">지표를 선택하세요</option>'; 
             const langDict = translations[currentLanguage];
             
             for (const indicator in langDict.indicatorTitles) {
@@ -2551,7 +2494,6 @@
         async function addComparisonData() {
             const indicator = document.getElementById('comparisonIndicator').value;
             
-            // 기존 보조 데이터셋 제거
             investmentChart.data.datasets = investmentChart.data.datasets.filter(ds => ds.yAxisID !== 'y1');
             investmentChart.options.scales.y1.display = false;
 
