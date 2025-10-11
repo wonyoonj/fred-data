@@ -945,7 +945,7 @@
                 <div class="comment-form">
                     <div class="nickname-wrapper">
                         <input type="text" id="liquidityNickname" placeholder="닉네임 (최대 10자)">
-                        <button onclick="saveComment('liquidityComments', 'liquidityNickname', 'liquidityComment', 'liquidity-comment-list')" ontouchend="saveComment('liquidityComments', 'liquidityNickname', 'liquidityComment', 'liquidity-comment-list')">작성</button>
+                        <button onclick="saveComment('liquidityComments', 'liquidityNickname', 'liquidityComment', 'liquidity-comment-list')">작성</button>
                     </div>
                     <textarea id="liquidityComment" placeholder="의견을 자유롭게 남겨주세요. (최대 300자)"></textarea>
                 </div>
@@ -1080,7 +1080,7 @@
                 <div class="comment-form">
                     <div class="nickname-wrapper">
                         <input type="text" id="interestRateNickname" placeholder="닉네임 (최대 10자)">
-                        <button onclick="saveComment('liquidityComments', 'liquidityNickname', 'liquidityComment', 'liquidity-comment-list')" ontouchend="saveComment('liquidityComments', 'liquidityNickname', 'liquidityComment', 'liquidity-comment-list')">작성</button>
+                        <button onclick="saveComment('interestRateComments', 'interestRateNickname', 'interestRateComment', 'interest-rate-comment-list')">작성</button>
                     </div>
                     <textarea id="interestRateComment" placeholder="의견을 자유롭게 남겨주세요. (최대 300자)"></textarea>
                 </div>
@@ -1227,7 +1227,7 @@
             <h1 class="investment-title">미국 주식 <br>가상 투자 시뮬레이터</h1>
             <div class="investment-description">
                 <p>
-                    <strong>가상 시뮬레이터를 통해 과거, 미국 주식 투자 수익을 그래프로 확인해보세요! <br> <strong style="color: blue;">++ 주요 경제 지표와의 그래프 비교</strong>가 가능합니다! 경제 흐름과의 연관성을 확인하고, 투자 전략을 세워보세요!</strong>
+                    <strong>만일 당신이 과거에 미국 주식에 투자했다면, 성과가 어땠을까요? <br> 주요 경제 지표와의 비교를 통해, 투자 성과와 경제 흐름의 연관성을 분석하고, 투자 전략을 세워보세요!</strong>
                 </p>
                 <h4>참고: 과거 미국의 주요 경제 침체기</h4>
                 <ul>
@@ -2184,13 +2184,6 @@
 
         function loadComments(storageKey, listId) {
             const commentList = document.getElementById(listId);
-            
-            if (!commentList) return; 
-            // ✅ 핵심 수정: 댓글 목록이 숨겨져 있을 경우를 대비하여 화면 표시를 보장합니다.
-            if (commentList.parentElement) {
-                commentList.parentElement.style.display = 'block';
-            }
-            
             const comments = JSON.parse(localStorage.getItem(storageKey)) || [];
             commentList.innerHTML = '';
 
@@ -2223,73 +2216,69 @@
         }
 
         function saveComment(storageKey, nicknameId, commentId, listId) {
-            setTimeout(() => {
-                
-                const nicknameInput = document.getElementById(nicknameId);
-                const commentInput = document.getElementById(commentId);
-                
-                let nickname = nicknameInput.value.trim();
-                let commentText = commentInput.value.trim();
+            const nicknameInput = document.getElementById(nicknameId);
+            const commentInput = document.getElementById(commentId);
+            
+            let nickname = nicknameInput.value.trim();
+            let commentText = commentInput.value.trim();
 
-                if (!nickname) {
-                    nickname = "익명";
-                }
-                if (!commentText) {
-                    alert("내용을 입력해주세요.");
+            if (!nickname) {
+                nickname = "익명";
+            }
+            if (!commentText) {
+                alert("내용을 입력해주세요.");
+                return;
+            }
+            
+            // 글자 수 제한
+            if (nickname.length > 10) {
+                alert("닉네임은 최대 10자까지 가능합니다.");
+                return;
+            }
+
+            for (const word of profanityList) {
+                if (nickname.includes(word)) {
+                    alert("부적절한 단어가 포함된 닉네임은 사용할 수 없습니다.");
                     return;
                 }
-                
-                // 글자 수 제한
-                if (nickname.length > 10) {
-                    alert("닉네임은 최대 10자까지 가능합니다.");
+            }
+
+
+            if (commentText.length > 300) {
+                alert("댓글은 최대 300자까지 가능합니다.");
+                return;
+            }
+
+            // 욕설 필터링
+            for (const word of profanityList) {
+                if (commentText.includes(word)) {
+                    alert("부적절한 단어가 포함되어 있어 댓글을 등록할 수 없습니다.");
                     return;
                 }
+            }
 
-                for (const word of profanityList) {
-                    if (nickname.includes(word)) {
-                        alert("부적절한 단어가 포함된 닉네임은 사용할 수 없습니다.");
-                        return;
-                    }
-                }
+            let comments = JSON.parse(localStorage.getItem(storageKey)) || [];
 
+            const newComment = {
+                nickname: nickname,
+                text: commentText,
+                timestamp: new Date().toISOString()
+            };
 
-                if (commentText.length > 300) {
-                    alert("댓글은 최대 300자까지 가능합니다.");
-                    return;
-                }
+            // 새 댓글을 배열 맨 앞에 추가
+            comments.unshift(newComment);
 
-                // 욕설 필터링
-                for (const word of profanityList) {
-                    if (commentText.includes(word)) {
-                        alert("부적절한 단어가 포함되어 있어 댓글을 등록할 수 없습니다.");
-                        return;
-                    }
-                }
+            // 댓글이 30개를 초과하면 가장 오래된 댓글 삭제
+            if (comments.length > 30) {
+                comments = comments.slice(0, 30);
+            }
 
-                let comments = JSON.parse(localStorage.getItem(storageKey)) || [];
+            localStorage.setItem(storageKey, JSON.stringify(comments));
 
-                const newComment = {
-                    nickname: nickname,
-                    text: commentText,
-                    timestamp: new Date().toISOString()
-                };
+            nicknameInput.value = '';
+            commentInput.value = '';
 
-                // 새 댓글을 배열 맨 앞에 추가
-                comments.unshift(newComment);
-
-                // 댓글이 30개를 초과하면 가장 오래된 댓글 삭제
-                if (comments.length > 30) {
-                    comments = comments.slice(0, 30);
-                }
-
-                localStorage.setItem(storageKey, JSON.stringify(comments));
-
-                nicknameInput.value = '';
-                commentInput.value = '';
-
-                loadComments(storageKey, listId);
-
-            }, 100); // 100ms 지연으로 모바일 키보드 처리 대기
+            loadComments(storageKey, listId);
         }
 
         // --- 가상 투자 관련 함수 ---
@@ -2607,12 +2596,6 @@
                 alert(`비교 지표(${indicator}) 데이터를 불러오는 데 실패했습니다.`);
             }
         }
-
-        window.addEventListener('load', () => {
-            loadComments('liquidityComments', 'liquidity-comment-list');
-            // 금리 현황 페이지 댓글도 동일하게 로드 (금리 페이지가 별도로 있다면 추가, 하지만 코드상 유동성 페이지 중심이므로 일단 이걸로)
-            // 만약 금리 페이지 댓글 ID가 다르다면, 예: loadComments('interestComments', 'interest-comment-list'); 추가
-        });
 
     </script>
 </body>
