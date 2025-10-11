@@ -798,6 +798,7 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            flex-shrink: 0;
         }
         .comment-form button:hover {
             background-color: #0056b3;
@@ -2183,6 +2184,11 @@
 
         function loadComments(storageKey, listId) {
             const commentList = document.getElementById(listId);
+            
+            if (!commentList) return; 
+            // ✅ 핵심 수정: 댓글 목록이 숨겨져 있을 경우를 대비하여 화면 표시를 보장합니다.
+            commentList.style.display = 'block';
+            
             const comments = JSON.parse(localStorage.getItem(storageKey)) || [];
             commentList.innerHTML = '';
 
@@ -2234,6 +2240,15 @@
                 alert("닉네임은 최대 10자까지 가능합니다.");
                 return;
             }
+
+            for (const word of profanityList) {
+                if (nickname.includes(word)) {
+                    alert("부적절한 단어가 포함된 닉네임은 사용할 수 없습니다.");
+                    return;
+                }
+            }
+
+
             if (commentText.length > 300) {
                 alert("댓글은 최대 300자까지 가능합니다.");
                 return;
