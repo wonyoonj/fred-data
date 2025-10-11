@@ -1227,7 +1227,7 @@
             <h1 class="investment-title">미국 주식 <br>가상 투자 시뮬레이터</h1>
             <div class="investment-description">
                 <p>
-                    <strong>만일 당신이 과거에 미국 주식에 투자했다면, 성과가 어땠을까요? <br> 주요 경제 지표와의 비교를 통해, 투자 성과와 경제 흐름의 연관성을 분석하고, 투자 전략을 세워보세요!</strong>
+                    <strong>가상 시뮬레이터를 통해 과거, 미국 주식 투자 수익을 그래프로 확인해보세요! <br> <strong style="color: blue;">++ 주요 경제 지표와의 그래프 비교</strong>가 가능합니다! 경제 흐름과의 연관성을 확인하고, 투자 전략을 세워보세요!</strong>
                 </p>
                 <h4>참고: 과거 미국의 주요 경제 침체기</h4>
                 <ul>
@@ -2187,7 +2187,9 @@
             
             if (!commentList) return; 
             // ✅ 핵심 수정: 댓글 목록이 숨겨져 있을 경우를 대비하여 화면 표시를 보장합니다.
-            commentList.style.display = 'block';
+            if (commentList.parentElement) {
+                commentList.parentElement.style.display = 'block';
+            }
             
             const comments = JSON.parse(localStorage.getItem(storageKey)) || [];
             commentList.innerHTML = '';
