@@ -7,7 +7,7 @@
     <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/atom.xml">
 
     <script>
-        // 웹 브라우저 환경(http:, https:)에서만 광고 스크립트를 동적으로 추가합니다.
+        // Add ad script dynamically only in a web browser environment (http:, https:).
         if (window.location.protocol.startsWith('http')) {
             const adsScript = document.createElement('script');
             adsScript.async = true;
@@ -52,11 +52,11 @@
     }
     </script>
     <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.1/kakao.min.js"
-    integrity="sha384-kDljxUXHaJ9xAb2AzRd59KxjrFjzHa5TAoFQ6GbYTCAG0bjM55XohjjDT7tDDC01" crossorigin="anonymous" defer></script>
+    xintegrity="sha384-kDljxUXHaJ9xAb2AzRd59KxjrFjzHa5TAoFQ6GbYTCAG0bjM55XohjjDT7tDDC01" crossorigin="anonymous" defer></script>
     <base target="_top">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        /* CSS 스타일 코드는 기존과 동일하게 유지됩니다. */
+        /* CSS styles are maintained as before. */
         body { font-family: 'Arial', sans-serif; margin: 0; padding: 0; background: #f4f4f4; color: #333; }
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; min-height: 100vh; }
         .header { text-align: center; padding: 10px; background: #007bff; color: white; }
@@ -74,17 +74,25 @@
             font-weight: bold;
             color: black;
         }
+
+        /* [MODIFIED] Center-align the title on the main pages */
+        #liquidityFlow > .page-title,
+        #interestRateFlow > .page-title {
+            width: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            position: absolute;
+        }
         
         .source-credit-main {
             position: absolute;
-            /*top: 45px;*/
             right: 15px;
             font-size: 12px;
             font-weight: bold;
             color: #555;
         }
 
-        /* ▼▼▼ 언어 선택 버튼 스타일 ▼▼▼ */
         .lang-selector {
             display: flex;
             justify-content: center;
@@ -107,9 +115,7 @@
             background-color: #007bff;
             color: white;
         }
-        /* ▲▲▲ 언어 선택 버튼 스타일 ▲▲▲ */
         
-        /* 소개 및 안내 페이지 스타일 */
         .info-box {
             padding: 20px; 
             text-align: left; 
@@ -153,7 +159,6 @@
             color: #0056b3;
         }
 
-        /* --- Animation Wrapper --- */
         .animation-container {
             position: relative;
             width: 100%;
@@ -363,7 +368,7 @@
         }
         .share-buttons-container {
             display: flex;
-            justify-content: flex-end; /* PC: 오른쪽 정렬 */
+            justify-content: flex-end; /* PC: Align right */
             align-items: center;
             gap: 10px;
             padding: 15px 0;
@@ -493,7 +498,7 @@
         }
 
         #investmentResultChart {
-            height: 400px; /* PC/태블릿 뷰에서 늘어짐 방지 */
+            height: 400px;
         }
 
         #graphDataSource {
@@ -525,7 +530,17 @@
         .time-buttons { margin: 10px 0; display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; }
         .time-btn { padding: 5px 10px; background: #e9ecef; border: 1px solid #ced4da; border-radius: 5px; cursor: pointer; font-size: 0.9em; transition: background-color 0.2s; }
         .time-btn:hover { background-color: #dee2e6; }
-        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0056b3; padding: 10px; display: flex; justify-content: space-around; z-index: 1000; }
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0056b3; padding: 10px 0; display: flex; justify-content: space-around; z-index: 1000; }
+        
+        /* [MODIFIED] Adjust bottom nav button size */
+        .nav-bar .button {
+            padding: 8px 4px;
+            font-size: 10px;
+            line-height: 1.2;
+            flex: 1;
+            margin: 0 2px;
+            white-space: normal;
+        }
 
         @media (max-width: 600px) {
             .container { padding: 10px 5px; } 
@@ -537,7 +552,6 @@
                 left: 10px;
             }
             .source-credit-main {
-                /*top: 55px;*/
                 right: 10px;
                 font-size: 10px;
             }
@@ -559,7 +573,7 @@
             }
 
             #investmentResultContainer {
-                height: 300px; /* <-- 이 코드를 추가하여 모바일 높이를 300px로 지정합니다. */
+                height: 300px;
             }
             
             #tgaSlopeDisplay, #fedLiquidityDisplay, #mmfToRrpDisplay, #mmfToMarketDisplay,
@@ -603,7 +617,7 @@
             
             .dollar-animated-object { width: 22.5px; height: 22.5px; }
             .share-buttons-container {
-                justify-content: center; /* 모바일: 가운데 정렬 */
+                justify-content: center;
             }
             @keyframes dollarFlowToMarket {
                 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 15%; }
@@ -694,7 +708,7 @@
             }
 
             #investmentResultChart {
-            height: 300px !important; /* 모바일에서 높이 강제 적용 */
+            height: 300px !important;
             }
 
             #graphDataSource {
@@ -702,12 +716,31 @@
                 right: 15px;
                 font-size: 10px;
             }
-            .nav-bar { padding: 5px; }
+            .nav-bar { padding: 5px 0; }
         }
 
-        /* 가상 투자 페이지 스타일 */
         #investmentPage { text-align: center; padding: 20px; }
         .investment-title { font-size: 28px; font-weight: bold; color: black; margin-top: 50px; margin-bottom: 30px; }
+        .investment-description {
+            max-width: 800px;
+            margin: -20px auto 30px auto;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .investment-description h4 {
+            margin-top: 15px;
+            margin-bottom: 5px;
+            color: #0056b3;
+        }
+        .investment-description ul {
+            padding-left: 20px;
+            margin: 0;
+            list-style-type: '– ';
+        }
         .investment-form { max-width: 800px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .form-group { margin-bottom: 15px; text-align: left; }
         .form-group label { display: block; font-weight: bold; margin-bottom: 5px; }
@@ -718,10 +751,15 @@
         .investment-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         #investmentResultContainer {
             margin-top: 30px;
-            height: 450px; /* <-- 이 줄을 추가하여 높이를 400px로 고정합니다. */
-            position: relative; /* <-- 차트 위치 계산의 안정성을 위해 추가하는 것이 좋습니다. */
+            height: 450px;
+            position: relative;
         }
-        #comparison-section { margin-top: 20px; max-width: 800px; margin-left: auto; margin-right: auto; }
+        #comparison-section { 
+            margin-top: 20px; 
+            max-width: 800px; 
+            margin-left: auto; 
+            margin-right: auto; 
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns" defer></script>
@@ -1070,8 +1108,24 @@
             </div>
         </div>
 
-        <div id="investmentPage" class="page" style="display:none;">
-            <h1 class="investment-title">U.S. Stock<br>Virtual Investment Simulator</h1>
+        <!-- [MODIFIED] Synced Virtual Investment page structure and content with the Korean version -->
+        <div id="investmentPage" class="page" style="display:none;"> 
+            <h1 class="investment-title">U.S. Stock <br>Virtual Investment Simulator</h1>
+            <div class="investment-description">
+                <p>
+                    <strong style="color: rgb(64, 0, 255);">This is a virtual investment simulator based on actual historical U.S. stock data.</strong> <br> <strong>Precisely calculate investment returns and simulate real-world investment strategies using key economic indicators!</strong> <br><strong>By comparing investment performance graphs with key economic indicators</strong><strong> like the FED's reverse repo and benchmark interest rates, it provides deep insights into the correlation between economic indicators and investments.</strong>
+                </p>
+                <h4>Note: Major U.S. Economic Recessions in the Past</h4>
+                <ul>
+                    <li><b>The Great Depression:</b> September 1929 ~ June 1932</li>
+                    <li><b>Oil Shock and Stagflation:</b> January 1973 ~ October 1974</li>
+                    <li><b>Black Monday:</b> August 1987 ~ December 1987</li>
+                    <li><b>Dot-com Bubble Burst:</b> March 2000 ~ November 2001</li>
+                    <li><b>Global Financial Crisis:</b> December 2007 ~ June 2009</li>
+                    <li><b>COVID-19 Pandemic:</b> February 2020 ~ April 2020</li>
+                    <li><b>Inflation and Interest Rate Hikes:</b> January 2022 ~ October 2022</li>
+                </ul>
+            </div>
             <div class="investment-form">
                 <div class="form-group date-group">
                     <div>
@@ -1088,32 +1142,29 @@
                 <hr>
                 <div class="form-group investment-inputs">
                     <div>
-                        <label for="nasdaqAmount">Nasdaq 100 Index ($)</label>
+                        <label for="nasdaqAmount">Nasdaq 100 Index ($10k)</label>
                         <input type="number" id="nasdaqAmount" value="0" min="0">
                     </div>
                     <div>
-                        <label for="sp500Amount">S&P500 Index ($)</label>
+                        <label for="sp500Amount">S&P500 Index ($10k)</label>
                         <input type="number" id="sp500Amount" value="0" min="0">
                     </div>
                     <div>
-                        <label for="dgs3moAmount">3-Month U.S. Treasury ($)</label>
+                        <label for="dgs3moAmount">3-Month U.S. Treasury ($10k)</label>
                         <input type="number" id="dgs3moAmount" value="0" min="0">
                     </div>
                     <div>
-                        <label for="dgs2Amount">2-Year U.S. Treasury ($)</label>
+                        <label for="dgs2Amount">2-Year U.S. Treasury ($10k)</label>
                         <input type="number" id="dgs2Amount" value="0" min="0">
                     </div>
                     <div>
-                        <label for="dgs10Amount">10-Year U.S. Treasury ($)</label>
+                        <label for="dgs10Amount">10-Year U.S. Treasury ($10k)</label>
                         <input type="number" id="dgs10Amount" value="0" min="0">
                     </div>
                 </div>
                 <button class="button" onclick="runInvestmentSimulation()" style="width: 100%; margin-top: 10px;">Check Investment Results</button>
-            </div>
-
-            <div id="investmentResultContainer" style="display: none;">
-                <canvas id="investmentResultChart"></canvas>
-                <div id="comparison-section">
+                
+                <div id="comparison-section-moved" style="margin-top: 15px;">
                     <div class="form-group">
                         <label for="comparisonIndicator">Select Comparison Indicator:</label>
                         <select id="comparisonIndicator" onchange="addComparisonData()">
@@ -1121,6 +1172,10 @@
                         </select>
                     </div>
                 </div>
+            </div>
+
+            <div id="investmentResultContainer" style="display: none; margin-top: 20px;">
+                <canvas id="investmentResultChart"></canvas>
             </div>
         </div>
 
@@ -1159,7 +1214,7 @@
         const dataCache = new Map();
         const CACHE_TTL = 3600 * 1000;
 
-        // ▼▼▼ Translation text collection (Only English needed for the English version) ▼▼▼
+        // Translation text collection (Only English needed for the English version)
         const translations = {
             en: {
                 aiAnalysisTitle: 'AI Daily Analysis',
@@ -1316,12 +1371,13 @@
         
         async function loadFinancialAnalysis() {
             try {
+                // [MODIFIED] Corrected path for English version
                 const response = await fetch('../csvfile/financial_analysis.json');
                 if (!response.ok) {
                     throw new Error('Network response was not ok.');
                 }
-                analysisData = await response.json(); // Fetch and store in global variable
-                displayFinancialAnalysis(); // Display for the default language
+                analysisData = await response.json(); 
+                displayFinancialAnalysis();
 
             } catch (error) {
                 console.error('Failed to load analysis data:', error);
@@ -1335,7 +1391,7 @@
         }
 
         function displayFinancialAnalysis() {
-            if (!analysisData) return; // Exit if data hasn't been loaded
+            if (!analysisData) return;
 
             const liquidityContainer = document.getElementById('liquidity-analysis-container');
             const interestRateContainer = document.getElementById('interest-rate-analysis-container');
@@ -1388,20 +1444,8 @@
         }
 
         function setLanguage(lang) {
-            currentLanguage = lang;
-            updateMetaTagsForLanguage(lang);
-            document.documentElement.lang = lang;
-            document.querySelectorAll('[data-lang-key]').forEach(el => {
-                const key = el.getAttribute('data-lang-key');
-                if (translations[lang][key]) el.innerHTML = translations[lang][key];
-            });
-            document.querySelectorAll('.lang-selector').forEach(selector => {
-                const activeButton = selector.querySelector('.lang-btn.active');
-                if(activeButton) activeButton.classList.remove('active');
-                const newButton = selector.querySelector(`.lang-btn[onclick*="'${lang}'"]`);
-                if(newButton) newButton.classList.add('active');
-            });
-            
+            // This function is simplified since the page is English only
+            // but kept for structural consistency if needed later.
             const activePage = document.querySelector('.page[style*="block"]')?.id;
             if (activePage === 'liquidityFlow') updateLiquidityFlowAnimation();
             else if (activePage === 'interestRateFlow') updateInterestRateFlowData();
@@ -1424,10 +1468,8 @@
             }
             setLanguage('en'); 
             
-            // Add event listeners for virtual investment page date inputs
             document.getElementById('startDate').addEventListener('change', validateDateRange);
             document.getElementById('endDate').addEventListener('change', validateDateRange);
-            // Display data availability date for virtual investment page
             setDataAvailabilityWarning();
         });
 
@@ -1437,10 +1479,10 @@
                 const el = document.getElementById(id);
                 if (el) el.style.display = id === pageId ? 'block' : 'none';
             });
+            stopLiquidityFlowAnimation();
             if (pageId === 'liquidityFlow') { updateLiquidityFlowAnimation(); } 
-            else if (pageId === 'interestRateFlow') { updateInterestRateFlowData(); stopLiquidityFlowAnimation(); }
-            else if (pageId === 'investmentPage') { stopLiquidityFlowAnimation(); populateComparisonIndicatorDropdown(); }
-            else { stopLiquidityFlowAnimation(); }
+            else if (pageId === 'interestRateFlow') { updateInterestRateFlowData(); }
+            else if (pageId === 'investmentPage') { populateComparisonIndicatorDropdown(); }
         }
 
         function showLiquidityFlow() { showPage('liquidityFlow'); }
@@ -1863,32 +1905,59 @@
                         });
                     }
                 }
-                displayInvestmentResult(dateArray.map(d => d.toISOString().split('T')[0]), totalPortfolioValue);
+                const labels = dateArray.map(d => d.toISOString().split('T')[0]);
+                displayInvestmentResult(labels, totalPortfolioValue);
+                
+                const selectedComparison = document.getElementById('comparisonIndicator').value;
+                if(selectedComparison) {
+                    addComparisonData();
+                }
+
             } catch (error) { console.error("Simulation failed:", error); renderErrorMessage(`Simulation failed: ${error.message}`, 'investmentResultChart'); }
         }
         
-        function displayInvestmentResult(labels, data) {
+        function displayInvestmentResult(labels, portfolioData) {
+            const container = document.getElementById('investmentResultContainer');
+            container.style.display = 'block';
             const ctx = document.getElementById('investmentResultChart').getContext('2d');
-            if (investmentChart) investmentChart.destroy();
-            investmentChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Total Investment Value ($)', data: data.map(v => v / 10000), borderColor: '#007bff', yAxisID: 'y', tension: 0.1, pointRadius: 0
-                    }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    scales: {
-                        x: { type: 'time', time: { unit: 'day', tooltipFormat: 'yyyy-MM-dd' }, title: { display: true, text: 'Period' } },
-                        y: { position: 'left', title: { display: true, text: 'Investment Value ($)' }, ticks: { callback: (value) => value.toLocaleString() } },
-                        y1: { type: 'linear', display: false, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Comparison Indicator' } }
-                    },
-                    plugins: { tooltip: { mode: 'index', intersect: false } }
+            
+            const portfolioDataset = {
+                label: 'Total Investment Value ($10k)',
+                data: portfolioData.map(v => v / 10000),
+                borderColor: '#007bff',
+                yAxisID: 'y',
+                tension: 0.1,
+                pointRadius: 0
+            };
+
+            if (investmentChart) {
+                investmentChart.data.labels = labels;
+                const mainDatasetIndex = investmentChart.data.datasets.findIndex(ds => ds.yAxisID === 'y');
+                if (mainDatasetIndex > -1) {
+                    investmentChart.data.datasets[mainDatasetIndex] = portfolioDataset;
+                } else {
+                    investmentChart.data.datasets.unshift(portfolioDataset);
                 }
-            });
-            document.getElementById('investmentResultContainer').style.display = 'block';
+                investmentChart.update();
+            } else {
+                investmentChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [portfolioDataset]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: { type: 'time', time: { unit: 'day', tooltipFormat: 'yyyy-MM-dd' }, title: { display: true, text: 'Period' } },
+                            y: { position: 'left', title: { display: true, text: 'Investment Value ($10k)' }, ticks: { callback: (value) => value.toLocaleString() } },
+                            y1: { type: 'linear', display: false, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Comparison Indicator' } }
+                        },
+                        plugins: { tooltip: { mode: 'index', intersect: false } }
+                    }
+                });
+            }
         }
 
         function populateComparisonIndicatorDropdown() {
@@ -1904,23 +1973,68 @@
 
         async function addComparisonData() {
             const indicator = document.getElementById('comparisonIndicator').value;
+            const startDateStr = document.getElementById('startDate').value;
+            const endDateStr = document.getElementById('endDate').value;
+
+            if (!startDateStr || !endDateStr || startDateStr >= endDateStr) {
+                document.getElementById('comparisonIndicator').value = "";
+                alert("Please select a valid investment period first to see comparison data.");
+                return;
+            }
+
+            if (!investmentChart) {
+                const startDate = new Date(startDateStr);
+                const endDate = new Date(endDateStr);
+                const labels = [];
+                for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+                    labels.push(d.toISOString().split('T')[0]);
+                }
+                displayInvestmentResult(labels, []); 
+            }
+            
             investmentChart.data.datasets = investmentChart.data.datasets.filter(ds => ds.yAxisID !== 'y1');
             investmentChart.options.scales.y1.display = false;
-            if (!indicator) { investmentChart.update(); return; }
+            
+            if (!indicator) {
+                investmentChart.update();
+                return;
+            }
+
             try {
-                const startDateStr = document.getElementById('startDate').value, endDateStr = document.getElementById('endDate').value;
-                if (!startDateStr || !endDateStr) return;
                 const data = await fetchAndCacheData(indicator);
-                const startDate = new Date(startDateStr), endDate = new Date(endDateStr);
-                const filteredData = data.filter(d => new Date(d.date) >= startDate && new Date(d.date) <= endDate).map(d => ({ x: d.date, y: d.value }));
+                const startDate = new Date(startDateStr);
+                const endDate = new Date(endDateStr);
+
+                const filteredData = data
+                    .filter(d => {
+                        const date = new Date(d.date);
+                        return date >= startDate && date <= endDate;
+                    })
+                    .map(d => ({ x: d.date, y: d.value }));
+                
                 const langDict = translations[currentLanguage];
-                investmentChart.data.datasets.push({
-                    label: langDict.indicatorTitles[indicator], data: filteredData, borderColor: 'red', yAxisID: 'y1', tension: 0.1, pointRadius: 0
-                });
+                const newDataset = {
+                    label: langDict.indicatorTitles[indicator],
+                    data: filteredData,
+                    borderColor: 'red',
+                    backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                    yAxisID: 'y1',
+                    tension: 0.1,
+                    pointRadius: 0,
+                    fill: false
+                };
+
+                investmentChart.data.datasets.push(newDataset);
                 investmentChart.options.scales.y1.display = true;
                 investmentChart.options.scales.y1.title.text = langDict.indicatorTitles[indicator];
+                
                 investmentChart.update();
-            } catch(error) { console.error("Failed to add comparison data:", error); alert(`Failed to load comparison indicator data (${indicator}).`); }
+
+            } catch(error) {
+                console.error("Failed to add comparison data:", error);
+                alert(`Failed to load comparison indicator data (${indicator}).`);
+                investmentChart.update();
+            }
         }
 
     </script>
