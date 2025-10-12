@@ -1142,23 +1142,23 @@
                 <hr>
                 <div class="form-group investment-inputs">
                     <div>
-                        <label for="nasdaqAmount">Nasdaq 100 Index ($10k)</label>
+                        <label for="nasdaqAmount">Nasdaq 100 Index ($)</label>
                         <input type="number" id="nasdaqAmount" value="0" min="0">
                     </div>
                     <div>
-                        <label for="sp500Amount">S&P500 Index ($10k)</label>
+                        <label for="sp500Amount">S&P500 Index ($)</label>
                         <input type="number" id="sp500Amount" value="0" min="0">
                     </div>
                     <div>
-                        <label for="dgs3moAmount">3-Month U.S. Treasury ($10k)</label>
+                        <label for="dgs3moAmount">3-Month U.S. Treasury ($)</label>
                         <input type="number" id="dgs3moAmount" value="0" min="0">
                     </div>
                     <div>
-                        <label for="dgs2Amount">2-Year U.S. Treasury ($10k)</label>
+                        <label for="dgs2Amount">2-Year U.S. Treasury ($)</label>
                         <input type="number" id="dgs2Amount" value="0" min="0">
                     </div>
                     <div>
-                        <label for="dgs10Amount">10-Year U.S. Treasury ($10k)</label>
+                        <label for="dgs10Amount">10-Year U.S. Treasury ($)</label>
                         <input type="number" id="dgs10Amount" value="0" min="0">
                     </div>
                 </div>
@@ -1922,7 +1922,7 @@
             const ctx = document.getElementById('investmentResultChart').getContext('2d');
             
             const portfolioDataset = {
-                label: 'Total Investment Value ($10k)',
+                label: 'Total Investment Value ($)',
                 data: portfolioData.map(v => v / 10000),
                 borderColor: '#007bff',
                 yAxisID: 'y',
