@@ -757,6 +757,7 @@
             height: 450px; /* <-- 이 줄을 추가하여 높이를 400px로 고정합니다. */
             position: relative; /* <-- 차트 위치 계산의 안정성을 위해 추가하는 것이 좋습니다. */
         }
+        /* [MODIFIED] comparison-section의 위치가 investment-form 외부로 이동하므로, 상단 마진 추가 */
         #comparison-section { margin-top: 20px; max-width: 800px; margin-left: auto; margin-right: auto; }
         
         /* ▼▼▼ [신규] 댓글(커뮤니티) 기능 관련 스타일 ▼▼▼ */
@@ -1227,7 +1228,7 @@
             <h1 class="investment-title">미국 주식 <br>가상 투자 시뮬레이터</h1>
             <div class="investment-description">
                 <p>
-                    <strong>만일 당신이 과거에 미국 주식에 투자했다면, 성과가 어땠을까요? <br> 주요 경제 지표와의 비교를 통해, 투자 성과와 경제 흐름의 연관성을 분석하고, 투자 전략을 세워보세요!</strong>
+                    <strong style="font-weight: bold;">실제 과거 미국 주식 데이터를 기반으로 하는 가상 투자 시뮬레이터입니다.</strong> <br> <strong>투자 수익을 정밀하게 계산하고, 주요 경제 지표를 활용한 실전 투자 전략을 시뮬레이션 해보세요!</strong> <br> <strong style="color: red;">FED 역레포, 기준금리 등 핵심 경제 지표와 투자 성과 그래프를 비교하여, 경제 지표와 투자 연관성에 대한 깊은 통찰력을 제공합니다.</strong>
                 </p>
                 <h4>참고: 과거 미국의 주요 경제 침체기</h4>
                 <ul>
@@ -1279,19 +1280,19 @@
                 <button class="button" onclick="runInvestmentSimulation()" style="width: 100%; margin-top: 10px;">투자 결과 확인</button>
             </div>
 
-            <div id="investmentResultContainer" style="display: none;">
-                <canvas id="investmentResultChart"></canvas>
-                <div id="comparison-section">
-                    <div class="form-group">
-                        <label for="comparisonIndicator">비교 지표 선택:</label>
-                        <select id="comparisonIndicator" onchange="addComparisonData()">
-                            <option value="">지표를 선택하세요</option>
-                        </select>
-                    </div>
+            <div id="comparison-section">
+                <div class="form-group">
+                    <label for="comparisonIndicator">비교 지표 선택:</label>
+                    <select id="comparisonIndicator" onchange="addComparisonData()">
+                        <option value="">지표를 선택하세요</option>
+                    </select>
                 </div>
             </div>
-        </div>
 
+            <div id="investmentResultContainer" style="display: none;">
+                <canvas id="investmentResultChart"></canvas>
+            </div>
+        </div>
 
         <div class="nav-bar">
             <button class="button" onclick="showLiquidityFlow()">유동성<br>현황</button>
@@ -1306,7 +1307,6 @@
         <p>&copy; 2025 원뎅이의 미국 통화 유동성 현황. All Rights Reserved.</p>
         <p>본 사이트에서 제공하는 정보는 투자 참고용이며, 투자에 대한 모든 책임은 본인에게 있습니다.</p>
     </footer>
-
     <script>
         let myChart = null;
         let investmentChart = null; // 가상 투자 차트 객체
@@ -1627,9 +1627,8 @@
             // 가상 투자 페이지 데이터 유효 날짜 표시
             setDataAvailabilityWarning();
 
-            // ▼▼▼ [신규] 페이지 로드 시 댓글 불러오기 ▼▼▼
+            // [MODIFIED] 페이지 로드 시 기본 페이지(유동성)의 댓글만 불러오도록 수정
             loadComments('liquidityComments', 'liquidity-comment-list');
-            loadComments('interestRateComments', 'interest-rate-comment-list');
         });
 
         const pages = ['liquidityFlow', 'interestRateFlow', 'graphIndicators', 'graphPage', 'infoPage', 'aboutPage', 'investmentPage'];
@@ -1640,10 +1639,18 @@
                     el.style.display = id === pageId ? 'block' : 'none';
                 }
             });
-            if (pageId === 'liquidityFlow') { updateLiquidityFlowAnimation(); } 
-            else if (pageId === 'interestRateFlow') { updateInterestRateFlowData(); stopLiquidityFlowAnimation(); }
-            else if (pageId === 'investmentPage') { stopLiquidityFlowAnimation(); populateComparisonIndicatorDropdown(); }
-            else { stopLiquidityFlowAnimation(); }
+            
+            // [MODIFIED] 페이지 전환 시 댓글 로드 및 애니메이션 관리
+            stopLiquidityFlowAnimation(); // 모든 페이지 전환 시 일단 애니메이션 정지
+            if (pageId === 'liquidityFlow') {
+                updateLiquidityFlowAnimation();
+                loadComments('liquidityComments', 'liquidity-comment-list'); 
+            } else if (pageId === 'interestRateFlow') {
+                updateInterestRateFlowData();
+                loadComments('interestRateComments', 'interest-rate-comment-list');
+            } else if (pageId === 'investmentPage') {
+                populateComparisonIndicatorDropdown();
+            }
         }
 
         function showLiquidityFlow() { showPage('liquidityFlow'); }
@@ -1887,9 +1894,11 @@
 
             if (chartInstance) {
                 chartInstance.destroy();
-                chartInstance = null;
-                if (canvasId === 'myChart') myChart = null;
-                else investmentChart = null;
+                if (canvasId === 'myChart') {
+                    myChart = null;
+                } else {
+                    investmentChart = null;
+                }
             }
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
             ctx.fillStyle = '#666'; ctx.font = '16px Arial'; ctx.textAlign = 'center';
@@ -2180,11 +2189,22 @@
         }
         function goBackToGraph() { if (currentIndicator) { showPage('graphPage'); } }
         
-        // --- [신규] 댓글(커뮤니티) 관련 함수 ---
+        // --- [MODIFIED] 댓글(커뮤니티) 관련 함수 ---
 
         function loadComments(storageKey, listId) {
             const commentList = document.getElementById(listId);
-            const comments = JSON.parse(localStorage.getItem(storageKey)) || [];
+            if (!commentList) return;
+            
+            let comments = [];
+            try {
+                // [MODIFIED] localStorage 접근을 try-catch로 감싸 안정성 확보
+                comments = JSON.parse(localStorage.getItem(storageKey)) || [];
+            } catch (e) {
+                console.error("Could not access localStorage: ", e);
+                commentList.innerHTML = '<p style="text-align: center; color: #999;">댓글을 불러올 수 없습니다. 브라우저 설정을 확인해주세요.</p>';
+                return;
+            }
+            
             commentList.innerHTML = '';
 
             if (comments.length === 0) {
@@ -2196,7 +2216,6 @@
                 const item = document.createElement('div');
                 item.className = 'comment-item';
                 
-                // 텍스트의 줄바꿈(\n)을 <br> 태그로 변환
                 const commentText = comment.text.replace(/\n/g, '<br>');
 
                 const formattedDate = new Date(comment.timestamp).toLocaleString('ko-KR', {
@@ -2230,26 +2249,20 @@
                 return;
             }
             
-            // 글자 수 제한
             if (nickname.length > 10) {
                 alert("닉네임은 최대 10자까지 가능합니다.");
                 return;
             }
-
             for (const word of profanityList) {
                 if (nickname.includes(word)) {
                     alert("부적절한 단어가 포함된 닉네임은 사용할 수 없습니다.");
                     return;
                 }
             }
-
-
             if (commentText.length > 300) {
                 alert("댓글은 최대 300자까지 가능합니다.");
                 return;
             }
-
-            // 욕설 필터링
             for (const word of profanityList) {
                 if (commentText.includes(word)) {
                     alert("부적절한 단어가 포함되어 있어 댓글을 등록할 수 없습니다.");
@@ -2257,31 +2270,35 @@
                 }
             }
 
-            let comments = JSON.parse(localStorage.getItem(storageKey)) || [];
+            try {
+                // [MODIFIED] localStorage 접근을 try-catch로 감싸 안정성 확보
+                let comments = JSON.parse(localStorage.getItem(storageKey)) || [];
 
-            const newComment = {
-                nickname: nickname,
-                text: commentText,
-                timestamp: new Date().toISOString()
-            };
+                const newComment = {
+                    nickname: nickname,
+                    text: commentText,
+                    timestamp: new Date().toISOString()
+                };
 
-            // 새 댓글을 배열 맨 앞에 추가
-            comments.unshift(newComment);
+                comments.unshift(newComment);
 
-            // 댓글이 30개를 초과하면 가장 오래된 댓글 삭제
-            if (comments.length > 30) {
-                comments = comments.slice(0, 30);
+                if (comments.length > 30) {
+                    comments = comments.slice(0, 30);
+                }
+
+                localStorage.setItem(storageKey, JSON.stringify(comments));
+
+                nicknameInput.value = '';
+                commentInput.value = '';
+
+                loadComments(storageKey, listId);
+            } catch (e) {
+                console.error("Could not save to localStorage: ", e);
+                alert("댓글을 저장할 수 없습니다. 브라우저 설정을 확인해주세요.");
             }
-
-            localStorage.setItem(storageKey, JSON.stringify(comments));
-
-            nicknameInput.value = '';
-            commentInput.value = '';
-
-            loadComments(storageKey, listId);
         }
 
-        // --- 가상 투자 관련 함수 ---
+        // --- [MODIFIED] 가상 투자 관련 함수 ---
 
         function validateDateRange() {
             const startDate = document.getElementById('startDate').value;
@@ -2317,35 +2334,20 @@
                 warningEl.textContent = '* 데이터 유효 날짜 확인 중 오류 발생';
             }
         }
-
-        /**
-         * 채권 가격을 계산하는 헬퍼 함수
-         * @param {number} currentYield - 현재 시장 수익률 (%)
-         * @param {number} yearsToMaturity - 만기까지 남은 기간 (년)
-         * @param {number} couponRate - 채권의 표면금리 (%)
-         * @returns {number} 채권의 현재 가격
-         */
+        
         function calculateBondPrice(currentYield, yearsToMaturity, couponRate) {
-            // --- 필수 가정 적용 ---
-            const faceValue = 100; // 액면가 $100
-            const paymentsPerYear = 2; // 이자 지급 횟수 (반기)
-            // ---------------------
+            const faceValue = 100;
+            const paymentsPerYear = 2;
+            const r = (currentYield / 100) / paymentsPerYear;
+            const n = yearsToMaturity * paymentsPerYear;
+            const couponPayment = (couponRate / 100 * faceValue) / paymentsPerYear;
 
-            const r = (currentYield / 100) / paymentsPerYear; // 기간별 할인가 (시장 수익률)
-            const n = yearsToMaturity * paymentsPerYear;     // 총 남은 이자 지급 횟수
-            const couponPayment = (couponRate / 100 * faceValue) / paymentsPerYear; // 기간별 이자 지급액
+            if (r <= 0) return faceValue + (couponPayment * n);
 
-            if (r <= 0) { // 시장 금리가 0 이하일 경우 예외 처리
-                return faceValue + (couponPayment * n);
-            }
-
-            // 현재가치(PV) 공식 적용
             const couponPV = couponPayment * ((1 - Math.pow(1 + r, -n)) / r);
             const faceValuePV = faceValue / Math.pow(1 + r, n);
             
-            const bondPrice = couponPV + faceValuePV;
-
-            return bondPrice;
+            return couponPV + faceValuePV;
         }
 
         async function runInvestmentSimulation() {
@@ -2367,6 +2369,7 @@
 
             const totalInitialInvestment = Object.values(amounts).reduce((sum, amount) => sum + amount, 0);
             if (totalInitialInvestment === 0) {
+                // [MODIFIED] 투자 금액이 없어도 비교 지표는 볼 수 있으므로, 경고 후 함수 종료
                 alert("투자할 금액을 하나 이상 입력해주세요.");
                 return;
             }
@@ -2387,7 +2390,6 @@
                 const startDate = new Date(startDateStr);
                 const endDate = new Date(endDateStr);
                 
-                // 날짜 배열 생성
                 const dateArray = [];
                 for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
                     dateArray.push(new Date(d));
@@ -2395,81 +2397,51 @@
 
                 const totalPortfolioValue = new Array(dateArray.length).fill(0);
 
-                // 각 자산별 수익 계산
                 for (const indicator of indicatorsToFetch) {
                     const data = dataMap[indicator];
                     const amount = amounts[indicator];
                     if (data.length === 0) continue;
 
-                    // 시작일 데이터 찾기
                     let startData = data.find(d => new Date(d.date) >= startDate) || data[data.length - 1];
                     const startValue = startData.value;
                     
                     if (indicator === 'NASDAQ100' || indicator === 'SP500') {
-                        // 주식 수익 계산
                          dateArray.forEach((date, i) => {
                             let closestData = data.filter(d => new Date(d.date) <= date).pop() || startData;
                             const performance = closestData.value / startValue;
                             totalPortfolioValue[i] += amount * performance;
                         });
-                    } else { // 채권 (DGS3MO, DGS2, DGS10) 수익 계산
-                        // --- 새로 교체할 코드 시작 ---
+                    } else { 
                         const initialYield = startData.value;
-                        const couponRate = initialYield; // 매수 시점의 수익률을 표면금리로 가정 (즉, 액면가 100에 매수)
-                        const numberOfBonds = amount / 100; // 초기 투자금으로 매수한 채권 수량
+                        const couponRate = initialYield;
+                        const numberOfBonds = amount / 100;
 
                         let totalMaturityInYears;
-                        if (indicator === 'DGS3MO') totalMaturityInYears = 0.25; // 3개월
-                        else if (indicator === 'DGS2') totalMaturityInYears = 2;   // 2년
-                        else if (indicator === 'DGS10') totalMaturityInYears = 10; // 10년
+                        if (indicator === 'DGS3MO') totalMaturityInYears = 0.25;
+                        else if (indicator === 'DGS2') totalMaturityInYears = 2;
+                        else if (indicator === 'DGS10') totalMaturityInYears = 10;
 
                         const maturityDate = new Date(startDate);
                         maturityDate.setFullYear(maturityDate.getFullYear() + Math.floor(totalMaturityInYears));
                         maturityDate.setMonth(maturityDate.getMonth() + (totalMaturityInYears * 12) % 12);
                         
-                        // ----------------------------------------------------
-                        // [현실 보정 추가] 쿠폰 현금흐름 누적 모델
-                        // ----------------------------------------------------
                         const faceValue = 100;
                         const paymentsPerYear = 2; 
-                        // 액면가 100 기준, 기간별 쿠폰 지급액
                         const periodicCouponPayment = (couponRate / 100 * faceValue) / paymentsPerYear; 
-                        
-                        // 시뮬레이션 시작일 이후의 누적 쿠폰 현금 흐름
                         let accumulatedCouponCash = 0; 
-                        
-                        // 다음 쿠폰 지급 예정일 (매수일 기준 6개월 후로 시작 가정)
                         let nextCouponPaymentDate = new Date(startDate);
                         nextCouponPaymentDate.setMonth(nextCouponPaymentDate.getMonth() + 12 / paymentsPerYear);
-                        // ----------------------------------------------------
 
                         dateArray.forEach((currentDate, i) => {
-                            // 현재 날짜의 시장 수익률(YTM) 찾기
                             let closestData = data.filter(d => new Date(d.date) <= currentDate).pop() || startData;
                             const currentYield = closestData.value;
-
-                            // 만기까지 남은 기간 계산 (년 단위)
                             let yearsRemaining = (maturityDate - currentDate) / (1000 * 60 * 60 * 24 * 365.25);
                             if (yearsRemaining < 0) yearsRemaining = 0;
-
-                            // 남은 기간과 현재 수익률로 채권 가격 계산 (자본 이득/손실)
                             const currentBondPrice = calculateBondPrice(currentYield, yearsRemaining, couponRate);
-                            
-                            // ----------------------------------------------------
-                            // [현실 보정 추가] 쿠폰 지급 확인 및 누적 로직
-                            // ----------------------------------------------------
                             if (periodicCouponPayment > 0 && currentDate >= nextCouponPaymentDate) {
-                                // 쿠폰 지급액을 누적 현금 흐름에 추가 (받은 이자)
                                 accumulatedCouponCash += numberOfBonds * periodicCouponPayment;
-                                
-                                // 다음 쿠폰 지급일로 업데이트
                                 nextCouponPaymentDate.setMonth(nextCouponPaymentDate.getMonth() + 12 / paymentsPerYear);
-                                // 이자 지급이 여러 번 동시에 발생할 수 있으므로, 루프를 한 번 더 돌림 (가장 정확한 방법)
-                                // 단, 현재 코드가 일별로 순차적으로 루프를 돌기 때문에 이 로직으로 충분합니다.
                             }
-                            // ----------------------------------------------------
-                            
-                            // (채권 수량 * 현재 채권 가격) + 누적 쿠폰 현금 흐름
                             totalPortfolioValue[i] += (numberOfBonds * currentBondPrice) + accumulatedCouponCash;
                         });
                     }
@@ -2484,60 +2456,74 @@
             }
         }
         
-        function displayInvestmentResult(labels, data) {
+        function displayInvestmentResult(labels, portfolioData) {
+            const container = document.getElementById('investmentResultContainer');
+            container.style.display = 'block';
+            
             const ctx = document.getElementById('investmentResultChart').getContext('2d');
-            if (investmentChart) {
-                investmentChart.destroy();
-            }
+            
+            const portfolioDataset = {
+                label: '총 투자 결과 ($)',
+                data: portfolioData.map(v => v / 10000), // portfolioData가 제공될 때만 값을 매핑
+                borderColor: '#007bff',
+                yAxisID: 'y',
+                tension: 0.1,
+                pointRadius: 0
+            };
 
-            investmentChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: '총 투자 결과 ($)',
-                        data: data.map(v => v / 10000),
-                        borderColor: '#007bff',
-                        yAxisID: 'y',
-                        tension: 0.1,
-                        pointRadius: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            type: 'time',
-                            time: { unit: 'day', tooltipFormat: 'yyyy-MM-dd' },
-                            title: { display: true, text: '기간' }
-                        },
-                        y: {
-                            position: 'left',
-                            title: { display: true, text: '투자 결과 금액 ($)' },
-                            ticks: {
-                                callback: function(value) { return value.toLocaleString(); }
+            if (investmentChart) {
+                // 차트가 이미 있으면 데이터만 업데이트
+                investmentChart.data.labels = labels;
+                const mainDatasetIndex = investmentChart.data.datasets.findIndex(ds => ds.yAxisID === 'y');
+                if (mainDatasetIndex > -1) {
+                    investmentChart.data.datasets[mainDatasetIndex] = portfolioDataset;
+                } else {
+                    investmentChart.data.datasets.unshift(portfolioDataset); // 맨 앞에 추가
+                }
+                investmentChart.update();
+            } else {
+                // 차트가 없으면 새로 생성
+                investmentChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [portfolioDataset] // portfolioData로 차트 초기화
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: { unit: 'day', tooltipFormat: 'yyyy-MM-dd' },
+                                title: { display: true, text: '기간' }
+                            },
+                            y: {
+                                position: 'left',
+                                title: { display: true, text: '투자 결과 금액 ($)' },
+                                ticks: {
+                                    callback: function(value) { return value.toLocaleString(); }
+                                }
+                            },
+                            y1: {
+                                type: 'linear',
+                                display: false,
+                                position: 'right',
+                                grid: { drawOnChartArea: false },
+                                title: { display: true, text: '비교 지표' }
                             }
                         },
-                        y1: { // 보조 Y축
-                            type: 'linear',
-                            display: false, // 처음에는 숨김
-                            position: 'right',
-                            grid: { drawOnChartArea: false }, // 메인 그리드와 겹치지 않게 함
-                            title: { display: true, text: '비교 지표' }
+                        plugins: {
+                            tooltip: { mode: 'index', intersect: false }
                         }
-                    },
-                    plugins: {
-                        tooltip: { mode: 'index', intersect: false }
                     }
-                }
-            });
-            document.getElementById('investmentResultContainer').style.display = 'block';
+                });
+            }
         }
 
         function populateComparisonIndicatorDropdown() {
             const select = document.getElementById('comparisonIndicator');
-            select.innerHTML = '<option value="">지표를 선택하세요</option>'; // 초기화
+            select.innerHTML = '<option value="">지표를 선택하세요</option>';
             const langDict = translations[currentLanguage];
             
             for (const indicator in langDict.indicatorTitles) {
@@ -2550,7 +2536,30 @@
 
         async function addComparisonData() {
             const indicator = document.getElementById('comparisonIndicator').value;
-            
+            const startDateStr = document.getElementById('startDate').value;
+            const endDateStr = document.getElementById('endDate').value;
+
+            // [MODIFIED] 날짜가 선택되었는지 먼저 확인
+            if (!startDateStr || !endDateStr || startDateStr >= endDateStr) {
+                // 지표 선택을 초기화하고 사용자에게 알림
+                document.getElementById('comparisonIndicator').value = "";
+                alert("비교 지표를 보려면 먼저 올바른 투자 기간을 선택해주세요.");
+                return;
+            }
+
+            // 차트가 없으면 빈 차트를 먼저 그림
+            if (!investmentChart) {
+                // 날짜 배열 생성
+                const startDate = new Date(startDateStr);
+                const endDate = new Date(endDateStr);
+                const labels = [];
+                for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+                    labels.push(d.toISOString().split('T')[0]);
+                }
+                // 빈 투자 데이터로 차트 초기화
+                displayInvestmentResult(labels, []); 
+            }
+
             // 기존 보조 데이터셋 제거
             investmentChart.data.datasets = investmentChart.data.datasets.filter(ds => ds.yAxisID !== 'y1');
             investmentChart.options.scales.y1.display = false;
@@ -2560,11 +2569,9 @@
                 return;
             }
 
-            try {
-                const startDateStr = document.getElementById('startDate').value;
-                const endDateStr = document.getElementById('endDate').value;
-                if (!startDateStr || !endDateStr) return;
+            renderErrorMessage('비교 지표 데이터를 불러오는 중입니다...', 'investmentResultChart');
 
+            try {
                 const data = await fetchAndCacheData(indicator);
                 const startDate = new Date(startDateStr);
                 const endDate = new Date(endDateStr);
@@ -2589,11 +2596,13 @@
                 investmentChart.data.datasets.push(newDataset);
                 investmentChart.options.scales.y1.display = true;
                 investmentChart.options.scales.y1.title.text = langDict.indicatorTitles[indicator];
+                
+                // 에러 메시지를 지우고 차트를 다시 그리기 위해 업데이트
                 investmentChart.update();
 
             } catch(error) {
                 console.error("Failed to add comparison data:", error);
-                alert(`비교 지표(${indicator}) 데이터를 불러오는 데 실패했습니다.`);
+                renderErrorMessage(`비교 지표(${indicator}) 데이터를 불러오는 데 실패했습니다.`, 'investmentResultChart');
             }
         }
 
