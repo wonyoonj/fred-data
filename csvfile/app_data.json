@@ -1,0 +1,17 @@
+{
+    "date": "2025-10-16",
+    "tga_monthly_change_billion": 135.15,
+    "fed_liquidity_monthly_change_billion": 202.67,
+    "fed_debt_monthly_change_billion": -176.49,
+    "mmf_to_fed_monthly_change_billion": -125.14,
+    "mmf_to_market_monthly_change_billion": -0.01,
+    "total_market_liquidity_monthly_change_billion": 67.51,
+    "reverse_repo_rate_percent": 4.0,
+    "discount_rate_percent": 4.25,
+    "effr_rate_percent": 4.22,
+    "sofr_rate_percent": 4.29,
+    "sofr_effr_spread_percent": 0.07,
+    "dgs3mo_rate_percent": 4.02,
+    "dgs2_rate_percent": 3.48,
+    "dgs10_rate_percent": 4.03
+}
