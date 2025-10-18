@@ -52,7 +52,17 @@
     }
     </script>
     <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.1/kakao.min.js"
-    xintegrity="sha384-kDljxUXHaJ9xAb2AzRd59KxjrFjzHa5TAoFQ6GbYTCAG0bjM55XohjjDT7tDDC01" crossorigin="anonymous" defer></script>
+    integrity="sha384-kDljxUXHaJ9xAb2AzRd59KxjrFjzHa5TAoFQ6GbYTCAG0bjM55XohjjDT7tDDC01" crossorigin="anonymous"></script>
+    <script>
+        // SDK 로드 직후 바로 초기화합니다.
+        try {
+            if (window.Kakao && !Kakao.isInitialized()) {
+                Kakao.init('4ae404e0f6a8321cf2e7533ad956ddcc');
+            }
+        } catch (e) {
+            console.error("Kakao SDK init failed:", e);
+        }
+    </script>
     <base target="_top">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -389,7 +399,7 @@
         .share-button:hover {
             opacity: 0.8;
         }
-        .share-button.twitter { background-color: #1DA1F2; }
+        .share-button.x { background-color: #000000; }
         .share-button.facebook { background-color: #1877F2; }
         .share-button.kakao { background-color: #FEE500; color: #191919; }
         .share-button.line { background-color: #00C300; }
@@ -805,11 +815,11 @@
                 </div>
             
             <div class="share-buttons-container">
-                <a class="share-button twitter" onclick="shareOn('twitter')">Twitter</a>
+                <a class="share-button x" onclick="shareOn('twitter')">X</a>
                 <a class="share-button facebook" onclick="shareOn('facebook')">Facebook</a>
                 <a class="share-button kakao" onclick="shareOn('kakao')">Kakao</a>
                 <a class="share-button line" onclick="shareOn('line')">LINE</a>
-                <a class="share-button copy-link" onclick="copyLink()">Copy Link</a>
+                <a class="share-button copy-link" onclick="copyLink()">링크 복사</a>
             </div>
             <div class="animation-container">
                 <div class="tga-popup-container popup-container liquidity-tga-popup">
@@ -1459,13 +1469,6 @@
         window.addEventListener('load', () => {
             showPage('liquidityFlow');
             loadFinancialAnalysis();
-            try {
-                if (window.Kakao && !Kakao.isInitialized()) {
-                    Kakao.init('4ae404e0f6a8321cf2e7533ad956ddcc');
-                }
-            } catch (e) {
-                console.error("Kakao SDK init failed:", e);
-            }
             setLanguage('en'); 
             
             document.getElementById('startDate').addEventListener('change', validateDateRange);
@@ -1503,8 +1506,8 @@
                     if (window.Kakao && Kakao.isInitialized()) {
                         Kakao.Share.sendDefault({
                             objectType: 'feed',
-                            content: { title: document.title, description: document.querySelector('meta[name="description"]').content, imageUrl: document.querySelector('meta[property="og:image"]').content, link: { mobileWebUrl: window.location.href, webUrl: window.location.href, }, },
-                            buttons: [{ title: 'View on Web', link: { mobileWebUrl: window.location.href, webUrl: window.location.href, }, },],
+                            content: { title: document.title, description: document.querySelector('meta[name="description"]').content, imageUrl: document.querySelector('meta[property="og:image"]').content, link: { mobileWebUrl: 'https://americayoudongsung.netlify.app/', webUrl: 'https://americayoudongsung.netlify.app/', }, },
+                            buttons: [{ title: 'View on Web', link: { mobileWebUrl: 'https://americayoudongsung.netlify.app/', webUrl:'https://americayoudongsung.netlify.app/', }, },],
                         });
                     } else { alert('Kakao Share is not ready.'); }
                     break;
