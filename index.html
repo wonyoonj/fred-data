@@ -1839,13 +1839,17 @@
             let tgaDiff = null, fedLiquidityDiff = null, mmfToFedDiff = null, finalMmfToMarketDiff = null;
             let tgaLatestDate = null, fedLatestDate = null, mmfFedLatestDate = null, mmfMarketLatestDate = null;
             let mmfToMarketCombined = null, mmfAssetChange = null;
+            
+            // --- [수정됨] 7일 전/30일 전 날짜 계산 함수 ---
+            const sevenDaysAgo = (date) => { const newDate = new Date(date); newDate.setDate(newDate.getDate() - 7); return newDate; };
             const thirtyDaysAgo = (date) => { const newDate = new Date(date); newDate.setDate(newDate.getDate() - 30); return newDate; };
 
+            // --- [수정됨] 1번 요청: TGA, FED 유동성 (7일 변화량) ---
             if (['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL'].every(i => dataStore[i] && dataStore[i].length > 0)) {
                 const lastDates = ['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL'].map(i => new Date(dataStore[i][dataStore[i].length - 1].date));
                 const commonLatest = new Date(Math.min(...lastDates));
                 tgaLatestDate = fedLatestDate = commonLatest.toISOString().split('T')[0];
-                const pastDate = thirtyDaysAgo(commonLatest);
+                const pastDate = sevenDaysAgo(commonLatest); // 30일 -> 7일
                 const latest = {
                     tga: getClosestData(dataStore.WTREGEN, commonLatest)?.value, walcl: getClosestData(dataStore.WALCL, commonLatest)?.value,
                     rrp: getClosestData(dataStore.RRPONTSYD, commonLatest)?.value, resbal: getClosestData(dataStore.WRESBAL, commonLatest)?.value
@@ -1864,64 +1868,75 @@
                     
                     const fedAssetChange = walclDiff - tgaDiff - rrpDiff - resbalDiff;
                     const fedLiabilityChange = rrpDiff + resbalDiff;
-                    const formatValue = (value) => `<span class="${value > 0 ? 'slope-positive' : 'slope-negative'}">${value > 0 ? '+' : ''}${value.toFixed(2)} B $/Month</span>`;
+                    const formatValue = (value) => `<span class="${value > 0 ? 'slope-positive' : 'slope-negative'}">${value > 0 ? '+' : ''}${value.toFixed(2)} B $/Week</span>`; // B $/Month -> B $/Week
                     tooltips.fed.innerHTML = `${tooltipDict.fed.desc}
                         <p>${tooltipDict.fed.part1} ${formatValue(fedAssetChange)}</p><p>${tooltipDict.fed.part2} ${formatValue(fedLiabilityChange)}</p>
                         <button class="graph-btn" onclick="showGraph('WALCL')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${fedLatestDate}</span>`;
                 }
             }
+            
+            // --- [수정됨] 2번 요청: MMF -> FED (30일 변화량 / 4) ---
             if (dataStore.MMF2RRP?.length > 0) {
                 const latestDate = new Date(dataStore.MMF2RRP[dataStore.MMF2RRP.length - 1].date);
                 mmfFedLatestDate = latestDate.toISOString().split('T')[0];
-                const pastDate = thirtyDaysAgo(latestDate);
+                const pastDate = thirtyDaysAgo(latestDate); // 30일 유지
                 const latestVal = getClosestData(dataStore.MMF2RRP, latestDate)?.value;
                 const pastVal = getClosestData(dataStore.MMF2RRP, pastDate)?.value;
-                if (latestVal != null && pastVal != null) { mmfToFedDiff = (latestVal - pastVal) / 1e9; }
+                if (latestVal != null && pastVal != null) { 
+                    mmfToFedDiff = ((latestVal - pastVal) / 1e9) / 4.0; // 4로 나누기
+                }
             }
+            
+            // --- [수정됨] 2번 요청: MMF -> 시장 (30일 변화량 / 4) ---
             if (dataStore.MMF2MARKET?.length > 0 && dataStore.MMF2GOVERNMENT?.length > 0) {
-                 const latestDateM = new Date(dataStore.MMF2MARKET[dataStore.MMF2MARKET.length - 1].date); const pastDateM = thirtyDaysAgo(latestDateM);
+                 const latestDateM = new Date(dataStore.MMF2MARKET[dataStore.MMF2MARKET.length - 1].date); const pastDateM = thirtyDaysAgo(latestDateM); // 30일 유지
                  const latestM = getClosestData(dataStore.MMF2MARKET, latestDateM)?.value; const pastM = getClosestData(dataStore.MMF2MARKET, pastDateM)?.value;
-                 const latestDateG = new Date(dataStore.MMF2GOVERNMENT[dataStore.MMF2GOVERNMENT.length - 1].date); const pastDateG = thirtyDaysAgo(latestDateG);
+                 const latestDateG = new Date(dataStore.MMF2GOVERNMENT[dataStore.MMF2GOVERNMENT.length - 1].date); const pastDateG = thirtyDaysAgo(latestDateG); // 30일 유지
                  const latestG = getClosestData(dataStore.MMF2GOVERNMENT, latestDateG)?.value; const pastG = getClosestData(dataStore.MMF2GOVERNMENT, pastDateG)?.value;
                  mmfMarketLatestDate = latestDateM.toISOString().split('T')[0];
                  if(latestM != null && pastM != null && latestG != null && pastG != null) { mmfToMarketCombined = ((latestM - pastM) + (latestG - pastG)) / 1e9; }
             }
             if (dataStore.MMMFFAQ027S?.length > 0) {
                 const latestDate = new Date(dataStore.MMMFFAQ027S[dataStore.MMMFFAQ027S.length-1].date);
-                const pastDate = thirtyDaysAgo(latestDate);
+                const pastDate = thirtyDaysAgo(latestDate); // 30일 유지
                 const latestVal = getClosestData(dataStore.MMMFFAQ027S, latestDate)?.value; const pastVal = getClosestData(dataStore.MMMFFAQ027S, pastDate)?.value;
                 if(latestVal != null && pastVal != null){ mmfAssetChange = (latestVal - pastVal) / 1e9; }
             }
-            if (mmfToMarketCombined != null && mmfAssetChange != null) { finalMmfToMarketDiff = mmfToMarketCombined - mmfAssetChange; }
+            if (mmfToMarketCombined != null && mmfAssetChange != null) { 
+                finalMmfToMarketDiff = (mmfToMarketCombined - mmfAssetChange) / 4.0; // 4로 나누기
+            }
             
-            if (tgaDiff != null) { const sign = tgaDiff > 0 ? '+' : ''; displays.tga.innerHTML = `${tooltipDict.tga.label}<br><span class="${tgaDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${tgaDiff.toFixed(2)} B $/Month</span>`;
+            // --- [수정됨] 1, 2, 3번 요청: 단위 변경 (B $/Month -> B $/Week) ---
+            if (tgaDiff != null) { const sign = tgaDiff > 0 ? '+' : ''; displays.tga.innerHTML = `${tooltipDict.tga.label}<br><span class="${tgaDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${tgaDiff.toFixed(2)} B $/Week</span>`;
                 tooltips.tga.innerHTML = `${tooltipDict.tga.desc}
                 <button class="graph-btn" onclick="showGraph('WTREGEN')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${tgaLatestDate}</span>`;
             } else { displays.tga.textContent = langDict.errorText; }
-            if (fedLiquidityDiff != null) { const sign = fedLiquidityDiff > 0 ? '+' : ''; displays.fed.innerHTML = `${tooltipDict.fed.label}<br><span class="${fedLiquidityDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${fedLiquidityDiff.toFixed(2)} B $/Month</span>`;
+            if (fedLiquidityDiff != null) { const sign = fedLiquidityDiff > 0 ? '+' : ''; displays.fed.innerHTML = `${tooltipDict.fed.label}<br><span class="${fedLiquidityDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${fedLiquidityDiff.toFixed(2)} B $/Week</span>`;
             } else { displays.fed.textContent = langDict.errorText; }
-            if (mmfToFedDiff != null) { const sign = mmfToFedDiff > 0 ? '+' : ''; displays.mmf_fed.innerHTML = `${tooltipDict.mmf_fed.label}<br><span class="${mmfToFedDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${mmfToFedDiff.toFixed(2)} B $/Month</span>`;
+            if (mmfToFedDiff != null) { const sign = mmfToFedDiff > 0 ? '+' : ''; displays.mmf_fed.innerHTML = `${tooltipDict.mmf_fed.label}<br><span class="${mmfToFedDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${mmfToFedDiff.toFixed(2)} B $/Week</span>`;
                 tooltips.mmf_fed.innerHTML = `${tooltipDict.mmf_fed.desc}
                 <button class="graph-btn" onclick="showGraph('RRPONTSYD')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${mmfFedLatestDate}</span>`;
             } else { displays.mmf_fed.textContent = langDict.errorText; }
-            if (finalMmfToMarketDiff != null) { const sign = finalMmfToMarketDiff > 0 ? '+' : ''; displays.mmf_market.innerHTML = `${tooltipDict.mmf_market.label}<br><span class="${finalMmfToMarketDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${finalMmfToMarketDiff.toFixed(2)} B $/Month</span>`;
+            if (finalMmfToMarketDiff != null) { const sign = finalMmfToMarketDiff > 0 ? '+' : ''; displays.mmf_market.innerHTML = `${tooltipDict.mmf_market.label}<br><span class="${finalMmfToMarketDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${finalMmfToMarketDiff.toFixed(2)} B $/Week</span>`;
                 const sign1 = mmfToMarketCombined > 0 ? '+' : ''; const sign2 = mmfAssetChange > 0 ? '+' : '';
                 tooltips.mmf_market.innerHTML = `${tooltipDict.mmf_market.desc}
-                <p>${tooltipDict.mmf_market.part1} <span class="${mmfToMarketCombined > 0 ? 'slope-positive' : 'slope-negative'}">${sign1}${mmfToMarketCombined.toFixed(2)} B $/Month</span></p>
-                <p>${tooltipDict.mmf_market.part2} <span class="${mmfAssetChange > 0 ? 'slope-positive' : 'slope-negative'}">${sign2}${mmfAssetChange.toFixed(2)} B $/Month</span></p>
+                <p>${tooltipDict.mmf_market.part1} <span class="${mmfToMarketCombined > 0 ? 'slope-positive' : 'slope-negative'}">${sign1}${(mmfToMarketCombined / 4.0).toFixed(2)} B $/Week</span></p>
+                <p>${tooltipDict.mmf_market.part2} <span class="${mmfAssetChange > 0 ? 'slope-positive' : 'slope-negative'}">${sign2}${(mmfAssetChange / 4.0).toFixed(2)} B $/Week</span></p>
                 <button class="graph-btn" onclick="showGraph('MMMFFAQ027S')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${mmfMarketLatestDate}</span>`;
             } else { displays.mmf_market.textContent = langDict.errorText; }
+            
+            // --- [수정됨] 3번 요청: 시장 Total 유동 공급량 (새로운 값으로 계산) ---
             if (fedLiquidityDiff != null && tgaDiff != null && finalMmfToMarketDiff != null) {
                 const netMarketFlow = fedLiquidityDiff - tgaDiff + finalMmfToMarketDiff;
                 const sign = netMarketFlow > 0 ? '+' : '';
-                displays.net_market_flow.innerHTML = `${langDict.netMarketFlowLabel}<span class="${netMarketFlow > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${netMarketFlow.toFixed(2)} B $/Month</span></b>`;
+                displays.net_market_flow.innerHTML = `${langDict.netMarketFlowLabel}<span class="${netMarketFlow > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${netMarketFlow.toFixed(2)} B $/Week</span></b>`; // B $/Month -> B $/Week
             } else { displays.net_market_flow.textContent = ''; }
             
             const calculatedValues = [];
             if (tgaDiff != null) calculatedValues.push({ value: tgaDiff, animationClass: tgaDiff < 0 ? 'animated-dollar-from-government' : 'animated-dollar-to-government' });
             if (fedLiquidityDiff != null) calculatedValues.push({ value: fedLiquidityDiff, animationClass: fedLiquidityDiff < 0 ? 'animated-dollar-to-fed' : 'animated-dollar-to-market' });
-            if (mmfToFedDiff != null) calculatedValues.push({ value: mmfToFedDiff, animationClass: mmfToFedDiff >= 0 ? 'animated-dollar-from-mmf-to-fed' : 'animated-dollar-from-fed-to-mmf' });
-            if (finalMmfToMarketDiff != null) calculatedValues.push({ value: finalMmfToMarketDiff, animationClass: finalMmfToMarketDiff > 0 ? 'animated-dollar-from-mmf-to-market_parabolic' : 'animated-dollar-from-market-to-mmf_parabolic' });
+            if (mmfToFedDiff != null) calculatedValues.push({ value: mmfToFedDiff * 4.0, animationClass: mmfToFedDiff >= 0 ? 'animated-dollar-from-mmf-to-fed' : 'animated-dollar-from-fed-to-mmf' }); // 애니메이션 크기 조정을 위해 다시 4 곱함
+            if (finalMmfToMarketDiff != null) calculatedValues.push({ value: finalMmfToMarketDiff * 4.0, animationClass: finalMmfToMarketDiff > 0 ? 'animated-dollar-from-mmf-to-market_parabolic' : 'animated-dollar-from-market-to-mmf_parabolic' }); // 애니메이션 크기 조정을 위해 다시 4 곱함
             const rankedAnimations = calculatedValues.sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
             const startAnimations = () => {
                 rankedAnimations.forEach((task, index) => {

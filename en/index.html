@@ -1670,57 +1670,69 @@
             let tgaDiff, fedLiquidityDiff, mmfToFedDiff, finalMmfToMarketDiff;
             let tgaLatestDate, fedLatestDate, mmfFedLatestDate, mmfMarketLatestDate;
             let mmfToMarketCombined, mmfAssetChange;
+
+            // --- [MODIFIED] 7-day / 30-day date calc functions ---
+            const sevenDaysAgo = (date) => { const newDate = new Date(date); newDate.setDate(newDate.getDate() - 7); return newDate; };
             const thirtyDaysAgo = (date) => { const d = new Date(date); d.setDate(d.getDate() - 30); return d; };
 
+            // --- [MODIFIED] Req 1: TGA, FED Liquidity (7-day change) ---
             if (['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL'].every(i => dataStore[i] && dataStore[i].length > 0)) {
                 const lastDates = ['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL'].map(i => new Date(dataStore[i][dataStore[i].length - 1].date));
                 const commonLatest = new Date(Math.min(...lastDates));
                 tgaLatestDate = fedLatestDate = commonLatest.toISOString().split('T')[0];
-                const pastDate = thirtyDaysAgo(commonLatest);
+                const pastDate = sevenDaysAgo(commonLatest); // 30-day -> 7-day
                 const latest = { tga: getClosestData(dataStore.WTREGEN, commonLatest)?.value, walcl: getClosestData(dataStore.WALCL, commonLatest)?.value, rrp: getClosestData(dataStore.RRPONTSYD, commonLatest)?.value, resbal: getClosestData(dataStore.WRESBAL, commonLatest)?.value };
                 const past = { tga: getClosestData(dataStore.WTREGEN, pastDate)?.value, walcl: getClosestData(dataStore.WALCL, pastDate)?.value, rrp: getClosestData(dataStore.RRPONTSYD, pastDate)?.value, resbal: getClosestData(dataStore.WRESBAL, pastDate)?.value };
                 if (Object.values(latest).every(v => v != null) && Object.values(past).every(v => v != null)) {
                     tgaDiff = latest.tga - past.tga; const walclDiff = (latest.walcl / 1000) - (past.walcl / 1000); const rrpDiff = latest.rrp - past.rrp; const resbalDiff = latest.resbal - past.resbal;
                     fedLiquidityDiff = walclDiff - (tgaDiff + 2 * rrpDiff + 2 * resbalDiff);
                     const fedAssetChange = walclDiff - tgaDiff - rrpDiff - resbalDiff; const fedLiabilityChange = rrpDiff + resbalDiff;
-                    const formatValue = (v) => `<span class="${v > 0 ? 'slope-positive' : 'slope-negative'}">${v > 0 ? '+' : ''}${v.toFixed(2)} B $/Month</span>`;
+                    const formatValue = (v) => `<span class="${v > 0 ? 'slope-positive' : 'slope-negative'}">${v > 0 ? '+' : ''}${v.toFixed(2)} B $/Week</span>`; // B $/Month -> B $/Week
                     tooltips.fed.innerHTML = `${tooltipDict.fed.desc}<p>${tooltipDict.fed.part1} ${formatValue(fedAssetChange)}</p><p>${tooltipDict.fed.part2} ${formatValue(fedLiabilityChange)}</p><button class="graph-btn" onclick="showGraph('WALCL')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${fedLatestDate}</span>`;
                 }
             }
+
+            // --- [MODIFIED] Req 2: MMF -> FED (30-day change / 4) ---
             if (dataStore.MMF2RRP?.length > 0) {
                 const latestDate = new Date(dataStore.MMF2RRP[dataStore.MMF2RRP.length - 1].date); mmfFedLatestDate = latestDate.toISOString().split('T')[0];
-                const pastDate = thirtyDaysAgo(latestDate); const latestVal = getClosestData(dataStore.MMF2RRP, latestDate)?.value; const pastVal = getClosestData(dataStore.MMF2RRP, pastDate)?.value;
-                if (latestVal != null && pastVal != null) mmfToFedDiff = (latestVal - pastVal) / 1e9;
+                const pastDate = thirtyDaysAgo(latestDate); // Keep 30-day
+                const latestVal = getClosestData(dataStore.MMF2RRP, latestDate)?.value; const pastVal = getClosestData(dataStore.MMF2RRP, pastDate)?.value;
+                if (latestVal != null && pastVal != null) mmfToFedDiff = ((latestVal - pastVal) / 1e9) / 4.0; // Divide by 4
             }
+            
+            // --- [MODIFIED] Req 2: MMF -> Market (30-day change / 4) ---
             if (dataStore.MMF2MARKET?.length > 0 && dataStore.MMF2GOVERNMENT?.length > 0) {
-                 const latestDateM = new Date(dataStore.MMF2MARKET[dataStore.MMF2MARKET.length - 1].date); const pastDateM = thirtyDaysAgo(latestDateM);
+                 const latestDateM = new Date(dataStore.MMF2MARKET[dataStore.MMF2MARKET.length - 1].date); const pastDateM = thirtyDaysAgo(latestDateM); // Keep 30-day
                  const latestM = getClosestData(dataStore.MMF2MARKET, latestDateM)?.value; const pastM = getClosestData(dataStore.MMF2MARKET, pastDateM)?.value;
-                 const latestDateG = new Date(dataStore.MMF2GOVERNMENT[dataStore.MMF2GOVERNMENT.length - 1].date); const pastDateG = thirtyDaysAgo(latestDateG);
+                 const latestDateG = new Date(dataStore.MMF2GOVERNMENT[dataStore.MMF2GOVERNMENT.length - 1].date); const pastDateG = thirtyDaysAgo(latestDateG); // Keep 30-day
                  const latestG = getClosestData(dataStore.MMF2GOVERNMENT, latestDateG)?.value; const pastG = getClosestData(dataStore.MMF2GOVERNMENT, pastDateG)?.value;
                  mmfMarketLatestDate = latestDateM.toISOString().split('T')[0];
                  if(latestM != null && pastM != null && latestG != null && pastG != null) mmfToMarketCombined = ((latestM - pastM) + (latestG - pastG)) / 1e9;
             }
             if (dataStore.MMMFFAQ027S?.length > 0) {
-                const latestDate = new Date(dataStore.MMMFFAQ027S[dataStore.MMMFFAQ027S.length-1].date); const pastDate = thirtyDaysAgo(latestDate);
+                const latestDate = new Date(dataStore.MMMFFAQ027S[dataStore.MMMFFAQ027S.length-1].date); const pastDate = thirtyDaysAgo(latestDate); // Keep 30-day
                 const latestVal = getClosestData(dataStore.MMMFFAQ027S, latestDate)?.value; const pastVal = getClosestData(dataStore.MMMFFAQ027S, pastDate)?.value;
                 if(latestVal != null && pastVal != null) mmfAssetChange = (latestVal - pastVal) / 1e9;
             }
-            if (mmfToMarketCombined != null && mmfAssetChange != null) finalMmfToMarketDiff = mmfToMarketCombined - mmfAssetChange;
+            if (mmfToMarketCombined != null && mmfAssetChange != null) finalMmfToMarketDiff = (mmfToMarketCombined - mmfAssetChange) / 4.0; // Divide by 4
             
-            if (tgaDiff != null) { displays.tga.innerHTML = `${tooltipDict.tga.label}<br><span class="${tgaDiff > 0 ? 'slope-positive' : 'slope-negative'}">${tgaDiff > 0 ? '+' : ''}${tgaDiff.toFixed(2)} B $/Month</span>`; tooltips.tga.innerHTML = `${tooltipDict.tga.desc}<button class="graph-btn" onclick="showGraph('WTREGEN')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${tgaLatestDate}</span>`; } else { displays.tga.textContent = "Data Error"; }
-            if (fedLiquidityDiff != null) { displays.fed.innerHTML = `${tooltipDict.fed.label}<br><span class="${fedLiquidityDiff > 0 ? 'slope-positive' : 'slope-negative'}">${fedLiquidityDiff > 0 ? '+' : ''}${fedLiquidityDiff.toFixed(2)} B $/Month</span>`; } else { displays.fed.textContent = "Data Error"; }
-            if (mmfToFedDiff != null) { displays.mmf_fed.innerHTML = `${tooltipDict.mmf_fed.label}<br><span class="${mmfToFedDiff > 0 ? 'slope-positive' : 'slope-negative'}">${mmfToFedDiff > 0 ? '+' : ''}${mmfToFedDiff.toFixed(2)} B $/Month</span>`; tooltips.mmf_fed.innerHTML = `${tooltipDict.mmf_fed.desc}<button class="graph-btn" onclick="showGraph('RRPONTSYD')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${mmfFedLatestDate}</span>`; } else { displays.mmf_fed.textContent = "Data Error"; }
-            if (finalMmfToMarketDiff != null) { displays.mmf_market.innerHTML = `${tooltipDict.mmf_market.label}<br><span class="${finalMmfToMarketDiff > 0 ? 'slope-positive' : 'slope-negative'}">${finalMmfToMarketDiff > 0 ? '+' : ''}${finalMmfToMarketDiff.toFixed(2)} B $/Month</span>`; const sign1 = mmfToMarketCombined > 0 ? '+' : ''; const sign2 = mmfAssetChange > 0 ? '+' : ''; tooltips.mmf_market.innerHTML = `${tooltipDict.mmf_market.desc}<p>${tooltipDict.mmf_market.part1} <span class="${mmfToMarketCombined > 0 ? 'slope-positive' : 'slope-negative'}">${sign1}${mmfToMarketCombined.toFixed(2)} B $/Month</span></p><p>${tooltipDict.mmf_market.part2} <span class="${mmfAssetChange > 0 ? 'slope-positive' : 'slope-negative'}">${sign2}${mmfAssetChange.toFixed(2)} B $/Month</span></p><button class="graph-btn" onclick="showGraph('MMMFFAQ027S')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${mmfMarketLatestDate}</span>`; } else { displays.mmf_market.textContent = "Data Error"; }
+            // --- [MODIFIED] Req 1, 2, 3: Update units (B $/Month -> B $/Week) ---
+            if (tgaDiff != null) { displays.tga.innerHTML = `${tooltipDict.tga.label}<br><span class="${tgaDiff > 0 ? 'slope-positive' : 'slope-negative'}">${tgaDiff > 0 ? '+' : ''}${tgaDiff.toFixed(2)} B $/Week</span>`; tooltips.tga.innerHTML = `${tooltipDict.tga.desc}<button class="graph-btn" onclick="showGraph('WTREGEN')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${tgaLatestDate}</span>`; } else { displays.tga.textContent = "Data Error"; }
+            if (fedLiquidityDiff != null) { displays.fed.innerHTML = `${tooltipDict.fed.label}<br><span class="${fedLiquidityDiff > 0 ? 'slope-positive' : 'slope-negative'}">${fedLiquidityDiff > 0 ? '+' : ''}${fedLiquidityDiff.toFixed(2)} B $/Week</span>`; } else { displays.fed.textContent = "Data Error"; }
+            if (mmfToFedDiff != null) { displays.mmf_fed.innerHTML = `${tooltipDict.mmf_fed.label}<br><span class="${mmfToFedDiff > 0 ? 'slope-positive' : 'slope-negative'}">${mmfToFedDiff > 0 ? '+' : ''}${mmfToFedDiff.toFixed(2)} B $/Week</span>`; tooltips.mmf_fed.innerHTML = `${tooltipDict.mmf_fed.desc}<button class="graph-btn" onclick="showGraph('RRPONTSYD')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${mmfFedLatestDate}</span>`; } else { displays.mmf_fed.textContent = "Data Error"; }
+            if (finalMmfToMarketDiff != null) { displays.mmf_market.innerHTML = `${tooltipDict.mmf_market.label}<br><span class="${finalMmfToMarketDiff > 0 ? 'slope-positive' : 'slope-negative'}">${finalMmfToMarketDiff > 0 ? '+' : ''}${finalMmfToMarketDiff.toFixed(2)} B $/Week</span>`; const sign1 = mmfToMarketCombined > 0 ? '+' : ''; const sign2 = mmfAssetChange > 0 ? '+' : ''; tooltips.mmf_market.innerHTML = `${tooltipDict.mmf_market.desc}<p>${tooltipDict.mmf_market.part1} <span class="${mmfToMarketCombined > 0 ? 'slope-positive' : 'slope-negative'}">${sign1}${(mmfToMarketCombined / 4.0).toFixed(2)} B $/Week</span></p><p>${tooltipDict.mmf_market.part2} <span class="${mmfAssetChange > 0 ? 'slope-positive' : 'slope-negative'}">${sign2}${(mmfAssetChange / 4.0).toFixed(2)} B $/Week</span></p><button class="graph-btn" onclick="showGraph('MMMFFAQ027S')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${mmfMarketLatestDate}</span>`; } else { displays.mmf_market.textContent = "Data Error"; }
+            
+            // --- [MODIFIED] Req 3: Net Market Flow (calculated with new values) ---
             if (fedLiquidityDiff != null && tgaDiff != null && finalMmfToMarketDiff != null) {
                 const netMarketFlow = fedLiquidityDiff - tgaDiff + finalMmfToMarketDiff;
-                displays.net_market_flow.innerHTML = `${langDict.netMarketFlowLabel}<span class="${netMarketFlow > 0 ? 'slope-positive' : 'slope-negative'}">${netMarketFlow > 0 ? '+' : ''}${netMarketFlow.toFixed(2)} B $/Month</span></b>`;
+                displays.net_market_flow.innerHTML = `${langDict.netMarketFlowLabel}<span class="${netMarketFlow > 0 ? 'slope-positive' : 'slope-negative'}">${netMarketFlow > 0 ? '+' : ''}${netMarketFlow.toFixed(2)} B $/Week</span></b>`; // B $/Month -> B $/Week
             } else { displays.net_market_flow.textContent = ''; }
             
             const calculatedValues = [];
             if (tgaDiff != null) calculatedValues.push({ value: tgaDiff, animationClass: tgaDiff < 0 ? 'animated-dollar-from-government' : 'animated-dollar-to-government' });
             if (fedLiquidityDiff != null) calculatedValues.push({ value: fedLiquidityDiff, animationClass: fedLiquidityDiff < 0 ? 'animated-dollar-to-fed' : 'animated-dollar-to-market' });
-            if (mmfToFedDiff != null) calculatedValues.push({ value: mmfToFedDiff, animationClass: mmfToFedDiff >= 0 ? 'animated-dollar-from-mmf-to-fed' : 'animated-dollar-from-fed-to-mmf' });
-            if (finalMmfToMarketDiff != null) calculatedValues.push({ value: finalMmfToMarketDiff, animationClass: finalMmfToMarketDiff > 0 ? 'animated-dollar-from-mmf-to-market_parabolic' : 'animated-dollar-from-market-to-mmf_parabolic' });
+            if (mmfToFedDiff != null) calculatedValues.push({ value: mmfToFedDiff * 4.0, animationClass: mmfToFedDiff >= 0 ? 'animated-dollar-from-mmf-to-fed' : 'animated-dollar-from-fed-to-mmf' }); // Multiply by 4 for animation scale
+            if (finalMmfToMarketDiff != null) calculatedValues.push({ value: finalMmfToMarketDiff * 4.0, animationClass: finalMmfToMarketDiff > 0 ? 'animated-dollar-from-mmf-to-market_parabolic' : 'animated-dollar-from-market-to-mmf_parabolic' }); // Multiply by 4 for animation scale
             const rankedAnimations = calculatedValues.sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
             const startAnimations = () => {
                 rankedAnimations.forEach((task, index) => {
