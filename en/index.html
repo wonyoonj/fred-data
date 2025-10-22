@@ -804,9 +804,7 @@
                 <p style="margin-top: 20px; text-align: center; font-weight: bold;">
                     Now, explore the complex flow of the economy easily through the visualizations below.
                 </p>
-                <p style="text-align: center;">
-                    (Hover over indicators for descriptions!)
-                </p>
+                
             </div>
 
             <h3 id="ai-analysis-title-liquidity" style="text-align: center; color: black;"></h3>
@@ -822,6 +820,9 @@
                 <a class="share-button copy-link" onclick="copyLink()">링크 복사</a>
             </div>
             <div class="animation-container">
+                <p style="text-align: center;">
+                    (Tap the economic indicator for a detailed explanation!)
+                </p>
                 <div class="tga-popup-container popup-container liquidity-tga-popup">
                     <div id="tgaSlopeDisplay"></div>
                     <div class="tooltip-container" id="tga-tooltip-content">
@@ -869,7 +870,7 @@
 
             <div class="info-box">
                 <h3>How to Interpret the Data</h3>
-                <p>The animation on the main page represents the 'change in fund flow over the last month' between each entity. The meaning of the numbers is as follows:</p>
+                <p>The animation on the main page represents the 'change in fund flow over the last week' between each entity. The meaning of the numbers is as follows:</p>
                 <ul>
                     <li><span class="internal-link" onclick="showGraph('WTREGEN')"><strong>(Government's) TGA Balance</strong></span> (<span class="negative">- Negative</span>): Means the government is injecting money into the market through reduced Treasury issuance or increased fiscal spending. (Liquidity Supply)</li>
                     <li><span class="internal-link" onclick="showGraph('WTREGEN')"><strong>(Government's) TGA Balance</strong></span> (<span class="positive">+ Positive</span>): Means the government is absorbing money from the market by collecting more taxes or increasing Treasury issuance. (Liquidity Absorption)</li>
@@ -908,9 +909,7 @@
                 <p style="margin-top: 20px; text-align: center; font-weight: bold;">
                     Now, explore the complex flow of the economy easily through the visualizations below.
                 </p>
-                <p style="text-align: center;">
-                    (Hover over indicators for descriptions!)
-                </p>
+                
             </div>
 
             <h3 id="ai-analysis-title-interest" style="text-align: center; color: black;"></h3>
@@ -926,6 +925,9 @@
                 <a class="share-button copy-link" onclick="copyLink()">Copy Link</a>
             </div>
             <div class="animation-container">
+                <p style="text-align: center;">
+                    (Tap the economic indicator for a detailed explanation!)
+                </p>
                 <div class="tga-popup-container popup-container interest-tb3ms-popup">
                     <div id="tb3msRateDisplay_interest"></div>
                     <div class="tooltip-container" id="tb3ms-tooltip-content_interest"></div>
@@ -1100,7 +1102,7 @@
                 </ul>
 
                 <h3>How to Interpret the Data</h3>
-                <p>The animation on the main page represents the 'change in fund flow over the last month' between each entity. The meaning of the numbers is as follows:</p>
+                <p>The animation on the main page represents the 'change in fund flow over the last week' between each entity. The meaning of the numbers is as follows:</p>
                 <ul>
                     <li><strong>(Government's) TGA Balance (<span class="negative">- Negative</span>):</strong> The government is injecting money into the market through reduced Treasury issuance or increased fiscal spending. (Liquidity Supply)</li>
                     <li><strong>(Government's) TGA Balance (<span class="positive">+ Positive</span>):</strong> The government is absorbing money from the market by collecting more taxes or increasing Treasury issuance. (Liquidity Absorption)</li>
@@ -1235,22 +1237,22 @@
                 tooltip: {
                     tga: {
                         label: 'TGA Balance:',
-                        desc: `<p>Shows the change in the U.S. Treasury's cash balance over the last month.</p><p><b>+Positive:</b> Dollar liquidity absorbed from the market into the Treasury.<br><b>-Negative:</b> The U.S. Treasury supplied dollar liquidity to the market.</p>`
+                        desc: `<p>Shows the change in the U.S. Treasury's cash balance over the last week.</p><p><b>+Positive:</b> Dollar liquidity absorbed from the market into the Treasury.<br><b>-Negative:</b> The U.S. Treasury supplied dollar liquidity to the market.</p>`
                     },
                     fed: {
                         label: 'Fed Liquidity:',
-                        desc: `<p>Shows the change in the Fed's net assets (Treasuries, MBS, etc.) and liabilities over the last month.</p>
+                        desc: `<p>Shows the change in the Fed's net assets (Treasuries, MBS, etc.) and liabilities over the last week.</p>
                                <p><b>+Positive:</b> Supplying dollars to the market by purchasing assets like bonds, or releasing reverse repo funds to the market.<br><b>-Negative:</b> Withdrawing dollars from circulation by selling assets, or absorbing funds from the market via reverse repos (tightening).</p><hr>`,
                         part1: 'Fed Asset Change =',
                         part2: 'Fed Liability Change (RRP & Reserves) ='
                     },
                     mmf_fed: {
                         label: 'MMF -> FED:',
-                        desc: `<p>Shows the change in the amount of funds MMFs have placed with the Fed over the last month.</p><p><b>+Positive:</b> MMFs lend funds to the Fed via reverse repos.<br><b>-Negative:</b> MMFs withdraw reverse repo funds previously lent to the Fed.</p>`
+                        desc: `<p>Shows the change in the amount of funds MMFs have placed with the Fed over the last week.</p><p><b>+Positive:</b> MMFs lend funds to the Fed via reverse repos.<br><b>-Negative:</b> MMFs withdraw reverse repo funds previously lent to the Fed.</p>`
                     },
                     mmf_market: {
                         label: 'MMF -> Market:',
-                        desc: `<p>Shows the change in the amount of funds MMFs have supplied to the market over the last month.<br>This is the net result of liquidity supplied by MMFs to the market minus the amount the market invested in MMFs.</p>
+                        desc: `<p>Shows the change in the amount of funds MMFs have supplied to the market over the last week.<br>This is the net result of liquidity supplied by MMFs to the market minus the amount the market invested in MMFs.</p>
                                <p><b>+Positive:</b> MMFs are supplying more liquidity to the market.<br><b>-Negative:</b> The market is investing more funds into MMFs.</p><hr>`,
                         part1: 'Liquidity Supplied by MMF to Market =',
                         part2: 'Investment by Market in MMF ='
