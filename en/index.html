@@ -7,14 +7,25 @@
     <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/atom.xml">
 
     <script>
-        // Add ad script dynamically only in a web browser environment (http:, https:).
-        if (window.location.protocol.startsWith('http')) {
+        // 웹 브라우저 환경(http:, https:)이면서 동시에 '웹뷰(WebView)'가 아닌 환경에서만 광고를 추가합니다.
+        
+        const isHttp = window.location.protocol.startsWith('http');
+        
+        // User-Agent 문자열을 확인하여 웹뷰 환경인지 감지합니다.
+        // 'wv'는 안드로이드 WebView의 공통 식별자입니다.
+        // (iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)는 Safari 브라우저가 아닌 iOS 내장 웹뷰를 감지하는 패턴 중 하나입니다.
+        const ua = navigator.userAgent || '';
+        const isWebView = /wv/.test(ua) || /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/.test(ua);
+
+        // http 환경이면서(isHttp) 웹뷰가 아닐 때(!isWebView)만 광고 스크립트를 로드합니다.
+        if (isHttp && !isWebView) {
             const adsScript = document.createElement('script');
             adsScript.async = true;
             adsScript.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3939948593689554";
             adsScript.crossOrigin = "anonymous";
             document.head.appendChild(adsScript);
         }
+        
     </script>
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
     <meta name="naver-site-verification" content="3c5e34898f2cef35432619edafb1d9362ab55063" />
