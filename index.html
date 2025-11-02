@@ -503,11 +503,12 @@
         #graphPage {
             text-align: center;
             padding: 20px;
-            height: 500px;
-            /*min-height: 500px;*/  /* <-- 이 줄을 추가 */
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            height: 500px; /* 고정 높이 유지 */
+            /*min-height: 500px;*/
+            /* [수정] flex 관련 속성을 제거하여 캔버스와의 충돌을 방지합니다 */
+            /* display: flex; */
+            /* flex-direction: column; */
+            /* justify-content: space-between; */
             position: relative;
         }
         #graphPage canvas {
@@ -1083,6 +1084,9 @@
             <h2 id="graphTitle"></h2>
             <div id="graphDataSource"></div>
             <canvas id="myChart"></canvas>
+        </div>
+
+        <div id="graphControls" class="page" style="display: none; text-align: center; padding: 0 20px;">
             <div class="time-buttons">
                 <button class="time-btn" onclick="updateChart('1M')">1M</button>
                 <button class="time-btn" onclick="updateChart('6M')">6M</button>
@@ -1091,7 +1095,7 @@
                 <button class="time-btn" onclick="updateChart('10Y')">10Y</button>
                 <button class="time-btn" onclick="updateChart('All')">All</button>
             </div>
-            <div id="graph-page-ad-spacer" style="width: 100%; height: 100px;"></div>
+            <div id="graph-page-ad-spacer" style="width: 100%; height: 100px; margin-top: 10px;"></div>
         </div>
         
         
@@ -1526,12 +1530,19 @@
             setDataAvailabilityWarning();
         });
 
-        const pages = ['liquidityFlow', 'interestRateFlow', 'graphIndicators', 'graphPage', 'infoPage', 'aboutPage', 'investmentPage'];
+        const pages = ['liquidityFlow', 'interestRateFlow', 'graphIndicators', 'graphPage', 'infoPage', 'aboutPage', 'investmentPage', 'graphControls'];
         function showPage(pageId) {
             pages.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) {
-                    el.style.display = id === pageId ? 'block' : 'none';
+                    // [수정] graphPage를 보여줄 때 graphControls도 함께 보여주도록 변경
+                    let display = 'none';
+                    if (id === pageId) {
+                        display = 'block';
+                    } else if (pageId === 'graphPage' && id === 'graphControls') {
+                        display = 'block';
+                    }
+                    el.style.display = display;
                 }
             });
             
