@@ -511,6 +511,13 @@
             justify-content: space-between;
             position: relative;
         }
+        #graphControls {
+            padding: 0 20px;
+            text-align: center;
+            margin-top: 50px; /* [추가] 그래프 영역과 버튼 영역 사이에 넉넉한 간격을 줍니다. */
+            border-top: 1px solid #ddd; /* [추가] 얇은 구분선을 넣어 영역을 명확히 나눕니다. */
+            padding-top: 15px; /* [추가] 구분선과 버튼 사이에 여백을 줍니다. */
+        }
         #graphPage canvas {
             max-width: 100%;
             width: 100%;
@@ -1089,6 +1096,9 @@
             <h2 id="graphTitle"></h2>
             <div id="graphDataSource"></div>
             <canvas id="myChart"></canvas>
+        </div>
+
+        <div id="graphControls" class="page" style="display: none; text-align: center; padding: 0 20px;">
             <div class="time-buttons">
                 <button class="time-btn" onclick="updateChart('1M')">1M</button>
                 <button class="time-btn" onclick="updateChart('6M')">6M</button>
@@ -1097,7 +1107,7 @@
                 <button class="time-btn" onclick="updateChart('10Y')">10Y</button>
                 <button class="time-btn" onclick="updateChart('All')">All</button>
             </div>
-            <div id="graph-page-ad-spacer" style="width: 100%; height: 100px;"></div>
+            <div id="graph-page-ad-spacer" style="width: 100%; height: 100px; margin-top: 0px;"></div>
         </div>
         
         <div id="infoPage" class="page" style="display:none;">
@@ -1500,11 +1510,20 @@
             setDataAvailabilityWarning();
         });
 
-        const pages = ['liquidityFlow', 'interestRateFlow', 'graphIndicators', 'graphPage', 'infoPage', 'aboutPage', 'investmentPage'];
+        const pages = ['liquidityFlow', 'interestRateFlow', 'graphIndicators', 'graphPage', 'infoPage', 'aboutPage', 'investmentPage', 'graphControls'];
         function showPage(pageId) {
             pages.forEach(id => {
                 const el = document.getElementById(id);
-                if (el) el.style.display = id === pageId ? 'block' : 'none';
+                if (el) {
+                    // [수정] graphPage를 보여줄 때 graphControls도 함께 보여주도록 변경
+                    let display = 'none';
+                    if (id === pageId) {
+                        display = 'block';
+                    } else if (pageId === 'graphPage' && id === 'graphControls') {
+                        display = 'block';
+                    }
+                    el.style.display = display;
+                }
             });
             stopLiquidityFlowAnimation();
             if (pageId === 'liquidityFlow') { updateLiquidityFlowAnimation(); } 
