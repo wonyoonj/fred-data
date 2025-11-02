@@ -1712,7 +1712,9 @@
                     fedLiquidityDiff = walclDiff - (tgaDiff + 2 * rrpDiff + 2 * resbalDiff);
                     const fedAssetChange = walclDiff - tgaDiff - rrpDiff - resbalDiff; const fedLiabilityChange = rrpDiff + resbalDiff;
                     const formatValue = (v) => `<span class="${v > 0 ? 'slope-positive' : 'slope-negative'}">${v > 0 ? '+' : ''}${v.toFixed(2)} B $/Week</span>`; // B $/Month -> B $/Week
-                    tooltips.fed.innerHTML = `${tooltipDict.fed.desc}<p>${tooltipDict.fed.part1} ${formatValue(fedAssetChange)}</p><p>${tooltipDict.fed.part2} ${formatValue(fedLiabilityChange)}</p><button class="graph-btn" onclick="showGraph('WALCL')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${fedLatestDate}</span>`;
+                    tooltips.fed.innerHTML = `${tooltipDict.fed.desc}<p>${tooltipDict.fed.part1} ${formatValue(fedAssetChange)}</p><p>${tooltipDict.fed.part2} ${formatValue(fedLiabilityChange)}</p>
+                    <p>Fed Liquidity = Change in Fed Assets - Change in Fed Liabilities</p>
+                    <button class="graph-btn" onclick="showGraph('WALCL')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${fedLatestDate}</span>`;
                 }
             }
 
