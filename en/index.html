@@ -504,11 +504,12 @@
         #graphPage {
             text-align: center;
             padding: 20px;
-            height: 500px; 
-            /* min-height: 500px; */ /* <-- 이 줄을 추가 */
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            height: 500px; /* 고정 높이 유지 */
+            /*min-height: 500px;*/
+            /* [수정] flex 관련 속성을 제거하여 캔버스와의 충돌을 방지합니다 */
+            /* display: flex; */
+            /* flex-direction: column; */
+            /* justify-content: space-between; */
             position: relative;
         }
         #graphControls {
@@ -1604,7 +1605,7 @@
                     if (data.length === 0) { renderErrorMessage(`No valid data for '${langDict.indicatorTitles[indicator]}' indicator.`); return; }
                     let processedData = data.map(item => {
                         let value = item.value;
-                        if (indicator === 'WALCL') value /= 1000;
+                        if (indicator === 'WALCL' || indicator === 'WTREGEN' || indicator === 'WRESBAL') value /= 1000;
                         else if (indicator === 'MMMFFAQ027S' || indicator === 'SP500_MCAP') value /= 1000000000;
                         return { x: item.date, y: value };
                     });
@@ -1727,7 +1728,7 @@
                 const latest = { tga: getClosestData(dataStore.WTREGEN, commonLatest)?.value, walcl: getClosestData(dataStore.WALCL, commonLatest)?.value, rrp: getClosestData(dataStore.RRPONTSYD, commonLatest)?.value, resbal: getClosestData(dataStore.WRESBAL, commonLatest)?.value };
                 const past = { tga: getClosestData(dataStore.WTREGEN, pastDate)?.value, walcl: getClosestData(dataStore.WALCL, pastDate)?.value, rrp: getClosestData(dataStore.RRPONTSYD, pastDate)?.value, resbal: getClosestData(dataStore.WRESBAL, pastDate)?.value };
                 if (Object.values(latest).every(v => v != null) && Object.values(past).every(v => v != null)) {
-                    tgaDiff = latest.tga - past.tga; const walclDiff = (latest.walcl / 1000) - (past.walcl / 1000); const rrpDiff = latest.rrp - past.rrp; const resbalDiff = latest.resbal - past.resbal;
+                    tgaDiff = latest.tga /1000 - past.tga/1000; const walclDiff = (latest.walcl / 1000) - (past.walcl / 1000); const rrpDiff = latest.rrp - past.rrp; const resbalDiff = latest.resbal/1000 - past.resbal/1000;
                     fedLiquidityDiff = walclDiff - (tgaDiff + 2 * rrpDiff + 2 * resbalDiff);
                     const fedAssetChange = walclDiff - tgaDiff - rrpDiff - resbalDiff; const fedLiabilityChange = rrpDiff + resbalDiff;
                     const formatValue = (v) => `<span class="${v > 0 ? 'slope-positive' : 'slope-negative'}">${v > 0 ? '+' : ''}${v.toFixed(2)} B $/Week</span>`; // B $/Month -> B $/Week

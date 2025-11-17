@@ -1264,11 +1264,11 @@
                 netMarketFlowLabel: '<b>시장 Total 유동 공급량<br> = ',
                 tooltip: {
                     tga: {
-                        label: 'TGA 잔고:',
+                        label: 'TGA 잔고 변화량:',
                         desc: `<p>최근 일주일 동안, 미국 재무부 잔고 변화를 나타냅니다.</p><p><b>+양수 :</b> 시장에서 재무부로 달러 유동성 흡수<br><b>-음수 :</b> 미국 재무부가 시장에 달러 유동성 공급</p>`
                     },
                     fed: {
-                        label: '연준 유동성:',
+                        label: '연준 유동성 공급량:',
                         desc: `<p>최근 일주일 동안, 연준의 순자산(국채+모기지채 등)과 부채의 변화를 나타냅니다.</p>
                                <p><b>+양수 :</b> 시장의 채권 등 자산 구매를 통해 달러를 시장에 공급 (or) 역레포 자금을 시장에 품<br><b>-음수 :</b> 자산 매각을 통해 시중의 달러를 다시 회수 (or) 시장으로부터 역레포 자금을 충당(긴축)</p><hr>`,
                         part1: '연준 자산 변화량 =',
@@ -1712,7 +1712,8 @@
                     }
                     let processedData = data.map(item => {
                         let value = item.value;
-                        if (indicator === 'WALCL') value /= 1000;
+                        if (indicator === 'WALCL' || indicator === 'WTREGEN' || indicator === 'WRESBAL') value /= 1000;
+                        
                         else if (indicator === 'MMMFFAQ027S' || indicator === 'SP500_MCAP') value /= 1000000000;
                         return { x: item.date, y: value };
                     });
@@ -1902,10 +1903,10 @@
                     rrp: getClosestData(dataStore.RRPONTSYD, pastDate)?.value, resbal: getClosestData(dataStore.WRESBAL, pastDate)?.value
                 };
                 if (Object.values(latest).every(v => v != null) && Object.values(past).every(v => v != null)) {
-                    tgaDiff = latest.tga - past.tga;
+                    tgaDiff = latest.tga /1000 - past.tga /1000;
                     const walclDiff = (latest.walcl / 1000) - (past.walcl / 1000);
                     const rrpDiff = latest.rrp - past.rrp;
-                    const resbalDiff = latest.resbal - past.resbal;
+                    const resbalDiff = latest.resbal /1000 - past.resbal /1000;
                     
                     fedLiquidityDiff = walclDiff - (tgaDiff + 2 * rrpDiff + 2 * resbalDiff);
                     
