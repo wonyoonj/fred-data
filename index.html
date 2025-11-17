@@ -2034,8 +2034,8 @@
             const calculatedValues = [];
             if (tgaDiff != null) calculatedValues.push({ value: tgaDiff, animationClass: tgaDiff < 0 ? 'animated-dollar-from-government' : 'animated-dollar-to-government' });
             if (fedLiquidityDiff != null) calculatedValues.push({ value: fedLiquidityDiff, animationClass: fedLiquidityDiff < 0 ? 'animated-dollar-to-fed' : 'animated-dollar-to-market' });
-            if (mmfToFedDiff != null) calculatedValues.push({ value: mmfToFedDiff * 4.0, animationClass: mmfToFedDiff >= 0 ? 'animated-dollar-from-mmf-to-fed' : 'animated-dollar-from-fed-to-mmf' }); // 애니메이션 크기 조정을 위해 다시 4 곱함
-            if (finalMmfToMarketDiff != null) calculatedValues.push({ value: finalMmfToMarketDiff * 4.0, animationClass: finalMmfToMarketDiff > 0 ? 'animated-dollar-from-mmf-to-market_parabolic' : 'animated-dollar-from-market-to-mmf_parabolic' }); // 애니메이션 크기 조정을 위해 다시 4 곱함
+            if (mmfToFedDiff != null) calculatedValues.push({ value: mmfToFedDiff, animationClass: mmfToFedDiff >= 0 ? 'animated-dollar-from-mmf-to-fed' : 'animated-dollar-from-fed-to-mmf' }); // 애니메이션 크기 조정을 위해 다시 4 곱함
+            if (finalMmfToMarketDiff != null) calculatedValues.push({ value: finalMmfToMarketDiff, animationClass: finalMmfToMarketDiff > 0 ? 'animated-dollar-from-mmf-to-market_parabolic' : 'animated-dollar-from-market-to-mmf_parabolic' }); // 애니메이션 크기 조정을 위해 다시 4 곱함
             const rankedAnimations = calculatedValues.sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
             const startAnimations = () => {
                 rankedAnimations.forEach((task, index) => {

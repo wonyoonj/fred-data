@@ -878,6 +878,7 @@
                 <div class="icon-container Government-container">
                     <img src="../icon/government.JPG" alt="Government TGA" class="icon">
                     <span class="icon-label">U.S. Government</span>
+                    <span id="tgaCurrentBalance" class="icon-label" style="font-weight: bold; color: black; font-size: 14px; margin-top: 0;">...</span>
                 </div>
                 <div class="icon-container Market-container">
                     <img src="../icon/Market.jpg" alt="Market" class="icon">
@@ -1041,7 +1042,7 @@
                     <button class="button" onclick="showGraph('WTREGEN')">U.S. Gov. TGA Balance</button>
                     <button class="button" onclick="showGraph('WRESBAL')">U.S. Bank Reserves</button>
                     <button class="button" onclick="showGraph('RRPONTSYD')">Fed Reverse Repo Funds</button>
-                    <button class="button" onclick="showGraph('MMMFFAQ027S')">MMF Balance</button>
+                    <button class="button" onclick="showGraph('FEDASSET')">Fed Net Assets</button> <button class="button" onclick="showGraph('MMMFFAQ027S')">MMF Balance</button>
                     <button class="button" onclick="showGraph('WALCL')">Fed Total Assets + Liabilities</button>
                 </div>
             </div>
@@ -1304,7 +1305,7 @@
                     }
                 },
                  indicatorTitles: {
-                    'WTREGEN': 'U.S. Gov. TGA Balance', 'WRESBAL': 'U.S. Bank Reserves', 'RRPONTSYD': 'Fed Reverse Repo Funds', 'MMMFFAQ027S': 'MMF Balance', 'WALCL': 'Fed Total Assets + Liabilities',
+                    'WTREGEN': 'U.S. Gov. TGA Balance', 'WRESBAL': 'U.S. Bank Reserves', 'RRPONTSYD': 'Fed Reverse Repo Funds', 'FEDASSET': 'Fed Net Assets', 'MMMFFAQ027S': 'MMF Balance', 'WALCL': 'Fed Total Assets + Liabilities',
                     'SOFR': 'SOFR Rate', 'FEDFUNDS': 'EFFR Rate', 'IORB': 'IORB Rate', 'DGS3MO': '3-Month Treasury Bill', 'DGS2': '2-Year Treasury Note', 'DGS10': '10-Year Treasury Note', 'DPCREDIT': 'Fed Discount Rate',
                     'DRBLACBS': 'U.S. Bank Delinquency Rate', 'M2SL': 'M2', 'M1SL': 'M1', 'NASDAQ100': 'NASDAQ 100 Index', 'SP500': 'S&P 500 Index', 'SP500_MCAP': 'S&P 500 Market Cap',
                     'RRPONTSYAWARD': 'Reverse Repo Rate', 'ALTSALES': 'Car & Truck Sales', 'HOUST': 'Housing Starts', 'DCOILBRENTEU': 'Crude Oil Price',
@@ -1330,6 +1331,7 @@
                     'DPCREDIT': {'title': 'Fed Discount Rate', 'content': {'Economic Meaning': 'The interest rate at which the Fed lends to commercial banks, determining their funding costs. A lower discount rate may signal the Fed\'s intention to release more money to commercial banks.', 'Why is this indicator necessary?': 'It is used to provide liquidity support to banks and prevent credit crunches, making it important for evaluating the Fed\'s emergency monetary policies.'}},
                     'DRBLACBS': {'title': 'U.S. Bank Delinquency Rate (All)', 'content': {'Economic Meaning': 'The percentage of bank loans that are past due, indicating borrowers\' ability to repay and credit risk.', 'Why is this indicator necessary?': 'It serves as a signal for economic recession or the health of the financial system and is used as a basis for lending policies and regulatory reinforcement.'}},
                     'NASDAQ100': {'title': 'NASDAQ 100 Index', 'content': {'Economic Meaning': 'An index reflecting the stock prices of 100 of the largest non-financial companies listed on the Nasdaq stock market, showing the performance of the tech sector.', 'Why is this indicator necessary?': 'It reflects the growth and innovation of the technology industry and has become an important benchmark as the global economy\'s dependence on technology increases.'}},
+                    'FEDASSET': {'title': 'Fed Net Assets', 'content': {'Economic Meaning': 'Represents the Federal Reserve\'s (FED) net assets (Treasuries + MBS, etc.).', 'Why is this indicator necessary?': 'When the FED purchases bonds (e.g., Treasuries), it means they are buying assets by releasing money into the market. Conversely, selling net assets means they are selling bonds and retrieving dollars from the market.'}},
                     'WALCL': {'title': 'Fed Total Assets + Liabilities', 'content': {'Economic Meaning': 'The sum of the Fed\'s total assets (e.g., bond holdings) and liabilities (e.g., reverse repos and reserves), representing the Fed\'s financial position.', 'Why is this indicator necessary?': 'It shows the scale of quantitative easing or tightening policies and is essential for analyzing the impact of the Fed\'s monetary policy on market liquidity.'}},
                     'SP500_MCAP': {'title': 'S&P 500 Market Cap', 'content': {'Economic Meaning': 'The total market capitalization of the companies included in the S&P 500 index. This represents the overall size and value of the U.S. stock market and reflects the general health of the economy and investor sentiment.', 'Why is this indicator necessary?': 'It is an important indicator for judging whether the stock market is over- or under-valued. An increase in market cap suggests economic growth and improved corporate profitability, while a decrease may signal a slowdown or increased uncertainty.'}},
                     'RRPONTSYAWARD': {'title': 'Reverse Repo Rate', 'content': {'Economic Meaning': 'The interest rate the Fed pays when it borrows from financial institutions, used as a benchmark to absorb excess liquidity from the market. A higher rate helps absorb more liquidity.', 'Why is this indicator necessary?': 'It prevents interest rates from falling below the Fed\'s target when market liquidity is overly abundant. Because the reverse repo rate acts as a minimum guaranteed return for financial institutions parking cash at the Fed, they are unwilling to lend elsewhere at a lower rate, thus preventing short-term rates from dropping below the Fed\'s target level.'}},
@@ -1372,7 +1374,7 @@
         }
 
         const indicatorUnits = {
-            'WTREGEN': 'Billions of U.S. Dollars', 'WRESBAL': 'Billions of Dollars', 'RRPONTSYD': 'Billions of Dollars', 'MMMFFAQ027S': 'Billions of Dollars', 'WALCL': 'Billions of Dollars',
+            'WTREGEN': 'Billions of U.S. Dollars', 'WRESBAL': 'Billions of Dollars', 'RRPONTSYD': 'Billions of Dollars', 'FEDASSET': 'Billions of Dollars', 'MMMFFAQ027S': 'Billions of Dollars', 'WALCL': 'Billions of Dollars',
             'M2SL': 'Billions of Dollars', 'M1SL': 'Billions of Dollars', 'SP500_MCAP': 'Billions of Dollars', 'SOFR': 'Percent (%)', 'FEDFUNDS': 'Percent (%)', 'IORB': 'Percent (%)', 'DGS3MO': 'Percent (%)',
             'DGS2': 'Percent (%)', 'DGS10': 'Percent (%)', 'DPCREDIT': 'Percent (%)', 'DRBLACBS': 'Percent (%)', 'NASDAQ100': 'Index', 'SP500': 'Index',
             'RRPONTSYAWARD': 'Percent (%)', 'ALTSALES': 'Millions of Units', 'HOUST': 'Thousands of Units', 'DCOILBRENTEU': 'Dollars per Barrel',
@@ -1600,6 +1602,46 @@
                         label: configs[index].label, borderColor: configs[index].color, data: data.map(item => ({ x: item.date, y: item.value })),
                         fill: false, tension: 0.1, pointRadius: 0
                     }));
+                } else if (indicator === 'FEDASSET') {
+                    const [walclData, tgaData, rrpData, rescalData] = await Promise.all([
+                        fetchAndCacheData('WALCL'),
+                        fetchAndCacheData('WTREGEN'),
+                        fetchAndCacheData('RRPONTSYD'),
+                        fetchAndCacheData('WRESBAL')
+                    ]);
+
+                    const tgaMap = new Map(tgaData.map(item => [item.date, item.value / 1000])); // Millions to Billions
+                    const resbalMap = new Map(rescalData.map(item => [item.date, item.value / 1000])); // Millions to Billions
+                    
+                    // RRP는 일별, 나머지는 주별 데이터. 주별 날짜 기준으로 가장 가까운 일별 RRP 값을 찾습니다.
+                    const fedAssetData = [];
+                    for (const itemWalcl of walclData) {
+                        const date = itemWalcl.date;
+                        const walclVal = itemWalcl.value / 1000; // Millions to Billions
+
+                        // 동일한 날짜에 다른 주별 데이터가 있는지 확인
+                        if (tgaMap.has(date) && resbalMap.has(date)) {
+                            const tgaVal = tgaMap.get(date);
+                            const resbalVal = resbalMap.get(date);
+                            
+                            // 가장 가까운 RRP 데이터(일별) 찾기
+                            const rrpItem = getClosestData(rrpData, new Date(date));
+                            if (rrpItem) {
+                                const rrpVal = rrpItem.value; // 이미 Billions 단위
+                                // 연준 순 자산 = WALCL - TGA - RRP - WRESBAL (단위: Billions)
+                                const fedAssetVal = walclVal - tgaVal - rrpVal - resbalVal;
+                                fedAssetData.push({ x: date, y: fedAssetVal });
+                            }
+                        }
+                    }
+
+                    currentGraphData = [{
+                        label: langDict.indicatorTitles[indicator] || indicator,
+                        data: fedAssetData,
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                        fill: false, tension: 0.1, pointRadius: 0
+                    }];
                 } else {
                     let data = await fetchAndCacheData(indicator);
                     if (data.length === 0) { renderErrorMessage(`No valid data for '${langDict.indicatorTitles[indicator]}' indicator.`); return; }
@@ -1701,6 +1743,8 @@
         async function updateLiquidityFlowAnimation() {
             stopLiquidityFlowAnimation();
             const langDict = translations[currentLanguage];
+            const tgaBalanceEl = document.getElementById('tgaCurrentBalance'); // [추가]
+            if (tgaBalanceEl) { tgaBalanceEl.textContent = '...'; } // [추가]
             const tooltipDict = langDict.tooltip;
             const displays = { tga: document.getElementById('tgaSlopeDisplay'), fed: document.getElementById('fedLiquidityDisplay'), mmf_fed: document.getElementById('mmfToRrpDisplay'), mmf_market: document.getElementById('mmfToMarketDisplay'), net_market_flow: document.getElementById('netMarketFlowDisplay') };
             Object.values(displays).forEach(el => { if (el) { el.innerHTML = el.id !== 'netMarketFlowDisplay' ? "Calculating..." : ""; el.style.color = "black"; } });
@@ -1710,6 +1754,16 @@
             try {
                 const results = await Promise.all(indicators.map(ind => fetchAndCacheData(ind).catch(e => { console.error(`Error fetching ${ind}:`, e); return []; })));
                 indicators.forEach((ind, i) => { dataStore[ind] = results[i]; });
+                
+                // [추가] TGA 현재 잔고 업데이트
+                if (dataStore.WTREGEN && dataStore.WTREGEN.length > 0) {
+                  const latestTgaData = dataStore.WTREGEN[dataStore.WTREGEN.length - 1];
+                  const latestTgaValue = latestTgaData.value / 1000; // Millions to Billions
+                  if (tgaBalanceEl) { tgaBalanceEl.textContent = `Current TGA Balance: ${latestTgaValue.toFixed(2)} B $`; }
+                } else {
+                  if (tgaBalanceEl) { tgaBalanceEl.textContent = '...'; }
+                }
+
             } catch (error) { console.error("Failed to load initial data", error); Object.values(displays).forEach(el => { if (el) el.textContent = "Data Error"; }); return; }
             let tgaDiff, fedLiquidityDiff, mmfToFedDiff, finalMmfToMarketDiff;
             let tgaLatestDate, fedLatestDate, mmfFedLatestDate, mmfMarketLatestDate;
@@ -1732,9 +1786,12 @@
                     fedLiquidityDiff = walclDiff - (tgaDiff + 2 * rrpDiff + 2 * resbalDiff);
                     const fedAssetChange = walclDiff - tgaDiff - rrpDiff - resbalDiff; const fedLiabilityChange = rrpDiff + resbalDiff;
                     const formatValue = (v) => `<span class="${v > 0 ? 'slope-positive' : 'slope-negative'}">${v > 0 ? '+' : ''}${v.toFixed(2)} B $/Week</span>`; // B $/Month -> B $/Week
-                    tooltips.fed.innerHTML = `${tooltipDict.fed.desc}<p>${tooltipDict.fed.part1} ${formatValue(fedAssetChange)}</p><p>${tooltipDict.fed.part2} ${formatValue(fedLiabilityChange)}</p>
-                    <p>Fed Liquidity = Change in Fed Assets - Change in Fed Liabilities</p>
-                    <button class="graph-btn" onclick="showGraph('WALCL')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${fedLatestDate}</span>`;
+                    tooltips.fed.innerHTML = `${tooltipDict.fed.desc}
+                        <p>${tooltipDict.fed.part1} ${formatValue(fedAssetChange)}</p>
+                        <button class="graph-btn" onclick="showGraph('FEDASSET')">Fed Assets</button>
+                        <p>${tooltipDict.fed.part2} ${formatValue(fedLiabilityChange)}</p>
+                        <p>Fed Liquidity = Change in Fed Assets - Change in Fed Liabilities</p>
+                        <button class="graph-btn" onclick="showGraph('WALCL')">Fed Assets + Liabilities</button><span class="update-date">Update Date: ${fedLatestDate}</span>`;
                 }
             }
 
@@ -1777,8 +1834,8 @@
             const calculatedValues = [];
             if (tgaDiff != null) calculatedValues.push({ value: tgaDiff, animationClass: tgaDiff < 0 ? 'animated-dollar-from-government' : 'animated-dollar-to-government' });
             if (fedLiquidityDiff != null) calculatedValues.push({ value: fedLiquidityDiff, animationClass: fedLiquidityDiff < 0 ? 'animated-dollar-to-fed' : 'animated-dollar-to-market' });
-            if (mmfToFedDiff != null) calculatedValues.push({ value: mmfToFedDiff * 4.0, animationClass: mmfToFedDiff >= 0 ? 'animated-dollar-from-mmf-to-fed' : 'animated-dollar-from-fed-to-mmf' }); // Multiply by 4 for animation scale
-            if (finalMmfToMarketDiff != null) calculatedValues.push({ value: finalMmfToMarketDiff * 4.0, animationClass: finalMmfToMarketDiff > 0 ? 'animated-dollar-from-mmf-to-market_parabolic' : 'animated-dollar-from-market-to-mmf_parabolic' }); // Multiply by 4 for animation scale
+            if (mmfToFedDiff != null) calculatedValues.push({ value: mmfToFedDiff, animationClass: mmfToFedDiff >= 0 ? 'animated-dollar-from-mmf-to-fed' : 'animated-dollar-from-fed-to-mmf' }); // Multiply by 4 for animation scale
+            if (finalMmfToMarketDiff != null) calculatedValues.push({ value: finalMmfToMarketDiff, animationClass: finalMmfToMarketDiff > 0 ? 'animated-dollar-from-mmf-to-market_parabolic' : 'animated-dollar-from-market-to-mmf_parabolic' }); // Multiply by 4 for animation scale
             const rankedAnimations = calculatedValues.sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
             const startAnimations = () => {
                 rankedAnimations.forEach((task, index) => {
