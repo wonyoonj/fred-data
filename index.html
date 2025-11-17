@@ -867,6 +867,7 @@
                 <div class="icon-container Government-container">
                     <img src="./icon/government.JPG" alt="Government TGA" class="icon">
                     <span class="icon-label">미국 정부</span>
+                    <span id="tgaCurrentBalance" class="icon-label" style="font-weight: bold; color: black; font-size: 14px; margin-top: 0;">...</span>
                 </div>
                 <div class="icon-container Market-container">
                     <img src="./icon/Market.jpg" alt="Market" class="icon">
@@ -1035,7 +1036,7 @@
                     <button class="button" onclick="showGraph('WTREGEN')">미 정부 TGA 잔고</button>
                     <button class="button" onclick="showGraph('WRESBAL')">미 은행 지급준비금</button>
                     <button class="button" onclick="showGraph('RRPONTSYD')">연준 역레포 자금</button>
-                    <button class="button" onclick="showGraph('MMMFFAQ027S')">MMF 잔고</button>
+                    <button class="button" onclick="showGraph('FEDASSET')">연준 순 자산</button> <button class="button" onclick="showGraph('MMMFFAQ027S')">MMF 잔고</button>
                     <button class="button" onclick="showGraph('WALCL')">연준 전체 자산 + 부채</button>
                 </div>
             </div>
@@ -1299,7 +1300,7 @@
                     }
                 },
                 indicatorTitles: {
-                    'WTREGEN': '미 정부 TGA 잔고', 'WRESBAL': '미 은행 지급준비금', 'RRPONTSYD': '연준 역레포 자금', 'MMMFFAQ027S': 'MMF 잔고', 'WALCL': '연준 전체 자산 + 부채',
+                    'WTREGEN': '미 정부 TGA 잔고', 'WRESBAL': '미 은행 지급준비금', 'RRPONTSYD': '연준 역레포 자금', 'FEDASSET': '연준 순 자산', 'MMMFFAQ027S': 'MMF 잔고', 'WALCL': '연준 전체 자산 + 부채',
                     'SOFR': 'SOFR 금리', 'FEDFUNDS': 'EFFR 금리', 'IORB': 'IORB 금리', 'DGS3MO': '3개월 미 국채금리', 'DGS2': '2년물 미 국채금리', 'DGS10': '10년물 미 국채금리', 'DPCREDIT': '연준 할인율',
                     'DRBLACBS': '미 은행 연체율(전체)', 'M2SL': 'M2', 'M1SL': 'M1', 'NASDAQ100': '나스닥100 지수', 'SP500': 'S&P500 지수', 'SP500_MCAP': 'S&P500 시가총액',
                     'RRPONTSYAWARD': '역레포 금리', 'ALTSALES': '자동차, 트럭 판매량', 'HOUST': '주택 착공 허가 건수', 'DCOILBRENTEU': '국제 유가',
@@ -1325,6 +1326,7 @@
                     'DPCREDIT': {'title': '연준 할인율', 'content': {'경제적 의미': '연준이 상업 은행에 대출해 줄 때 적용하는 이자율로, 금융기관의 자금 조달 비용을 결정합니다. 할인율이 낮게 되면, 연준이 시중 은행에 돈을 풀고 싶다는 의미가 될 수 있습니다.', '왜 필요한 지표인가': '은행의 유동성 지원과 신용 경색 방지에 사용되며, 연준의 긴급 통화 정책을 평가하는 데 중요합니다.'}},
                     'DRBLACBS': {'title': '미 은행 연체율(전체)', 'content': {'경제적 의미': '은행 대출 중 연체된 비율로, 대출자의 상환 능력과 신용 위험을 나타냅니다.', '왜 필요한 지표인가': '경제 침체 신호나 금융 시스템의 건전성을 평가하며, 대출 정책과 규제 강화의 기초 자료로 사용됩니다.'}},
                     'NASDAQ100': {'title': '나스닥100 지수', 'content': {'경제적 의미': '기술주 중심의 100개 기업 주가를 반영한 지수로, 기술 섹터의 성과를 보여줍니다.', '왜 필요한 지표인가': '기술 산업의 성장과 혁신을 반영하며, 글로벌 경제에서 기술 의존도가 높아짐에 따라 중요한 기준이 됩니다.'}},
+                    'FEDASSET': {'title': '연준 순 자산', 'content': {'경제적 의미': '연방 준비은행(FED)의 순 자산(국채+모기지채 등)을 의미합니다.', '왜 필요한 지표인가': 'FED가 주도하여 국채 등의 채권을 매입하게 되면, 시중에 돈을 풀면서 자산을 구입하고 있음을 의미합니다. 반대로 순 자산 매각을 하게 되면, 채권을 팔고 시장에 풀린 달러를 다시 회수함을 의미합니다.'}},
                     'WALCL': {'title': '연준 전체 자산 + 부채', 'content': {'경제적 의미': '연준의 총 자산(예: 채권 보유량 등)과 부채(예: 역레포 및 준비금 등)를 합친 금액으로, 연준의 재무 상태를 나타냅니다.', '왜 필요한 지표인가': '양적 완화나 긴축 정책의 규모를 보여주며, 연준의 통화 정책과 시장 유동성에 미치는 영향을 분석하는 데 필수적입니다.'}},
                     'SP500_MCAP': {'title': 'S&P500 시가총액', 'content': {'경제적 의미': 'S&P500 지수에 포함된 기업들의 총 시가총액입니다. 이는 미국 주식 시장의 전반적인 규모와 가치를 나타내며, 경제의 전반적인 건전성과 투자 심리를 반영합니다.', '왜 필요한 지표인가': '주식 시장의 과열 또는 침체 여부를 판단하는 데 중요한 지표입니다. 시가총액의 증가는 경제 성장과 기업 수익성 개선을, 감소는 경기 둔화나 불확실성 증대를 시사할 수 있습니다.'}},
                     'RRPONTSYAWARD': {'title': '역레포 금리', 'content': {'경제적 의미': '연준이 금융기관으로부터 자금을 빌릴 때 지급하는 금리로, 시중에 넘치는 유동성을 흡수하기 위한 기준 금리입니다. 즉, 금리가 높아질수록 시중의 유동성을 흡수하는 역할을 합니다.', '왜 필요한 지표인가': '시장의 유동성이 지나치게 풍부할 때 연준의 의도로 금리가 떨어지는 것을 막는 역할을 합니다. 왜냐하면 역레포 금리는 금융기관이 연준에 돈을 맡길 때 보장받는 최저 수익률 역할을 합니다. 따라서 금융기관들은 역레포 금리보다 낮은 금리로 다른 곳에 돈을 빌려주지 않으려 하기 때문에, 단기 금리가 연준의 목표 수준 이하로 떨어지는 것을 막는 역할을 합니다.'}},
@@ -1369,7 +1371,7 @@
         }
 
         const indicatorUnits = {
-            'WTREGEN': 'Billions of U.S. Dollars', 'WRESBAL': 'Billions of Dollars', 'RRPONTSYD': 'Billions of Dollars', 'MMMFFAQ027S': 'Billions of Dollars', 'WALCL': 'Billions of Dollars',
+            'WTREGEN': 'Billions of U.S. Dollars', 'WRESBAL': 'Billions of Dollars', 'RRPONTSYD': 'Billions of Dollars', 'FEDASSET': 'Billions of Dollars', 'MMMFFAQ027S': 'Billions of Dollars', 'WALCL': 'Billions of Dollars',
             'M2SL': 'Billions of Dollars', 'M1SL': 'Billions of Dollars', 'SP500_MCAP': 'Billions of Dollars', 'SOFR': 'Percent (%)', 'FEDFUNDS': 'Percent (%)', 'IORB': 'Percent (%)', 'DGS3MO': 'Percent (%)',
             'DGS2': 'Percent (%)', 'DGS10': 'Percent (%)', 'DPCREDIT': 'Percent (%)', 'DRBLACBS': 'Percent (%)', 'NASDAQ100': 'Index', 'SP500': 'Index',
             'RRPONTSYAWARD': 'Percent (%)', 'ALTSALES': 'Millions of Units', 'HOUST': 'Thousands of Units', 'DCOILBRENTEU': 'Dollars per Barrel',
@@ -1703,6 +1705,46 @@
                             fill: false, tension: 0.1, pointRadius: 0
                         };
                     });
+                } else if (indicator === 'FEDASSET') {
+                    const [walclData, tgaData, rrpData, rescalData] = await Promise.all([
+                        fetchAndCacheData('WALCL'),
+                        fetchAndCacheData('WTREGEN'),
+                        fetchAndCacheData('RRPONTSYD'),
+                        fetchAndCacheData('WRESBAL')
+                    ]);
+
+                    const tgaMap = new Map(tgaData.map(item => [item.date, item.value / 1000])); // Millions to Billions
+                    const resbalMap = new Map(rescalData.map(item => [item.date, item.value / 1000])); // Millions to Billions
+                    
+                    // RRP는 일별, 나머지는 주별 데이터. 주별 날짜 기준으로 가장 가까운 일별 RRP 값을 찾습니다.
+                    const fedAssetData = [];
+                    for (const itemWalcl of walclData) {
+                        const date = itemWalcl.date;
+                        const walclVal = itemWalcl.value / 1000; // Millions to Billions
+
+                        // 동일한 날짜에 다른 주별 데이터가 있는지 확인
+                        if (tgaMap.has(date) && resbalMap.has(date)) {
+                            const tgaVal = tgaMap.get(date);
+                            const resbalVal = resbalMap.get(date);
+                            
+                            // 가장 가까운 RRP 데이터(일별) 찾기
+                            const rrpItem = getClosestData(rrpData, new Date(date));
+                            if (rrpItem) {
+                                const rrpVal = rrpItem.value; // 이미 Billions 단위
+                                // 연준 순 자산 = WALCL - TGA - RRP - WRESBAL (단위: Billions)
+                                const fedAssetVal = walclVal - tgaVal - rrpVal - resbalVal;
+                                fedAssetData.push({ x: date, y: fedAssetVal });
+                            }
+                        }
+                    }
+
+                    currentGraphData = [{
+                        label: langDict.indicatorTitles[indicator] || indicator,
+                        data: fedAssetData,
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                        fill: false, tension: 0.1, pointRadius: 0
+                    }];
                 } else {
                     let data = await fetchAndCacheData(indicator);
                     if (data.length === 0) {
@@ -1854,6 +1896,8 @@
         async function updateLiquidityFlowAnimation() {
             stopLiquidityFlowAnimation();
             const langDict = translations[currentLanguage];
+            const tgaBalanceEl = document.getElementById('tgaCurrentBalance'); // [추가]
+            if (tgaBalanceEl) { tgaBalanceEl.textContent = '...'; } // [추가]
             const tooltipDict = langDict.tooltip;
             const displays = {
                 tga: document.getElementById('tgaSlopeDisplay'), fed: document.getElementById('fedLiquidityDisplay'),
@@ -1875,6 +1919,14 @@
                     console.error(`Error fetching ${indicator}:`, e); return [];
                 })));
                 indicators.forEach((indicator, index) => { dataStore[indicator] = results[index]; });
+
+                if (dataStore.WTREGEN && dataStore.WTREGEN.length > 0) {
+                  const latestTgaData = dataStore.WTREGEN[dataStore.WTREGEN.length - 1];
+                  const latestTgaValue = latestTgaData.value / 1000; // Millions to Billions
+                  if (tgaBalanceEl) { tgaBalanceEl.textContent = `현재 TGA 잔고: ${latestTgaValue.toFixed(2)} B $`; }
+                } else {
+                  if (tgaBalanceEl) { tgaBalanceEl.textContent = '...'; }
+                }
             } catch (error) {
                 console.error("Failed to load initial data for liquidity flow", error);
                 const errorText = currentLanguage === 'ko' ? "데이터 오류" : "Data Error";
@@ -1914,9 +1966,11 @@
                     const fedLiabilityChange = rrpDiff + resbalDiff;
                     const formatValue = (value) => `<span class="${value > 0 ? 'slope-positive' : 'slope-negative'}">${value > 0 ? '+' : ''}${value.toFixed(2)} B $/Week</span>`; // B $/Month -> B $/Week
                     tooltips.fed.innerHTML = `${tooltipDict.fed.desc}
-                        <p>${tooltipDict.fed.part1} ${formatValue(fedAssetChange)}</p><p>${tooltipDict.fed.part2} ${formatValue(fedLiabilityChange)}</p>
+                        <p>${tooltipDict.fed.part1} ${formatValue(fedAssetChange)}</p>
+                        <button class="graph-btn" onclick="showGraph('FEDASSET')">연준 자산</button>
+                        <p>${tooltipDict.fed.part2} ${formatValue(fedLiabilityChange)}</p>
                         <p>연준 유동성 = 연준 자산 변화량 - 연준의 부채 변화량</p>
-                        <button class="graph-btn" onclick="showGraph('WALCL')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${fedLatestDate}</span>`;
+                        <button class="graph-btn" onclick="showGraph('WALCL')">연준 자산 + 부채</button><span class="update-date">Update Date: ${fedLatestDate}</span>`;
                 }
             }
             
