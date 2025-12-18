@@ -1,5 +1,5 @@
 {
-    "date": "2025-12-17",
+    "date": "2025-12-18",
     "tga_weekly_change_billion": -78.22,
     "fed_liquidity_weekly_change_billion": -70.98,
     "fed_debt_weekly_change_billion": 76.36,
@@ -9,9 +9,9 @@
     "reverse_repo_rate_percent": 3.5,
     "discount_rate_percent": 3.75,
     "effr_rate_percent": 3.88,
-    "sofr_rate_percent": 3.75,
-    "sofr_effr_spread_percent": -0.13,
-    "dgs3mo_rate_percent": 3.65,
-    "dgs2_rate_percent": 3.51,
-    "dgs10_rate_percent": 4.18
+    "sofr_rate_percent": 3.69,
+    "sofr_effr_spread_percent": -0.19,
+    "dgs3mo_rate_percent": 3.64,
+    "dgs2_rate_percent": 3.48,
+    "dgs10_rate_percent": 4.15
 }
