@@ -1,5 +1,5 @@
 {
-    "date": "2025-12-22",
+    "date": "2025-12-25",
     "tga_weekly_change_billion": -25.85,
     "fed_liquidity_weekly_change_billion": -21.08,
     "fed_debt_weekly_change_billion": 32.25,
@@ -11,7 +11,7 @@
     "effr_rate_percent": 3.88,
     "sofr_rate_percent": 3.66,
     "sofr_effr_spread_percent": -0.22,
-    "dgs3mo_rate_percent": 3.62,
-    "dgs2_rate_percent": 3.46,
-    "dgs10_rate_percent": 4.12
+    "dgs3mo_rate_percent": 3.64,
+    "dgs2_rate_percent": 3.44,
+    "dgs10_rate_percent": 4.17
 }
