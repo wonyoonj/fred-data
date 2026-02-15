@@ -39,7 +39,7 @@
     <meta name="title" content="원뎅이의 미국 유동성 현황">
     <meta name="subject" content="실시간 지표 데이터를 통해, 현재 미국 시장의 통화 유동성 흐름을 한눈에 파악해보세요!">
     <meta name="description" content="미국의 FED, 정부, MMF, 시장 간의 유동성 흐름을 애니메이션으로 한눈에 시각화하여 보여줍니다.">
-    <meta name="keywords" content="미국, FED, 연준, 정부, MMF, 시장, 관세, 유동성, 역레포, 금리, 긴축, 양적완화, TGA잔고, SOFR, EFFR, 국채금리, 나스닥, S&P500, M2, M1, 지금준비금, 실시간, 트럼프, 파월, 베센트">
+    <meta name="keywords" content="미국, FED, 연준, 정부, MMF, 시장, 관세, 유동성, 역레포, 금리, 긴축, 양적완화, TGA잔고, SOFR, EFFR, 국채금리, 나스닥, S&P500, M2, M1, 지금준비금, 실시간, 트럼프, 파월, 베센트, 비트코인, 이더리움, MVRV Z-Score">
 
     <meta property="og:type" content="website">
     <meta property="og:title" content="원뎅이의 미국 유동성 현황">
@@ -1038,6 +1038,7 @@
                     <button class="button" onclick="showGraph('RRPONTSYD')">연준 역레포 자금</button>
                     <button class="button" onclick="showGraph('FEDASSET')">연준 순 자산</button> <button class="button" onclick="showGraph('MMMFFAQ027S')">MMF 잔고</button>
                     <button class="button" onclick="showGraph('WALCL')">연준 전체 자산 + 부채</button>
+                    <button class="button" onclick="showGraph('MMF_COMPOSITION')">MMF 자산 구성</button>
                 </div>
             </div>
             <div class="indicator-section">
@@ -1304,7 +1305,7 @@
                     'SOFR': 'SOFR 금리', 'FEDFUNDS': 'EFFR 금리', 'IORB': 'IORB 금리', 'DGS3MO': '3개월 미 국채금리', 'DGS2': '2년물 미 국채금리', 'DGS10': '10년물 미 국채금리', 'DPCREDIT': '연준 할인율',
                     'DRBLACBS': '미 은행 연체율(전체)', 'M2SL': 'M2', 'M1SL': 'M1', 'NASDAQ100': '나스닥100 지수', 'SP500': 'S&P500 지수', 'SP500_MCAP': 'S&P500 시가총액',
                     'RRPONTSYAWARD': '역레포 금리', 'ALTSALES': '자동차, 트럭 판매량', 'HOUST': '주택 착공 허가 건수', 'DCOILBRENTEU': '국제 유가',
-                    'SOFR_FEDFUNDS_SPREAD': 'SOFR, EFFR 스프레드', 'SOFR_IORB_SPREAD': 'SOFR, IORB 스프레드', 'YIELD_SPREAD': '미국 장단기 금리차'
+                    'SOFR_FEDFUNDS_SPREAD': 'SOFR, EFFR 스프레드', 'SOFR_IORB_SPREAD': 'SOFR, IORB 스프레드', 'YIELD_SPREAD': '미국 장단기 금리차', 'WALCL': '연준 전체 자산 + 부채', 'MMF_COMPOSITION': 'MMF 자산 구성'
                 },
                 infoData: {
                     'WTREGEN': {'title': '미 정부 TGA 잔고', 'content': {'경제적 의미': 'Treasury General Account (TGA)는 미국 정부의 현금 잔고 입니다. 이 잔고의 증가는 정부가 시장 유동성을 흡수했음을 말하며, 감소는 재무부가 시장에 유동성을 정책을 통해 공급했음을 의미할 수 있습니다.', '왜 필요한 지표인가': 'TGA 잔고는 유동성(시장에 순환하는 돈의 양)에 직접적인 영향을 미칩니다. 잔고가 급격히 변동하면 단기 금리나 금융 시장 안정성에 영향을 줄 수 있어 모니터링이 필요합니다.'}},
@@ -1332,7 +1333,8 @@
                     'RRPONTSYAWARD': {'title': '역레포 금리', 'content': {'경제적 의미': '연준이 금융기관으로부터 자금을 빌릴 때 지급하는 금리로, 시중에 넘치는 유동성을 흡수하기 위한 기준 금리입니다. 즉, 금리가 높아질수록 시중의 유동성을 흡수하는 역할을 합니다.', '왜 필요한 지표인가': '시장의 유동성이 지나치게 풍부할 때 연준의 의도로 금리가 떨어지는 것을 막는 역할을 합니다. 왜냐하면 역레포 금리는 금융기관이 연준에 돈을 맡길 때 보장받는 최저 수익률 역할을 합니다. 따라서 금융기관들은 역레포 금리보다 낮은 금리로 다른 곳에 돈을 빌려주지 않으려 하기 때문에, 단기 금리가 연준의 목표 수준 이하로 떨어지는 것을 막는 역할을 합니다.'}},
                     'ALTSALES': {'title': '자동차, 트럭 판매량', 'content': {'경제적 의미': '자동차 및 모든 승용차 판매량에 대한 미 상무부 경제분석국의 보고입니다. 이 지수가 높다면, 강한 경제를 나타냅니다.', '왜 필요한 지표인가': '미국 시장의 주요한 경제 **선행지표** 중 하나입니다.'}},
                     'HOUST': {'title': '주택 착공 허가 건수', 'content': {'경제적 의미': '주택 착공은 특정 달에 시작된 새로운 주거 건설 프로젝트의 수를 의미합니다. 주택 착공 추정치에는 기존 기반 위에 완전히 재건되는 건물의 단위도 포함됩니다. 이 지수가 높다면, 강한 경제를 나타냅니다.', '왜 필요한 지표인가': '미국 시장의 주요한 경제 **선행지표** 중 하나입니다.'}},
-                    'DCOILBRENTEU': {'title': '국제 유가', 'content': {'경제적 의미': '유럽과 전 세계 유가의 기준이 되는 지표를 의미합니다.', '왜 필요한 지표인가': '역사적으로 유가가 감소하면, 경제 부흥이 일어나고, 유가가 상승하면 경기 침체 및 하락 국면을 보이기도 합니다. 따라서 중요하게 모니터링할 지표입니다.'}}
+                    'DCOILBRENTEU': {'title': '국제 유가', 'content': {'경제적 의미': '유럽과 전 세계 유가의 기준이 되는 지표를 의미합니다.', '왜 필요한 지표인가': '역사적으로 유가가 감소하면, 경제 부흥이 일어나고, 유가가 상승하면 경기 침체 및 하락 국면을 보이기도 합니다. 따라서 중요하게 모니터링할 지표입니다.'}},
+                    'MMF_COMPOSITION': {'title': 'MMF 자산 구성', 'content': {'경제적 의미': 'MMF 유입 자금의 구성 현황이 어떻게 변화하고 있는지를 보여줍니다.', '왜 필요한 지표인가': 'MMF의 규모가 커짐에 따라 자금 흐름의 변화가 시장 유동성에 영향을 미칩니다.'}}
                 }
             }
         };
@@ -1375,7 +1377,7 @@
             'M2SL': 'Billions of Dollars', 'M1SL': 'Billions of Dollars', 'SP500_MCAP': 'Billions of Dollars', 'SOFR': 'Percent (%)', 'FEDFUNDS': 'Percent (%)', 'IORB': 'Percent (%)', 'DGS3MO': 'Percent (%)',
             'DGS2': 'Percent (%)', 'DGS10': 'Percent (%)', 'DPCREDIT': 'Percent (%)', 'DRBLACBS': 'Percent (%)', 'NASDAQ100': 'Index', 'SP500': 'Index',
             'RRPONTSYAWARD': 'Percent (%)', 'ALTSALES': 'Millions of Units', 'HOUST': 'Thousands of Units', 'DCOILBRENTEU': 'Dollars per Barrel',
-            'SOFR_FEDFUNDS_SPREAD': 'Percent (%)', 'SOFR_IORB_SPREAD': 'Percent (%)', 'YIELD_SPREAD': 'Percent (%)'
+            'SOFR_FEDFUNDS_SPREAD': 'Percent (%)', 'SOFR_IORB_SPREAD': 'Percent (%)', 'YIELD_SPREAD': 'Percent (%)', 'MMF_COMPOSITION': 'Billions of U.S. Dollars'
         };
         
         const spreadConfigs = {
@@ -1639,12 +1641,19 @@
             document.querySelector('#graphPage .back-btn').textContent = langDict.backBtnText;
             document.querySelector('#graphPage .info-btn').textContent = langDict.infoBtnText;
             
-            const dataSourceText = (indicator === 'SP500_MCAP') ? 'Source: https://ycharts.com' : 'Source: FRED';
+            // [수정] 자료 출처 표시 로직 (MMF 구성 추가)
+            let dataSourceText = 'Source: FRED';
+            if (indicator === 'SP500_MCAP') {
+                dataSourceText = 'Source: https://ycharts.com';
+            } else if (indicator === 'MMF_COMPOSITION') {
+                dataSourceText = 'Source: Office of Financial Research (OFR)';
+            }
             document.getElementById('graphDataSource').textContent = currentLanguage === 'ko' ? dataSourceText.replace('Source', '자료 출처') : dataSourceText;
             
             try {
                 renderErrorMessage(currentLanguage === 'ko' ? "데이터를 불러오는 중..." : "Loading data...");
                 
+                // 1. 장단기 금리차 (기존 로직)
                 if (indicator === 'YIELD_SPREAD') {
                     const [dgs10Data, dgs3moData, dgs2Data] = await Promise.all([
                         fetchAndCacheData('DGS10'),
@@ -1691,7 +1700,49 @@
                             fill: false, tension: 0.1, pointRadius: 0
                         }
                     ];
-                } else if (spreadConfigs.hasOwnProperty(indicator)) {
+                } 
+                // [추가됨] 2. MMF 자산 구성 (신규 로직)
+                else if (indicator === 'MMF_COMPOSITION') {
+                    const [totalData, rrpData, marketData, govData] = await Promise.all([
+                        fetchAndCacheData('MMMFFAQ027S'),    // 전체
+                        fetchAndCacheData('MMF2RRP'),        // 역레포
+                        fetchAndCacheData('MMF2MARKET'),     // 시장
+                        fetchAndCacheData('MMF2GOVERNMENT')  // 정부
+                    ]);
+
+                    // 데이터 처리 함수 (10^9로 나누기: Billions 단위 환산)
+                    const processData = (data) => data.map(item => ({ x: item.date, y: item.value / 1e9 }));
+
+                    currentGraphData = [
+                        {
+                            label: 'MMF Total Assets (전체)',
+                            data: processData(totalData),
+                            borderColor: 'black',
+                            borderWidth: 2,
+                            fill: false, tension: 0.1, pointRadius: 0
+                        },
+                        {
+                            label: 'Repo/Fed (역레포 유입)',
+                            data: processData(rrpData),
+                            borderColor: '#007bff', // 파란색
+                            fill: false, tension: 0.1, pointRadius: 0
+                        },
+                        {
+                            label: 'Private Market (시장 유입)',
+                            data: processData(marketData),
+                            borderColor: '#28a745', // 초록색
+                            fill: false, tension: 0.1, pointRadius: 0
+                        },
+                        {
+                            label: 'Gov Securities (정부 채권)',
+                            data: processData(govData),
+                            borderColor: '#dc3545', // 빨간색
+                            fill: false, tension: 0.1, pointRadius: 0
+                        }
+                    ];
+                }
+                // 3. Spread Configs (기존 로직)
+                else if (spreadConfigs.hasOwnProperty(indicator)) {
                     const configs = spreadConfigs[indicator];
                     const dataPromises = configs.map(config => fetchAndCacheData(config.code));
                     const datasetsRaw = await Promise.all(dataPromises);
@@ -1705,7 +1756,9 @@
                             fill: false, tension: 0.1, pointRadius: 0
                         };
                     });
-                } else if (indicator === 'FEDASSET') {
+                } 
+                // 4. FED Asset (기존 로직)
+                else if (indicator === 'FEDASSET') {
                     const [walclData, tgaData, rrpData, rescalData] = await Promise.all([
                         fetchAndCacheData('WALCL'),
                         fetchAndCacheData('WTREGEN'),
@@ -1713,25 +1766,21 @@
                         fetchAndCacheData('WRESBAL')
                     ]);
 
-                    const tgaMap = new Map(tgaData.map(item => [item.date, item.value / 1000])); // Millions to Billions
-                    const resbalMap = new Map(rescalData.map(item => [item.date, item.value / 1000])); // Millions to Billions
+                    const tgaMap = new Map(tgaData.map(item => [item.date, item.value / 1000])); 
+                    const resbalMap = new Map(rescalData.map(item => [item.date, item.value / 1000])); 
                     
-                    // RRP는 일별, 나머지는 주별 데이터. 주별 날짜 기준으로 가장 가까운 일별 RRP 값을 찾습니다.
                     const fedAssetData = [];
                     for (const itemWalcl of walclData) {
                         const date = itemWalcl.date;
-                        const walclVal = itemWalcl.value / 1000; // Millions to Billions
+                        const walclVal = itemWalcl.value / 1000; 
 
-                        // 동일한 날짜에 다른 주별 데이터가 있는지 확인
                         if (tgaMap.has(date) && resbalMap.has(date)) {
                             const tgaVal = tgaMap.get(date);
                             const resbalVal = resbalMap.get(date);
                             
-                            // 가장 가까운 RRP 데이터(일별) 찾기
                             const rrpItem = getClosestData(rrpData, new Date(date));
                             if (rrpItem) {
-                                const rrpVal = rrpItem.value; // 이미 Billions 단위
-                                // 연준 순 자산 = WALCL - TGA - RRP - WRESBAL (단위: Billions)
+                                const rrpVal = rrpItem.value; 
                                 const fedAssetVal = walclVal - tgaVal - rrpVal - resbalVal;
                                 fedAssetData.push({ x: date, y: fedAssetVal });
                             }
@@ -1745,7 +1794,9 @@
                         backgroundColor: 'rgba(0, 123, 255, 0.1)',
                         fill: false, tension: 0.1, pointRadius: 0
                     }];
-                } else {
+                } 
+                // 5. 일반 단일 지표 (기존 로직)
+                else {
                     let data = await fetchAndCacheData(indicator);
                     if (data.length === 0) {
                         const errorMsg = currentLanguage === 'ko' ? `'${langDict.indicatorTitles[indicator]}' 지표의 유효한 데이터가 없어요.` : `No valid data for '${langDict.indicatorTitles[indicator]}' indicator.`;
@@ -1755,7 +1806,6 @@
                     let processedData = data.map(item => {
                         let value = item.value;
                         if (indicator === 'WALCL' || indicator === 'WTREGEN' || indicator === 'WRESBAL') value /= 1000;
-                        
                         else if (indicator === 'MMMFFAQ027S' || indicator === 'SP500_MCAP') value /= 1000000000;
                         return { x: item.date, y: value };
                     });
@@ -2006,22 +2056,57 @@
             }
             
             // --- [수정됨] 1, 2, 3번 요청: 단위 변경 (B $/Month -> B $/Week) ---
-            if (tgaDiff != null) { const sign = tgaDiff > 0 ? '+' : ''; displays.tga.innerHTML = `${tooltipDict.tga.label}<br><span class="${tgaDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${tgaDiff.toFixed(2)} B $/Week</span>`;
+            // --- [수정됨] 1, 2, 3번 요청: 단위 변경 및 팝업 버튼 수정 ---
+            
+            // 1. TGA (변화 없음)
+            if (tgaDiff != null) { 
+                const sign = tgaDiff > 0 ? '+' : ''; 
+                displays.tga.innerHTML = `${tooltipDict.tga.label}<br><span class="${tgaDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${tgaDiff.toFixed(2)} B $/Week</span>`;
                 tooltips.tga.innerHTML = `${tooltipDict.tga.desc}
                 <button class="graph-btn" onclick="showGraph('WTREGEN')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${tgaLatestDate}</span>`;
             } else { displays.tga.textContent = langDict.errorText; }
-            if (fedLiquidityDiff != null) { const sign = fedLiquidityDiff > 0 ? '+' : ''; displays.fed.innerHTML = `${tooltipDict.fed.label}<br><span class="${fedLiquidityDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${fedLiquidityDiff.toFixed(2)} B $/Week</span>`;
+            
+            // 2. FED Liquidity (지급준비금, 역레포 버튼 추가됨)
+            if (fedLiquidityDiff != null) { 
+                const sign = fedLiquidityDiff > 0 ? '+' : ''; 
+                displays.fed.innerHTML = `${tooltipDict.fed.label}<br><span class="${fedLiquidityDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${fedLiquidityDiff.toFixed(2)} B $/Week</span>`;
+                
+                // 팝업 내용 생성
+                const fedAssetChange = (getClosestData(dataStore.WALCL, new Date(fedLatestDate))?.value / 1000) - (getClosestData(dataStore.WALCL, sevenDaysAgo(new Date(fedLatestDate)))?.value / 1000) - tgaDiff - ((getClosestData(dataStore.RRPONTSYD, new Date(fedLatestDate))?.value) - (getClosestData(dataStore.RRPONTSYD, sevenDaysAgo(new Date(fedLatestDate)))?.value)) - ((getClosestData(dataStore.WRESBAL, new Date(fedLatestDate))?.value / 1000) - (getClosestData(dataStore.WRESBAL, sevenDaysAgo(new Date(fedLatestDate)))?.value / 1000));
+                const fedLiabilityChange = ((getClosestData(dataStore.RRPONTSYD, new Date(fedLatestDate))?.value) - (getClosestData(dataStore.RRPONTSYD, sevenDaysAgo(new Date(fedLatestDate)))?.value)) + ((getClosestData(dataStore.WRESBAL, new Date(fedLatestDate))?.value / 1000) - (getClosestData(dataStore.WRESBAL, sevenDaysAgo(new Date(fedLatestDate)))?.value / 1000));
+                const formatValue = (value) => `<span class="${value > 0 ? 'slope-positive' : 'slope-negative'}">${value > 0 ? '+' : ''}${value.toFixed(2)} B $/Week</span>`;
+                
+                tooltips.fed.innerHTML = `${tooltipDict.fed.desc}
+                <p>${tooltipDict.fed.part1} ${formatValue(fedAssetChange)}</p>
+                <button class="graph-btn" onclick="showGraph('FEDASSET')">연준 자산</button>
+                <p>${tooltipDict.fed.part2} ${formatValue(fedLiabilityChange)}</p>
+                
+                <div style="display:flex; gap:5px; margin-bottom:5px;">
+                    <button class="graph-btn" onclick="showGraph('WRESBAL')">지급준비금</button>
+                    <button class="graph-btn" onclick="showGraph('RRPONTSYD')">역레포 자금</button>
+                </div>
+                
+                <p>연준 유동성 = 연준 자산 변화량 - 연준의 부채 변화량</p>
+                <button class="graph-btn" onclick="showGraph('WALCL')">연준 자산 + 부채</button><span class="update-date">Update Date: ${fedLatestDate}</span>`;
             } else { displays.fed.textContent = langDict.errorText; }
-            if (mmfToFedDiff != null) { const sign = mmfToFedDiff > 0 ? '+' : ''; displays.mmf_fed.innerHTML = `${tooltipDict.mmf_fed.label}<br><span class="${mmfToFedDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${mmfToFedDiff.toFixed(2)} B $/Week</span>`;
+            
+            // 3. MMF -> FED (버튼명 'MMF 자산 그래프'로 변경, 링크 MMF_COMPOSITION으로 변경)
+            if (mmfToFedDiff != null) { 
+                const sign = mmfToFedDiff > 0 ? '+' : ''; 
+                displays.mmf_fed.innerHTML = `${tooltipDict.mmf_fed.label}<br><span class="${mmfToFedDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${mmfToFedDiff.toFixed(2)} B $/Week</span>`;
                 tooltips.mmf_fed.innerHTML = `${tooltipDict.mmf_fed.desc}
-                <button class="graph-btn" onclick="showGraph('RRPONTSYD')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${mmfFedLatestDate}</span>`;
+                <button class="graph-btn" onclick="showGraph('MMF_COMPOSITION')">MMF 자산 그래프</button><span class="update-date">Update Date: ${mmfFedLatestDate}</span>`;
             } else { displays.mmf_fed.textContent = langDict.errorText; }
-            if (finalMmfToMarketDiff != null) { const sign = finalMmfToMarketDiff > 0 ? '+' : ''; displays.mmf_market.innerHTML = `${tooltipDict.mmf_market.label}<br><span class="${finalMmfToMarketDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${finalMmfToMarketDiff.toFixed(2)} B $/Week</span>`;
+            
+            // 4. MMF -> Market (버튼명 'MMF 자산 그래프'로 변경, 링크 MMF_COMPOSITION으로 변경)
+            if (finalMmfToMarketDiff != null) { 
+                const sign = finalMmfToMarketDiff > 0 ? '+' : ''; 
+                displays.mmf_market.innerHTML = `${tooltipDict.mmf_market.label}<br><span class="${finalMmfToMarketDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${finalMmfToMarketDiff.toFixed(2)} B $/Week</span>`;
                 const sign1 = mmfToMarketCombined > 0 ? '+' : ''; const sign2 = mmfAssetChange > 0 ? '+' : '';
                 tooltips.mmf_market.innerHTML = `${tooltipDict.mmf_market.desc}
                 <p>${tooltipDict.mmf_market.part1} <span class="${mmfToMarketCombined > 0 ? 'slope-positive' : 'slope-negative'}">${sign1}${(mmfToMarketCombined / 4.0).toFixed(2)} B $/Week</span></p>
                 <p>${tooltipDict.mmf_market.part2} <span class="${mmfAssetChange > 0 ? 'slope-positive' : 'slope-negative'}">${sign2}${(mmfAssetChange / 4.0).toFixed(2)} B $/Week</span></p>
-                <button class="graph-btn" onclick="showGraph('MMMFFAQ027S')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${mmfMarketLatestDate}</span>`;
+                <button class="graph-btn" onclick="showGraph('MMF_COMPOSITION')">MMF 자산 그래프</button><span class="update-date">Update Date: ${mmfMarketLatestDate}</span>`;
             } else { displays.mmf_market.textContent = langDict.errorText; }
             
             // --- [수정됨] 3번 요청: 시장 Total 유동 공급량 (새로운 값으로 계산) ---
