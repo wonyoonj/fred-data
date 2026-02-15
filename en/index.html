@@ -1044,6 +1044,7 @@
                     <button class="button" onclick="showGraph('RRPONTSYD')">Fed Reverse Repo Funds</button>
                     <button class="button" onclick="showGraph('FEDASSET')">Fed Net Assets</button> <button class="button" onclick="showGraph('MMMFFAQ027S')">MMF Balance</button>
                     <button class="button" onclick="showGraph('WALCL')">Fed Total Assets + Liabilities</button>
+                    <button class="button" onclick="showGraph('MMF_COMPOSITION')">MMF Asset Composition</button>
                 </div>
             </div>
             <div class="indicator-section">
@@ -1305,7 +1306,7 @@
                     }
                 },
                  indicatorTitles: {
-                    'WTREGEN': 'U.S. Gov. TGA Balance', 'WRESBAL': 'U.S. Bank Reserves', 'RRPONTSYD': 'Fed Reverse Repo Funds', 'FEDASSET': 'Fed Net Assets', 'MMMFFAQ027S': 'MMF Balance', 'WALCL': 'Fed Total Assets + Liabilities',
+                    'WTREGEN': 'U.S. Gov. TGA Balance', 'WRESBAL': 'U.S. Bank Reserves', 'RRPONTSYD': 'Fed Reverse Repo Funds', 'FEDASSET': 'Fed Net Assets', 'MMMFFAQ027S': 'MMF Balance', 'WALCL': 'Fed Total Assets + Liabilities','MMF_COMPOSITION': 'MMF Asset Composition',
                     'SOFR': 'SOFR Rate', 'FEDFUNDS': 'EFFR Rate', 'IORB': 'IORB Rate', 'DGS3MO': '3-Month Treasury Bill', 'DGS2': '2-Year Treasury Note', 'DGS10': '10-Year Treasury Note', 'DPCREDIT': 'Fed Discount Rate',
                     'DRBLACBS': 'U.S. Bank Delinquency Rate', 'M2SL': 'M2', 'M1SL': 'M1', 'NASDAQ100': 'NASDAQ 100 Index', 'SP500': 'S&P 500 Index', 'SP500_MCAP': 'S&P 500 Market Cap',
                     'RRPONTSYAWARD': 'Reverse Repo Rate', 'ALTSALES': 'Car & Truck Sales', 'HOUST': 'Housing Starts', 'DCOILBRENTEU': 'Crude Oil Price',
@@ -1337,7 +1338,10 @@
                     'RRPONTSYAWARD': {'title': 'Reverse Repo Rate', 'content': {'Economic Meaning': 'The interest rate the Fed pays when it borrows from financial institutions, used as a benchmark to absorb excess liquidity from the market. A higher rate helps absorb more liquidity.', 'Why is this indicator necessary?': 'It prevents interest rates from falling below the Fed\'s target when market liquidity is overly abundant. Because the reverse repo rate acts as a minimum guaranteed return for financial institutions parking cash at the Fed, they are unwilling to lend elsewhere at a lower rate, thus preventing short-term rates from dropping below the Fed\'s target level.'}},
                     'ALTSALES': {'title': 'Car & Truck Sales', 'content': {'Economic Meaning': 'A report from the U.S. Bureau of Economic Analysis on the sales of automobiles and all passenger cars. A high value for this indicator suggests a strong economy.', 'Why is this indicator necessary?': 'It is one of the key **leading economic indicators** for the U.S. market.'}},
                     'HOUST': {'title': 'Housing Starts', 'content': {'Economic Meaning': 'Housing starts refer to the number of new residential construction projects started in a given month. The estimate also includes units in buildings that are completely rebuilt on an existing foundation. A high value for this indicator suggests a strong economy.', 'Why is this indicator necessary?': 'It is one of the key **leading economic indicators** for the U.S. market.'}},
-                    'DCOILBRENTEU': {'title': 'Crude Oil Price', 'content': {'Economic Meaning': 'Represents the benchmark price for European and global crude oil.', 'Why is this indicator necessary?': 'Historically, a decrease in oil prices has been associated with economic booms, while an increase has often preceded recessions or downturns. Therefore, it is a crucial indicator to monitor.'}}
+                    'DCOILBRENTEU': {'title': 'Crude Oil Price', 'content': {'Economic Meaning': 'Represents the benchmark price for European and global crude oil.', 'Why is this indicator necessary?': 'Historically, a decrease in oil prices has been associated with economic booms, while an increase has often preceded recessions or downturns. Therefore, it is a crucial indicator to monitor.'}},
+                    'MMF_COMPOSITION': {'title': 'MMF Asset Composition', 'content': {'Economic Meaning': 'It shows how the composition of funds flowing into MMFs is changing.', 'Why is it important?': 'As the size of MMFs grows, changes in fund flows affect market liquidity.'
+        }
+    }
                 }
             }
         };
@@ -1575,90 +1579,98 @@
             showPage('graphPage');
             const langDict = translations[currentLanguage];
             document.getElementById('graphTitle').textContent = langDict.indicatorTitles[indicator] || indicator;
+            
             document.querySelector('#graphPage .back-btn').textContent = langDict.backBtnText;
             document.querySelector('#graphPage .info-btn').textContent = langDict.infoBtnText;
-            const dataSourceText = (indicator === 'SP500_MCAP') ? 'Source: https://ycharts.com' : 'Source: FRED';
-            document.getElementById('graphDataSource').textContent = dataSourceText;
+            
+            // Data Source logic
+            let dataSourceText = 'Source: FRED';
+            if (indicator === 'SP500_MCAP') {
+                dataSourceText = 'Source: https://ycharts.com';
+            } else if (indicator === 'MMF_COMPOSITION') {
+                dataSourceText = 'Source: Office of Financial Research (OFR)';
+            }
+            document.getElementById('graphDataSource').textContent = currentLanguage === 'ko' ? dataSourceText.replace('Source', '자료 출처') : dataSourceText;
+            
             try {
-                renderErrorMessage("Loading data...");
+                renderErrorMessage(currentLanguage === 'ko' ? "데이터를 불러오는 중..." : "Loading data...");
+                
                 if (indicator === 'YIELD_SPREAD') {
-                    const [dgs10Data, dgs3moData, dgs2Data] = await Promise.all([ fetchAndCacheData('DGS10'), fetchAndCacheData('DGS3MO'), fetchAndCacheData('DGS2') ]);
+                    const [dgs10Data, dgs3moData, dgs2Data] = await Promise.all([
+                        fetchAndCacheData('DGS10'),
+                        fetchAndCacheData('DGS3MO'),
+                        fetchAndCacheData('DGS2')
+                    ]);
                     const dgs3moMap = new Map(dgs3moData.map(item => [item.date, item.value]));
                     const dgs2Map = new Map(dgs2Data.map(item => [item.date, item.value]));
-                    const spread10y3m = []; const spread10y2y = [];
+                    const spread10y3m = [];
+                    const spread10y2y = [];
+
                     dgs10Data.forEach(item10y => {
                         const date = item10y.date;
                         if (dgs3moMap.has(date)) spread10y3m.push({ x: date, y: item10y.value - dgs3moMap.get(date) });
                         if (dgs2Map.has(date)) spread10y2y.push({ x: date, y: item10y.value - dgs2Map.get(date) });
                     });
+                    
                     currentGraphData = [
-                        { label: '10-Year - 3-Month Yield Spread', data: spread10y3m, borderColor: 'blue', fill: false, tension: 0.1, pointRadius: 0 },
-                        { label: '10-Year - 2-Year Yield Spread', data: spread10y2y, borderColor: 'red', fill: false, tension: 0.1, pointRadius: 0 }
+                        { label: langDict.indicatorTitles['YIELD_SPREAD'] + ' (10Y-3M)', data: spread10y3m, borderColor: 'blue', fill: false, tension: 0.1, pointRadius: 0 },
+                        { label: langDict.indicatorTitles['YIELD_SPREAD'] + ' (10Y-2Y)', data: spread10y2y, borderColor: 'red', fill: false, tension: 0.1, pointRadius: 0 }
                     ];
-                } else if (spreadConfigs.hasOwnProperty(indicator)) {
+                } 
+                // [MMF Composition Logic]
+                else if (indicator === 'MMF_COMPOSITION') {
+                    const [totalData, rrpData, marketData, govData] = await Promise.all([
+                        fetchAndCacheData('MMMFFAQ027S'), fetchAndCacheData('MMF2RRP'),
+                        fetchAndCacheData('MMF2MARKET'), fetchAndCacheData('MMF2GOVERNMENT')
+                    ]);
+                    const processData = (data) => data.map(item => ({ x: item.date, y: item.value / 1e9 }));
+
+                    currentGraphData = [
+                        { label: 'MMF Total Assets', data: processData(totalData), borderColor: 'black', borderWidth: 2, fill: false, tension: 0.1, pointRadius: 0 },
+                        { label: 'Repo/Fed', data: processData(rrpData), borderColor: '#007bff', fill: false, tension: 0.1, pointRadius: 0 },
+                        { label: 'Private Market', data: processData(marketData), borderColor: '#28a745', fill: false, tension: 0.1, pointRadius: 0 },
+                        { label: 'Gov Securities', data: processData(govData), borderColor: '#dc3545', fill: false, tension: 0.1, pointRadius: 0 }
+                    ];
+                }
+                else if (spreadConfigs.hasOwnProperty(indicator)) {
                     const configs = spreadConfigs[indicator];
                     const datasetsRaw = await Promise.all(configs.map(config => fetchAndCacheData(config.code)));
                     currentGraphData = datasetsRaw.map((data, index) => ({
-                        label: configs[index].label, borderColor: configs[index].color, data: data.map(item => ({ x: item.date, y: item.value })),
+                        label: configs[index].label, borderColor: configs[index].color,
+                        data: data.map(item => ({ x: item.date, y: item.value })),
                         fill: false, tension: 0.1, pointRadius: 0
                     }));
-                } else if (indicator === 'FEDASSET') {
+                } 
+                else if (indicator === 'FEDASSET') {
                     const [walclData, tgaData, rrpData, rescalData] = await Promise.all([
-                        fetchAndCacheData('WALCL'),
-                        fetchAndCacheData('WTREGEN'),
-                        fetchAndCacheData('RRPONTSYD'),
-                        fetchAndCacheData('WRESBAL')
+                        fetchAndCacheData('WALCL'), fetchAndCacheData('WTREGEN'),
+                        fetchAndCacheData('RRPONTSYD'), fetchAndCacheData('WRESBAL')
                     ]);
-
-                    const tgaMap = new Map(tgaData.map(item => [item.date, item.value / 1000])); // Millions to Billions
-                    const resbalMap = new Map(rescalData.map(item => [item.date, item.value / 1000])); // Millions to Billions
-                    
-                    // RRP는 일별, 나머지는 주별 데이터. 주별 날짜 기준으로 가장 가까운 일별 RRP 값을 찾습니다.
+                    const tgaMap = new Map(tgaData.map(item => [item.date, item.value / 1000])); 
+                    const resbalMap = new Map(rescalData.map(item => [item.date, item.value / 1000])); 
                     const fedAssetData = [];
-                    for (const itemWalcl of walclData) {
-                        const date = itemWalcl.date;
-                        const walclVal = itemWalcl.value / 1000; // Millions to Billions
-
-                        // 동일한 날짜에 다른 주별 데이터가 있는지 확인
+                    walclData.forEach(item => {
+                        const date = item.date;
                         if (tgaMap.has(date) && resbalMap.has(date)) {
-                            const tgaVal = tgaMap.get(date);
-                            const resbalVal = resbalMap.get(date);
-                            
-                            // 가장 가까운 RRP 데이터(일별) 찾기
                             const rrpItem = getClosestData(rrpData, new Date(date));
-                            if (rrpItem) {
-                                const rrpVal = rrpItem.value; // 이미 Billions 단위
-                                // 연준 순 자산 = WALCL - TGA - RRP - WRESBAL (단위: Billions)
-                                const fedAssetVal = walclVal - tgaVal - rrpVal - resbalVal;
-                                fedAssetData.push({ x: date, y: fedAssetVal });
-                            }
+                            if (rrpItem) fedAssetData.push({ x: date, y: (item.value/1000) - tgaMap.get(date) - rrpItem.value - resbalMap.get(date) });
                         }
-                    }
-
-                    currentGraphData = [{
-                        label: langDict.indicatorTitles[indicator] || indicator,
-                        data: fedAssetData,
-                        borderColor: '#007bff',
-                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                        fill: false, tension: 0.1, pointRadius: 0
-                    }];
-                } else {
+                    });
+                    currentGraphData = [{ label: langDict.indicatorTitles[indicator], data: fedAssetData, borderColor: '#007bff', fill: false, tension: 0.1, pointRadius: 0 }];
+                } 
+                else {
                     let data = await fetchAndCacheData(indicator);
-                    if (data.length === 0) { renderErrorMessage(`No valid data for '${langDict.indicatorTitles[indicator]}' indicator.`); return; }
                     let processedData = data.map(item => {
                         let value = item.value;
-                        if (indicator === 'WALCL' || indicator === 'WTREGEN' || indicator === 'WRESBAL') value /= 1000;
-                        else if (indicator === 'MMMFFAQ027S' || indicator === 'SP500_MCAP') value /= 1000000000;
+                        if (['WALCL', 'WTREGEN', 'WRESBAL'].includes(indicator)) value /= 1000;
+                        else if (['MMMFFAQ027S', 'SP500_MCAP'].includes(indicator)) value /= 1e9;
                         return { x: item.date, y: value };
                     });
-                    currentGraphData = [{
-                        label: langDict.indicatorTitles[indicator] || indicator, data: processedData, borderColor: '#007bff', backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                        fill: false, tension: 0.1, pointRadius: 0
-                    }];
+                    currentGraphData = [{ label: langDict.indicatorTitles[indicator], data: processedData, borderColor: '#007bff', fill: false, tension: 0.1, pointRadius: 0 }];
                 }
                 updateChart('All');
             } catch (error) {
-                renderErrorMessage(`Cannot draw graph for '${translations[currentLanguage].indicatorTitles[indicator]}'! Error: ${error.message}`);
+                renderErrorMessage(currentLanguage === 'ko' ? `오류: ${error.message}` : `Error: ${error.message}`);
             }
         }
         
@@ -1820,10 +1832,57 @@
             if (mmfToMarketCombined != null && mmfAssetChange != null) finalMmfToMarketDiff = (mmfToMarketCombined - mmfAssetChange) / 4.0; // Divide by 4
             
             // --- [MODIFIED] Req 1, 2, 3: Update units (B $/Month -> B $/Week) ---
-            if (tgaDiff != null) { displays.tga.innerHTML = `${tooltipDict.tga.label}<br><span class="${tgaDiff > 0 ? 'slope-positive' : 'slope-negative'}">${tgaDiff > 0 ? '+' : ''}${tgaDiff.toFixed(2)} B $/Week</span>`; tooltips.tga.innerHTML = `${tooltipDict.tga.desc}<button class="graph-btn" onclick="showGraph('WTREGEN')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${tgaLatestDate}</span>`; } else { displays.tga.textContent = "Data Error"; }
-            if (fedLiquidityDiff != null) { displays.fed.innerHTML = `${tooltipDict.fed.label}<br><span class="${fedLiquidityDiff > 0 ? 'slope-positive' : 'slope-negative'}">${fedLiquidityDiff > 0 ? '+' : ''}${fedLiquidityDiff.toFixed(2)} B $/Week</span>`; } else { displays.fed.textContent = "Data Error"; }
-            if (mmfToFedDiff != null) { displays.mmf_fed.innerHTML = `${tooltipDict.mmf_fed.label}<br><span class="${mmfToFedDiff > 0 ? 'slope-positive' : 'slope-negative'}">${mmfToFedDiff > 0 ? '+' : ''}${mmfToFedDiff.toFixed(2)} B $/Week</span>`; tooltips.mmf_fed.innerHTML = `${tooltipDict.mmf_fed.desc}<button class="graph-btn" onclick="showGraph('RRPONTSYD')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${mmfFedLatestDate}</span>`; } else { displays.mmf_fed.textContent = "Data Error"; }
-            if (finalMmfToMarketDiff != null) { displays.mmf_market.innerHTML = `${tooltipDict.mmf_market.label}<br><span class="${finalMmfToMarketDiff > 0 ? 'slope-positive' : 'slope-negative'}">${finalMmfToMarketDiff > 0 ? '+' : ''}${finalMmfToMarketDiff.toFixed(2)} B $/Week</span>`; const sign1 = mmfToMarketCombined > 0 ? '+' : ''; const sign2 = mmfAssetChange > 0 ? '+' : ''; tooltips.mmf_market.innerHTML = `${tooltipDict.mmf_market.desc}<p>${tooltipDict.mmf_market.part1} <span class="${mmfToMarketCombined > 0 ? 'slope-positive' : 'slope-negative'}">${sign1}${(mmfToMarketCombined / 4.0).toFixed(2)} B $/Week</span></p><p>${tooltipDict.mmf_market.part2} <span class="${mmfAssetChange > 0 ? 'slope-positive' : 'slope-negative'}">${sign2}${(mmfAssetChange / 4.0).toFixed(2)} B $/Week</span></p><button class="graph-btn" onclick="showGraph('MMMFFAQ027S')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${mmfMarketLatestDate}</span>`; } else { displays.mmf_market.textContent = "Data Error"; }
+            // --- [English UI Support Included] ---
+            const isKo = currentLanguage === 'ko';
+            const btnMMF = isKo ? "MMF 자산 그래프" : "MMF Asset Graph";
+            const btnReserves = isKo ? "지급준비금" : "Reserves";
+            const btnRRP = isKo ? "역레포 자금" : "Reverse Repo";
+
+            // 1. TGA
+            if (tgaDiff != null) {
+                const sign = tgaDiff > 0 ? '+' : '';
+                displays.tga.innerHTML = `${tooltipDict.tga.label}<br><span class="${tgaDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${tgaDiff.toFixed(2)} B $/Week</span>`;
+                tooltips.tga.innerHTML = `${tooltipDict.tga.desc}<button class="graph-btn" onclick="showGraph('WTREGEN')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${tgaLatestDate}</span>`;
+            }
+
+            // 2. FED Liquidity (Added 2 Buttons)
+            if (fedLiquidityDiff != null) {
+                const sign = fedLiquidityDiff > 0 ? '+' : '';
+                displays.fed.innerHTML = `${tooltipDict.fed.label}<br><span class="${fedLiquidityDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${fedLiquidityDiff.toFixed(2)} B $/Week</span>`;
+                
+                const fedAssetChange = (getClosestData(dataStore.WALCL, new Date(fedLatestDate))?.value / 1000) - (getClosestData(dataStore.WALCL, sevenDaysAgo(new Date(fedLatestDate)))?.value / 1000) - tgaDiff - ((getClosestData(dataStore.RRPONTSYD, new Date(fedLatestDate))?.value) - (getClosestData(dataStore.RRPONTSYD, sevenDaysAgo(new Date(fedLatestDate)))?.value)) - ((getClosestData(dataStore.WRESBAL, new Date(fedLatestDate))?.value / 1000) - (getClosestData(dataStore.WRESBAL, sevenDaysAgo(new Date(fedLatestDate)))?.value / 1000));
+                const fedLiabilityChange = ((getClosestData(dataStore.RRPONTSYD, new Date(fedLatestDate))?.value) - (getClosestData(dataStore.RRPONTSYD, sevenDaysAgo(new Date(fedLatestDate)))?.value)) + ((getClosestData(dataStore.WRESBAL, new Date(fedLatestDate))?.value / 1000) - (getClosestData(dataStore.WRESBAL, sevenDaysAgo(new Date(fedLatestDate)))?.value / 1000));
+                const formatValue = (v) => `<span class="${v > 0 ? 'slope-positive' : 'slope-negative'}">${v > 0 ? '+' : ''}${v.toFixed(2)} B $/Week</span>`;
+
+                tooltips.fed.innerHTML = `${tooltipDict.fed.desc}
+                <p>${tooltipDict.fed.part1} ${formatValue(fedAssetChange)}</p>
+                <button class="graph-btn" onclick="showGraph('FEDASSET')">${isKo ? '연준 자산' : 'Fed Assets'}</button>
+                <p>${tooltipDict.fed.part2} ${formatValue(fedLiabilityChange)}</p>
+                <div style="display:flex; gap:5px; margin-bottom:5px;">
+                    <button class="graph-btn" onclick="showGraph('WRESBAL')">${btnReserves}</button>
+                    <button class="graph-btn" onclick="showGraph('RRPONTSYD')">${btnRRP}</button>
+                </div>
+                <p>${isKo ? '연준 유동성 = 연준 자산 변화량 - 연준의 부채 변화량' : 'Fed Liquidity = ΔFed Assets - ΔFed Liabilities'}</p>
+                <button class="graph-btn" onclick="showGraph('WALCL')">${isKo ? '연준 자산 + 부채' : 'Fed Assets + Liabilities'}</button><span class="update-date">Update Date: ${fedLatestDate}</span>`;
+            }
+
+            // 3. MMF -> FED
+            if (mmfToFedDiff != null) {
+                const sign = mmfToFedDiff > 0 ? '+' : '';
+                displays.mmf_fed.innerHTML = `${tooltipDict.mmf_fed.label}<br><span class="${mmfToFedDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${mmfToFedDiff.toFixed(2)} B $/Week</span>`;
+                tooltips.mmf_fed.innerHTML = `${tooltipDict.mmf_fed.desc}<button class="graph-btn" onclick="showGraph('MMF_COMPOSITION')">${btnMMF}</button><span class="update-date">Update Date: ${mmfFedLatestDate}</span>`;
+            }
+
+            // 4. MMF -> Market
+            if (finalMmfToMarketDiff != null) {
+                const sign = finalMmfToMarketDiff > 0 ? '+' : '';
+                displays.mmf_market.innerHTML = `${tooltipDict.mmf_market.label}<br><span class="${finalMmfToMarketDiff > 0 ? 'slope-positive' : 'slope-negative'}">${sign}${finalMmfToMarketDiff.toFixed(2)} B $/Week</span>`;
+                tooltips.mmf_market.innerHTML = `${tooltipDict.mmf_market.desc}
+                <p>${tooltipDict.mmf_market.part1} <span class="${mmfToMarketCombined > 0 ? 'slope-positive' : 'slope-negative'}">${mmfToMarketCombined > 0 ? '+' : ''}${(mmfToMarketCombined / 4.0).toFixed(2)} B $/Week</span></p>
+                <p>${tooltipDict.mmf_market.part2} <span class="${mmfAssetChange > 0 ? 'slope-positive' : 'slope-negative'}">${mmfAssetChange > 0 ? '+' : ''}${(mmfAssetChange / 4.0).toFixed(2)} B $/Week</span></p>
+                <button class="graph-btn" onclick="showGraph('MMF_COMPOSITION')">${btnMMF}</button><span class="update-date">Update Date: ${mmfMarketLatestDate}</span>`;
+            }
+
             
             // --- [MODIFIED] Req 3: Net Market Flow (calculated with new values) ---
             if (fedLiquidityDiff != null && tgaDiff != null && finalMmfToMarketDiff != null) {
