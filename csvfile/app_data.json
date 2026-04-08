@@ -1,5 +1,5 @@
 {
-    "date": "2026-04-07",
+    "date": "2026-04-08",
     "tga_weekly_change_billion": -26.36,
     "fed_liquidity_weekly_change_billion": -23.62,
     "fed_debt_weekly_change_billion": 34.08,
@@ -9,9 +9,9 @@
     "reverse_repo_rate_percent": 3.5,
     "discount_rate_percent": 3.75,
     "effr_rate_percent": 3.64,
-    "sofr_rate_percent": 3.66,
-    "sofr_effr_spread_percent": 0.02,
-    "dgs3mo_rate_percent": 3.71,
+    "sofr_rate_percent": 3.62,
+    "sofr_effr_spread_percent": -0.02,
+    "dgs3mo_rate_percent": 3.72,
     "dgs2_rate_percent": 3.84,
-    "dgs10_rate_percent": 4.35
+    "dgs10_rate_percent": 4.34
 }
