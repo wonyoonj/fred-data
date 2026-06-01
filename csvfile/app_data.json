@@ -9,8 +9,8 @@
     "reverse_repo_rate_percent": 3.5,
     "discount_rate_percent": 3.75,
     "effr_rate_percent": 3.64,
-    "sofr_rate_percent": 3.62,
-    "sofr_effr_spread_percent": -0.02,
+    "sofr_rate_percent": 3.63,
+    "sofr_effr_spread_percent": -0.01,
     "dgs3mo_rate_percent": 3.69,
     "dgs2_rate_percent": 3.99,
     "dgs10_rate_percent": 4.45
