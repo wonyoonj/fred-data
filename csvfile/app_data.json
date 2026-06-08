@@ -1,17 +1,17 @@
 {
-    "date": "2026-06-04",
-    "tga_weekly_change_billion": 49.0,
-    "fed_liquidity_weekly_change_billion": 113.77,
-    "fed_debt_weekly_change_billion": -86.02,
+    "date": "2026-06-08",
+    "tga_weekly_change_billion": 45.42,
+    "fed_liquidity_weekly_change_billion": 66.59,
+    "fed_debt_weekly_change_billion": -52.45,
     "mmf_to_fed_weekly_equiv_change_billion": -0.95,
     "mmf_to_market_weekly_equiv_change_billion": 0.02,
-    "total_market_liquidity_weekly_change_billion": 64.78,
+    "total_market_liquidity_weekly_change_billion": 21.19,
     "reverse_repo_rate_percent": 3.5,
     "discount_rate_percent": 3.75,
     "effr_rate_percent": 3.63,
-    "sofr_rate_percent": 3.61,
-    "sofr_effr_spread_percent": -0.02,
-    "dgs3mo_rate_percent": 3.77,
+    "sofr_rate_percent": 3.62,
+    "sofr_effr_spread_percent": -0.01,
+    "dgs3mo_rate_percent": 3.78,
     "dgs2_rate_percent": 4.05,
-    "dgs10_rate_percent": 4.46
+    "dgs10_rate_percent": 4.47
 }
