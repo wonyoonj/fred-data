@@ -912,6 +912,8 @@
                 </div>
             </div>
 
+            <div id="liquidityPercentileGauge" style="margin-top:15px;"></div>
+
 
             <div class="source-credit-main">자료 출처: FRED, Office of Financial Research (OFR)</div>
 
@@ -2085,6 +2087,23 @@
             renderNetMarketFlowChart(dataToShow);
         }
 
+        function renderLiquidityPercentileGauge() {
+            const gaugeEl = document.getElementById('liquidityPercentileGauge');
+            if (!gaugeEl || !netMarketFlowFullData || netMarketFlowFullData.length < 10) return;
+            const values = netMarketFlowFullData.map(d => d.y).sort((a, b) => a - b);
+            const latest = netMarketFlowFullData[netMarketFlowFullData.length - 1].y;
+            const rank = values.filter(v => v <= latest).length;
+            const percentile = Math.round((rank / values.length) * 100);
+            const label = currentLanguage === 'ko'
+                ? `현재 유동성 공급 속도는 역사적으로 상위 ${100 - percentile}% 구간입니다. (백분위: ${percentile}%)`
+                : `Current liquidity supply pace is in the top ${100 - percentile}% historically. (Percentile: ${percentile}%)`;
+            gaugeEl.innerHTML = `
+                <div style="background:#e9ecef; border-radius:10px; height:18px; width:100%; overflow:hidden;">
+                    <div style="background:${latest >= 0 ? '#28a745' : '#dc3545'}; height:100%; width:${percentile}%; transition: width 0.5s;"></div>
+                </div>
+                <p style="text-align:center; font-size:0.9em; margin-top:6px;">${label}</p>`;
+        }
+
         async function updateLiquidityFlowAnimation() {
             stopLiquidityFlowAnimation();
             const langDict = translations[currentLanguage];
@@ -2126,7 +2145,8 @@
             }
             netMarketFlowFullData = computeNetMarketFlowHistory(dataStore);
             updateNetMarketFlowChart('All');
-            
+            renderLiquidityPercentileGauge();
+
             let tgaDiff = null, fedLiquidityDiff = null, mmfToFedDiff = null, finalMmfToMarketDiff = null;
             let tgaLatestDate = null, fedLatestDate = null, mmfFedLatestDate = null, mmfMarketLatestDate = null;
             let mmfToMarketCombined = null, mmfAssetChange = null;
