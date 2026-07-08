@@ -2142,6 +2142,9 @@
             bannerEl.className = `today-summary-banner level-${level}`;
         }
 
+        updateNetMarketFlowChart('All');
+        renderLiquidityPercentileGauge();
+
         function renderLiquidityPercentileGauge() {
             const gaugeEl = document.getElementById('liquidityPercentileGauge');
             if (!gaugeEl || !netMarketFlowFullData || netMarketFlowFullData.length < 10) return;
@@ -2199,8 +2202,6 @@
                 Object.values(displays).forEach(el => { if (el) el.textContent = errorText; }); return;
             }
             netMarketFlowFullData = computeNetMarketFlowHistory(dataStore);
-            updateNetMarketFlowChart('All');
-            renderLiquidityPercentileGauge();
 
             let tgaDiff = null, fedLiquidityDiff = null, mmfToFedDiff = null, finalMmfToMarketDiff = null;
             let tgaLatestDate = null, fedLatestDate = null, mmfFedLatestDate = null, mmfMarketLatestDate = null;
