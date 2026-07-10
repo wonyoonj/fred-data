@@ -1,1 +1,97 @@
+name: Update Liquidity Data
 
+on:
+  schedule:
+    # UTC 기준. 한국시간(KST) 오전 7시 15분 = UTC 전날 22:15
+    - cron: '15 22 * * *'
+  workflow_dispatch: {}   # Actions 탭에서 수동 실행 가능
+
+# 같은 저장소(csvfile/)에 커밋/푸시하기 위해 GITHUB_TOKEN에 쓰기 권한을 명시적으로 부여
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: 저장소 체크아웃
+        uses: actions/checkout@v4
+
+      - name: 파이썬 설치
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 의존성 설치
+        run: pip install -r requirements.txt
+
+      - name: 크롬 설치 (MMF 스크래핑용)
+        uses: browser-actions/setup-chrome@v1
+
+      - name: FRED 데이터 수집
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: python scripts/fetch_fred.py
+
+      - name: MMF 원본 데이터 수집
+        continue-on-error: true   # OFR 사이트 구조 변경 등으로 실패해도 나머지는 계속 진행
+        run: python scripts/fetch_mmf.py
+
+      - name: MMF CSV 정리
+        continue-on-error: true
+        run: python scripts/build_mmf_csv.py
+
+      - name: 지표 계산 + Gemini 분석
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python scripts/analyze_gemini.py
+
+      - name: 결과물 커밋 & 푸시 (같은 저장소이므로 PAT 불필요)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add csvfile/
+          git diff --cached --quiet || git commit -m "Update data $(date -u +'%Y-%m-%d %H:%M UTC')"
+
+          # 혹시 그 사이 다른 커밋이 들어왔을 경우를 대비해 pull --rebase 후 push, 최대 5회 재시도
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main && git push origin main && break
+            echo "푸시 실패, 재시도 ($i/5)..."
+            sleep $((i * 3))
+          done
+
+      - name: 두 번째 저장소(data) 체크아웃 (Netlify 자동배포 트리거용)
+        uses: actions/checkout@v4
+        with:
+          repository: wyj3524255-hue/data
+          token: ${{ secrets.PAT_DATA_REPO }}
+          path: external-data-repo
+
+      - name: app_data.json을 두 번째 저장소로 복사 & 푸시
+        run: |
+          cp csvfile/app_data.json external-data-repo/app_data.json
+          cd external-data-repo
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add app_data.json
+          git diff --cached --quiet || git commit -m "Update app_data.json $(date -u +'%Y-%m-%d %H:%M UTC')"
+
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main && git push origin main && break
+            echo "푸시 실패, 재시도 ($i/5)..."
+            sleep $((i * 3))
+          done
+
+      - name: 실패 시 디버깅 파일 업로드
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-files
+          path: |
+            data/mmf_flow/page_source.html
+            data/mmf_flow/error_screenshot_mmf.png
+            data/mmf_flow/error_screenshot_total.png
+          retention-days: 7
+          if-no-files-found: ignore
