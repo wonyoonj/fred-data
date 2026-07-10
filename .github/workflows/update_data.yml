@@ -62,7 +62,27 @@ jobs:
             sleep $((i * 3))
           done
 
-     
+      - name: 두 번째 저장소(data) 체크아웃 (Netlify 자동배포 트리거용)
+        uses: actions/checkout@v4
+        with:
+          repository: wyj3524255-hue/data
+          token: ${{ secrets.PAT_DATA_REPO }}
+          path: external-data-repo
+
+      - name: app_data.json을 두 번째 저장소로 복사 & 푸시
+        run: |
+          cp csvfile/app_data.json external-data-repo/app_data.json
+          cd external-data-repo
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add app_data.json
+          git diff --cached --quiet || git commit -m "Update app_data.json $(date -u +'%Y-%m-%d %H:%M UTC')"
+
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main && git push origin main && break
+            echo "푸시 실패, 재시도 ($i/5)..."
+            sleep $((i * 3))
+          done
 
       - name: 실패 시 디버깅 파일 업로드
         if: always()
