@@ -1,0 +1,6 @@
+pandas
+fredapi
+requests
+selenium
+webdriver-manager
+google-generativeai
