@@ -1202,6 +1202,7 @@
                     <button class="button" onclick="showGraph('FEDASSET')">연준 순 자산</button> <button class="button" onclick="showGraph('MMMFFAQ027S')">MMF 잔고</button>
                     <button class="button" onclick="showGraph('WALCL')">연준 전체 자산 + 부채</button>
                     <button class="button" onclick="showGraph('MMF_COMPOSITION')">MMF 자산 구성</button>
+                    <button class="button" onclick="showGraph('NETMARKETFLOW')">시장 Total 유동 공급량</button>
                 </div>
             </div>
             <div class="indicator-section">
@@ -1485,7 +1486,7 @@
                 indicatorTitles: {
                     'WTREGEN': '미 정부 TGA 잔고', 'WRESBAL': '미 은행 지급준비금', 'RRPONTSYD': '연준 역레포 자금', 'FEDASSET': '연준 순 자산', 'MMMFFAQ027S': 'MMF 잔고', 'WALCL': '연준 전체 자산 + 부채',
                     'SOFR': 'SOFR 금리', 'FEDFUNDS': 'EFFR 금리', 'IORB': 'IORB 금리', 'DGS3MO': '3개월 미 국채금리', 'DGS2': '2년물 미 국채금리', 'DGS10': '10년물 미 국채금리', 'DPCREDIT': '연준 할인율',
-                    'DRBLACBS': '미 은행 연체율(전체)', 'M2SL': 'M2', 'M1SL': 'M1', 'NASDAQ100': '나스닥100 지수', 'SP500': 'S&P500 지수', 'SP500_MCAP': 'S&P500 시가총액',
+                    'DRBLACBS': '미 은행 연체율(전체)', 'M2SL': 'M2', 'M1SL': 'M1', 'NASDAQ100': '나스닥100 지수', 'SP500': 'S&P500 지수', 'SP500_MCAP': 'S&P500 시가총액', 'NETMARKETFLOW': '시장 Total 유동 공급량',
                     'RRPONTSYAWARD': '역레포 금리', 'ALTSALES': '자동차, 트럭 판매량', 'HOUST': '주택 착공 허가 건수', 'DCOILBRENTEU': '국제 유가',
                     'SOFR_FEDFUNDS_SPREAD': 'SOFR, EFFR 스프레드', 'SOFR_IORB_SPREAD': 'SOFR, IORB 스프레드', 'YIELD_SPREAD': '미국 장단기 금리차', 'WALCL': '연준 전체 자산 + 부채', 'MMF_COMPOSITION': 'MMF 자산 구성'
                 },
@@ -1516,7 +1517,8 @@
                     'ALTSALES': {'title': '자동차, 트럭 판매량', 'content': {'경제적 의미': '자동차 및 모든 승용차 판매량에 대한 미 상무부 경제분석국의 보고입니다. 이 지수가 높다면, 강한 경제를 나타냅니다.', '왜 필요한 지표인가': '미국 시장의 주요한 경제 **선행지표** 중 하나입니다.'}},
                     'HOUST': {'title': '주택 착공 허가 건수', 'content': {'경제적 의미': '주택 착공은 특정 달에 시작된 새로운 주거 건설 프로젝트의 수를 의미합니다. 주택 착공 추정치에는 기존 기반 위에 완전히 재건되는 건물의 단위도 포함됩니다. 이 지수가 높다면, 강한 경제를 나타냅니다.', '왜 필요한 지표인가': '미국 시장의 주요한 경제 **선행지표** 중 하나입니다.'}},
                     'DCOILBRENTEU': {'title': '국제 유가', 'content': {'경제적 의미': '유럽과 전 세계 유가의 기준이 되는 지표를 의미합니다.', '왜 필요한 지표인가': '역사적으로 유가가 감소하면, 경제 부흥이 일어나고, 유가가 상승하면 경기 침체 및 하락 국면을 보이기도 합니다. 따라서 중요하게 모니터링할 지표입니다.'}},
-                    'MMF_COMPOSITION': {'title': 'MMF 자산 구성', 'content': {'경제적 의미': 'MMF 유입 자금의 구성 현황이 어떻게 변화하고 있는지를 보여줍니다.', '왜 필요한 지표인가': 'MMF의 규모가 커짐에 따라 자금 흐름의 변화가 시장 유동성에 영향을 미칩니다.'}}
+                    'MMF_COMPOSITION': {'title': 'MMF 자산 구성', 'content': {'경제적 의미': 'MMF 유입 자금의 구성 현황이 어떻게 변화하고 있는지를 보여줍니다.', '왜 필요한 지표인가': 'MMF의 규모가 커짐에 따라 자금 흐름의 변화가 시장 유동성에 영향을 미칩니다.'}},
+                    'NETMARKETFLOW': {'title': '시장 Total 유동 공급량', 'content': {'경제적 의미': '이 지표는 연준(FED), 정부(TGA), MMF를 거쳐 실제로 시장(Market)에 얼마나 많은 돈이 순유입/순유출 되었는지를 주간(Weekly) 단위로 계산한 값입니다. 산출식은 다음과 같습니다.<br><br><b>시장 Total 유동 공급량 = 연준 유동성 공급량 − TGA 잔고 변화량 + (MMF → 시장 순공급량)</b><br><br>여기서 연준 유동성 공급량은 연준 자산(WALCL) 변화량에서 TGA, 역레포(RRP), 은행 지급준비금(WRESBAL) 변화분을 제외하여 산출하며, MMF → 시장 순공급량은 MMF의 시장·정부 자산 투자 증감분에서 MMF 총자산 증감분을 제외하여 계산합니다.', '왜 필요한 지표인가': '개별 지표(TGA, RRP, WALCL, MMF 등)만으로는 실제 시장에 풀린 돈의 총합을 가늠하기 어렵습니다. 이 지표는 여러 유동성 채널을 하나로 합산하여, 현재 시장에 유동성이 공급되고 있는지(+) 혹은 흡수되고 있는지(-)를 한 눈에 파악할 수 있게 해줍니다. 이 값이 지속적으로 플러스(+)면 유동성 확장 국면, 마이너스(-)면 유동성 긴축 국면으로 해석할 수 있으며, 주가(S&P500 등) 방향성과의 상관관계를 살펴보는 데에도 유용합니다.'}}
                 }
             }
         };
@@ -1559,7 +1561,7 @@
             'M2SL': 'Billions of Dollars', 'M1SL': 'Billions of Dollars', 'SP500_MCAP': 'Billions of Dollars', 'SOFR': 'Percent (%)', 'FEDFUNDS': 'Percent (%)', 'IORB': 'Percent (%)', 'DGS3MO': 'Percent (%)',
             'DGS2': 'Percent (%)', 'DGS10': 'Percent (%)', 'DPCREDIT': 'Percent (%)', 'DRBLACBS': 'Percent (%)', 'NASDAQ100': 'Index', 'SP500': 'Index',
             'RRPONTSYAWARD': 'Percent (%)', 'ALTSALES': 'Millions of Units', 'HOUST': 'Thousands of Units', 'DCOILBRENTEU': 'Dollars per Barrel',
-            'SOFR_FEDFUNDS_SPREAD': 'Percent (%)', 'SOFR_IORB_SPREAD': 'Percent (%)', 'YIELD_SPREAD': 'Percent (%)', 'MMF_COMPOSITION': 'Billions of U.S. Dollars'
+            'SOFR_FEDFUNDS_SPREAD': 'Percent (%)', 'SOFR_IORB_SPREAD': 'Percent (%)', 'YIELD_SPREAD': 'Percent (%)', 'MMF_COMPOSITION': 'Billions of U.S. Dollars', 'NETMARKETFLOW': 'Billions of dollars Per Week (BDPW)'
         };
         
         const spreadConfigs = {
@@ -1829,6 +1831,8 @@
                 dataSourceText = 'Source: https://ycharts.com';
             } else if (indicator === 'MMF_COMPOSITION') {
                 dataSourceText = 'Source: Office of Financial Research (OFR)';
+            } else if (indicator === 'NETMARKETFLOW') {
+                dataSourceText = 'Source: FRED, Office of Financial Research (OFR)';
             }
             document.getElementById('graphDataSource').textContent = currentLanguage === 'ko' ? dataSourceText.replace('Source', '자료 출처') : dataSourceText;
             
@@ -1939,6 +1943,28 @@
                         };
                     });
                 } 
+                // 4-1. [신규] 시장 Total 유동 공급량 (computeNetMarketFlowHistory 재사용)
+                else if (indicator === 'NETMARKETFLOW') {
+                    const requiredIndicators = ['WTREGEN', 'WALCL', 'RRPONTSYD', 'WRESBAL', 'MMF2MARKET', 'MMF2GOVERNMENT', 'MMMFFAQ027S'];
+                    const results = await Promise.all(requiredIndicators.map(ind => fetchAndCacheData(ind)));
+                    const dataStore = {};
+                    requiredIndicators.forEach((ind, idx) => { dataStore[ind] = results[idx]; });
+
+                    const netMarketFlowHistory = computeNetMarketFlowHistory(dataStore);
+                    if (netMarketFlowHistory.length === 0) {
+                        const errorMsg = currentLanguage === 'ko' ? `'${langDict.indicatorTitles[indicator]}' 지표의 유효한 데이터가 없어요.` : `No valid data for '${langDict.indicatorTitles[indicator]}' indicator.`;
+                        renderErrorMessage(errorMsg);
+                        return;
+                    }
+
+                    currentGraphData = [{
+                        label: currentLanguage === 'ko' ? '시장(Market) Total 유동 공급량' : 'Market Total Net Liquidity Supply',
+                        data: netMarketFlowHistory,
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                        fill: false, tension: 0.1, pointRadius: 0
+                    }];
+                }
                 // 4. FED Asset (기존 로직)
                 else if (indicator === 'FEDASSET') {
                     const [walclData, tgaData, rrpData, rescalData] = await Promise.all([
@@ -2255,7 +2281,7 @@
                 numberEl.innerHTML = `${percentile}<span>/100</span>`;
             }
 
-            // --- 1W / 4W / 12W / 52W % 변화율 ---
+            // --- 1W / 4W / 12W / 52W 절대값(B$/Week) 변화 ---
             const weekConfigs = [
                 { key: '1W', weeks: 1 },
                 { key: '4W', weeks: 4 },
@@ -2265,13 +2291,13 @@
             if (statsEl) {
                 statsEl.innerHTML = weekConfigs.map(cfg => {
                     const past = getClosestByWeeksAgo(sorted, cfg.weeks);
-                    let pctText = 'N/A', colorClass = '';
-                    if (past && past.y != null && past.y !== 0 && past.x !== latestPoint.x) {
-                        const pct = ((latest - past.y) / Math.abs(past.y)) * 100;
-                        colorClass = pct >= 0 ? 'slope-positive' : 'slope-negative';
-                        pctText = `${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%`;
+                    let valText = 'N/A', colorClass = '';
+                    if (past && past.y != null && past.x !== latestPoint.x) {
+                        const diff = latest - past.y;
+                        colorClass = diff >= 0 ? 'slope-positive' : 'slope-negative';
+                        valText = `${diff >= 0 ? '+' : ''}${diff.toFixed(2)} B$`;
                     }
-                    return `<div class="gauge-stat"><div class="label">${cfg.key}</div><div class="value ${colorClass}">${pctText}</div></div>`;
+                    return `<div class="gauge-stat"><div class="label">${cfg.key}</div><div class="value ${colorClass}">${valText}</div></div>`;
                 }).join('');
             }
         }
