@@ -1301,6 +1301,9 @@
         let currentGraphData = [];
         let netMarketFlowChart = null;
         let netMarketFlowFullData = [];
+        // [Added] computeNetMarketFlowHistory() loops over the entire historical dataset and is expensive,
+        // so we reuse the previous result instead of recomputing it as long as the underlying data is still fresh (within CACHE_TTL).
+        let netMarketFlowHistoryCache = { data: null, timestamp: 0 };
         let dollarAnimationIntervals = [];
         const currentLanguage = 'en'; // This page is the English version, so it's fixed to 'en'
         let analysisData = null;
@@ -1571,7 +1574,12 @@
         });
 
         const pages = ['liquidityFlow', 'interestRateFlow', 'graphIndicators', 'graphPage', 'infoPage', 'aboutPage', 'investmentPage', 'graphControls'];
+        // [Added] Remember the currently active page so that navigating to the page that's already showing
+        // doesn't re-run the animation/data refresh (keeps button clicks feeling instant).
+        let currentActivePage = null;
         function showPage(pageId) {
+            if (currentActivePage === pageId) return; // Already on this page — do nothing
+            currentActivePage = pageId;
             pages.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) {
@@ -1938,7 +1946,13 @@
 
             } catch (error) { console.error("Failed to load initial data", error); Object.values(displays).forEach(el => { if (el) el.textContent = "Data Error"; }); return; }
             
-            netMarketFlowFullData = computeNetMarketFlowHistory(dataStore);
+            // [Modified] Skip the expensive recomputation if the cache is still valid; reuse the previous result.
+            if (netMarketFlowHistoryCache.data && (Date.now() - netMarketFlowHistoryCache.timestamp < CACHE_TTL)) {
+                netMarketFlowFullData = netMarketFlowHistoryCache.data;
+            } else {
+                netMarketFlowFullData = computeNetMarketFlowHistory(dataStore);
+                netMarketFlowHistoryCache = { data: netMarketFlowFullData, timestamp: Date.now() };
+            }
             updateNetMarketFlowChart('All');
             renderLiquidityPercentileGauge();
             
