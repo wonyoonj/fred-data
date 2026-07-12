@@ -415,6 +415,119 @@
         .share-button.line { background-color: #00C300; }
         .share-button.copy-link { background-color: #6c757d; }
 
+        /* ===================== [신규] Insight / Gauge / Macro Components 카드 스타일 ===================== */
+        .liq-section { max-width: 800px; margin: 0 auto 20px auto; }
+
+        .insight-card {
+            background: #fffdf7;
+            border: 1px solid #f0e2c2;
+            border-radius: 16px;
+            padding: 20px 22px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        }
+        .insight-card .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #b8860b;
+            background: #fff3d6;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+        }
+        .insight-card .badge .dot { width: 7px; height: 7px; border-radius: 50%; background: #e0a800; display:inline-block; }
+        .insight-card h3 {
+            margin: 0 0 12px 0;
+            font-size: 22px;
+            color: #1a1a1a;
+            text-align: left;
+        }
+        .insight-card #liquidity-analysis-container {
+            border: none !important;
+            padding: 0 !important;
+            margin-top: 0 !important;
+            background: transparent;
+        }
+
+        .gauge-card {
+            background: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 16px;
+            padding: 20px 22px 10px 22px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        }
+        .gauge-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .gauge-card-header .title {
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: #888;
+        }
+        .gauge-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+        .gauge-status-badge .dot { width: 7px; height: 7px; border-radius: 50%; display:inline-block; }
+        .gauge-svg-wrap { text-align: center; }
+        .gauge-value-number { font-size: 26px; font-weight: bold; color: #1a1a1a; text-align: center; margin-top: -10px; }
+        .gauge-value-number span { font-size: 15px; font-weight: normal; color: #999; }
+        .gauge-stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid #f0f0f0;
+        }
+        .gauge-stat { text-align: center; }
+        .gauge-stat .label { font-size: 11px; color: #999; margin-bottom: 4px; }
+        .gauge-stat .value { font-size: 15px; font-weight: bold; }
+
+        .macro-card-box {
+            background: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 16px;
+            padding: 18px 22px 14px 22px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        }
+        .macro-card-box .title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .macro-card-box .title-row .title { font-size: 12px; font-weight: bold; letter-spacing: 1px; color: #888; }
+        .macro-card-box .title-row .formula { font-size: 11px; color: #aaa; }
+        .macro-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px 16px;
+        }
+        .macro-item .label { font-size: 13px; color: #777; margin-bottom: 4px; }
+        .macro-item .value { font-size: 24px; font-weight: bold; color: #1a1a1a; }
+        .macro-item .value span { font-size: 13px; font-weight: normal; color: #999; margin-left: 2px; }
+        .macro-item .change-row { display: flex; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
+        .macro-item .change-row .chg { font-size: 12px; }
+        .macro-item .change-row .chg .k { color: #999; margin-right: 3px; }
+
+        @media (max-width: 600px) {
+            .gauge-stats-row { grid-template-columns: repeat(2, 1fr); row-gap: 12px; }
+            .macro-grid { grid-template-columns: repeat(2, 1fr); }
+            .insight-card, .gauge-card, .macro-card-box { padding: 16px; }
+        }
+        /* ===================== [신규 끝] ===================== */
 
         @keyframes dollarFlowToMarket {
             0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; left: 50%; top: 20%; }
@@ -813,31 +926,16 @@
                 </div>
             </div>
 
-            <div class="info-box">
-                <h2>미국 달러 유동성을 한눈에 파악하세요!</h2>
-                <p>
-                    검증된 데이터(출처: FRED) 기반으로 미국 시장 유동성을 애니메이션으로 시각화하여 제공합니다.
-                </p>
-                <p>
-                    미국 연방준비제도(FED), 정부(TGA), 머니마켓펀드(MMF), 그리고 시장 사이에서 돈이 어떻게 흐르는지 알려드립니다. 금리 변동, 양적완화 및 긴축 정책의 영향을 보다 쉽게 파악하고 현명한 투자 결정을 내리는 데 도움을 드리고자 합니다.
-                </p>
-                <h3>주요 기능 안내</h3>
-                <ul>
-                    <li><strong>실시간 유동성 흐름:</strong> 각 경제 주체(정부, 중앙은행, MMF, 시장) 간의 월별 자금 이동 규모를 애니메이션으로 시각화하여 돈의 흐름을 쉽게 추적할 수 있습니다.</li>
-                    <li><strong>핵심 금리 현황:</strong> SOFR, EFFR, 국채 금리 등 시장의 중요한 금리 지표들을 실시간으로 확인하고 그 의미를 파악할 수 있습니다.</li>
-                    <li><strong>상세 데이터 그래프:</strong> TGA 잔고, M2 통화량, S&P500 지수 등 30여 개의 주요 경제 지표를 기간별 상세 그래프로 직접 분석할 수 있습니다. 각 지표에 대한 설명(Info)도 제공합니다.</li>
-                </ul>
-                <p style="margin-top: 20px; text-align: center; font-weight: bold;">
-                    이제 아래의 시각화 자료를 통해 복잡한 경제의 흐름을 쉽게 탐색해 보세요.
-                </p>
-                
+            <!-- ① AI 인공지능 Daily 분석 -->
+            <div class="liq-section">
+                <div class="insight-card">
+                    <span class="badge"><span class="dot"></span>INSIGHT · AI</span>
+                    <h3 id="ai-analysis-title-liquidity"></h3>
+                    <div id="liquidity-analysis-container"></div>
+                </div>
             </div>
 
-            <h3 id="ai-analysis-title-liquidity" style="text-align: center; color: black;"></h3>
-            
-            <div id="liquidity-analysis-container" class="info-box" style="text-align: left; font-weight: bold; border: 2px solid #007bff; padding: 15px; margin-top: 0;">
-                </div>
-            
+            <!-- ② 링크 복사 / 공유 버튼 -->
             <div class="share-buttons-container">
                 <a class="share-button x" onclick="shareOn('twitter')">X</a>
                 <a class="share-button facebook" onclick="shareOn('facebook')">Facebook</a>
@@ -845,11 +943,38 @@
                 <a class="share-button line" onclick="shareOn('line')">LINE</a>
                 <a class="share-button copy-link" onclick="copyLink()">링크 복사</a>
             </div>
+
+            <!-- ③ LIQUIDITY INDEX (속도계 게이지) -->
+            <div class="liq-section">
+                <div class="gauge-card">
+                    <div class="gauge-card-header">
+                        <span class="title">LIQUIDITY INDEX</span>
+                        <span id="gaugeStatusBadge" class="gauge-status-badge"></span>
+                    </div>
+                    <div class="gauge-svg-wrap" id="liquidityIndexGaugeSvg"></div>
+                    <div class="gauge-value-number" id="liquidityIndexGaugeNumber"></div>
+                    <div class="gauge-stats-row" id="liquidityIndexGaugeStats"></div>
+                </div>
+            </div>
+
+            <!-- ④ MACRO COMPONENTS -->
+            <div class="liq-section">
+                <div class="macro-card-box">
+                    <div class="title-row">
+                        <span class="title">MACRO COMPONENTS</span>
+                        <span class="formula">1W · 4W · 12W 증감률</span>
+                    </div>
+                    <div class="macro-grid" id="macroComponentsGrid"></div>
+                </div>
+            </div>
+
             <div class="share-buttons-container">
                 <p style="text-align: center;">
                     (경제 지표 라벨을 누르면, 상세 설명이 보여요!)
                 </p>
             </div>
+
+            <!-- ⑤ 달러 흐름 애니메이션 -->
             <div class="animation-container">
                 
 
@@ -897,27 +1022,28 @@
                 </div>
             </div>
 
-            <div id="liquidityPercentileGauge" style="margin-top:20px; font-weight: bold;"></div>
-
-            <div class="info-box" style="margin-top: 30px; padding: 15px 15px 5px 15px;">
-                <h3 style="text-align:center; margin-top:0;">미국 시장(Market) Total 유동 공급량 추이</h3>
-                <div style="position:relative; height:350px; width:100%;">
-                    <canvas id="netMarketFlowChart"></canvas>
-                </div>
-                <div class="time-buttons">
-                    <button class="time-btn" onclick="updateNetMarketFlowChart('1M')">1M</button>
-                    <button class="time-btn" onclick="updateNetMarketFlowChart('6M')">6M</button>
-                    <button class="time-btn" onclick="updateNetMarketFlowChart('1Y')">1Y</button>
-                    <button class="time-btn" onclick="updateNetMarketFlowChart('5Y')">5Y</button>
-                    <button class="time-btn" onclick="updateNetMarketFlowChart('10Y')">10Y</button>
-                    <button class="time-btn" onclick="updateNetMarketFlowChart('All')">All</button>
-                </div>
-            </div>
-
-            
-
-
             <div class="source-credit-main">자료 출처: FRED, Office of Financial Research (OFR)</div>
+
+            <!-- ⑥ 나머지 설명 콘텐츠 (맨 아래로 이동) -->
+            <div class="info-box">
+                <h2>미국 달러 유동성을 한눈에 파악하세요!</h2>
+                <p>
+                    검증된 데이터(출처: FRED) 기반으로 미국 시장 유동성을 애니메이션으로 시각화하여 제공합니다.
+                </p>
+                <p>
+                    미국 연방준비제도(FED), 정부(TGA), 머니마켓펀드(MMF), 그리고 시장 사이에서 돈이 어떻게 흐르는지 알려드립니다. 금리 변동, 양적완화 및 긴축 정책의 영향을 보다 쉽게 파악하고 현명한 투자 결정을 내리는 데 도움을 드리고자 합니다.
+                </p>
+                <h3>주요 기능 안내</h3>
+                <ul>
+                    <li><strong>실시간 유동성 흐름:</strong> 각 경제 주체(정부, 중앙은행, MMF, 시장) 간의 월별 자금 이동 규모를 애니메이션으로 시각화하여 돈의 흐름을 쉽게 추적할 수 있습니다.</li>
+                    <li><strong>핵심 금리 현황:</strong> SOFR, EFFR, 국채 금리 등 시장의 중요한 금리 지표들을 실시간으로 확인하고 그 의미를 파악할 수 있습니다.</li>
+                    <li><strong>상세 데이터 그래프:</strong> TGA 잔고, M2 통화량, S&P500 지수 등 30여 개의 주요 경제 지표를 기간별 상세 그래프로 직접 분석할 수 있습니다. 각 지표에 대한 설명(Info)도 제공합니다.</li>
+                </ul>
+                <p style="margin-top: 20px; text-align: center; font-weight: bold;">
+                    이제 위의 시각화 자료를 통해 복잡한 경제의 흐름을 쉽게 탐색해 보세요.
+                </p>
+                
+            </div>
 
             <div class="info-box">
                 <h3>데이터는 어떻게 해석해야 하나요?</h3>
@@ -2049,61 +2175,178 @@
             return history;
         }
 
-        function renderNetMarketFlowChart(data) {
-            const canvas = document.getElementById('netMarketFlowChart');
-            if (!canvas) return;
-            if (netMarketFlowChart) { netMarketFlowChart.destroy(); netMarketFlowChart = null; }
-            netMarketFlowChart = new Chart(canvas.getContext('2d'), {
-                type: 'line',
-                data: {
-                    datasets: [{
-                        label: currentLanguage === 'ko' ? '시장(Market) Total 유동 공급량' : 'Market Total Net Liquidity Supply',
-                        data: data,
-                        borderColor: '#007bff',
-                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                        fill: false, tension: 0.1, pointRadius: 0
-                    }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    scales: {
-                        x: { type: 'time', time: { unit: 'month', tooltipFormat: 'yyyy-MM-dd', displayFormats: { day: 'yyyy-MM-dd', month: 'yyyy-MM', year: 'yyyy' } }, title: { display: true, text: 'Date' } },
-                        y: { title: { display: true, text: 'Billions of dollars Per Week (BDPW)', font: { weight: 'bold' } } }
-                    },
-                    plugins: { legend: { display: true }, tooltip: { mode: 'index', intersect: false } }
-                }
-            });
-        }
-
-        function updateNetMarketFlowChart(range) {
-            if (!netMarketFlowFullData || netMarketFlowFullData.length === 0) return;
-            let dataToShow = netMarketFlowFullData;
-            if (range !== 'All') {
-                const lastDate = new Date(netMarketFlowFullData[netMarketFlowFullData.length - 1].x);
-                const cutoff = new Date(lastDate);
-                if (range === '1M') cutoff.setMonth(lastDate.getMonth() - 1);
-                else if (range === '6M') cutoff.setMonth(lastDate.getMonth() - 6);
-                else cutoff.setFullYear(lastDate.getFullYear() - { '1Y': 1, '5Y': 5, '10Y': 10 }[range]);
-                dataToShow = netMarketFlowFullData.filter(d => new Date(d.x) >= cutoff);
+        // === [신규] "시장 Total 유동 공급량" 기준 자동차 속도계 스타일 LIQUIDITY INDEX 게이지 ===
+        // 게이지 값(0~100)은 computeNetMarketFlowHistory() 로 계산된 '시장 Total 유동 공급량' 히스토리에서
+        // 현재값이 과거 분포 대비 몇 번째 백분위(percentile)에 위치하는지로 산출합니다.
+        // (0 = UNDERSUPPLY 쪽 극단, 100 = FLOODED 쪽 극단)
+        function getClosestByWeeksAgo(sortedHistory, weeksAgo) {
+            if (!sortedHistory || sortedHistory.length === 0) return null;
+            const lastDate = new Date(sortedHistory[sortedHistory.length - 1].x);
+            const targetDate = new Date(lastDate);
+            targetDate.setDate(targetDate.getDate() - weeksAgo * 7);
+            let closest = sortedHistory[0];
+            let minDiff = Math.abs(new Date(closest.x) - targetDate);
+            for (const point of sortedHistory) {
+                const diff = Math.abs(new Date(point.x) - targetDate);
+                if (diff < minDiff) { minDiff = diff; closest = point; }
             }
-            renderNetMarketFlowChart(dataToShow);
+            return closest;
         }
 
-        function renderLiquidityPercentileGauge() {
-            const gaugeEl = document.getElementById('liquidityPercentileGauge');
-            if (!gaugeEl || !netMarketFlowFullData || netMarketFlowFullData.length < 10) return;
-            const values = netMarketFlowFullData.map(d => d.y).sort((a, b) => a - b);
-            const latest = netMarketFlowFullData[netMarketFlowFullData.length - 1].y;
+        function renderLiquidityIndexGauge() {
+            const svgWrap = document.getElementById('liquidityIndexGaugeSvg');
+            const numberEl = document.getElementById('liquidityIndexGaugeNumber');
+            const statsEl = document.getElementById('liquidityIndexGaugeStats');
+            const badgeEl = document.getElementById('gaugeStatusBadge');
+            if (!svgWrap || !netMarketFlowFullData || netMarketFlowFullData.length < 10) return;
+
+            const sorted = [...netMarketFlowFullData].sort((a, b) => new Date(a.x) - new Date(b.x));
+            const values = sorted.map(d => d.y).slice().sort((a, b) => a - b);
+            const latestPoint = sorted[sorted.length - 1];
+            const latest = latestPoint.y;
             const rank = values.filter(v => v <= latest).length;
-            const percentile = Math.round((rank / values.length) * 100);
-            const label = currentLanguage === 'ko'
-                ? `현재 유동성 공급 속도는 역사적으로 상위 ${100 - percentile}% 구간입니다. (백분위: ${percentile}%)`
-                : `Current liquidity supply pace is in the top ${100 - percentile}% historically. (Percentile: ${percentile}%)`;
-            gaugeEl.innerHTML = `
-                <div style="background:#e9ecef; border-radius:10px; height:18px; width:100%; overflow:hidden;">
-                    <div style="background:${latest >= 0 ? '#28a745' : '#dc3545'}; height:100%; width:${percentile}%; transition: width 0.5s;"></div>
-                </div>
-                <p style="text-align:center; font-size:0.9em; margin-top:6px;">${label}</p>`;
+            const percentile = Math.max(0, Math.min(100, Math.round((rank / values.length) * 100)));
+
+            // 상태 뱃지 (구간에 따른 분류)
+            let statusText, statusColor, statusBg;
+            if (percentile >= 70) { statusText = '유동성 확대'; statusColor = '#c0392b'; statusBg = '#fdecec'; }
+            else if (percentile <= 30) { statusText = '유동성 축소'; statusColor = '#1c6fd6'; statusBg = '#e9f2fe'; }
+            else { statusText = '관망'; statusColor = '#b8860b'; statusBg = '#fff3d6'; }
+            if (badgeEl) {
+                badgeEl.style.color = statusColor;
+                badgeEl.style.background = statusBg;
+                badgeEl.innerHTML = `<span class="dot" style="background:${statusColor};"></span>${statusText}`;
+            }
+
+            // --- SVG 속도계(게이지) 그리기 ---
+            const cx = 150, cy = 150, r = 110;
+            const angleFor = (pct) => -180 + (pct / 100) * 180; // -180deg(왼쪽,UNDERSUPPLY) ~ 0deg(오른쪽,FLOODED)
+            const polarToXY = (angleDeg, radius) => {
+                const rad = (angleDeg * Math.PI) / 180;
+                return { x: cx + radius * Math.cos(rad), y: cy + radius * Math.sin(rad) };
+            };
+            const arcPath = (radius, startPct, endPct) => {
+                const p1 = polarToXY(angleFor(startPct), radius);
+                const p2 = polarToXY(angleFor(endPct), radius);
+                const largeArc = (endPct - startPct) > 50 ? 1 : 0;
+                return `M ${p1.x} ${p1.y} A ${radius} ${radius} 0 ${largeArc} 1 ${p2.x} ${p2.y}`;
+            };
+            const needleAngle = angleFor(percentile);
+            const needleTip = polarToXY(needleAngle, r - 18);
+
+            const svg = `
+                <svg viewBox="0 0 300 175" width="100%" style="max-width:320px; overflow:visible;">
+                    <defs>
+                        <linearGradient id="liqGaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#4dabf7" />
+                            <stop offset="50%" stop-color="#ffd43b" />
+                            <stop offset="100%" stop-color="#ff6b6b" />
+                        </linearGradient>
+                    </defs>
+                    <path d="${arcPath(r, 0, 100)}" fill="none" stroke="url(#liqGaugeGradient)" stroke-width="14" stroke-linecap="round" />
+                    <line x1="${cx}" y1="${cy}" x2="${needleTip.x}" y2="${needleTip.y}" stroke="#333" stroke-width="3" stroke-linecap="round" />
+                    <circle cx="${cx}" cy="${cy}" r="6" fill="#333" />
+                    <text x="${cx - r + 5}" y="${cy + 28}" font-size="10" fill="#999" text-anchor="start">UNDERSUPPLY</text>
+                    <text x="${cx + r - 5}" y="${cy + 28}" font-size="10" fill="#999" text-anchor="end">FLOODED</text>
+                </svg>`;
+            svgWrap.innerHTML = svg;
+
+            if (numberEl) {
+                numberEl.innerHTML = `${percentile}<span>/100</span>`;
+            }
+
+            // --- 1W / 4W / 12W / 52W % 변화율 ---
+            const weekConfigs = [
+                { key: '1W', weeks: 1 },
+                { key: '4W', weeks: 4 },
+                { key: '12W', weeks: 12 },
+                { key: '52W', weeks: 52 }
+            ];
+            if (statsEl) {
+                statsEl.innerHTML = weekConfigs.map(cfg => {
+                    const past = getClosestByWeeksAgo(sorted, cfg.weeks);
+                    let pctText = 'N/A', colorClass = '';
+                    if (past && past.y != null && past.y !== 0 && past.x !== latestPoint.x) {
+                        const pct = ((latest - past.y) / Math.abs(past.y)) * 100;
+                        colorClass = pct >= 0 ? 'slope-positive' : 'slope-negative';
+                        pctText = `${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%`;
+                    }
+                    return `<div class="gauge-stat"><div class="label">${cfg.key}</div><div class="value ${colorClass}">${pctText}</div></div>`;
+                }).join('');
+            }
+        }
+
+        // === [신규] MACRO COMPONENTS 카드 (Fed총자산 / TGA / RRP / MMF Total Asset / M2 / S&P500) ===
+        function pctChange(now, past) {
+            if (now == null || past == null || past === 0) return null;
+            return ((now - past) / Math.abs(past)) * 100;
+        }
+        async function loadMacroComponents() {
+            const gridEl = document.getElementById('macroComponentsGrid');
+            if (!gridEl) return;
+            gridEl.innerHTML = `<div style="grid-column:1/-1; text-align:center; color:#999;">불러오는 중...</div>`;
+
+            // 카드 순서: Fed 총자산, TGA, RRP, MMF Total Asset, M2, S&P500
+            const cardConfigs = [
+                { code: 'WALCL', label: 'Fed 총자산', unitDivide: 1000, unit: 'T$', trillion: true },
+                { code: 'WTREGEN', label: 'TGA (미 정부 TGA 잔고)', unitDivide: 1000, unit: 'T$', trillion: true },
+                { code: 'RRPONTSYD', label: 'RRP (연준 역레포 자금)', unitDivide: 1, unit: 'T$', trillion: true, rawIsBillions: true },
+                { code: 'MMMFFAQ027S', label: 'MMF Total Asset', unitDivide: 1e9, unit: 'T$', trillion: true, rawIsDollars: true },
+                { code: 'M2SL', label: 'M2', unitDivide: 1, unit: 'T$', trillion: true, rawIsBillions: true },
+                { code: 'SP500', label: 'S&P 500', unitDivide: 1, unit: '', trillion: false }
+            ];
+
+            try {
+                const results = await Promise.all(cardConfigs.map(cfg => fetchAndCacheData(cfg.code).catch(() => [])));
+
+                gridEl.innerHTML = cardConfigs.map((cfg, idx) => {
+                    const data = results[idx];
+                    if (!data || data.length === 0) {
+                        return `<div class="macro-item"><div class="label">${cfg.label}</div><div class="value">-</div></div>`;
+                    }
+                    const sortedData = data; // fetchAndCacheData already returns ascending sorted
+                    const latest = sortedData[sortedData.length - 1];
+                    // 값을 Billions 단위로 정규화
+                    let billionsValue = latest.value;
+                    if (cfg.rawIsDollars) billionsValue = latest.value / 1e9;
+                    else if (!cfg.rawIsBillions) billionsValue = latest.value / 1000; // Millions -> Billions (WALCL, WTREGEN 등)
+
+                    let displayValue;
+                    if (cfg.trillion) {
+                        displayValue = `${(billionsValue / 1000).toFixed(2)} <span>T$</span>`;
+                    } else {
+                        displayValue = `${billionsValue.toLocaleString('en-US', { maximumFractionDigits: 2 })}`;
+                    }
+
+                    const w1 = getClosestData(sortedData, (() => { const d = new Date(latest.date); d.setDate(d.getDate() - 7); return d; })());
+                    const w4 = getClosestData(sortedData, (() => { const d = new Date(latest.date); d.setDate(d.getDate() - 28); return d; })());
+                    const w12 = getClosestData(sortedData, (() => { const d = new Date(latest.date); d.setDate(d.getDate() - 84); return d; })());
+
+                    const pct1w = w1 ? pctChange(latest.value, w1.value) : null;
+                    const pct4w = w4 ? pctChange(latest.value, w4.value) : null;
+                    const pct12w = w12 ? pctChange(latest.value, w12.value) : null;
+
+                    const changeCell = (label, pct) => {
+                        if (pct == null || isNaN(pct)) return `<span class="chg"><span class="k">${label}</span>N/A</span>`;
+                        const cls = pct >= 0 ? 'slope-positive' : 'slope-negative';
+                        return `<span class="chg"><span class="k">${label}</span><span class="${cls}">${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%</span></span>`;
+                    };
+
+                    return `
+                        <div class="macro-item">
+                            <div class="label">${cfg.label}</div>
+                            <div class="value">${displayValue}</div>
+                            <div class="change-row">
+                                ${changeCell('1W', pct1w)}
+                                ${changeCell('4W', pct4w)}
+                                ${changeCell('12W', pct12w)}
+                            </div>
+                        </div>`;
+                }).join('');
+            } catch (error) {
+                console.error('Failed to load macro components:', error);
+                gridEl.innerHTML = `<div style="grid-column:1/-1; text-align:center; color:#dc3545;">데이터를 불러오지 못했습니다.</div>`;
+            }
         }
 
         async function updateLiquidityFlowAnimation() {
@@ -2146,8 +2389,8 @@
                 Object.values(displays).forEach(el => { if (el) el.textContent = errorText; }); return;
             }
             netMarketFlowFullData = computeNetMarketFlowHistory(dataStore);
-            updateNetMarketFlowChart('All');
-            renderLiquidityPercentileGauge();
+            renderLiquidityIndexGauge();
+            loadMacroComponents();
 
             let tgaDiff = null, fedLiquidityDiff = null, mmfToFedDiff = null, finalMmfToMarketDiff = null;
             let tgaLatestDate = null, fedLatestDate = null, mmfFedLatestDate = null, mmfMarketLatestDate = null;
