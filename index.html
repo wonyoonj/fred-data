@@ -2281,21 +2281,26 @@
                 numberEl.innerHTML = `${percentile}<span>/100</span>`;
             }
 
-            // --- 1W / 4W / 12W / 52W 절대값(B$/Week) 변화 ---
+            // --- 1W / 4W / 12W / 52W 퍼센타일(백분위) 차이 (%p) ---
             const weekConfigs = [
                 { key: '1W', weeks: 1 },
                 { key: '4W', weeks: 4 },
                 { key: '12W', weeks: 12 },
                 { key: '52W', weeks: 52 }
             ];
+            const percentileOf = (val) => {
+                const rank = values.filter(v => v <= val).length;
+                return Math.round((rank / values.length) * 100);
+            };
             if (statsEl) {
                 statsEl.innerHTML = weekConfigs.map(cfg => {
                     const past = getClosestByWeeksAgo(sorted, cfg.weeks);
                     let valText = 'N/A', colorClass = '';
                     if (past && past.y != null && past.x !== latestPoint.x) {
-                        const diff = latest - past.y;
+                        const pastPercentile = percentileOf(past.y);
+                        const diff = percentile - pastPercentile; // %p 차이
                         colorClass = diff >= 0 ? 'slope-positive' : 'slope-negative';
-                        valText = `${diff >= 0 ? '+' : ''}${diff.toFixed(2)} B$`;
+                        valText = `${diff >= 0 ? '+' : ''}${diff}%p`;
                     }
                     return `<div class="gauge-stat"><div class="label">${cfg.key}</div><div class="value ${colorClass}">${valText}</div></div>`;
                 }).join('');
