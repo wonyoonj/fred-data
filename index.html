@@ -1426,6 +1426,9 @@
         let currentGraphData = [];
         let netMarketFlowChart = null;
         let netMarketFlowFullData = [];
+        // [추가] computeNetMarketFlowHistory()는 전체 역사 데이터를 순회하는 무거운 계산이라,
+        // 원본 데이터가 갱신되지 않았다면(CACHE_TTL 이내) 재계산하지 않고 이전 결과를 재사용합니다.
+        let netMarketFlowHistoryCache = { data: null, timestamp: 0 };
         let dollarAnimationIntervals = [];
         const currentLanguage = 'ko'; // 이 페이지는 한국어 버전이므로 'ko'로 고정
         let analysisData = null;
@@ -1726,7 +1729,12 @@
         });
 
         const pages = ['liquidityFlow', 'interestRateFlow', 'graphIndicators', 'graphPage', 'infoPage', 'aboutPage', 'investmentPage', 'graphControls'];
+        // [추가] 현재 활성화된 페이지를 기억해서, 이미 보고 있는 페이지로 다시 이동할 때는
+        // 애니메이션/데이터 갱신을 다시 실행하지 않도록 합니다. (버튼을 눌러도 즉시 반응하도록)
+        let currentActivePage = null;
         function showPage(pageId) {
+            if (currentActivePage === pageId) return; // 이미 같은 페이지에 있으면 아무 작업도 하지 않음
+            currentActivePage = pageId;
             pages.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) {
@@ -2419,7 +2427,13 @@
                 const errorText = currentLanguage === 'ko' ? "데이터 오류" : "Data Error";
                 Object.values(displays).forEach(el => { if (el) el.textContent = errorText; }); return;
             }
-            netMarketFlowFullData = computeNetMarketFlowHistory(dataStore);
+            // [수정] 캐시가 유효하면 무거운 재계산을 건너뛰고 이전 계산 결과를 그대로 사용합니다.
+            if (netMarketFlowHistoryCache.data && (Date.now() - netMarketFlowHistoryCache.timestamp < CACHE_TTL)) {
+                netMarketFlowFullData = netMarketFlowHistoryCache.data;
+            } else {
+                netMarketFlowFullData = computeNetMarketFlowHistory(dataStore);
+                netMarketFlowHistoryCache = { data: netMarketFlowFullData, timestamp: Date.now() };
+            }
             renderLiquidityIndexGauge();
             loadMacroComponents();
 
