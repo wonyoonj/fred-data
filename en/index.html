@@ -1006,20 +1006,20 @@
                 
                 <div class="icon-container FED-container">
                     <span class="icon-label">Central Bank (FED)</span>
-                    <img src="./icon/fed.jpg" alt="FED" class="icon">
+                    <img src="../icon/fed.jpg" alt="FED" class="icon">
                 </div>
                 <div class="icon-container Government-container">
-                    <img src="./icon/government.JPG" alt="Government TGA" class="icon">
+                    <img src="../icon/government.JPG" alt="Government TGA" class="icon">
                     <span class="icon-label">US Government</span>
                     <span id="tgaCurrentBalance" class="icon-label" style="font-weight: bold; color: black; font-size: 14px; margin-top: 0;">...</span>
                 </div>
                 <div class="icon-container Market-container">
-                    <img src="./icon/Market.jpg" alt="Market" class="icon">
+                    <img src="../icon/Market.jpg" alt="Market" class="icon">
                     <span class="icon-label">US Market</span>
                     <div id="netMarketFlowDisplay"></div>
                     </div>
                 <div class="icon-container MMF-container">
-                    <img src="./icon/MMF.jpg" alt="MMF" class="icon">
+                    <img src="../icon/MMF.jpg" alt="MMF" class="icon">
                     <span class="icon-label">MMF<br>(Money Market Fund)</span>
                 </div>
             </div>
@@ -1288,7 +1288,7 @@
                 
                 <h3>Dollar Liquidity Ultimately Determines Stock Prices.</h3>
                 <p>In 2022, as the US FED's reverse repo balance increased, the S&P 500 fell and the market crashed. Today, <strong style="color: red;">the direction and speed of the money supply</strong> matter more than ever for the US stock market. That's why <strong style="color: blue;">"Wondengi's US Liquidity Status"</strong> aims to help you easily forecast liquidity flows, predict the stock market's direction, and maximize your returns.</p>
-                <img src="./icon/repo_sp500_plot.JPG" alt="Relationship between Reverse Repo and the S&P 500" style="width: 100%; max-width: 600px; margin: 20px auto; display: block; border-radius: 8px;">
+                <img src="../icon/repo_sp500_plot.JPG" alt="Relationship between Reverse Repo and the S&P 500" style="width: 100%; max-width: 600px; margin: 20px auto; display: block; border-radius: 8px;">
 
                 <h3>Key Features</h3>
                 <ul>
@@ -1609,7 +1609,7 @@
         
         async function loadFinancialAnalysis() {
             try {
-                const response = await fetch('csvfile/financial_analysis.json');
+                const response = await fetch('../csvfile/financial_analysis.json');
                 if (!response.ok) {
                     throw new Error('Network response was not ok.');
                 }
@@ -1700,8 +1700,12 @@
             document.documentElement.lang = lang;
 
             document.querySelectorAll('.lang-selector').forEach(selector => {
-                selector.querySelector('.lang-btn.active').classList.remove('active');
-                selector.querySelector(`.lang-btn[onclick="setLanguage('${lang}')"]`).classList.add('active');
+                const activeBtn = selector.querySelector('.lang-btn.active');
+                if (activeBtn) activeBtn.classList.remove('active');
+                // This page is fixed to English, so simply mark the English button as active
+                // instead of looking for an onclick="setLanguage(...)" handler (the buttons now navigate via href / are already marked active in the HTML).
+                const targetBtn = Array.from(selector.querySelectorAll('.lang-btn')).find(btn => btn.textContent.trim() === 'English');
+                if (targetBtn) targetBtn.classList.add('active');
             });
             
             const activePage = document.querySelector('.page[style*="block"]').id;
@@ -2655,7 +2659,7 @@
 
         function createAndAnimateDollar(animationClass, size, duration) {
             const dollar = document.createElement('img');
-            dollar.src = "./icon/dollar.jpg"; dollar.alt = "Dollar"; dollar.className = 'dollar-animated-object';
+            dollar.src = "../icon/dollar.jpg"; dollar.alt = "Dollar"; dollar.className = 'dollar-animated-object';
             dollar.style.width = `${size}px`; dollar.style.height = `${size}px`;
             dollar.style.setProperty('--animation-duration', `${duration / 1000}s`);
             dollar.classList.add(animationClass);
