@@ -16,6 +16,7 @@
         // (iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)는 Safari 브라우저가 아닌 iOS 내장 웹뷰를 감지하는 패턴 중 하나입니다.
         const ua = navigator.userAgent || '';
         const isWebView = /wv/.test(ua) || /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/.test(ua);
+        window.__isWebView = isWebView; // [추가] 웹뷰(스레드/인스타그램/카카오톡 등 인앱 브라우저) 안내 배너에서 재사용
 
         // http 환경이면서(isHttp) 웹뷰가 아닐 때(!isWebView)만 광고 스크립트를 로드합니다.
         if (isHttp && !isWebView) {
@@ -113,6 +114,44 @@
             color: #555;
         }
 
+        /* [추가] 웹뷰(스레드/인스타그램/카카오톡 인앱 브라우저) 안내 배너 */
+        .webview-banner {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            background-color: #fff3cd;
+            color: #664d03;
+            border-bottom: 1px solid #ffe69c;
+            padding: 10px 14px;
+            font-size: 13px;
+            line-height: 1.4;
+            position: sticky;
+            top: 0;
+            z-index: 2000;
+        }
+        .webview-banner .webview-banner-text { flex: 1; }
+        .webview-banner .webview-banner-btn {
+            flex-shrink: 0;
+            background-color: #664d03;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .webview-banner .webview-banner-close {
+            flex-shrink: 0;
+            background: transparent;
+            border: none;
+            color: #664d03;
+            font-size: 18px;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0 4px;
+        }
         .lang-selector {
             display: flex;
             justify-content: center;
@@ -915,6 +954,11 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns" defer></script>
 </head>
 <body>
+    <div id="webviewBanner" class="webview-banner">
+        <span class="webview-banner-text">This page works better and shows ads properly in your regular browser. Tap to open in Chrome/Safari.</span>
+        <button class="webview-banner-btn" onclick="openInExternalBrowser()">Open in Browser</button>
+        <button class="webview-banner-close" onclick="document.getElementById('webviewBanner').style.display='none'" aria-label="Close">✕</button>
+    </div>
     <div class="container">
         
         <div id="liquidityFlow" class="page">
@@ -1419,6 +1463,33 @@
     </footer>
 
     <script>
+        // [추가] 웹뷰(스레드/인스타그램/카카오톡 인앱 브라우저) 감지 시 "외부 브라우저로 열기" 배너 표시
+        // 광고는 정책상 웹뷰에서 로드하지 않지만(계정 정지 위험), 사용자를 실제 브라우저로 유도하면
+        // 거기서는 정상적으로 광고가 노출/수익화될 수 있습니다.
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.__isWebView) {
+                const banner = document.getElementById('webviewBanner');
+                if (banner) banner.style.display = 'flex';
+            }
+        });
+
+        function openInExternalBrowser() {
+            const url = window.location.href;
+            const ua = navigator.userAgent || '';
+            if (/android/i.test(ua)) {
+                // 안드로이드: Chrome을 명시적으로 지정해서 여는 intent URL 사용 (Chrome 미설치 시 스토어로 자동 연결)
+                const urlNoScheme = url.replace(/^https?:\/\//, '');
+                window.location.href = 'intent://' + urlNoScheme + '#Intent;scheme=https;package=com.android.chrome;end';
+            } else {
+                // iOS 등: 인앱 웹뷰 안에서 자바스크립트만으로 강제로 Safari를 여는 표준 방법이 없어,
+                // 링크를 클립보드에 복사하고 안내 문구를 보여줍니다.
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(url).catch(function () {});
+                }
+                alert('Please use the "•••" menu at the top and choose "Open in Browser" (or "Open in Safari").\nThe link has also been copied, so you can paste it into Safari/Chrome directly.');
+            }
+        }
+
         let myChart = null;
         let investmentChart = null; // 가상 투자 차트 객체
         let isDragging = false;
