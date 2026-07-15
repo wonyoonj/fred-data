@@ -910,11 +910,135 @@
         .seo-text-section ul { padding-left: 20px; }
         .seo-text-section li { margin-bottom: 8px; color: #555; }
 
+        /* In-app browser (WebView) open banner */
+        .webview-open-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+            background: #222;
+            color: #fff;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            font-size: 14px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .webview-open-banner-text { flex: 1; }
+        .webview-open-banner-btn {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .webview-open-banner-btn:hover { background: #0056b3; }
+        .webview-open-banner-close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0 4px;
+        }
+        body.has-webview-banner { padding-top: 46px; }
+        @media (max-width: 480px) {
+            .webview-open-banner { font-size: 13px; }
+        }
+
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns" defer></script>
 </head>
 <body>
+    <!-- In-app browser (WebView) open banner -->
+    <div id="webviewOpenBanner" class="webview-open-banner" style="display:none;">
+        <span class="webview-open-banner-text">For the best experience, please open this page in your regular browser.</span>
+        <button id="webviewOpenBtn" class="webview-open-banner-btn" type="button">Open in Browser</button>
+        <button id="webviewCloseBtn" class="webview-open-banner-close" type="button" aria-label="Close">&times;</button>
+    </div>
+    <script>
+    (function () {
+        var ua = navigator.userAgent || '';
+        var isAndroid = /Android/i.test(ua);
+        var isIOS = /iPhone|iPad|iPod/i.test(ua);
+        // In-app WebView detection (generic WebView marker + known in-app browsers + iOS in-app WebView pattern)
+        var isInAppWebView =
+            /wv/.test(ua) ||
+            /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/.test(ua) ||
+            /FBAN|FBAV|Instagram|Line\/|KAKAOTALK|NAVER|Threads/i.test(ua);
+
+        if (!isInAppWebView) return;
+
+        function buildChromeIntentUrl() {
+            var fallback = encodeURIComponent(location.href);
+            return 'intent://' + location.host + location.pathname + location.search +
+                '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' + fallback + ';end';
+        }
+
+        function openInExternalBrowser() {
+            if (isAndroid) {
+                window.location.href = buildChromeIntentUrl();
+            } else if (isIOS) {
+                // iOS cannot be auto-redirected from JS inside an in-app WebView; guide the user manually.
+                var currentUrl = location.href;
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(currentUrl).then(function () {
+                        alert('Link copied! Please open Safari and paste the link to view this page.');
+                    }).catch(function () {
+                        prompt('Copy this link and open it in Safari:', currentUrl);
+                    });
+                } else {
+                    prompt('Copy this link and open it in Safari:', currentUrl);
+                }
+            }
+        }
+
+        function initBanner() {
+            var banner = document.getElementById('webviewOpenBanner');
+            var openBtn = document.getElementById('webviewOpenBtn');
+            var closeBtn = document.getElementById('webviewCloseBtn');
+            if (!banner || !openBtn || !closeBtn) return;
+
+            banner.style.display = 'flex';
+            document.body.classList.add('has-webview-banner');
+
+            openBtn.addEventListener('click', openInExternalBrowser);
+            closeBtn.addEventListener('click', function () {
+                banner.style.display = 'none';
+                document.body.classList.remove('has-webview-banner');
+            });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initBanner);
+        } else {
+            initBanner();
+        }
+
+        // Android: attempt one automatic redirect to Chrome, 0.3s after the page loads, once per session.
+        // The banner above stays as a fallback for WebViews that block the automatic attempt.
+        if (isAndroid) {
+            try {
+                if (!sessionStorage.getItem('chromeAutoRedirectAttempted')) {
+                    sessionStorage.setItem('chromeAutoRedirectAttempted', '1');
+                    setTimeout(function () {
+                        window.location.href = buildChromeIntentUrl();
+                    }, 300);
+                }
+            } catch (e) {
+                // sessionStorage unavailable (e.g. private browsing) - skip the automatic attempt only.
+            }
+        }
+    })();
+    </script>
     <div class="container">
         
         <div id="liquidityFlow" class="page">

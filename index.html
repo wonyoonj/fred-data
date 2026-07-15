@@ -16,14 +16,6 @@
         // (iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)는 Safari 브라우저가 아닌 iOS 내장 웹뷰를 감지하는 패턴 중 하나입니다.
         const ua = navigator.userAgent || '';
         const isWebView = /wv/.test(ua) || /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/.test(ua);
-        window.__isWebView = isWebView; // [추가] 웹뷰(스레드/인스타그램/카카오톡 등 인앱 브라우저) 안내 배너에서 재사용
-
-        // [추가] 회원님이 만든 앱(예: "미국 돈흐름")의 WebView는 예외 처리합니다.
-        // 앱이 이 페이지를 불러올 때 주소 끝에 ?source=app (예: .../?source=app)을 붙여서 열면,
-        // 스레드/인스타그램 같은 "남의" 인앱 브라우저와 구분되어 "브라우저로 열기" 배너가 뜨지 않습니다.
-        // (광고 노출 여부는 이번엔 그대로 두었습니다 — AdSense를 앱 웹뷰에 정식으로 띄우려면
-        //  앱 쪽에 Google Mobile Ads SDK의 WebView API for Ads를 별도로 연동하셔야 합니다.)
-        window.__isOwnApp = new URLSearchParams(window.location.search).get('source') === 'app';
 
         // http 환경이면서(isHttp) 웹뷰가 아닐 때(!isWebView)만 광고 스크립트를 로드합니다.
         if (isHttp && !isWebView) {
@@ -121,44 +113,6 @@
             color: #555;
         }
 
-        /* [추가] 웹뷰(스레드/인스타그램/카카오톡 인앱 브라우저) 안내 배너 */
-        .webview-banner {
-            display: none;
-            align-items: center;
-            gap: 10px;
-            background-color: #fff3cd;
-            color: #664d03;
-            border-bottom: 1px solid #ffe69c;
-            padding: 10px 14px;
-            font-size: 13px;
-            line-height: 1.4;
-            position: sticky;
-            top: 0;
-            z-index: 2000;
-        }
-        .webview-banner .webview-banner-text { flex: 1; }
-        .webview-banner .webview-banner-btn {
-            flex-shrink: 0;
-            background-color: #664d03;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            padding: 8px 12px;
-            font-size: 13px;
-            font-weight: bold;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-        .webview-banner .webview-banner-close {
-            flex-shrink: 0;
-            background: transparent;
-            border: none;
-            color: #664d03;
-            font-size: 18px;
-            line-height: 1;
-            cursor: pointer;
-            padding: 0 4px;
-        }
         .lang-selector {
             display: flex;
             justify-content: center;
@@ -956,16 +910,135 @@
         .seo-text-section ul { padding-left: 20px; }
         .seo-text-section li { margin-bottom: 8px; color: #555; }
 
+        /* In-app browser (WebView) open banner */
+        .webview-open-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+            background: #222;
+            color: #fff;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            font-size: 14px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .webview-open-banner-text { flex: 1; }
+        .webview-open-banner-btn {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .webview-open-banner-btn:hover { background: #0056b3; }
+        .webview-open-banner-close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0 4px;
+        }
+        body.has-webview-banner { padding-top: 46px; }
+        @media (max-width: 480px) {
+            .webview-open-banner { font-size: 13px; }
+        }
+
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns" defer></script>
 </head>
 <body>
-    <div id="webviewBanner" class="webview-banner">
-        <span class="webview-banner-text">이 페이지는 일반 브라우저에서 더 잘 보이고 광고도 정상적으로 뜹니다. 눌러서 Chrome/Safari로 열어보세요.</span>
-        <button class="webview-banner-btn" onclick="openInExternalBrowser()">브라우저로 열기</button>
-        <button class="webview-banner-close" onclick="document.getElementById('webviewBanner').style.display='none'" aria-label="닫기">✕</button>
+    <!-- In-app browser (WebView) open banner -->
+    <div id="webviewOpenBanner" class="webview-open-banner" style="display:none;">
+        <span class="webview-open-banner-text">더 나은 화면을 보시려면 브라우저(Chrome/Safari)에서 열어주세요.</span>
+        <button id="webviewOpenBtn" class="webview-open-banner-btn" type="button">브라우저에서 열기</button>
+        <button id="webviewCloseBtn" class="webview-open-banner-close" type="button" aria-label="Close">&times;</button>
     </div>
+    <script>
+    (function () {
+        var ua = navigator.userAgent || '';
+        var isAndroid = /Android/i.test(ua);
+        var isIOS = /iPhone|iPad|iPod/i.test(ua);
+        // In-app WebView detection (generic WebView marker + known in-app browsers + iOS in-app WebView pattern)
+        var isInAppWebView =
+            /wv/.test(ua) ||
+            /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/.test(ua) ||
+            /FBAN|FBAV|Instagram|Line\/|KAKAOTALK|NAVER|Threads/i.test(ua);
+
+        if (!isInAppWebView) return;
+
+        function buildChromeIntentUrl() {
+            var fallback = encodeURIComponent(location.href);
+            return 'intent://' + location.host + location.pathname + location.search +
+                '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' + fallback + ';end';
+        }
+
+        function openInExternalBrowser() {
+            if (isAndroid) {
+                window.location.href = buildChromeIntentUrl();
+            } else if (isIOS) {
+                // iOS cannot be auto-redirected from JS inside an in-app WebView; guide the user manually.
+                var currentUrl = location.href;
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(currentUrl).then(function () {
+                        alert('링크가 복사되었습니다! Safari를 열고 주소창에 붙여넣어 주세요.');
+                    }).catch(function () {
+                        prompt('아래 링크를 복사해서 Safari에서 열어주세요:', currentUrl);
+                    });
+                } else {
+                    prompt('아래 링크를 복사해서 Safari에서 열어주세요:', currentUrl);
+                }
+            }
+        }
+
+        function initBanner() {
+            var banner = document.getElementById('webviewOpenBanner');
+            var openBtn = document.getElementById('webviewOpenBtn');
+            var closeBtn = document.getElementById('webviewCloseBtn');
+            if (!banner || !openBtn || !closeBtn) return;
+
+            banner.style.display = 'flex';
+            document.body.classList.add('has-webview-banner');
+
+            openBtn.addEventListener('click', openInExternalBrowser);
+            closeBtn.addEventListener('click', function () {
+                banner.style.display = 'none';
+                document.body.classList.remove('has-webview-banner');
+            });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initBanner);
+        } else {
+            initBanner();
+        }
+
+        // Android: attempt one automatic redirect to Chrome, 0.3s after the page loads, once per session.
+        // The banner above stays as a fallback for WebViews that block the automatic attempt.
+        if (isAndroid) {
+            try {
+                if (!sessionStorage.getItem('chromeAutoRedirectAttempted')) {
+                    sessionStorage.setItem('chromeAutoRedirectAttempted', '1');
+                    setTimeout(function () {
+                        window.location.href = buildChromeIntentUrl();
+                    }, 300);
+                }
+            } catch (e) {
+                // sessionStorage unavailable (e.g. private browsing) - skip the automatic attempt only.
+            }
+        }
+    })();
+    </script>
     <div class="container">
         
         <div id="liquidityFlow" class="page">
@@ -1057,20 +1130,20 @@
                 
                 <div class="icon-container FED-container">
                     <span class="icon-label">Central Bank (FED)</span>
-                    <img src="./icon/fed.jpg" alt="FED" class="icon">
+                    <img src="../icon/fed.jpg" alt="FED" class="icon">
                 </div>
                 <div class="icon-container Government-container">
-                    <img src="./icon/government.JPG" alt="Government TGA" class="icon">
+                    <img src="../icon/government.JPG" alt="Government TGA" class="icon">
                     <span class="icon-label">US Government</span>
                     <span id="tgaCurrentBalance" class="icon-label" style="font-weight: bold; color: black; font-size: 14px; margin-top: 0;">...</span>
                 </div>
                 <div class="icon-container Market-container">
-                    <img src="./icon/Market.jpg" alt="Market" class="icon">
+                    <img src="../icon/Market.jpg" alt="Market" class="icon">
                     <span class="icon-label">US Market</span>
                     <div id="netMarketFlowDisplay"></div>
                     </div>
                 <div class="icon-container MMF-container">
-                    <img src="./icon/MMF.jpg" alt="MMF" class="icon">
+                    <img src="../icon/MMF.jpg" alt="MMF" class="icon">
                     <span class="icon-label">MMF<br>(Money Market Fund)</span>
                 </div>
             </div>
@@ -1339,7 +1412,7 @@
                 
                 <h3>Dollar Liquidity Ultimately Determines Stock Prices.</h3>
                 <p>In 2022, as the US FED's reverse repo balance increased, the S&P 500 fell and the market crashed. Today, <strong style="color: red;">the direction and speed of the money supply</strong> matter more than ever for the US stock market. That's why <strong style="color: blue;">"Wondengi's US Liquidity Status"</strong> aims to help you easily forecast liquidity flows, predict the stock market's direction, and maximize your returns.</p>
-                <img src="./icon/repo_sp500_plot.JPG" alt="Relationship between Reverse Repo and the S&P 500" style="width: 100%; max-width: 600px; margin: 20px auto; display: block; border-radius: 8px;">
+                <img src="../icon/repo_sp500_plot.JPG" alt="Relationship between Reverse Repo and the S&P 500" style="width: 100%; max-width: 600px; margin: 20px auto; display: block; border-radius: 8px;">
 
                 <h3>Key Features</h3>
                 <ul>
@@ -1470,50 +1543,6 @@
     </footer>
 
     <script>
-        // [추가] 웹뷰(스레드/인스타그램/카카오톡 인앱 브라우저) 감지 시 "외부 브라우저로 열기" 배너 표시
-        // 광고는 정책상 웹뷰에서 로드하지 않지만(계정 정지 위험), 사용자를 실제 브라우저로 유도하면
-        // 거기서는 정상적으로 광고가 노출/수익화될 수 있습니다.
-        document.addEventListener('DOMContentLoaded', function () {
-            if (window.__isWebView && !window.__isOwnApp) {
-                const banner = document.getElementById('webviewBanner');
-                if (banner) banner.style.display = 'flex';
-
-                // [추가] Android는 클릭 없이도 페이지 로드 시 자동으로 Chrome 전환을 한 번 시도합니다.
-                // (일부 인앱 브라우저는 사용자 조작 없는 리다이렉트를 막을 수 있어 100% 보장되진 않지만,
-                //  대부분의 안드로이드 웹뷰에서는 정상 동작합니다.) 세션당 1회만 시도해 반복 팝업을 방지합니다.
-                // iOS는 Apple 정책상 자바스크립트만으로 자동 전환이 불가능해 버튼 클릭이 계속 필요합니다.
-                const ua = navigator.userAgent || '';
-                const isAndroid = /android/i.test(ua);
-                if (isAndroid) {
-                    try {
-                        if (!sessionStorage.getItem('autoBrowserAttempted')) {
-                            sessionStorage.setItem('autoBrowserAttempted', '1');
-                            setTimeout(openInExternalBrowser, 300);
-                        }
-                    } catch (e) {
-                        // sessionStorage 접근이 막힌 환경(프라이빗 모드 등)이면 자동 시도는 건너뛰고 배너 버튼만 유지
-                    }
-                }
-            }
-        });
-
-        function openInExternalBrowser() {
-            const url = window.location.href;
-            const ua = navigator.userAgent || '';
-            if (/android/i.test(ua)) {
-                // 안드로이드: Chrome을 명시적으로 지정해서 여는 intent URL 사용 (Chrome 미설치 시 스토어로 자동 연결)
-                const urlNoScheme = url.replace(/^https?:\/\//, '');
-                window.location.href = 'intent://' + urlNoScheme + '#Intent;scheme=https;package=com.android.chrome;end';
-            } else {
-                // iOS 등: 인앱 웹뷰 안에서 자바스크립트만으로 강제로 Safari를 여는 표준 방법이 없어,
-                // 링크를 클립보드에 복사하고 안내 문구를 보여줍니다.
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(url).catch(function () {});
-                }
-                alert('우측 상단 "•••" 메뉴에서 "브라우저로 열기" (또는 "Safari로 열기")를 선택해주세요.\n링크가 복사되었으니, Safari/Chrome에 직접 붙여넣기 하셔도 됩니다.');
-            }
-        }
-
         let myChart = null;
         let investmentChart = null; // 가상 투자 차트 객체
         let isDragging = false;
@@ -1704,7 +1733,7 @@
         
         async function loadFinancialAnalysis() {
             try {
-                const response = await fetch('csvfile/financial_analysis.json');
+                const response = await fetch('../csvfile/financial_analysis.json');
                 if (!response.ok) {
                     throw new Error('Network response was not ok.');
                 }
@@ -1795,8 +1824,12 @@
             document.documentElement.lang = lang;
 
             document.querySelectorAll('.lang-selector').forEach(selector => {
-                selector.querySelector('.lang-btn.active').classList.remove('active');
-                selector.querySelector(`.lang-btn[onclick="setLanguage('${lang}')"]`).classList.add('active');
+                const activeBtn = selector.querySelector('.lang-btn.active');
+                if (activeBtn) activeBtn.classList.remove('active');
+                // This page is fixed to English, so simply mark the English button as active
+                // instead of looking for an onclick="setLanguage(...)" handler (the buttons now navigate via href / are already marked active in the HTML).
+                const targetBtn = Array.from(selector.querySelectorAll('.lang-btn')).find(btn => btn.textContent.trim() === 'English');
+                if (targetBtn) targetBtn.classList.add('active');
             });
             
             const activePage = document.querySelector('.page[style*="block"]').id;
@@ -2750,7 +2783,7 @@
 
         function createAndAnimateDollar(animationClass, size, duration) {
             const dollar = document.createElement('img');
-            dollar.src = "./icon/dollar.jpg"; dollar.alt = "Dollar"; dollar.className = 'dollar-animated-object';
+            dollar.src = "../icon/dollar.jpg"; dollar.alt = "Dollar"; dollar.className = 'dollar-animated-object';
             dollar.style.width = `${size}px`; dollar.style.height = `${size}px`;
             dollar.style.setProperty('--animation-duration', `${duration / 1000}s`);
             dollar.classList.add(animationClass);
