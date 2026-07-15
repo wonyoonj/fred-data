@@ -7,17 +7,16 @@
     <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/atom.xml">
 
     <script>
-        // 웹 브라우저 환경(http:, https:)이면서 동시에 '웹뷰(WebView)'가 아닌 환경에서만 광고를 추가합니다.
-        
+        // 1. 기본 브라우저 환경 및 웹뷰(WebView) 감지
         const isHttp = window.location.protocol.startsWith('http');
-        
-        // User-Agent 문자열을 확인하여 웹뷰 환경인지 감지합니다.
-        // 'wv'는 안드로이드 WebView의 공통 식별자입니다.
-        // (iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)는 Safari 브라우저가 아닌 iOS 내장 웹뷰를 감지하는 패턴 중 하나입니다.
         const ua = navigator.userAgent || '';
         const isWebView = /wv/.test(ua) || /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/.test(ua);
 
-        // http 환경이면서(isHttp) 웹뷰가 아닐 때(!isWebView)만 광고 스크립트를 로드합니다.
+        // [내 앱 예외 처리] 주소 끝에 ?source=app 파라미터가 붙어있는지 확인합니다.
+        const urlParams = new URLSearchParams(window.location.search);
+        const isOwnApp = urlParams.get('source') === 'app';
+
+        // 2. http 환경이면서 '웹뷰가 아닐 때만' 애드센스 광고를 불러옵니다. (내 앱 웹뷰에서도 광고가 안 뜨므로 정책 안전 보장)
         if (isHttp && !isWebView) {
             const adsScript = document.createElement('script');
             adsScript.async = true;
@@ -25,7 +24,60 @@
             adsScript.crossOrigin = "anonymous";
             document.head.appendChild(adsScript);
         }
-        
+
+        // 3. 웹뷰 대응 시스템 (내 앱(?source=app)이 아닐 때만 실행됩니다)
+        if (isWebView && !isOwnApp) {
+            const isAndroid = /Android/i.test(ua);
+            const isIOS = /iPhone|iPad|iPod/i.test(ua);
+
+            // [동작 1] Android + 웹뷰 감지 시: 0.3초 뒤 외부 Chrome 브라우저 자동 전환 시도 (세션당 1회)
+            if (isAndroid) {
+                if (!sessionStorage.getItem('webview_redirect_attempted')) {
+                    sessionStorage.setItem('webview_redirect_attempted', 'true'); // 세션당 1회 제한[cite: 1]
+                    setTimeout(() => {
+                        const currentUrl = window.location.href;
+                        const rawUrl = currentUrl.replace(/^https?:\/\//, '');
+                        // Chrome 인텐트 스키마 실행 (설치 안 돼 있으면 플레이 스토어로 이동)[cite: 1]
+                        const chromeIntent = `intent://${rawUrl}#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;package=com.android.chrome;end`;
+                        window.location.href = chromeIntent;
+                    }, 300);
+                }
+            }
+
+            // [동작 2] 안전장치용 상단 안내 배너 동적 생성[cite: 1]
+            document.addEventListener('DOMContentLoaded', () => {
+                const banner = document.createElement('div');
+                banner.id = 'webview-banner';
+                banner.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; background: #fff3cd; color: #856404; padding: 12px; box-sizing: border-box; border-bottom: 1px solid #ffeeba; z-index: 10000; text-align: center; font-size: 14px; font-weight: bold; font-family: sans-serif; display: flex; justify-content: center; align-items: center; gap: 10px;';
+                
+                banner.innerHTML = `
+                    <span>더 안정적인 서비스 이용을 위해 외부 브라우저로 열기를 권장합니다.</span>
+                    <button id="webview-banner-btn" style="padding: 6px 12px; background-color: #ffc107; border: none; border-radius: 4px; color: #212529; font-weight: bold; cursor: pointer;">브라우저로 열기</button>
+                `;
+                
+                document.body.appendChild(banner);
+                // 배너가 메인 내용을 가리지 않도록 상단 여백 보정
+                document.body.style.paddingTop = (banner.offsetHeight || 45) + 'px';
+
+                // 버튼 클릭 수동 이동 처리[cite: 1]
+                const bannerBtn = document.getElementById('webview-banner-btn');
+                bannerBtn.addEventListener('click', () => {
+                    const currentUrl = window.location.href;
+                    if (isAndroid) {
+                        const rawUrl = currentUrl.replace(/^https?:\/\//, '');
+                        const chromeIntent = `intent://${rawUrl}#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;package=com.android.chrome;end`;
+                        window.location.href = chromeIntent;
+                    } else if (isIOS) {
+                        // iOS는 수동 클립보드 복사 유도[cite: 1]
+                        navigator.clipboard.writeText(currentUrl).then(() => {
+                            alert('링크가 복사되었습니다! Safari 또는 외부 브라우저 앱을 열고 주소창에 붙여넣어 접속해주세요.');
+                        }).catch(() => {
+                            prompt('아래 링크를 복사하여 Safari에서 열어주세요:', currentUrl);
+                        });
+                    }
+                });
+            });
+        }
     </script>
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
     <meta name="naver-site-verification" content="3c5e34898f2cef35432619edafb1d9362ab55063" />

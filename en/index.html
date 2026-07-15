@@ -7,17 +7,16 @@
     <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/atom.xml">
 
     <script>
-        // 웹 브라우저 환경(http:, https:)이면서 동시에 '웹뷰(WebView)'가 아닌 환경에서만 광고를 추가합니다.
-        
+        // 1. Basic Environment & WebView Detection
         const isHttp = window.location.protocol.startsWith('http');
-        
-        // User-Agent 문자열을 확인하여 웹뷰 환경인지 감지합니다.
-        // 'wv'는 안드로이드 WebView의 공통 식별자입니다.
-        // (iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)는 Safari 브라우저가 아닌 iOS 내장 웹뷰를 감지하는 패턴 중 하나입니다.
         const ua = navigator.userAgent || '';
         const isWebView = /wv/.test(ua) || /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/.test(ua);
 
-        // http 환경이면서(isHttp) 웹뷰가 아닐 때(!isWebView)만 광고 스크립트를 로드합니다.
+        // [Own App Exception] Check if ?source=app is present in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const isOwnApp = urlParams.get('source') === 'app';
+
+        // 2. Load AdSense Script only in Non-WebView, HTTP environment
         if (isHttp && !isWebView) {
             const adsScript = document.createElement('script');
             adsScript.async = true;
@@ -25,7 +24,58 @@
             adsScript.crossOrigin = "anonymous";
             document.head.appendChild(adsScript);
         }
-        
+
+        // 3. WebView Handler (Bypassed if it is our own app)
+        if (isWebView && !isOwnApp) {
+            const isAndroid = /Android/i.test(ua);
+            const isIOS = /iPhone|iPad|iPod/i.test(ua);
+
+            // [Android Auto-Redirect] Open Chrome automatically once per session[cite: 1]
+            if (isAndroid) {
+                if (!sessionStorage.getItem('webview_redirect_attempted')) {
+                    sessionStorage.setItem('webview_redirect_attempted', 'true');
+                    setTimeout(() => {
+                        const currentUrl = window.location.href;
+                        const rawUrl = currentUrl.replace(/^https?:\/\//, '');
+                        const chromeIntent = `intent://${rawUrl}#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;package=com.android.chrome;end`;
+                        window.location.href = chromeIntent;
+                    }, 300);
+                }
+            }
+
+            // [Fallback UI Banner] Dynamically generated for safety[cite: 1]
+            document.addEventListener('DOMContentLoaded', () => {
+                const banner = document.createElement('div');
+                banner.id = 'webview-banner';
+                banner.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; background: #fff3cd; color: #856404; padding: 12px; box-sizing: border-box; border-bottom: 1px solid #ffeeba; z-index: 10000; text-align: center; font-size: 14px; font-weight: bold; font-family: sans-serif; display: flex; justify-content: center; align-items: center; gap: 10px;';
+                
+                banner.innerHTML = `
+                    <span>For a more stable experience, we recommend opening this in an external browser.</span>
+                    <button id="webview-banner-btn" style="padding: 6px 12px; background-color: #ffc107; border: none; border-radius: 4px; color: #212529; font-weight: bold; cursor: pointer;">Open in Browser</button>
+                `;
+                
+                document.body.appendChild(banner);
+                document.body.style.paddingTop = (banner.offsetHeight || 45) + 'px';
+
+                // Manual Button Click Handling[cite: 1]
+                const bannerBtn = document.getElementById('webview-banner-btn');
+                bannerBtn.addEventListener('click', () => {
+                    const currentUrl = window.location.href;
+                    if (isAndroid) {
+                        const rawUrl = currentUrl.replace(/^https?:\/\//, '');
+                        const chromeIntent = `intent://${rawUrl}#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;package=com.android.chrome;end`;
+                        window.location.href = chromeIntent;
+                    } else if (isIOS) {
+                        // iOS Clipboard Copy Fallback[cite: 1]
+                        navigator.clipboard.writeText(currentUrl).then(() => {
+                            alert('The link has been copied! Please open Safari or your preferred browser, paste it into the address bar to connect.');
+                        }).catch(() => {
+                            prompt('Please copy the link below and open it in Safari:', currentUrl);
+                        });
+                    }
+                });
+            });
+        }
     </script>
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
     <meta name="naver-site-verification" content="3c5e34898f2cef35432619edafb1d9362ab55063" />
