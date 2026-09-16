@@ -1,5 +1,5 @@
 {
-    "date": "2026-09-15",
+    "date": "2026-09-16",
     "tga_weekly_change_billion": -84.6,
     "fed_liquidity_weekly_change_billion": -105.36,
     "fed_debt_weekly_change_billion": 96.69,
@@ -11,7 +11,7 @@
     "effr_rate_percent": 3.63,
     "sofr_rate_percent": 3.62,
     "sofr_effr_spread_percent": -0.01,
-    "dgs3mo_rate_percent": 4.07,
-    "dgs2_rate_percent": 4.63,
-    "dgs10_rate_percent": 4.96
+    "dgs3mo_rate_percent": 4.11,
+    "dgs2_rate_percent": 4.65,
+    "dgs10_rate_percent": 4.97
 }
