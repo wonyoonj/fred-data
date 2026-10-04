@@ -4,7 +4,7 @@ FRED에서 지표들을 받아 data/csvfile/ 아래에 CSV로 저장합니다.
 GitHub Actions 실행 시 저장소 루트를 기준으로 상대경로를 사용합니다.
 
 이 파일은 두 가지 작업을 합니다:
-  1) (기존 기능, 복구됨) 21개 FRED 시계열 지표 + S&P500 시가총액을 csvfile/*.csv로 저장
+  1) (기존 기능, 복구됨) 22개 FRED 시계열 지표 + S&P500 시가총액을 csvfile/*.csv로 저장
   2) (최근에 추가되어 있던 기능, 유지) FOMC/CPI/NFP 등 주요 경제 캘린더 이벤트를 csvfile/calendar_events.csv로 저장
 
 ※ 이전에는 이 파일이 2)번 기능으로만 통째로 덮어써져 있어서 1)번 기능(지표 CSV 갱신)이
@@ -45,7 +45,8 @@ def fetch_fred_series():
     series_ids = [
         'WTREGEN', 'WRESBAL', 'M2SL', 'M1SL', 'SOFR', 'FEDFUNDS', 'DGS3MO', 'DGS2',
         'RRPONTSYD', 'SP500', 'WILL5000IND', 'DPCREDIT', 'DRBLACBS',
-        'NASDAQ100', 'WALCL', 'RRPONTSYAWARD', 'ALTSALES', 'HOUST', 'DGS10', 'DCOILBRENTEU', 'IORB'
+        'NASDAQ100', 'WALCL', 'RRPONTSYAWARD', 'ALTSALES', 'HOUST', 'DGS10', 'DCOILBRENTEU', 'IORB',
+        'TOTBKCR'  # [신규] Bank Credit, All Commercial Banks (주간, Billions of USD)
     ]
 
     end_date = dt.now()
