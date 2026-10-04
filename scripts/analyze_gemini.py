@@ -54,6 +54,8 @@ def get_closest_data(df, target_date):
 #   - index.html 의 computeBankCreditMetrics / renderLiquidityIndexGauge 와 동일한 공식입니다.
 #   - Liquidity Index = (1 - W) × 기존 점수(시장 Total 유동 공급량 백분위) + W × Bank Credit Score
 # =========================================================================
+BANK_SCORE_SMOOTH_WEEKS = 13   # index.html 과 동일하게 유지 (1 = 주간값 그대로)
+BANK_SCORE_WINDOW_WEEKS = 520  # 최근 10년 롤링 분포 (index.html 과 동일)
 BANK_CREDIT_WEIGHT = 0.12  # index.html 의 BANK_CREDIT_WEIGHT 와 반드시 같은 값으로 유지
 
 
@@ -91,8 +93,16 @@ def compute_bank_credit(data_store):
 
     v = df['value']
     ratios = (v.diff() / v.shift(1) * 100).dropna()          # Bank Credit Flow Ratio (%)
-    sorted_r = np.sort(ratios.to_numpy())
-    scores = pd.Series(np.searchsorted(sorted_r, ratios.to_numpy(), side='right') / len(sorted_r) * 100, index=ratios.index)
+    sm = ratios.rolling(BANK_SCORE_SMOOTH_WEEKS).mean().dropna()
+    arr = sm.to_numpy()
+    out = np.full(len(arr), np.nan)
+    for k in range(len(arr)):   # 각 시점 기준 '직전 10년' 분포 내 백분위
+        lo = max(0, k - BANK_SCORE_WINDOW_WEEKS + 1)
+        if k - lo + 1 >= 104:
+            out[k] = (arr[lo:k + 1] <= arr[k]).mean() * 100
+    scores = pd.Series(out, index=sm.index).dropna()
+    if scores.empty:
+        return None
 
     n = len(v)
     return {
@@ -102,6 +112,7 @@ def compute_bank_credit(data_store):
         "cum4": float(v.iloc[-1] - v.iloc[-5]) if n > 4 else None,
         "cum13": float(v.iloc[-1] - v.iloc[-14]) if n > 13 else None,
         "ratio": float(ratios.iloc[-1]),
+        "ratio_smooth": float(sm.iloc[-1]),
         "score": float(scores.iloc[-1]),
         "scores": scores,
     }
@@ -154,6 +165,7 @@ def add_bank_and_index_metrics(results, data_store):
             if bank["cum13"] is not None:
                 results["Bank Credit 최근 13주 누적 변화량"] = f"{bank['cum13']:+.2f} B $"
             results["Bank Credit Flow Ratio"] = f"{bank['ratio']:+.4f} %"
+            results["Bank Credit Flow Ratio (13주 평균, 점수 산정 기준)"] = f"{bank['ratio_smooth']:+.4f} %"
             results["Bank Credit Score"] = f"{bank['score']:.0f} / 100 ({bank_score_label(bank['score'])})"
             results["Bank Credit 데이터 기준일"] = bank["date"].strftime('%Y-%m-%d')
         total, ex_bank = compute_liquidity_index(data_store, bank)
@@ -284,7 +296,7 @@ def analyze_with_gemini(metrics_data):
     - Bank Credit(FRED TOTBKCR)은 미국 상업은행 전체의 Bank Credit 잔액입니다. 대출·리스뿐 아니라 은행 보유 증권 등이 포함될 수 있습니다.
     - 아래 순서로 판단하고 그 결과를 글에 녹여주세요.
       ① 은행 신용이 증가했는가 감소했는가? ② 최신 주간 변화량(및 4주/13주 누적)은 얼마인가?
-      ③ 은행 시스템 규모 대비 얼마나 큰 변화인가?(Flow Ratio) ④ 역사적으로 강한 신용확대/위축인가?(Bank Credit Score)
+      ③ 은행 시스템 규모 대비 얼마나 큰 변화인가?(Flow Ratio) ④ 역사적으로 강한 신용확대/위축인가?(Bank Credit Score = 13주 평균 Flow Ratio를 최근 10년 분포와 비교한 점수. 한 주의 일시적 증감이 아니라 최근 추세를 반영함)
       ⑤ TGA/역레포/MMF/연준 지표와 같은 방향인가? ⑥ 반대 방향인가? ⑦ Liquidity Index에 어떤 영향을 주었는가?(Bank Credit 반영 vs 제외 점수 차이)
     - 사용할 표현 예: "은행의 Bank Credit이 전주 대비 ○○억 달러 증가/감소했습니다", "은행권 신용공급이 확대/위축되고 있습니다",
       "은행 신용창출 흐름은 현재 유동성에 우호적/비우호적인 방향으로 작용하고 있습니다".
@@ -389,6 +401,7 @@ if __name__ == '__main__':
             "Bank Credit 최근 4주 누적 변화량": "bank_credit_4w_change_billion",
             "Bank Credit 최근 13주 누적 변화량": "bank_credit_13w_change_billion",
             "Bank Credit Flow Ratio": "bank_credit_flow_ratio_percent",
+            "Bank Credit Flow Ratio (13주 평균, 점수 산정 기준)": "bank_credit_flow_ratio_13w_percent",
             "Bank Credit Score": "bank_credit_score",
             "Liquidity Index (Bank Credit 반영)": "liquidity_index",
             "Liquidity Index (Bank Credit 제외, 기존 방식)": "liquidity_index_ex_bank",

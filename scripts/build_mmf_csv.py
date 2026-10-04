@@ -7,6 +7,11 @@ import os
 
 import pandas as pd
 
+# OFR가 'MMF-MMF_RP_wFR-M'(MMF의 연준 역레포) 값을 공란으로 주는 달의 처리 방식
+#   'estimate': 해당 월말 역레포 잔고(RRPONTSYD) × 최근 6개월 평균 비중으로 추정 (기본)
+#   'zero'    : 0으로 처리   /   'none': 공란 그대로 (사이트에서 해당 달은 건너뜀)
+RRP_BLANK_MODE = 'estimate'
+
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 INPUT_DIR = os.path.join(REPO_ROOT, "data", "mmf_flow")
 OUTPUT_DIR = os.path.join(REPO_ROOT, "csvfile")
@@ -71,6 +76,25 @@ try:
     if target_col not in mmf_bra_df.columns:
         raise KeyError(target_col)
     mmf_bra_df[target_col] = pd.to_numeric(mmf_bra_df[target_col], errors='coerce')
+
+    # --- 공란 처리: 같은 행에 MMF 총자산 값이 있는데(=원본은 최신) RP wFR 값만 비어 있는 경우 ---
+    _tot = 'MMF-MMF_TOT-M'
+    if _tot in mmf_bra_df.columns and RRP_BLANK_MODE != 'none':
+        blank = mmf_bra_df[target_col].isna() & pd.to_numeric(mmf_bra_df[_tot], errors='coerce').notna()
+        if blank.any():
+            if RRP_BLANK_MODE == 'zero':
+                mmf_bra_df.loc[blank, target_col] = 0.0
+            else:
+                rrp = pd.read_csv(os.path.join(OUTPUT_DIR, 'RRPONTSYD.csv'))
+                rrp_s = pd.Series(pd.to_numeric(rrp.iloc[:, 1], errors='coerce').to_numpy(),
+                                  index=pd.to_datetime(rrp.iloc[:, 0])).dropna().sort_index()
+                at = lambda d: float(rrp_s.iloc[rrp_s.index.get_indexer([d], method='nearest')[0]]) * 1e9
+                ok = mmf_bra_df[~mmf_bra_df[target_col].isna()].tail(6)
+                share = float((ok[target_col] / ok['date'].map(at)).median())
+                for ix in mmf_bra_df.index[blank]:
+                    mmf_bra_df.loc[ix, target_col] = at(mmf_bra_df.loc[ix, 'date']) * share
+                print(f"[주의] OFR 공란 {int(blank.sum())}개월을 역레포 잔고 x {share:.2f} 로 추정했습니다.")
+    print("MMF2RRP 마지막 날짜:", mmf_bra_df.dropna(subset=[target_col])['date'].max().date())
 
     mmf2rrp_df = mmf_bra_df[['date', target_col]].copy()
     mmf2rrp_df.to_csv(os.path.join(OUTPUT_DIR, 'MMF2RRP.csv'), index=False)
