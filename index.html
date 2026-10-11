@@ -278,7 +278,7 @@
         .Bank-container { top: 90%; left: 20%; }
         .bank-popup-container { top: calc(90% - 95px); left: 20%; transform: translateX(-50%); }
         .bank-flow-label { position: absolute; top: calc(90% - 32px); left: 35%; transform: translateX(-50%);
-            font-size: 12px; font-weight: bold; color: #555; white-space: nowrap; z-index: 5; pointer-events: none; }
+            font-size: 12px; font-weight: bold; color: #555; white-space: pre-line; text-align: center; z-index: 5; pointer-events: none; }
         .bank-emoji-icon { display: block; width: 80px; height: 80px; line-height: 80px; font-size: 56px; text-align: center; }
         .liquidity-bank-popup:hover .tooltip-container { margin-left: -110px; width: 300px; }
         .gauge-composition-note { font-size: 12px; color: #888; text-align: center; margin-top: 12px; line-height: 1.5; }
@@ -773,10 +773,10 @@
             .Market-container { top: 80%; left: 50%; }
             .MMF-container { top: 47%; left: 83%; }
             .Bank-container { top: 80%; left: 15%; }
-            .bank-popup-container { top: calc(80% - 80px); left: 17%; }
-            .bank-flow-label { top: calc(80% - 24px); left: 33%; font-size: 10px; }
+            .bank-popup-container { top: calc(80% - 80px); left: 25%; }
+            .bank-flow-label { top: calc(80% - 30px); left: 33%; font-size: 10px; }
             .bank-emoji-icon { width: 60px; height: 60px; line-height: 60px; font-size: 42px; }
-            .liquidity-bank-popup:hover .tooltip-container { width: 240px; margin-left: -60px; }
+            .liquidity-bank-popup:hover .tooltip-container { width: 300px; margin-left: -40px; }
 
             #netMarketFlowDisplay, #netMarketFlowDisplay_interest {
                 top: -45%;
@@ -2763,7 +2763,7 @@
                     <button class="graph-btn" onclick="showGraph('TOTBKCR')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${bm.date}</span>`;
                     const flowLabelEl = document.getElementById('bankFlowLabel');
                     const flowSubEl = document.getElementById('bankFlowSub');
-                    if (flowLabelEl) flowLabelEl.textContent = bm.weekly >= 0 ? '신용공급 확대 → 민간 구매력' : '신용공급 위축 ← 민간 구매력';
+                    if (flowLabelEl) flowLabelEl.textContent = bm.weekly >= 0 ? '신용공급 확대\n→ 민간 구매력' : '신용공급 위축\n← 민간 구매력';
                     if (flowSubEl) flowSubEl.textContent = bm.weekly >= 0 ? '신용공급 확대 방향' : '신용공급 위축 방향';
                 } else { displays.bank.textContent = langDict.errorText; }
             }
