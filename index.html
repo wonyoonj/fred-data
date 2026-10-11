@@ -773,10 +773,10 @@
             .Market-container { top: 80%; left: 50%; }
             .MMF-container { top: 47%; left: 83%; }
             .Bank-container { top: 80%; left: 15%; }
-            .bank-popup-container { top: calc(80% - 80px); left: 25%; }
-            .bank-flow-label { top: calc(80% - 30px); left: 33%; font-size: 10px; }
+            .bank-popup-container { top: calc(80% - 80px); left: 30%; }
+            .bank-flow-label { top: calc(80% - 33px); left: 33%; font-size: 10px; }
             .bank-emoji-icon { width: 60px; height: 60px; line-height: 60px; font-size: 42px; }
-            .liquidity-bank-popup:hover .tooltip-container { width: 300px; margin-left: -40px; }
+            .liquidity-bank-popup:hover .tooltip-container { width: 300px; margin-left: -50px; }
 
             #netMarketFlowDisplay, #netMarketFlowDisplay_interest {
                 top: -45%;
@@ -2753,11 +2753,10 @@
                     displays.bank.innerHTML = `Bank Credit<br>은행 신용공급:<br><span class="${cls(bm.weekly)}">${sg(bm.weekly)} B $/Week</span>`;
                     tooltips.bank.innerHTML = `<p><b>은행 신용공급 (Bank Credit)</b><br>미국 상업은행의 Bank Credit 잔액이 전주 대비 얼마나 늘거나 줄었는지를 나타냅니다.</p>
                     <p>개념적 흐름:<br>시중은행 → 신용공급 확대 → 예금화폐·민간 구매력 확대 → 경제·금융시장</p>
-                    <p style="font-size:0.9em;">※ 은행의 현금이 시장으로 직접 이동한다는 뜻이 아니며, 신규 대출 규모를 직접 의미하지도 않습니다. Bank Credit에는 대출·리스 외에 은행 보유 증권 등이 포함될 수 있습니다.</p><hr>
+                    <p style="font-size:0.9em;">※ 은행의 현금이 시장으로 직접 이동한다는 뜻이 아니며, 신규 대출 규모를 직접 의미하지도 않습니다.</p><hr>
                     <p>현재 잔액 = <b>${(bm.latest / 1000).toFixed(3)} T$</b></p>
                     <p>최근 4주 누적 변화 = <span class="${cls(bm.cum4)}">${sg(bm.cum4)} B $</span></p>
                     <p>최근 13주 누적 변화 = <span class="${cls(bm.cum13)}">${sg(bm.cum13)} B $</span></p>
-                    <p>Flow Ratio (기존 잔액 대비) = <span class="${cls(bm.ratio)}">${sg(bm.ratio, 3)} %</span></p>
                     <p>13주 평균 Flow Ratio = <span class="${cls(bm.ratioSmooth)}">${sg(bm.ratioSmooth, 3)} %/주</span></p>
                     <p>Bank Credit Score = <b>${Math.round(bm.score)} / 100</b> (${sc.text})<br><span style="font-size:0.85em;">13주 평균 Flow Ratio를 최근 10년 분포와 비교한 점수</span></p>
                     <button class="graph-btn" onclick="showGraph('TOTBKCR')">${langDict.graphBtn}</button><span class="update-date">Update Date: ${bm.date}</span>`;
