@@ -1,5 +1,5 @@
 {
-    "date": "2026-10-13",
+    "date": "2026-10-14",
     "tga_weekly_change_billion": -68.42,
     "fed_liquidity_weekly_change_billion": -71.79,
     "fed_debt_weekly_change_billion": 72.37,
@@ -20,7 +20,7 @@
     "bank_credit_score": 49.0,
     "liquidity_index": 46.0,
     "liquidity_index_ex_bank": 45.0,
-    "dgs3mo_rate_percent": 4.23,
-    "dgs2_rate_percent": 4.75,
-    "dgs10_rate_percent": 5.22
+    "dgs3mo_rate_percent": 4.25,
+    "dgs2_rate_percent": 4.8,
+    "dgs10_rate_percent": 5.24
 }
