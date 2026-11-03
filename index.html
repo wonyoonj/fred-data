@@ -12,9 +12,10 @@
         const ua = navigator.userAgent || '';
         const isWebView = /wv/.test(ua) || /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/.test(ua);
 
-        // [내 앱 예외 처리] 주소 끝에 ?source=app 파라미터가 붙어있는지 확인합니다.
-        const urlParams = new URLSearchParams(window.location.search);
-        const isOwnApp = urlParams.get('source') === 'app';
+        // [내 앱 예외 처리] 안드로이드 앱(MainActivity)이 WebView의 User-Agent 끝에 붙여주는 표식으로 판별합니다.
+        // - URL 파라미터(?source=app) 방식은 공유/복사된 링크에 파라미터가 딸려가 Threads 유입 사용자도 예외 처리되는 문제가 있어 UA 방식으로 교체했습니다.
+        // - UA는 /en/ 등 다른 페이지로 이동해도 항상 유지되므로 별도 저장 로직이 필요 없습니다.
+        const isOwnApp = /AmericaYoudongsungApp/i.test(ua);
 
         // 2. http 환경이면서 '웹뷰가 아닐 때만' 애드센스 광고를 불러옵니다. (내 앱 웹뷰에서도 광고가 안 뜨므로 정책 안전 보장)
         if (isHttp && !isWebView) {
@@ -25,7 +26,7 @@
             document.head.appendChild(adsScript);
         }
 
-        // 3. 웹뷰 대응 시스템 (내 앱(?source=app)이 아닐 때만 실행됩니다)
+        // 3. 웹뷰 대응 시스템 (내 앱이 아닌 외부 웹뷰 = Threads/인스타 등 인앱 브라우저일 때만 실행됩니다)
         if (isWebView && !isOwnApp) {
             const isAndroid = /Android/i.test(ua);
             const isIOS = /iPhone|iPad|iPod/i.test(ua);
@@ -3226,6 +3227,128 @@
             }
         }
 
+    </script>
+
+    <!-- ===== [신규] 첫 방문 안내 팝업 (웹 브라우저 전용 / 앱·인앱 브라우저에서는 표시 안 함) ===== -->
+    <style>
+        #wdPromoOverlay {
+            position: fixed; inset: 0; z-index: 10001;
+            display: none; align-items: center; justify-content: center;
+            padding: 20px; box-sizing: border-box;
+            background: rgba(0, 0, 0, 0.55);
+        }
+        #wdPromoOverlay.wd-show { display: flex; }
+        #wdPromoOverlay .wd-promo-card {
+            width: 100%; max-width: 340px; box-sizing: border-box;
+            background: #ffffff; color: #222222;
+            border-radius: 16px; padding: 24px 20px 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+            font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif;
+            text-align: center;
+        }
+        #wdPromoOverlay .wd-promo-search {
+            margin: 0 0 14px; font-size: 16px; line-height: 1.5; font-weight: 700; word-break: keep-all;
+        }
+        #wdPromoOverlay .wd-promo-search strong { color: #1c6fd6; }
+        #wdPromoOverlay .wd-promo-red { color: #e02424; }
+        #wdPromoOverlay .wd-promo-app {
+            margin: 0 0 18px; padding: 12px 10px; border-radius: 10px;
+            background: #f3f7fe; font-size: 14px; line-height: 1.55; color: #333333; word-break: keep-all;
+        }
+        #wdPromoOverlay .wd-promo-footer {
+            display: flex; align-items: center; justify-content: space-between;
+            border-top: 1px solid #eeeeee; padding-top: 12px; gap: 12px;
+        }
+        #wdPromoOverlay .wd-promo-check {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 13px; color: #666666; cursor: pointer; user-select: none;
+        }
+        #wdPromoOverlay .wd-promo-check input { width: 16px; height: 16px; margin: 0; cursor: pointer; }
+        #wdPromoOverlay .wd-promo-close {
+            border: 0; border-radius: 8px; padding: 8px 18px;
+            background: #333333; color: #ffffff; font-size: 14px; font-weight: 600; cursor: pointer;
+        }
+        #wdPromoOverlay .wd-promo-item {
+            display: flex; align-items: center; gap: 12px; text-align: left;
+            margin: 0 0 18px; padding: 12px 14px; border-radius: 12px; background: #f3f7fe;
+        }
+        #wdPromoOverlay .wd-promo-num {
+            flex: 0 0 28px; height: 28px; border-radius: 50%; background: #1c6fd6; color: #ffffff;
+            font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+        }
+        #wdPromoOverlay .wd-promo-txt { flex: 1; min-width: 0; }
+        #wdPromoOverlay .wd-promo-name { font-size: 14px; font-weight: 700; color: #222222; line-height: 1.4; }
+        #wdPromoOverlay .wd-promo-desc { font-size: 12px; color: #555555; line-height: 1.4; margin-top: 2px; word-break: keep-all; }
+        #wdPromoOverlay .wd-promo-link {
+            flex: 0 0 auto; font-size: 13px; font-weight: 700; color: #1c6fd6;
+            text-decoration: underline; text-underline-offset: 3px; white-space: nowrap;
+        }
+        #wdPromoOverlay .wd-promo-close:focus-visible,
+        #wdPromoOverlay .wd-promo-check input:focus-visible { outline: 2px solid #1c6fd6; outline-offset: 2px; }
+    </style>
+
+    <div id="wdPromoOverlay" role="dialog" aria-modal="true" aria-labelledby="wdPromoSearchText">
+        <div class="wd-promo-card">
+            <p class="wd-promo-search" id="wdPromoSearchText">"<strong>원뎅이 미국 유동성</strong>"을 검색해서<br><span class="wd-promo-red">시장 흐름</span>을 놓치지 마세요!</p>
+            <div class="wd-promo-item">
+                <div class="wd-promo-num">1</div>
+                <div class="wd-promo-txt">
+                    <div class="wd-promo-name">어플도 있어요!</div>
+                    <div class="wd-promo-desc">미국 돈흐름 · 상시 알람 가능!</div>
+                </div>
+                <a class="wd-promo-link" href="https://play.google.com/store/apps/details?id=com.wondeng.americayoudongsung" target="_blank" rel="noopener">바로가기</a>
+            </div>
+            <div class="wd-promo-footer">
+                <label class="wd-promo-check">
+                    <input type="checkbox" id="wdPromoHideToday">
+                    <span>오늘 하루 안 보기</span>
+                </label>
+                <button type="button" class="wd-promo-close" id="wdPromoClose">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function () {
+        var HIDE_KEY = 'wd_promo_hide_date';      // "오늘 하루 안 보기" 기준 날짜 (localStorage)
+        var SESSION_KEY = 'wd_promo_closed_session'; // 같은 탭에서 닫은 뒤 새로고침 시 재표시 방지 (sessionStorage)
+
+        // 앱(WebView)·인앱 브라우저에서는 표시하지 않음 (head 스크립트의 판별값 재사용)
+        var webview = (typeof isWebView !== 'undefined') ? isWebView : /wv/.test(navigator.userAgent || '');
+        var ownApp = (typeof isOwnApp !== 'undefined') ? isOwnApp : /AmericaYoudongsungApp/i.test(navigator.userAgent || '');
+        if (webview || ownApp || !/^https?:$/.test(location.protocol)) return;
+
+        function todayStr() {
+            var d = new Date();
+            return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+        }
+        function safeGet(storage, key) { try { return storage.getItem(key); } catch (e) { return null; } }
+        function safeSet(storage, key, val) { try { storage.setItem(key, val); } catch (e) {} }
+
+        // 오늘 하루 안 보기를 이미 선택했거나, 이번 탭에서 이미 닫았다면 표시하지 않음
+        if (safeGet(window.localStorage, HIDE_KEY) === todayStr()) return;
+        if (safeGet(window.sessionStorage, SESSION_KEY) === '1') return;
+
+        var overlay = document.getElementById('wdPromoOverlay');
+        var closeBtn = document.getElementById('wdPromoClose');
+        var hideCb = document.getElementById('wdPromoHideToday');
+        if (!overlay || !closeBtn || !hideCb) return;
+
+        function closePromo() {
+            if (hideCb.checked) safeSet(window.localStorage, HIDE_KEY, todayStr());
+            safeSet(window.sessionStorage, SESSION_KEY, '1');
+            overlay.classList.remove('wd-show');
+            document.removeEventListener('keydown', onKey);
+        }
+        function onKey(e) { if (e.key === 'Escape') closePromo(); }
+
+        closeBtn.addEventListener('click', closePromo);
+        overlay.addEventListener('click', function (e) { if (e.target === overlay) closePromo(); }); // 바깥 영역 탭으로 닫기
+        document.addEventListener('keydown', onKey);
+
+        overlay.classList.add('wd-show');
+        closeBtn.focus();
+    })();
     </script>
 </body>
 </html>
