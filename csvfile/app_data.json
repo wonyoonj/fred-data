@@ -1,5 +1,5 @@
 {
-    "date": "2026-11-02",
+    "date": "2026-11-03",
     "tga_weekly_change_billion": 47.73,
     "fed_liquidity_weekly_change_billion": 82.1,
     "fed_debt_weekly_change_billion": -68.9,
@@ -8,9 +8,9 @@
     "total_market_liquidity_weekly_change_billion": 33.29,
     "reverse_repo_rate_percent": 3.75,
     "discount_rate_percent": 4.0,
-    "effr_rate_percent": 3.75,
-    "sofr_rate_percent": 3.94,
-    "sofr_effr_spread_percent": 0.19,
+    "effr_rate_percent": 3.88,
+    "sofr_rate_percent": 3.95,
+    "sofr_effr_spread_percent": 0.07,
     "bank_credit_balance_billion": 20014.23,
     "bank_credit_weekly_change_billion": 28.86,
     "bank_credit_4w_change_billion": 143.01,
@@ -20,7 +20,7 @@
     "bank_credit_score": 61.0,
     "liquidity_index": 77.0,
     "liquidity_index_ex_bank": 79.0,
-    "dgs3mo_rate_percent": 4.18,
-    "dgs2_rate_percent": 4.61,
-    "dgs10_rate_percent": 4.98
+    "dgs3mo_rate_percent": 4.16,
+    "dgs2_rate_percent": 4.56,
+    "dgs10_rate_percent": 4.94
 }
