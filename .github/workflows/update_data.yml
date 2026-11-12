@@ -35,6 +35,10 @@ jobs:
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
         run: python scripts/fetch_fred.py
 
+      - name: 공포·탐욕 지수 수집 (CNN)
+        continue-on-error: true   # CNN 비공식 피드가 막히거나 바뀌어도 나머지 작업은 계속 진행
+        run: python scripts/fetch_fear_greed.py
+
       - name: MMF 원본 데이터 수집
         continue-on-error: true   # OFR 사이트 구조 변경 등으로 실패해도 나머지는 계속 진행
         run: python scripts/fetch_mmf.py
