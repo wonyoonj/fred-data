@@ -46,7 +46,8 @@ def fetch_fred_series():
         'WTREGEN', 'WRESBAL', 'M2SL', 'M1SL', 'SOFR', 'FEDFUNDS', 'DGS3MO', 'DGS2',
         'RRPONTSYD', 'SP500', 'WILL5000IND', 'DPCREDIT', 'DRBLACBS',
         'NASDAQ100', 'WALCL', 'RRPONTSYAWARD', 'ALTSALES', 'HOUST', 'DGS10', 'DCOILBRENTEU', 'IORB',
-        'TOTBKCR'  # [신규] Bank Credit, All Commercial Banks (주간, Billions of USD)
+        'TOTBKCR',  # [신규] Bank Credit, All Commercial Banks (주간, Billions of USD)
+        'VIXCLS'    # [신규] CBOE VIX 변동성 지수 (일간) -> csvfile/VIXCLS.csv
     ]
 
     end_date = dt.now()

@@ -368,6 +368,53 @@ def analyze_with_gemini(metrics_data):
         print(f"Gemini AI 분석 중 오류 발생: {e}")
 
 
+# =========================================================================
+# [신규] VIX / CNN 공포·탐욕 지수 최신값 -> app_data.json (앱의 "급변·긴급 알림"용)
+#   - 일부러 calculate_all_metrics() 의 indicators 목록에는 넣지 않았습니다.
+#     (그 목록은 CSV 하나라도 없으면 전체 분석이 중단되므로, 이 부가 지표 때문에 기존 분석이 멈추면 안 됩니다.)
+#   - 파일이 없거나 형식이 달라도 이 함수만 건너뛰고 나머지는 그대로 진행합니다.
+# =========================================================================
+def fear_greed_rating(score):
+    """CNN 기준 구간: 0~24 extreme fear, 25~44 fear, 45~55 neutral, 56~75 greed, 76~100 extreme greed"""
+    if score < 25:
+        return "extreme fear"
+    if score < 45:
+        return "fear"
+    if score <= 55:
+        return "neutral"
+    if score <= 75:
+        return "greed"
+    return "extreme greed"
+
+
+def _last_observation(csv_name):
+    df = pd.read_csv(os.path.join(DATA_DIR, f'{csv_name}.csv'))
+    date_col, value_col = df.columns[0], df.columns[1]
+    df[date_col] = pd.to_datetime(df[date_col])
+    df[value_col] = pd.to_numeric(df[value_col], errors='coerce')
+    df = df.dropna(subset=[value_col]).sort_values(date_col)
+    last = df.iloc[-1]
+    return last[date_col].strftime('%Y-%m-%d'), float(last[value_col])
+
+
+def load_sentiment_fields():
+    fields = {}
+    try:
+        date, value = _last_observation('VIXCLS')
+        fields["vix"] = round(value, 2)
+        fields["vix_date"] = date
+    except Exception as e:
+        print(f"[참고] VIX 최신값을 읽지 못해 app_data.json 에서 제외합니다: {e}")
+    try:
+        date, value = _last_observation('FEARGREED')
+        fields["fear_greed"] = round(value, 2)
+        fields["fear_greed_rating"] = fear_greed_rating(value)
+        fields["fear_greed_date"] = date
+    except Exception as e:
+        print(f"[참고] 공포·탐욕 지수 최신값을 읽지 못해 app_data.json 에서 제외합니다: {e}")
+    return fields
+
+
 def parse_value(value_str):
     if isinstance(value_str, str):
         numbers = re.findall(r"[-+]?\d*\.\d+|\d+", value_str)
@@ -414,6 +461,8 @@ if __name__ == '__main__':
         for kor_key, eng_key in key_map.items():
             if kor_key in calculated_metrics:
                 app_data[eng_key] = parse_value(calculated_metrics[kor_key])
+
+        app_data.update(load_sentiment_fields())  # [신규] vix / fear_greed (없으면 키 자체가 빠짐)
 
         try:
             app_data_filename = os.path.join(DATA_DIR, 'app_data.json')
