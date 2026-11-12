@@ -1347,6 +1347,14 @@
                 </div>
             </div>
             <div class="indicator-section">
+                <h3>시장 심리</h3>
+                <p>투자자들이 느끼는 불안과 낙관의 정도를 보여주는 지표들로, 시장이 얼마나 긴장하고 있는지 가늠할 수 있습니다.</p>
+                <div class="indicator-buttons">
+                    <button class="button" onclick="showGraph('VIXCLS')">VIX 변동성 지수</button>
+                    <button class="button" onclick="showGraph('FEARGREED')">공포·탐욕 지수</button>
+                </div>
+            </div>
+            <div class="indicator-section">
                 <h3>선행지표</h3>
                 <p>미래의 경제 활동 방향을 예측하는 데 도움을 주는 지표들로, 소비와 산업 활동의 바로미터입니다.</p>
                 <div class="indicator-buttons">
@@ -1544,6 +1552,12 @@
         const NUM_DOLLAR_ANIMATIONS = 3;
 
         const FUNCTION_BASE_URL = '/.netlify/functions/get-csv-data';
+        // [신규] VIX / 공포·탐욕 지수 CSV 는 매일 GitHub Actions 가 csvfile/ 에 저장하며, 사이트의 정적 파일로 바로 읽습니다.
+        // (financial_analysis.json 을 'csvfile/financial_analysis.json' 으로 읽는 것과 같은 방식)
+        const DIRECT_CSV_URLS = {
+            'VIXCLS': 'csvfile/VIXCLS.csv',
+            'FEARGREED': 'csvfile/FEARGREED.csv'
+        };
         
         const dataCache = new Map();
         const CACHE_TTL = 3600 * 1000;
@@ -1597,9 +1611,12 @@
                     'SOFR': 'SOFR 금리', 'FEDFUNDS': 'EFFR 금리', 'IORB': 'IORB 금리', 'DGS3MO': '3개월 미 국채금리', 'DGS2': '2년물 미 국채금리', 'DGS10': '10년물 미 국채금리', 'DPCREDIT': '연준 할인율',
                     'DRBLACBS': '미 은행 연체율(전체)', 'M2SL': 'M2', 'M1SL': 'M1', 'NASDAQ100': '나스닥100 지수', 'SP500': 'S&P500 지수', 'SP500_MCAP': 'S&P500 시가총액', 'NETMARKETFLOW': '시장 Total 유동 공급량', 'TOTBKCR': '미 상업은행 Bank Credit',
                     'RRPONTSYAWARD': '역레포 금리', 'ALTSALES': '자동차, 트럭 판매량', 'HOUST': '주택 착공 허가 건수', 'DCOILBRENTEU': '국제 유가',
-                    'SOFR_FEDFUNDS_SPREAD': 'SOFR, EFFR 스프레드', 'SOFR_IORB_SPREAD': 'SOFR, IORB 스프레드', 'YIELD_SPREAD': '미국 장단기 금리차', 'WALCL': '연준 전체 자산 + 부채', 'MMF_COMPOSITION': 'MMF 자산 구성'
+                    'SOFR_FEDFUNDS_SPREAD': 'SOFR, EFFR 스프레드', 'SOFR_IORB_SPREAD': 'SOFR, IORB 스프레드', 'YIELD_SPREAD': '미국 장단기 금리차', 'WALCL': '연준 전체 자산 + 부채', 'MMF_COMPOSITION': 'MMF 자산 구성',
+                    'VIXCLS': 'VIX 변동성 지수', 'FEARGREED': 'CNN 공포·탐욕 지수'
                 },
                 infoData: {
+                    'VIXCLS': {'title': 'VIX 변동성 지수', 'content': {'경제적 의미': 'VIX는 S&P500 지수 옵션 가격에 반영된 향후 약 30일간의 기대 변동성을 나타내는 지수로, 흔히 시장의 공포 지수로 불립니다. 주가가 급락하거나 불확실성이 커지면 투자자들이 하락 방어(풋옵션)에 더 많은 비용을 지불하게 되어 VIX가 오르는 경향이 있습니다. 일반적으로 20 아래는 비교적 안정, 30 이상은 불안 확대, 40 이상은 극단적 불안 구간으로 해석되는 경우가 많습니다.', '왜 필요한 지표인가': '유동성이 풍부해도 시장 심리가 급격히 얼어붙으면 자금 흐름이 달라질 수 있습니다. VIX는 그 긴장도를 가장 빠르게 보여주는 지표 중 하나라서, 유동성 지표와 함께 보면 시장이 안정적인지 불안한 국면인지 입체적으로 파악하는 데 도움이 됩니다. 단, 단독으로 매수·매도 시점을 알려주는 지표는 아닙니다.'}},
+                    'FEARGREED': {'title': 'CNN 공포·탐욕 지수', 'content': {'경제적 의미': 'CNN Business가 주가 모멘텀, 주가 강도, 주가 폭, 풋/콜 옵션 비율, 정크본드 수요, 시장 변동성, 안전자산 수요 등 7가지 요소를 종합해 0~100으로 산출하는 투자 심리 지수입니다. 0~24는 극단적 공포, 25~44는 공포, 45~55는 중립, 56~75는 탐욕, 76~100은 극단적 탐욕 구간으로 구분합니다.', '왜 필요한 지표인가': '시장 참여자들의 심리가 한쪽으로 쏠렸는지를 한눈에 보여줍니다. 극단적인 공포나 탐욕은 시장이 과열 또는 과매도 상태일 가능성을 시사하는 참고 자료로 쓰이지만, 심리 지표는 한 방향으로 오래 지속될 수도 있어 유동성 지표 등과 함께 종합적으로 판단하는 것이 좋습니다.'}},
                     'WTREGEN': {'title': '미 정부 TGA 잔고', 'content': {'경제적 의미': 'Treasury General Account (TGA)는 미국 정부의 현금 잔고 입니다. 이 잔고의 증가는 정부가 시장 유동성을 흡수했음을 말하며, 감소는 재무부가 시장에 유동성을 정책을 통해 공급했음을 의미할 수 있습니다.', '왜 필요한 지표인가': 'TGA 잔고는 유동성(시장에 순환하는 돈의 양)에 직접적인 영향을 미칩니다. 잔고가 급격히 변동하면 단기 금리나 금융 시장 안정성에 영향을 줄 수 있어 모니터링이 필요합니다.'}},
                     'WRESBAL': {'title': '미 은행 지급준비금', 'content': {'경제적 의미': '미 은행이 연방준비제도(FRB)에 예치한 의무적 예금으로, 은행 시스템의 유동성을 조절하는 데 사용됩니다. 이 수치가 높으면 은행이 대출을 줄일 가능성이 있고, 낮으면 대출이 증가할 수 있습니다. 반대로 준비금이 높다는건 은행 시스템에 유동성이 풍부하다는 것을 의미가 될 수 있습니다.', '왜 필요한 지표인가': '지급준비금은 통화 공급량과 신용 창출에 영향을 미치며, 연준의 통화 정책(예: 양적 완화 또는 긴축)의 효과를 평가하는 데 핵심 지표입니다. 경제 과열이나 침체를 방지하기 위해 모니터링됩니다.'}},
                     'M2SL': {'title': 'M2', 'content': {'경제적 의미': 'M2는 전통적인 은행 활동에 의한 화폐 공급량을 의미합니다. 예를 들면 은행에서의 현금, 수시입출금 예금, 저축 예금, 그리고 소액의 정기 예금을 포함합니다. 하지만 최근들어 MMF(Money Market Fund)의 자금 조달로 인한 M2에 간접적인 영향을 줄 수는 있겠으나, MMF 자금 유동성이 급격히 변동하더라도, M2 수치에 즉각적으로 반영되진 않을 수 있습니다. Stable Coin에 의한 자금 유동성 또한 M2에 직접 포함되지는 않습니다.', '왜 필요한 지표인가': 'M2는 전통적인 인플레이션, 경제 성장, 소비 동향을 예측하는 데 사용됩니다. 급격한 증가나 감소는 통화 정책 조정(예: 금리 인상/인하)의 신호로 해석될 수 있어 중요합니다.'}},
@@ -1643,11 +1660,11 @@
                     return Promise.resolve(data);
                 }
             }
-            const functionUrl = `${FUNCTION_BASE_URL}?indicator=${indicator}`;
+            const functionUrl = DIRECT_CSV_URLS[indicator] || `${FUNCTION_BASE_URL}?indicator=${indicator}`;
             try {
                 const response = await fetch(functionUrl);
                 if (!response.ok) {
-                    const errorBody = await response.json();
+                    const errorBody = await response.json().catch(() => ({}));
                     const errorMsg = currentLanguage === 'ko' 
                         ? `'${translations[currentLanguage].indicatorTitles[indicator] || indicator}' 데이터를 찾을 수 없거나 불러오지 못했어요! (${response.status}: ${errorBody.error || response.statusText})`
                         : `Could not find or load data for '${translations[currentLanguage].indicatorTitles[indicator] || indicator}'! (${response.status}: ${errorBody.error || response.statusText})`;
@@ -1671,7 +1688,8 @@
             'M2SL': 'Billions of Dollars', 'M1SL': 'Billions of Dollars', 'SP500_MCAP': 'Billions of Dollars', 'SOFR': 'Percent (%)', 'FEDFUNDS': 'Percent (%)', 'IORB': 'Percent (%)', 'DGS3MO': 'Percent (%)',
             'DGS2': 'Percent (%)', 'DGS10': 'Percent (%)', 'DPCREDIT': 'Percent (%)', 'DRBLACBS': 'Percent (%)', 'NASDAQ100': 'Index', 'SP500': 'Index',
             'RRPONTSYAWARD': 'Percent (%)', 'ALTSALES': 'Millions of Units', 'HOUST': 'Thousands of Units', 'DCOILBRENTEU': 'Dollars per Barrel',
-            'SOFR_FEDFUNDS_SPREAD': 'Percent (%)', 'SOFR_IORB_SPREAD': 'Percent (%)', 'YIELD_SPREAD': 'Percent (%)', 'MMF_COMPOSITION': 'Billions of U.S. Dollars', 'NETMARKETFLOW': 'Billions of dollars Per Week (BDPW)', 'TOTBKCR': 'Billions of U.S. Dollars'
+            'SOFR_FEDFUNDS_SPREAD': 'Percent (%)', 'SOFR_IORB_SPREAD': 'Percent (%)', 'YIELD_SPREAD': 'Percent (%)', 'MMF_COMPOSITION': 'Billions of U.S. Dollars', 'NETMARKETFLOW': 'Billions of dollars Per Week (BDPW)', 'TOTBKCR': 'Billions of U.S. Dollars',
+            'VIXCLS': 'Index (VIX)', 'FEARGREED': 'Index (0 = 극단적 공포 ~ 100 = 극단적 탐욕)'
         };
         
         const spreadConfigs = {
@@ -1948,6 +1966,10 @@
                 dataSourceText = 'Source: Office of Financial Research (OFR)';
             } else if (indicator === 'NETMARKETFLOW') {
                 dataSourceText = 'Source: FRED, Office of Financial Research (OFR)';
+            } else if (indicator === 'VIXCLS') {
+                dataSourceText = 'Source: FRED (CBOE)';
+            } else if (indicator === 'FEARGREED') {
+                dataSourceText = 'Source: CNN Business';
             }
             document.getElementById('graphDataSource').textContent = currentLanguage === 'ko' ? dataSourceText.replace('Source', '자료 출처') : dataSourceText;
             
