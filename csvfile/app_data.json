@@ -1,5 +1,5 @@
 {
-    "date": "2026-11-23",
+    "date": "2026-11-24",
     "tga_weekly_change_billion": 2.24,
     "fed_liquidity_weekly_change_billion": -58.12,
     "fed_debt_weekly_change_billion": 19.23,
@@ -9,8 +9,8 @@
     "reverse_repo_rate_percent": 3.75,
     "discount_rate_percent": 4.0,
     "effr_rate_percent": 3.88,
-    "sofr_rate_percent": 3.91,
-    "sofr_effr_spread_percent": 0.03,
+    "sofr_rate_percent": 3.92,
+    "sofr_effr_spread_percent": 0.04,
     "bank_credit_balance_billion": 20133.18,
     "bank_credit_weekly_change_billion": 62.28,
     "bank_credit_4w_change_billion": 142.21,
@@ -20,12 +20,12 @@
     "bank_credit_score": 75.0,
     "liquidity_index": 23.0,
     "liquidity_index_ex_bank": 16.0,
-    "dgs3mo_rate_percent": 4.34,
-    "dgs2_rate_percent": 4.76,
-    "dgs10_rate_percent": 5.04,
-    "vix": 28.44,
-    "vix_date": "2026-11-19",
-    "fear_greed": 9.67,
+    "dgs3mo_rate_percent": 4.32,
+    "dgs2_rate_percent": 4.63,
+    "dgs10_rate_percent": 4.92,
+    "vix": 35.89,
+    "vix_date": "2026-11-20",
+    "fear_greed": 16.97,
     "fear_greed_rating": "extreme fear",
-    "fear_greed_date": "2026-11-20"
+    "fear_greed_date": "2026-11-24"
 }
